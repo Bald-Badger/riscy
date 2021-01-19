@@ -40,8 +40,8 @@
     //`define AUIPC   3'b000    // pc, rd <= (pc_of_auipc + {imm, 12'b0})
 
     // J type have no funt3
-    //`define JAL     3'b000    // jump and link, rd <= pc_of_jal + 4, pc <= pc_of_jal + imm
-    //`define JALR    3'b000    // jump and link registor, pc <= (rs1 + imm) && 0xfffE (set the last bit is always 0)
+    //`define JAL     3'b000    // jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm)
+    //`define JALR    3'b000    // jump and link registor, rd <= (pc_of_jalr + 4),  pc <= (rs1 + imm) && 0xfffE (set the last bit is always 0)
 
     // S type funt3 - Load
     `define LB      3'b000
