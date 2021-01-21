@@ -41,19 +41,19 @@
 
     // J type have no funt3
     //`define JAL     3'b000    // jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm)
-    //`define JALR    3'b000    // jump and link registor, rd <= (pc_of_jalr + 4),  pc <= (rs1 + imm) && 0xfffE (set the last bit is always 0)
+    //`define JALR    3'b000    // jump and link registor, rd <= (pc_of_jalr + 4),  pc <= (rs1 + imm) && 0xfffe (set the last bit is always 0)
 
     // S type funt3 - Load
-    `define LB      3'b000
-    `define LH      3'b001
-    `define LW      3'b010
-    `define LBU     3'b100
-    `define LHU     3'b101
+    `define LB      3'b000      // load 8 bits and sign extend to 32 bits
+    `define LH      3'b001      // load 16 bits and sign extend to 32 bits
+    `define LW      3'b010      // rd <= mem[rs1 + imm]
+    `define LBU     3'b100      // load 8 bits and sign extend to 32 bits
+    `define LHU     3'b101      // load 16 bits and zero extend to 32 bits
 
     // S type funt3 - Store
-    `define SB      3'b000
+    `define SB      3'b000      
     `define SH      3'b001
-    `define SW      3'b010
+    `define SW      3'b010      // mem[rs1 + imm] <= rs2
     //`define SBU     3'b100 not used
     //`define SHU     3'b101 not used
 
