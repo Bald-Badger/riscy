@@ -5,26 +5,26 @@
 // synopsys translate_on
 
 module instr_mem (
-	address,
+	addr,
 	clk,
 	rden,
-	q
+	instr
 );
-	input		[`XLEN-1:0] address;
+	input		[`XLEN-1:0] addr;
 	input					clk;
 	input					rden;
-	output	reg	[`XLEN-1:0] q;
+	output		[`XLEN-1:0] instr;
 
 	mem #(
 		.ENTRY  (1024), 
 		.WIDTH  (`XLEN)
 		) instr_mem_inst (
-		.address(address),
+		.address(addr),
 		.clk	(clk),
-		.data	(32'bX),
+		.data	(32'b0),
 		.rden	(rden),
 		.wren	(1'b0),
-		.q		(q)
+		.q		(instr)
 	);
 
 endmodule

@@ -1,25 +1,32 @@
+`include "../opcode.vh"
+
 module pc (
 	//input
-	pc_nxt,
-	clk, rst,
+	pc_bj,
+	clk, rst_n,
+	pc_sel,			// 1 for bj, 0 for p4
 	//output
-	pc
+	pc,
+	pc_p4,
 );
 
-	parameter N = 32;
-	input[N-1:0] pc_nxt;
-	input clk, rst;
-	output[N-1:0] pc;
+	input 	clk, rst_n, pc_sel;
+	input	[`XLEN-1:0]	pc_bj;
+	output	[`XLEN-1:0] pc, pc_p4;
+
+	wire	[`XLEN-1:0] pc_nxt;
+	assign pc_nxt = pc_sel ? pc_bj : pc_p4;
+	assign pc_p4 = pc + 4;
 
 	dff #(
-        .WIDTH(N)
+        .WIDTH(`XLEN)
         ) pc_ff (
 		//outout
 		.q(pc),
 		//input
 		.d(pc_nxt),
 		.clk(clk),
-		.rst(rst)
+		.rst_n(rst_n)
 	);
 
 endmodule

@@ -21,13 +21,11 @@ module mem (
 	input		[WIDTH-1:0] data;
 	input					rden;
 	input	               	wren;
-	output	reg	[WIDTH-1:0] q;
+	output		[WIDTH-1:0] q;
 
 	reg     [WIDTH-1:0] mem  [0:ENTRY-1];
 
-	always_ff @(posedge clk) begin
-		q <= rden ? mem [address] : 0;
-	end
+	assign q = rden ? mem [address] : 0;
 
 	always_ff @( posedge clk) begin
 		if (wren) begin
@@ -37,7 +35,7 @@ module mem (
 
 	initial begin
 		for (int i=0; i<ENTRY; ++i) begin
-			mem[i] = 32'b0;
+			mem[i] = 32'bX;
 		end
 
 		$readmemh("test.img", mem);
