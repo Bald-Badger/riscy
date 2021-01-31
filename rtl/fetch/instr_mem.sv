@@ -16,7 +16,7 @@ module instr_mem (
 	output		[`XLEN-1:0] instr;
 
 	mem #(
-		.ENTRY  (1024), 
+		.ENTRY  (256), 
 		.WIDTH  (`XLEN)
 		) instr_mem_inst (
 		.address(addr),

@@ -2,8 +2,8 @@
 
 module pc (
 	//input
-	pc_bj,
 	clk, rst_n,
+	pc_bj,
 	pc_sel,			// 1 for bj, 0 for p4
 	//output
 	pc,
