@@ -28,7 +28,7 @@
     `define SRLI    3'b101      // logical shift right imm
     `define SRAI    3'b101      // arithmetic shift right imm
 
-    // B type funt3
+    // B type funt3                branch imm have to shift left for 1
     `define BEQ     3'b000      // branch if rs1 == rs2
     `define BNE     3'b001      // branch if rs1 != rs2
     `define BLT     3'b100      // branch if rs1 < rs2 signed
