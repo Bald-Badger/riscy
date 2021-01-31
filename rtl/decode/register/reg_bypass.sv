@@ -38,11 +38,13 @@ module reg_bypass (
 	wire bypass_rs1 = (rd_wren && rs1_rden) && (rs1_addr == rd_addr);
 	wire bypass_rs2 = (rd_wren && rs2_rden) && (rs2_addr == rd_addr);
 
-	assign rs1_data = 	rs1_addr == 5'b0	? 0:
+	assign rs1_data = 	rs1_addr == 5'b0	? `NULL:
 						bypass_rs1 			? rd_data : 
-						rs1_rden 			? registers[rs1_addr]: 0;
-	assign rs2_data = 	rs2_addr == 5'b0	? 0:
+						rs1_rden 			? registers[rs1_addr]: 
+						`NULL;
+	assign rs2_data = 	rs2_addr == 5'b0	? `NULL:
 						bypass_rs2 			? rd_data : 
-						rs2_rden 			? registers[rs2_addr]: 0;
+						rs2_rden 			? registers[rs2_addr]: 
+						`NULL;
 	
 endmodule
