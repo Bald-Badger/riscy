@@ -99,7 +99,7 @@ endtask
 initial begin
 	init();
 
-	for (i = 0; i < 100000000 ; i++) begin
+	for (i = 0; i < 1000000 ; i++) begin
 		comp();
 	end
 
