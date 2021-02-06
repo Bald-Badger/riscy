@@ -26,8 +26,9 @@
 
 // basic data type define
 	typedef logic[XLEN-1:0]	data_t;
-	typedef logic[6:0] 		funct7_t;
 	typedef logic[2:0] 		funct3_t;
+	typedef logic[6:0] 		funct7_t;
+	//typedef logic[11:0]		funct12_t;
 	typedef logic[4:0] 		r_t;
 
 
@@ -41,53 +42,6 @@
 		r_t			rd;
 		opcode_t	opcode;
 	} instr_t;		// same as R type
-
-	typedef struct packed {
-		funct7_t	funct7;
-		r_t			rs2;
-		r_t			rs1;
-		funct3_t	funct3;
-		r_t			rd;
-		opcode_t	opcode;
-	} instr_r_t;
-
-	typedef struct packed {
-		bit[11:0]	imm;
-		r_t			rs1;
-		funct3_t	funct3;
-		r_t			rd;
-		opcode_t	opcode;
-	} instr_i_t;
-
-	typedef struct packed {
-		bit[6:0]	imm1;
-		r_t			rs2;
-		r_t			rs1;
-		funct3_t	funct3;
-		bit[5:0]	imm2;
-		opcode_t	opcode;
-	} instr_s_t;
-
-	typedef struct packed {
-		bit[6:0]	imm1;
-		r_t			rs2;
-		r_t			rs1;
-		funct3_t	funct3;
-		bit[4:0]	imm2;
-		opcode_t	opcode;
-	} instr_b_t;
-
-	typedef struct packed {
-		bit[19:0]	imm;
-		r_t			rd;
-		opcode_t	opcode;
-	} instr_u_t;
-
-	typedef struct packed {
-		bit[19:0]	imm;
-		r_t			rd;
-		opcode_t	opcode;
-	} instr_j_t;
 
 
 // Funt3 define
@@ -146,10 +100,6 @@
 
     // Fence (Memory ordering) funt3
     funct3_t FENCE   =	3'b000;
-
-    // System enviornment call and breakpoint
-    funct3_t ECALL   =	3'b000;
-    funct3_t EBREAK  =	3'b000;
 
 
 // instructon extraction functions
