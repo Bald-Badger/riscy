@@ -1,20 +1,20 @@
-`include "../../opcode.vh"
+`include "../../opcode.svh"
 
 module registers (
 	input clk,
 	input rst_n,
 
-	input [`XLEN-1:0] instr,
+	input data_t instr,
 
-	input [`XLEN-1:0] rd_data,
+	input data_t rd_data,
 	input rd_wren,
-	input [4:0] rd_addr,
+	input r_t rd_addr,
 
-	output [`XLEN-1:0] rs1_data,
-	output [`XLEN-1:0] rs2_data
+	output data_t rs1_data,
+	output data_t rs2_data
 );
 
-	wire [4:0] rs1_addr, rs2_addr;
+	r_t rs1_addr, rs2_addr;
 	wire rs1_rden, rs2_rden;
 
 	reg_bypass reg_pass_inst (

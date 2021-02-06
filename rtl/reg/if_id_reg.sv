@@ -1,4 +1,4 @@
-`include "../opcode.vh"
+`include "../opcode.svh"
 
 module if_id_reg (
 	// common
@@ -7,18 +7,18 @@ module if_id_reg (
 	input flush,
 	input en,
 	// input
-	input [`XLEN-1:0] 	pc_p4_in,
-	input [`XLEN-1:0] 	pc_in,
-	input [`XLEN-1:0] 	instr_in,
-	input [4:0] 		rd_in,
+	input data_t 	pc_p4_in,
+	input data_t 	pc_in,
+	input data_t 	instr_in,
+	input r_t 		rd_in,
 	// output
-	output [`XLEN-1:0] 	pc_p4_out,
-	output [`XLEN-1:0] 	pc_out,
-	output [`XLEN-1:0] 	instr_out,
-	output [4:0] 		rd_out
+	output data_t 	pc_p4_out,
+	output data_t 	pc_out,
+	output data_t 	instr_out,
+	output r_t 		rd_out
 );
 
-	dffe #(.WIDTH(`XLEN)) pc_p4_reg (
+	dffe #(.WIDTH(XLEN)) pc_p4_reg (
 		.clk(clk),
 		.en(en),
 		.rst_n(rst_n),
@@ -26,7 +26,7 @@ module if_id_reg (
 		.q(pc_p4_out)
 	);
 
-	dffe #(.WIDTH(`XLEN)) pc_reg (
+	dffe #(.WIDTH(XLEN)) pc_reg (
 		.clk(clk),
 		.en(en),
 		.rst_n(rst_n),
@@ -34,7 +34,7 @@ module if_id_reg (
 		.q(pc_out)
 	);
 
-	dffe #(.WIDTH(`XLEN)) instr_reg (
+	dffe #(.WIDTH(XLEN)) instr_reg (
 		.clk(clk),
 		.en(en),
 		.rst_n(rst_n),

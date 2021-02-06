@@ -1,9 +1,9 @@
-`include "../../opcode.vh"
+`include "../../opcode.svh"
 
 module pc_adder_tb ();
 	
 logic rst_n, clk;
-logic [`XLEN-1:0] instr, pc, rs1, rs2, pc_bj;
+logic [XLEN-1:0] instr, pc, rs1, rs2, pc_bj;
 logic bj_sel;
 logic beq;
 logic bne;
@@ -22,7 +22,7 @@ pc_adder adder_inst (
     .bj_sel (bj_sel)
 );
 
-logic [`XLEN+1:0] diff;
+data_t diff;
 //assign diff = adder_inst.rs_diff;
 
 integer  i;

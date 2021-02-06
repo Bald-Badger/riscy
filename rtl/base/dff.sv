@@ -1,3 +1,9 @@
+`include "../opcode.svh"
+
+// synopsys translate_off
+`timescale 1 ps / 1 ps
+// synopsys translate_on
+
 module dff(
 	clk,
 	rst_n,
@@ -5,7 +11,7 @@ module dff(
 	q
 );
 
-parameter WIDTH = 32;
+parameter WIDTH = XLEN;
 
     input 			    clk;
 	input 			    rst_n;

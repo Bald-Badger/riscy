@@ -1,4 +1,4 @@
-`include "../opcode.vh"
+`include "../opcode.svh"
 
 // synopsys translate_off
 `timescale 1 ps / 1 ps
@@ -14,7 +14,7 @@ module mem (
 );
 
 	parameter ENTRY = 1024;
-	parameter WIDTH = 32;
+	parameter WIDTH = XLEN;
 
 	input		[WIDTH-1:0] address;
 	input					clk;
@@ -33,6 +33,7 @@ module mem (
 		end
 	end
 
+// synopsys translate_off
 	initial begin
 		for (int i=0; i<ENTRY; ++i) begin
 			mem[i] = 32'bX;
@@ -40,7 +41,7 @@ module mem (
 
 		$readmemh("test.img", mem);
 	end
-
+// synopsys translate_on
 
 
 endmodule

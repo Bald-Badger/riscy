@@ -1,4 +1,4 @@
-`include "../opcode.vh"
+`include "../opcode.svh"
 
 module fetch(
 	// general input
@@ -6,14 +6,14 @@ module fetch(
 	input rst_n,
 
 	// input
-	input	[`XLEN-1:0] pc_bj,
-	input 				pc_sel,
+	input	data_t	pc_bj,
+	input 			pc_sel,
 
 	// output
-	output	[`XLEN-1:0]	pc_p4,
-	output	[`XLEN-1:0]	pc,
-	output	[`XLEN-1:0]	instr,
-	output	[4:0]		rd
+	output	data_t	pc_p4,
+	output	data_t	pc,
+	output	data_t	instr,
+	output	r_t		rd
 );
 
 	pc pc_inst (

@@ -1,27 +1,26 @@
-`include "../opcode.vh"
+`include "../opcode.svh"
 
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 
 module instr_mem (
-	addr,
-	clk,
-	rden,
-	instr
+	input data_t	addr,
+	input 			clk,
+	input 			rden,
+
+	output data_t	instr
 );
-	input		[`XLEN-1:0] addr;
-	input					clk;
-	input					rden;
-	output		[`XLEN-1:0] instr;
+
+	parameter DEPTH = 256;
 
 	mem #(
-		.ENTRY  (256), 
-		.WIDTH  (`XLEN)
+		.ENTRY  (DEPTH), 
+		.WIDTH  (XLEN)
 		) instr_mem_inst (
 		.address(addr),
 		.clk	(clk),
-		.data	(32'b0),
+		.data	(NULL),
 		.rden	(rden),
 		.wren	(1'b0),
 		.q		(instr)

@@ -1,24 +1,24 @@
-`include "../../opcode.vh"
+`include "../../opcode.svh"
 
 module reg_bypass (
 	input clk,
 	input rst_n,
 
-	input [`XLEN-1:0] rd_data,
+	input data_t rd_data,
 	input rd_wren,
-	input [4:0] rd_addr,
+	input r_t rd_addr,
 
-	input [4:0] rs1_addr,
-	input [4:0] rs2_addr,
+	input r_t 	rs1_addr,
+	input r_t 	rs2_addr,
 	input 		rs1_rden,
 	input 		rs2_rden,
 
-	output [`XLEN-1:0] rs1_data,
-	output [`XLEN-1:0] rs2_data
+	output data_t rs1_data,
+	output data_t rs2_data
 );
 
 	localparam DEPTH = 5'd32;
-	reg [`XLEN-1:0] registers [DEPTH-1:0]; 
+	reg [XLEN-1:0] registers [DEPTH-1:0]; 
 
 	integer i;
 	always_ff @(posedge clk or negedge rst_n) begin
@@ -38,13 +38,13 @@ module reg_bypass (
 	wire bypass_rs1 = (rd_wren && rs1_rden) && (rs1_addr == rd_addr);
 	wire bypass_rs2 = (rd_wren && rs2_rden) && (rs2_addr == rd_addr);
 
-	assign rs1_data = 	rs1_addr == 5'b0	? `NULL:
+	assign rs1_data = 	rs1_addr == 5'b0	? NULL:
 						bypass_rs1 			? rd_data : 
 						rs1_rden 			? registers[rs1_addr]: 
-						`NULL;
-	assign rs2_data = 	rs2_addr == 5'b0	? `NULL:
+						NULL;
+	assign rs2_data = 	rs2_addr == 5'b0	? NULL:
 						bypass_rs2 			? rd_data : 
 						rs2_rden 			? registers[rs2_addr]: 
-						`NULL;
+						NULL;
 	
 endmodule

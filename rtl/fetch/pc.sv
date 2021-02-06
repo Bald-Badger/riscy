@@ -1,4 +1,4 @@
-`include "../opcode.vh"
+`include "../opcode.svh"
 
 module pc (
 	//input
@@ -11,15 +11,15 @@ module pc (
 );
 
 	input 	clk, rst_n, pc_sel;
-	input	[`XLEN-1:0]	pc_bj;
-	output	[`XLEN-1:0] pc, pc_p4;
+	input	data_t	pc_bj;
+	output	data_t	pc, pc_p4;
 
-	wire	[`XLEN-1:0] pc_nxt;
+	data_t pc_nxt;
 	assign pc_nxt = pc_sel ? pc_bj : pc_p4;
 	assign pc_p4 = pc + 4;
 
 	dff #(
-        .WIDTH(`XLEN)
+        .WIDTH(XLEN)
         ) pc_ff (
 		//outout
 		.q(pc),
