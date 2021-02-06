@@ -11,7 +11,7 @@ module reg_ctrl (
 	localparam ENABLE = 1'b1;
 	localparam DISABLE = 1'b0;
 
-	opcode_t opcode = get_opcode(instr);
+	opcode_t opcode = instr.opcode;
 
 	assign rs1_rden =	(opcode == JALR)	? ENABLE :
 						(opcode == B) 		? ENABLE :
@@ -27,7 +27,7 @@ module reg_ctrl (
 						(opcode == R) 		? ENABLE :
 						DISABLE;
 
-	assign rs1_addr = 	(rs1_rden) ? get_rs1(instr) : 5'b0;
-	assign rs2_addr = 	(rs2_rden) ? get_rs2(instr) : 5'b0;
+	assign rs1_addr = 	(rs1_rden) ? instr.rs1 : 5'b0;
+	assign rs2_addr = 	(rs2_rden) ? instr.rs2 : 5'b0;
 						
 endmodule
