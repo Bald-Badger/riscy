@@ -9,12 +9,12 @@ module if_id_reg (
 	// input
 	input data_t 	pc_p4_in,
 	input data_t 	pc_in,
-	input data_t 	instr_in,
+	input instr_t 	instr_in,
 	input r_t 		rd_in,
 	// output
 	output data_t 	pc_p4_out,
 	output data_t 	pc_out,
-	output data_t 	instr_out,
+	output instr_t 	instr_out,
 	output r_t 		rd_out
 );
 

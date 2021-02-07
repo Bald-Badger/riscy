@@ -7,7 +7,7 @@
 module dffe (
 	input clk,
 	input en,
-	input rst,
+	input rst_n,
 	input d,
 	output q
  );
@@ -20,7 +20,7 @@ module dffe (
 	// Input
 	.d(({WIDTH{en}}&d) | (q&~{WIDTH{en}})),
 	.clk(clk),
-	.rst(rst)
+	.rst_n(rst_n)
 );
 
 endmodule

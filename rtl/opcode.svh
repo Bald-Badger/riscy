@@ -1,5 +1,5 @@
-`ifndef _opceode_vh_
-`define _opceode_vh_
+`ifndef _opceode_svh_
+`define _opceode_svh_
 
 
 //	constant define
@@ -33,7 +33,6 @@
 
 
 // instruction type define
-
 	typedef struct packed{
 		funct7_t	funct7;
 		r_t			rs2;
@@ -41,20 +40,20 @@
 		funct3_t	funct3;
 		r_t			rd;
 		opcode_t	opcode;
-	} instr_t;		// same as R type
+	} instr_t;		// same as R type	
 
 
 // Funt3 define
     // R type funt3
-    funct3_t ADD     =	3'b000;
-    funct3_t SUB     =	3'b000;
+    funct3_t ADD     =	3'b000;		// rd <= rs1 + rs2, no overflow exception
+    funct3_t SUB     =	3'b000;		// rd <= rs1 - rs2, no overflow exception
     funct3_t AND     =	3'b111;
     funct3_t OR      =	3'b110;
     funct3_t XOR     =	3'b100;
     funct3_t SLT     =	3'b010;		// set less than, rd <= 1 if rs1 < rs2
     funct3_t SLTU    =	3'b011;		// set less than unsigned, rd <= 1 if rs1 < rs2
-    funct3_t SLL     =	3'b001;		// logical shift left
-    funct3_t SRL     =	3'b101;		// logical shift right
+    funct3_t SLL     =	3'b001;		// logical shift left, rd <= rs1 << rs2[4:0]
+    funct3_t SRL     =	3'b101;		// logical shift right rd <= rs1 >> rs2[4:0]
     funct3_t SRA     =	3'b101;		// arithmetic shift right
 
     // I type funt3

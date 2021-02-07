@@ -1434,5 +1434,4 @@ int main()
 	file<<s<<endl;
 	file.close();
 
-
 }
