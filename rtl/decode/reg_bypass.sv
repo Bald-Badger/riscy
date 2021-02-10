@@ -1,4 +1,4 @@
-`include "../../opcode.svh"
+`include "../opcode.svh"
 
 module reg_bypass (
 	input clk,

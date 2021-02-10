@@ -50,7 +50,7 @@
 *.sopc_builder
 *.summary
 *.tcl
-*.txt # Explicitly add any text files used
+# *.txt
 *~
 *example*
 *sopc_*
@@ -67,4 +67,5 @@ _output_files/
 output_files/
 sim/
 modelsim/
+.idea/
 PLLJ_PLLSPE_INFO.txt

@@ -1,4 +1,4 @@
-`include "../../opcode.svh"
+`include "../opcode.svh"
 
 module registers (
 	input clk,

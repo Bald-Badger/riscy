@@ -1,6 +1,8 @@
 `ifndef _alu_define_svh_
 `define _alu_define_svh_
 
+`define PY_PATH string'("../../python")
+
 typedef enum logic[1:0] { 
 	a_add_b,
 	a_sub_b,

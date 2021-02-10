@@ -1,4 +1,4 @@
-`include "../../opcode.svh"
+`include "../opcode.svh"
 
 module reg_ctrl (
 	input instr_t instr,

@@ -1,4 +1,4 @@
-`include "../../opcode.svh"
+`include "../opcode.svh"
 
 module extend (
     input instr_t instr,
