@@ -25,11 +25,11 @@
 
 
 // basic data type define
-	typedef logic[XLEN-1:0]	data_t;
-	typedef logic[2:0] 		funct3_t;
-	typedef logic[6:0] 		funct7_t;
-	//typedef logic[11:0]		funct12_t;
-	typedef logic[4:0] 		r_t;
+	typedef logic [XLEN-1:0]	data_t;
+	typedef logic [2:0] 		funct3_t;
+	typedef logic [6:0] 		funct7_t;
+	//typedef logic [11:0]		funct12_t;
+	typedef logic [4:0] 		r_t;
 
 
 // instruction type define

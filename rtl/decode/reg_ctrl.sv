@@ -11,7 +11,7 @@ module reg_ctrl (
 	localparam ENABLE = 1'b1;
 	localparam DISABLE = 1'b0;
 
-	opcode_t opcode = instr.opcode;
+	opcode_t opcode = opcode_t'(instr.opcode);
 
 	assign rs1_rden =	(opcode == JALR)	? ENABLE :
 						(opcode == B) 		? ENABLE :

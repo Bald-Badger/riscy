@@ -1,7 +1,7 @@
 `include "../opcode.svh"
 
 module ex_mux (
-	input instr_t	instr,
+	input var instr_t	instr,
 	input data_t 	pc,
 	input data_t 	rs1,
 	input data_t 	rs2,

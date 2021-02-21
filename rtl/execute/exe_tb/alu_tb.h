@@ -19,8 +19,7 @@
 #define DPI_LINK_DECL 
 #endif
 
-#include "svdpi.h"
-
+//#include "svdpi.h"
 
 
 DPI_LINK_DECL DPI_DLLESPEC

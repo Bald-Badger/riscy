@@ -2,7 +2,7 @@
 `include "./alu_define.svh"
 
 module alu (
-	input instr_t	instr,
+	input var instr_t	instr,
 	input data_t 	a_in,
 	input data_t 	b_in,
 
@@ -17,16 +17,27 @@ module alu (
 			shift_result,
 			add_sub_result;
 
-	funct3_t 	funct3 = 	instr.funct3;
-	opcode_t 	opcode = 	instr.opcode;
+
+	logic[4:0]	shamt;
+	shift_type_t shift_type;
+	logic 		sub_func;
+	opcode_t 	opcode;
+	funct3_t 	funct3;
+
+	always_comb begin
+		funct3 = 	instr.funct3;
+		opcode = 	instr.opcode;
+		shamt  = 	instr.rs2;
+		shift_type = shift_type_t'(instr[30]);
+		sub_func = instr[30];
+	end
+	
 	sign_t		sign_op = 	(funct3 == SLTU) ? unsigned_op:
 							(funct3 == SLTIU)? unsigned_op:
 							signed_op;
-	wire[4:0]	shamt = 	instr.rs2;	// rs2 is at the same position with shamt
-	shift_type_t shift_type = shift_type_t'(instr[30]);	// 1 for arith, 0 for logical
-	logic 		sub_func = instr[30];		// 1 for sub, 0 for add
+	
+	
 	logic 		invA, invB, plus1;		// for add/suber
-	logic		adder_msb;
 	logic		set_flag;
 
 
@@ -59,21 +70,22 @@ module alu (
 
 	data_t adder_in1, adder_in2;
 	logic[XLEN: 0] adder_out;
+	//logic adder_msb;
 	always_comb begin : add_suber
-		invA =	(funct3 == SLT) 	? 1 :
-				(funct3 == SLTI) 	? 1 :
-				(funct3 == SLTU) 	? 1 :
-				(funct3 ==  SLTIU)	? 1 :
-				0;
-		invB =	(funct3 == SUB & sub_func) ? 1 : 0;
+		invA =	(funct3 == SLT) 	? 1'b1 :
+				(funct3 == SLTI) 	? 1'b1 :
+				(funct3 == SLTU) 	? 1'b1 :
+				(funct3 == SLTIU)	? 1'b1 :
+				1'b0;
+		invB =	(funct3 == SUB & sub_func) ? 1'b1 : 1'b0;
 
 		plus1 = invA | invB;
 		adder_in1 = invA ? ~a_in : a_in;
 		adder_in2 = invB ? ~b_in : b_in;
 
-		adder_out = adder_in1 + adder_in2;
-		set_flag = 	(funct3 == SLT & $signed(adder_out) > 0) ? 1 :
-					(funct3 == SLTU & $signed(adder_out[XLEN-1:0]) > 0) ? 1 :
+		adder_out = $unsigned(adder_in1) + $unsigned(adder_in2);
+		set_flag = 	(funct3 == SLT & $signed(adder_out) > 32'b0) ? 32'b1 :
+					(funct3 == SLTU & ($signed(adder_out[XLEN-1:0]) > 33'b0)) ? 32'b1 :
 					0;
 
 		add_sub_result = plus1 ? (adder_out[XLEN-1:0] + 1) : adder_out[XLEN-1:0];
@@ -82,7 +94,7 @@ module alu (
 	always_comb begin : output_sel
 		c_out = NULL;
 		rd_wr = 1'b0;
-		unique case (instr.opcode)
+		unique case (opcode)
 
 			R: begin
 				unique if	(funct3 == ADD)	c_out = add_sub_result; // same as SUB
@@ -92,8 +104,7 @@ module alu (
 				else if		(funct3 == SLT) c_out = set_result;
 				else if		(funct3 == SLTU)c_out = set_result;
 				else if		(funct3 == SLL) c_out = shift_result;
-				else if		(funct3 == SRL) c_out = shift_result;
-				else if		(funct3 == SRA) c_out = shift_result;
+				else if		(funct3 == SRL) c_out = shift_result; // same as SRA
 				else 						c_out = NULL;
 				rd_wr = 1'b1;
 			end
@@ -106,8 +117,7 @@ module alu (
 				else if		(funct3 == SLTI) 	c_out = set_result;
 				else if		(funct3 == SLTIU)	c_out = set_result;
 				else if		(funct3 == SLLI) 	c_out = shift_result;
-				else if		(funct3 == SRLI) 	c_out = shift_result;
-				else if		(funct3 == SRAI) 	c_out = shift_result;
+				else if		(funct3 == SRLI) 	c_out = shift_result; // same as SRAI
 				else 							c_out = NULL;
 				rd_wr = 1'b1;
 			end

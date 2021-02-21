@@ -68,4 +68,6 @@ output_files/
 sim/
 modelsim/
 .idea/
+work/
 PLLJ_PLLSPE_INFO.txt
+transcript
