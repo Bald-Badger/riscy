@@ -29,7 +29,7 @@ module alu (
 		opcode = 	instr.opcode;
 		shamt  = 	instr.rs2;
 		shift_type = shift_type_t'(instr[30]); // 0 for logical, 1 for arith
-		sub_func = instr[30];
+		sub_func = (opcode == R) & instr[30];
 	end
 	
 	sign_t		sign_op = 	(funct3 == SLTU) ? unsigned_op:
@@ -42,15 +42,18 @@ module alu (
 
 
 	always_comb begin : ander
-		and_result = a_in & b_in;
+		and_result = (opcode == R) ?	a_in & b_in : 
+										a_in & get_imm(instr);
 	end
 
 	always_comb begin : orer
-		or_result = a_in | b_in;
+		or_result = (opcode == R) ?	a_in | b_in : 
+									a_in | get_imm(instr);
 	end
 
 	always_comb begin : xorer
-		xor_result = a_in ^ b_in;
+		xor_result = (opcode == R) ?	a_in ^ b_in : 
+										a_in ^ get_imm(instr);
 	end
 
 	always_comb begin : seter
@@ -60,10 +63,12 @@ module alu (
 	always_comb begin : shifter
 		shift_result = NULL;
 		unique case ({shift_type, funct3, opcode})
-			// BUG!!! funct3 not unique
-			{logical, SLL, R}: 		shift_result = a_in << b_in[4:0];	// funct3 of SLL is the same as SLLI
-			{logical, SRL, R}: 		shift_result = a_in >> b_in[4:0]; 	// funct3 of SRL is the same as SRLI
-			{arithmetic, SRA, R}:	shift_result = a_in >>> b_in[4:0];	// funct3 of SRA is the same as SRAI
+			{logical, SLL, R}: 		shift_result = a_in << b_in[4:0];
+			{logical, SRL, R}: 		shift_result = a_in >> b_in[4:0];
+			{arithmetic, SRA, R}:	shift_result = a_in >>> b_in[4:0];
+			{logical, SLLI, I}:		shift_result = a_in << $unsigned(shamt);
+			{logical, SRLI, I}:		shift_result = a_in >> $unsigned(shamt);
+			{logical, SRAI, I}:		shift_result = a_in >>> $unsigned(shamt);
 			default: 				shift_result = NULL;
 		endcase
 	end
@@ -84,7 +89,10 @@ module alu (
 
 		plus1 = invA | invB;
 		adder_in1 = invA ? ~a_in : a_in;
-		adder_in2 = invB ? ~b_in : b_in;
+		// there should not be any instr in I-type that need to inv B
+		// so hopefully no bug here.
+		adder_in2 = (opcode == I)	? get_imm(instr) 
+									: (invB ? ~b_in : b_in);
 
 		adder_out = $unsigned(adder_in1) + $unsigned(adder_in2);
 		add_sub_result = plus1 ? (adder_out[XLEN-1:0] + 1) : adder_out[XLEN-1:0];
@@ -108,15 +116,15 @@ module alu (
 		unique case (opcode)
 
 			R: begin
-				unique if	(funct3 == ADD)	c_out = add_sub_result; // same as SUB
-				else if		(funct3 == AND) c_out = and_result;
-				else if		(funct3 == OR) 	c_out = or_result;
-				else if		(funct3 == XOR) c_out = xor_result;
-				else if		(funct3 == SLT) c_out = set_result;
-				else if		(funct3 == SLTU)c_out = set_result;
-				else if		(funct3 == SLL) c_out = shift_result;
-				else if		(funct3 == SRL) c_out = shift_result; // same as SRA
-				else 						c_out = NULL;
+				unique if	(funct3 == ADD)		c_out = add_sub_result; // same as SUB
+				else if		(funct3 == AND) 	c_out = and_result;
+				else if		(funct3 == OR) 		c_out = or_result;
+				else if		(funct3 == XOR) 	c_out = xor_result;
+				else if		(funct3 == SLT) 	c_out = set_result;
+				else if		(funct3 == SLTU)	c_out = set_result;
+				else if		(funct3 == SLL) 	c_out = shift_result;
+				else if		(funct3 == SRL) 	c_out = shift_result; // same as SRA
+				else 							c_out = NULL;
 				rd_wr = 1'b1;
 			end
 

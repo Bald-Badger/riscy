@@ -30,6 +30,7 @@
 	typedef logic [6:0] 		funct7_t;
 	//typedef logic [11:0]		funct12_t;
 	typedef logic [4:0] 		r_t;
+	typedef logic [11:0]		imm_t; // only for I type operation
 
 
 // instruction type define
@@ -40,7 +41,15 @@
 		funct3_t	funct3;
 		r_t			rd;
 		opcode_t	opcode;
-	} instr_t;		// same as R type	
+	} instr_t;		// R (base) type	
+
+	typedef struct packed{
+		imm_t		imm;
+		r_t			rs1;
+		funct3_t	funct3;
+		r_t			rd;
+		opcode_t	opcode;
+	} instr_I_t;		// I type	
 
 
 // Funt3 define
@@ -126,6 +135,11 @@ endfunction
 function opcode_t get_opcode;
 	input instr_t instr;
 	return opcode_t'(instr.opcode);
+endfunction
+
+function data_t sign_extend;
+	input imm_t imm;
+	return data_t'({imm[11]*20, imm[11:0]});
 endfunction
 
 function data_t get_imm;

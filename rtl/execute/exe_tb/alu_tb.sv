@@ -224,6 +224,28 @@ module alu_tb ();
 		end
 	endtask
 
+
+	task addi_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h00008013;	// addi x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $urandom();
+			b_in = $urandom();
+			instr[31:20] = b_in[31:20];
+			{carry_bit, c_gold} = a_in + sign_extend(b_in[31:20]);
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("ADDI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("ADDI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+
 	task R_test ();
 		add_test();
 		sub_test();
@@ -237,10 +259,19 @@ module alu_tb ();
 		sra_test();
 	endtask
 
+
+	task I_test ();
+		addi_test();
+	endtask
+
 	initial begin
 		init();
 		$display("Hajimaruyo!");
+		$display("Rrotocol R initiated");
 		R_test();
+		$display("\n-----------------------\n");
+		$display("Protocol I initiated");
+		I_test();
 		$stop();
 	end
 
