@@ -28,7 +28,7 @@ module alu (
 		funct3 = 	instr.funct3;
 		opcode = 	instr.opcode;
 		shamt  = 	instr.rs2;
-		shift_type = shift_type_t'(instr[30]);
+		shift_type = shift_type_t'(instr[30]); // 0 for logical, 1 for arith
 		sub_func = instr[30];
 	end
 	
@@ -59,17 +59,20 @@ module alu (
 
 	always_comb begin : shifter
 		shift_result = NULL;
-		unique case ({shift_type, funct3})
+		unique case ({shift_type, funct3, opcode})
 			// BUG!!! funct3 not unique
-			{logical, SLL}: 	shift_result = a_in << $unsigned(shamt);	// funct3 of SLL is the same as SLLI
-			{logical, SRL}: 	shift_result = a_in >> $unsigned(shamt); 	// funct3 of SRL is the same as SRLI
-			{arithmetic, SRA}:	shift_result = a_in >>> $unsigned(shamt);	// funct3 of SRA is the same as SRAI
-			default: 			shift_result = NULL;
+			{logical, SLL, R}: 		shift_result = a_in << b_in[4:0];	// funct3 of SLL is the same as SLLI
+			{logical, SRL, R}: 		shift_result = a_in >> b_in[4:0]; 	// funct3 of SRL is the same as SRLI
+			{arithmetic, SRA, R}:	shift_result = a_in >>> b_in[4:0];	// funct3 of SRA is the same as SRAI
+			default: 				shift_result = NULL;
 		endcase
 	end
 
 	data_t adder_in1, adder_in2;
 	logic[XLEN: 0] adder_out;
+
+	logic set_signed_flag;  
+	logic set_unsigned_flag;
 	//logic adder_msb;
 	always_comb begin : add_suber
 		invA =	(funct3 == SLT) 	? 1'b1 :
@@ -84,11 +87,19 @@ module alu (
 		adder_in2 = invB ? ~b_in : b_in;
 
 		adder_out = $unsigned(adder_in1) + $unsigned(adder_in2);
-		set_flag = 	(funct3 == SLT & $signed(adder_out) > 32'b0) ? 32'b1 :
-					(funct3 == SLTU & ($signed(adder_out[XLEN-1:0]) > 33'b0)) ? 32'b1 :
-					0;
-
 		add_sub_result = plus1 ? (adder_out[XLEN-1:0] + 1) : adder_out[XLEN-1:0];
+
+		// I could not use one single adder to achieve both add, sub, and set
+		/*
+		set_flag = 	(funct3 == SLT & $signed(adder_out[XLEN-1:0]) > 32'b0) ? 32'b1 :
+					(funct3 == SLTU & $signed(adder_out[XLEN-1:0]) > 33'b0) ? 32'b1 :
+					0;
+		*/
+		set_signed_flag = ($signed(a_in) < $signed(b_in)) ? 32'b1 : 32'b0;
+		set_unsigned_flag = ($unsigned(a_in) < $unsigned(b_in)) ? 32'b1 : 32'b0;
+		set_flag = 	(funct3 == SLT & set_signed_flag) ? 32'b1 :
+					(funct3 == SLTU & set_unsigned_flag) ? 32'b1 :
+					0;
 	end
 
 	always_comb begin : output_sel

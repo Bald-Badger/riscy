@@ -11,9 +11,9 @@ module alu_tb ();
 	logic carry_bit;
 	logic	rd_wr;
 	integer err_cnt;
+	r_t shamt;
 
 	localparam ITER = 10000;
-	logic[XLEN-1:0] shamt_mask = 32'h0000001F;
 
 	alu alu_dut (
 		.instr	(instr),
@@ -28,6 +28,7 @@ module alu_tb ();
 		a_in = NULL;
 		b_in = NULL;
 		c_gold = NULL;
+		shamt = 5'b0;
 		carry_bit = 1'b0;
 		err_cnt = 0;
 	endtask
@@ -172,8 +173,9 @@ module alu_tb ();
 		for (i = 0; i < ITER; i++) begin
 			#5;
 			a_in = $urandom();
-			b_in = $urandom() & shamt_mask;
-			c_gold = a_in << b_in[4:0];
+			b_in = $urandom();
+			shamt = r_t'(b_in[4:0]);
+			c_gold = a_in << shamt;
 			#5;
 			assert (c_gold == c_out) else err_cnt++;
 		end
@@ -191,7 +193,7 @@ module alu_tb ();
 		for (i = 0; i < ITER; i++) begin
 			#5;
 			a_in = $urandom();
-			b_in = $urandom() & shamt_mask;
+			b_in = $urandom();
 			c_gold = a_in >> b_in[4:0];
 			#5;
 			assert (c_gold == c_out) else err_cnt++;
@@ -210,7 +212,7 @@ module alu_tb ();
 		for (i = 0; i < ITER; i++) begin
 			#5;
 			a_in = $urandom();
-			b_in = $urandom() & shamt_mask;
+			b_in = $urandom();
 			c_gold = a_in >>> b_in[4:0];
 			#5;
 			assert (c_gold == c_out) else err_cnt++;
