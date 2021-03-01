@@ -5,6 +5,8 @@ module extend (
 	output data_t imm
 );
 
-	assign imm = get_imm(instr);
+	always_comb begin
+		imm = get_imm(instr);
+	end
 
 endmodule

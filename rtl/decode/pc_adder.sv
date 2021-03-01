@@ -15,8 +15,12 @@ module pc_adder (
 	localparam taken = 1'b1;
 	localparam not_taken = 1'b0;
 
-	opcode_t opcode = get_opcode(instr);
-	funct3_t funct3 = get_funct3(instr);
+	opcode_t opcode;
+	funct3_t funct3;
+	always_comb begin
+		opcode = instr.opcode;
+		funct3 = instr.funct3;
+	end
 
 	wire [XLEN+1:0] rs_diff_unsign = ({1'b0, rs2} - {1'b0, rs1}); // 34 bits
 	wire [XLEN:0] rs_diff_sign = $signed(rs2) - $signed(rs1); // 33 bits
@@ -41,17 +45,23 @@ module pc_adder (
 	1. pc + imm (branch and JAL)
 	2. rs1 + imm (JALR)
 	*/
-	data_t pc_add_comp =	(branch_taken)		? pc  :
-							(opcode == JAL)		? pc  :
-							(opcode == JALR)	? rs1 :
-							NULL;
+	data_t pc_add_comp;
+	always_comb begin
+		pc_add_comp =	(branch_taken)		? pc  :
+						(opcode == JAL)		? pc  :
+						(opcode == JALR)	? rs1 :
+						NULL;
+	end
 
 	// for B and JAL, the imm is counted in multiple of 2 bytes
 	// for JALR, the imm is counted in multuple of single byte
-	data_t imm = 	(branch_taken)		? get_imm(instr):
-					(opcode == JAL)		? {instr[31]*12, instr[19:12], instr[20], instr[30:21], 1'b0}:  
-					(opcode == JALR)	? {instr[31]*20, instr[31:20]} :  // the get_imm for JAL and JALR is 4, for ALU
-					NULL;
+	data_t imm;
+	always_comb begin
+		imm = 	(branch_taken)		? get_imm(instr):
+				(opcode == JAL)		? {instr[31]*12, instr[19:12], instr[20], instr[30:21], 1'b0}:  
+				(opcode == JALR)	? {instr[31]*20, instr[31:20]} :  // the get_imm for JAL and JALR is 4, for ALU
+				NULL;
+	end
 	
 	data_t pc_add = pc_add_comp + imm;
 
