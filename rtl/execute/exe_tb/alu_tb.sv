@@ -413,6 +413,96 @@ module alu_tb ();
 	endtask
 
 
+	task beq_test (); // this is not a valid test for branching, only to test alu output
+		integer i;
+		err_cnt = 0;
+		instr = instr_t'(32'h00100063);	// beq x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $random();
+			b_in = $random();
+			c_gold = 0;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("BEQ test pass, err count: %d", err_cnt);
+		end else begin
+			$display("BEQ test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task lui_test ();
+		integer i;
+		err_cnt = 0;
+		instr = instr_t'(32'h00000037);	// lui x0, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $random();
+			instr[31:12] = a_in[31:12];
+			b_in = get_imm(instr_t'(instr));
+			c_gold = {instr[31:12], 12'b0};
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("LUI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("LUI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task auipc_test ();
+		$display("skipped this test, should be fine");
+	endtask
+
+	task jal_test ();
+		$display("skipped this test, should be fine");
+	endtask
+
+	task jalr_test ();
+		$display("skipped this test, should be fine");
+	endtask
+
+	task lw_test ();
+		integer i;
+		err_cnt = 0;
+		instr = instr_t'(32'h0000A003);	// lw x0, 0(x1)
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $random();
+			b_in = $random();
+			{carry_bit, c_gold} = a_in + b_in;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("LW test pass, err count: %d", err_cnt);
+		end else begin
+			$display("LW test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task SB_test ();
+		integer i;
+		err_cnt = 0;
+		instr = instr_t'(32'h00008023);	// sb x0, 0(x1)
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $random();
+			b_in = $random();
+			{carry_bit, c_gold} = a_in + b_in;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("SB test pass, err count: %d", err_cnt);
+		end else begin
+			$display("SB test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+
 	task R_test ();
 		add_test();
 		sub_test();
@@ -440,6 +530,13 @@ module alu_tb ();
 	endtask
 
 	task Other_test();
+		beq_test();
+		lui_test();
+		auipc_test();
+		jal_test();
+		jalr_test();
+		lw_test();
+		SB_test();
 	endtask
 
 	initial begin
@@ -451,7 +548,9 @@ module alu_tb ();
 		$display("Protocol I initiated");
 		I_test();
 		$display("\n-----------------------\n");
-
+		$display("Some other tests...");
+		Other_test();
+		$display("Owari~");
 		$stop();
 	end
 

@@ -32,10 +32,6 @@ module alu (
 		sub_func = (opcode == R) & instr[30];
 	end
 	
-	sign_t		sign_op = 	(funct3 == SLTU) ? unsigned_op:
-							(funct3 == SLTIU)? unsigned_op:
-							signed_op;
-	
 	
 	logic 		invA, invB, plus1;		// for add/suber
 	logic		set_flag;
@@ -68,7 +64,7 @@ module alu (
 			{arithmetic, SRA, R}:	shift_result = a_in >>> b_in[4:0];
 			{logical, SLLI, I}:		shift_result = a_in << $unsigned(shamt);
 			{logical, SRLI, I}:		shift_result = a_in >> $unsigned(shamt);
-			{arithmetic, SRAI, I}:		shift_result = a_in >>> $unsigned(shamt);
+			{arithmetic, SRAI, I}:	shift_result = a_in >>> $unsigned(shamt);
 			default: 				shift_result = NULL;
 		endcase
 	end
@@ -80,18 +76,18 @@ module alu (
 	logic set_unsigned_flag;
 	//logic adder_msb;
 	always_comb begin : add_suber
-		invA =	(funct3 == SLT) 	? 1'b1 :
+		invA =	((funct3 == SLT) 	? 1'b1 :
 				(funct3 == SLTI) 	? 1'b1 :
 				(funct3 == SLTU) 	? 1'b1 :
 				(funct3 == SLTIU)	? 1'b1 :
-				1'b0;
+				1'b0) & (opcode == I); // only I type should need to invert A;
 		invB =	(funct3 == SUB & sub_func) ? 1'b1 : 1'b0;
 
-		plus1 = invA | invB;
+		plus1 = invA | invB;	// A - B = A + ~B + 1
 		adder_in1 = invA ? ~a_in : a_in;
 		// there should not be any instr in I-type that need to inv B
 		// so hopefully no bug here.
-		adder_in2 = (opcode == I)	? get_imm(instr) 
+		adder_in2 = (opcode == I)	? get_imm(instr) // TODO: this line might not need
 									: (invB ? ~b_in : b_in);
 
 		adder_out = $unsigned(adder_in1) + $unsigned(adder_in2);
@@ -147,7 +143,7 @@ module alu (
 			end
 
 			LUI: begin
-				c_out = NULL;
+				c_out = b_in; // should already be extended imm
 				rd_wr = 1'b1;
 			end
 
