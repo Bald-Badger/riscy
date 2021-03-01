@@ -13,7 +13,7 @@ module alu_tb ();
 	integer err_cnt;
 	r_t shamt;
 
-	localparam ITER = 10000;
+	localparam ITER = 100000;
 
 	alu alu_dut (
 		.instr	(instr),
@@ -231,8 +231,8 @@ module alu_tb ();
 		instr = 32'h00008013;	// addi x0, x1, 0
 		for (i = 0; i < ITER; i++) begin
 			#5;
-			a_in = $urandom();
-			b_in = $urandom();
+			a_in = $random();
+			b_in = $random();
 			instr[31:20] = b_in[31:20];
 			{carry_bit, c_gold} = a_in + sign_extend(b_in[31:20]);
 			#5;
@@ -242,6 +242,173 @@ module alu_tb ();
 			$display("ADDI test pass, err count: %d", err_cnt);
 		end else begin
 			$display("ADDI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task andi_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h0000F013;	// andi x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $urandom();
+			b_in = $urandom();
+			instr[31:20] = b_in[31:20];
+			c_gold = a_in & sign_extend(b_in[31:20]);
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("ANDI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("ANDI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task ori_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h0000E013;	// ori x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $urandom();
+			b_in = $urandom();
+			instr[31:20] = b_in[31:20];
+			c_gold = a_in | sign_extend(b_in[31:20]);
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("ORI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("ORI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task xori_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h0000C013;	// xori x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $urandom();
+			b_in = $urandom();
+			instr[31:20] = b_in[31:20];
+			c_gold = a_in ^ sign_extend(b_in[31:20]);
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("XORI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("XORI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task slti_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h0000A013;	// slti x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $random();
+			a_in = $signed(sign_extend(a_in[31:20]));
+			b_in = $random();
+			b_in = $signed(sign_extend(b_in[31:20]));
+			instr[31:20] = b_in[31:20];
+			c_gold = (a_in < b_in) ? 32'b1 : NULL;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("SLTI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("SLTI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task sltiu_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h0000B013;	// sltiu x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $random();
+			a_in = $signed(sign_extend(a_in[31:20]));
+			b_in = $random();
+			b_in = $signed(sign_extend(b_in[31:20]));
+			instr[31:20] = b_in[31:20];
+			c_gold = (a_in < b_in) ? 32'b1 : NULL;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("SLTIU test pass, err count: %d", err_cnt);
+		end else begin
+			$display("SLTIU test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task slli_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h00009013;	// slli x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $urandom();
+			b_in = $urandom();
+			shamt = r_t'(b_in[4:0]);
+			instr.rs2 = shamt;
+			c_gold = a_in << shamt;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("SLLI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("SLLI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task srli_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h0000D013;	// srli x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $urandom();
+			b_in = $urandom();
+			shamt = r_t'(b_in[4:0]);
+			instr.rs2 = shamt;
+			c_gold = a_in >> shamt;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("SRLI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("SRLI test failed, err count: %d", err_cnt);
+		end
+	endtask
+
+	task srai_test ();
+		integer i;
+		err_cnt = 0;
+		instr = 32'h0000D013;	// srai x0, x1, 0
+		for (i = 0; i < ITER; i++) begin
+			#5;
+			a_in = $urandom();
+			b_in = $urandom();
+			shamt = r_t'(b_in[4:0]);
+			instr.rs2 = shamt;
+			c_gold = a_in >>> shamt;
+			#5;
+			assert (c_gold == c_out) else err_cnt++;
+		end
+		if (err_cnt == 0) begin
+			$display("SRAI test pass, err count: %d", err_cnt);
+		end else begin
+			$display("SRAI test failed, err count: %d", err_cnt);
 		end
 	endtask
 
@@ -260,8 +427,19 @@ module alu_tb ();
 	endtask
 
 
-	task I_test ();
+	task I_test();
 		addi_test();
+		andi_test();
+		ori_test();
+		xori_test();
+		slti_test();
+		sltiu_test();
+		slli_test();
+		srli_test();
+		srai_test();
+	endtask
+
+	task Other_test();
 	endtask
 
 	initial begin
@@ -272,6 +450,8 @@ module alu_tb ();
 		$display("\n-----------------------\n");
 		$display("Protocol I initiated");
 		I_test();
+		$display("\n-----------------------\n");
+
 		$stop();
 	end
 

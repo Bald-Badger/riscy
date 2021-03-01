@@ -68,7 +68,7 @@ module alu (
 			{arithmetic, SRA, R}:	shift_result = a_in >>> b_in[4:0];
 			{logical, SLLI, I}:		shift_result = a_in << $unsigned(shamt);
 			{logical, SRLI, I}:		shift_result = a_in >> $unsigned(shamt);
-			{logical, SRAI, I}:		shift_result = a_in >>> $unsigned(shamt);
+			{arithmetic, SRAI, I}:		shift_result = a_in >>> $unsigned(shamt);
 			default: 				shift_result = NULL;
 		endcase
 	end
