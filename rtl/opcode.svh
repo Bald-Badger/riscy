@@ -5,7 +5,10 @@
 //	constant define
 	localparam	N = 	32;	 // in case I forget should be XLEN instead of N
 	localparam 	XLEN = 	32;
+	localparam	BYTES = XLEN / 8; // num of byte in a word
 	integer 	NULL =	0;
+	logic		ENABLE = 1;
+	logic		DISABLE = 0;
 
 	// Opcode define
 	typedef enum logic[6:0] { 
@@ -96,7 +99,7 @@
     funct3_t LB      =	3'b000;		// load 8 bits and sign extend to 32 bits
     funct3_t LH      =	3'b001;		// load 16 bits and sign extend to 32 bits
     funct3_t LW      =	3'b010;		// rd <= mem[rs1 + imm]
-    funct3_t LBU     =	3'b100;		// load 8 bits and sign extend to 32 bits
+    funct3_t LBU     =	3'b100;		// load 8 bits and zero extend to 32 bits
     funct3_t LHU     =	3'b101;		// load 16 bits and zero extend to 32 bits
 
     // S type funt3 - Store
@@ -109,33 +112,13 @@
     // Fence (Memory ordering) funt3
     funct3_t FENCE   =	3'b000;
 
-
-// instructon extraction functions
-
-function r_t get_rs2;
-	input instr_t instr;
-	return r_t'(instr.rs2);
-endfunction
-
-function r_t get_rs1;
-	input instr_t instr;
-	return r_t'(instr.rs1);
-endfunction
-
-function funct3_t get_funct3;
-	input instr_t instr;
-	return funct3_t'(instr.funct3);
-endfunction
-
-function r_t get_rd;
-	input instr_t instr;
-	return r_t'(instr.rd);
-endfunction
-
-function opcode_t get_opcode;
-	input instr_t instr;
-	return opcode_t'(instr.opcode);
-endfunction
+	// works under little endian
+	logic[XLEN-1:0] B_MASK = 32'hFF_00_00_00;
+	logic[XLEN-1:0] H_MASK = 32'hFF_FF_00_00;
+	logic[XLEN-1:0] W_MASK = 32'hFF_FF_FF_FF;
+	logic[BYTES-1:0] B_EN = 4'b1000;
+	logic[BYTES-1:0] H_EN = 4'b1100;
+	logic[BYTES-1:0] W_EN = 4'b1111;
 
 function data_t sign_extend;
 	input imm_t imm;
@@ -155,5 +138,12 @@ function data_t get_imm;
 	else 								return data_t'(NULL);
 endfunction
 
+function data_t swap_endian;
+	input data_t data;
+	return	data_t'	({{data[07:00]},
+            		{data[15:08]},
+            		{data[23:16]},
+            		{data[31:24]}});
+endfunction
 
 `endif

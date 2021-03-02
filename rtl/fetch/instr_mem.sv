@@ -4,6 +4,8 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 
+// TODO: use little endian!
+
 module instr_mem (
 	input data_t	addr,
 	input 			clk,
@@ -12,18 +14,18 @@ module instr_mem (
 	output data_t	instr
 );
 
-	parameter DEPTH = 256;
-
 	mem #(
-		.ENTRY  (DEPTH), 
-		.WIDTH  (XLEN)
-		) instr_mem_inst (
-		.address(addr),
-		.clk	(clk),
-		.data	(NULL),
-		.rden	(rden),
-		.wren	(1'b0),
-		.q		(instr)
+		.ADDR_WIDTH	(XLEN),
+		.BYTES		(BYTES)
+	) instr_mem_inst (
+		.waddr		(NULL),
+		.raddr		(addr),
+		.be			(W_EN),
+		.wdata		(NULL),
+		.we			(DISABLE),
+		.re			(rden),
+		.clk		(clk),
+		.q			(instr)
 	);
 
-endmodule
+endmodule : instr_mem
