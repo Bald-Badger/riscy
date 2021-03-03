@@ -3,12 +3,27 @@
 
 
 //	constant define
-	localparam	N = 	32;	 // in case I forget should be XLEN instead of N
-	localparam 	XLEN = 	32;
 	localparam	BYTES = XLEN / 8; // num of byte in a word
 	integer 	NULL =	0;
+	integer		TRUE = 1;
+	integer		FALSE = 0;
 	logic		ENABLE = 1;
 	logic		DISABLE = 0;
+
+
+//	ISA defines
+	localparam	N = 	32;	 		// in case I forget should be XLEN instead of N
+	localparam 	XLEN = 	32;			// RV32
+	localparam	I_SUPPORT = TRUE;	// Base (Integer) operations
+	localparam	M_SUPPORT = FALSE;	// Integer Mult / Dvi
+	localparam	A_SUPPORT = FALSE;	// Atomic instructions
+	localparam	F_SUPPORT = FALSE;	// Single-Precision FP
+	localparam	D_SUPPORT = FALSE;	// Double-Precision FP
+	localparam	Q_SUPPORT = FALSE;	// Quad-Precision FP
+	localparam	C_SUPPORT = FALSE;	// Compressed Instructions
+	localparam	ZICSR_SUPPORT = FALSE;	// Control and status register
+	localparam	ZIFENCEI_SUPPORT = FALSE;	// Instruction-Fetch fence
+
 
 	// Opcode define
 	typedef enum logic[6:0] { 
