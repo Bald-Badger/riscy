@@ -11,7 +11,7 @@
 	logic		DISABLE = 0;
 
 
-//	ISA defines
+//	ISA define
 	localparam	N = 	32;	 		// in case I forget should be XLEN instead of N
 	localparam 	XLEN = 	32;			// RV32
 	localparam	I_SUPPORT = TRUE;	// Base (Integer) operations
