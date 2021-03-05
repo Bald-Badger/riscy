@@ -2,27 +2,38 @@
 `define _opceode_svh_
 
 
-//	constant define
-	localparam	BYTES = XLEN / 8; // num of byte in a word
-	integer 	NULL =	0;
-	integer		TRUE = 1;
-	integer		FALSE = 0;
-	logic		ENABLE = 1;
-	logic		DISABLE = 0;
-
-
 //	ISA define
-	localparam	N = 	32;	 		// in case I forget should be XLEN instead of N
-	localparam 	XLEN = 	32;			// RV32
-	localparam	I_SUPPORT = TRUE;	// Base (Integer) operations
-	localparam	M_SUPPORT = FALSE;	// Integer Mult / Dvi
-	localparam	A_SUPPORT = FALSE;	// Atomic instructions
-	localparam	F_SUPPORT = FALSE;	// Single-Precision FP
-	localparam	D_SUPPORT = FALSE;	// Double-Precision FP
-	localparam	Q_SUPPORT = FALSE;	// Quad-Precision FP
-	localparam	C_SUPPORT = FALSE;	// Compressed Instructions
-	localparam	ZICSR_SUPPORT = FALSE;	// Control and status register
-	localparam	ZIFENCEI_SUPPORT = FALSE;	// Instruction-Fetch fence
+	localparam 	XLEN 	= 	32;				// RV32
+	localparam	N 		= 	XLEN;	 		// in case I forget should be XLEN instead of N
+
+//	constant define
+	localparam	BYTES 	= XLEN / 8; 		// num of byte in a word
+	localparam	TRUE 	= 1;
+	localparam	FALSE 	= 0;
+	integer 	NULL 	= 32'b0;
+	logic		ENABLE 	= 1'b1;
+	logic		DISABLE	= 1'b0;
+
+	// sopported extension
+	// this part is and only accessed by verilog generate function. 
+	localparam	I_SUPPORT = TRUE;			// Base (Integer) operations, must implement
+	localparam	M_SUPPORT = FALSE;			// Integer Mult / Dvi, should implement
+	localparam	A_SUPPORT = FALSE;			// Atomic instructions, required for xv6
+	localparam	F_SUPPORT = FALSE;			// Single-Precision FP, implement if enough FPGA space
+	localparam	D_SUPPORT = FALSE;			// Double-Precision FP, should not implement
+	localparam	Q_SUPPORT = FALSE;			// Quad-Precision FP, should not implement
+	localparam	C_SUPPORT = FALSE;			// Compressed Instructions, should not implement (unless embedded or VLIW)
+	localparam	ZICSR_SUPPORT = FALSE;		// Control and status register, required for xv6
+	localparam	ZIFENCEI_SUPPORT = FALSE;	// Instruction-Fetch fence, required for xv6
+
+
+	// Endianess define
+	typedef enum logic { 
+		LITTLE_ENDIAN = 1'b0,
+		BIG_ENDIAN = 1'b1
+	} ENDIANESS_t;
+
+	ENDIANESS_t ENDIANESS = BIG_ENDIAN;
 
 
 	// Opcode define
@@ -127,19 +138,29 @@
     // Fence (Memory ordering) funt3
     funct3_t FENCE   =	3'b000;
 
-	// works under little endian
-	logic[XLEN-1:0] B_MASK = 32'hFF_00_00_00;
-	logic[XLEN-1:0] H_MASK = 32'hFF_FF_00_00;
-	logic[XLEN-1:0] W_MASK = 32'hFF_FF_FF_FF;
-	logic[BYTES-1:0] B_EN = 4'b1000;
-	logic[BYTES-1:0] H_EN = 4'b1100;
-	logic[BYTES-1:0] W_EN = 4'b1111;
+	// little endian mask (and-mask, not or-mask)
+	logic[XLEN-1:0] B_MASK_LITTLE = 32'hFF_00_00_00;
+	logic[XLEN-1:0] H_MASK_LITTLE = 32'hFF_FF_00_00;
+	logic[XLEN-1:0] W_MASK_LITTLE = 32'hFF_FF_FF_FF;
+	logic[BYTES-1:0] B_EN_LITTLE = 4'b1000;
+	logic[BYTES-1:0] H_EN_LITTLE = 4'b1100;
+	logic[BYTES-1:0] W_EN_LITTLE = 4'b1111;
+
+	// big endian mask (and-mask, not or-mask)
+	logic[XLEN-1:0] B_MASK_BIG = 32'h00_00_00_FF;
+	logic[XLEN-1:0] H_MASK_BIG = 32'h00_00_FF_FF;
+	logic[XLEN-1:0] W_MASK_BIG = 32'hFF_FF_FF_FF;
+	logic[BYTES-1:0] B_EN_BIG = 4'b0001;
+	logic[BYTES-1:0] H_EN_BIG = 4'b0011;
+	logic[BYTES-1:0] W_EN_BIG = 4'b1111;
 
 function data_t sign_extend;
 	input imm_t imm;
 	return data_t'({imm[11]*20, imm[11:0]});
 endfunction
 
+
+// very expensive, avoid to use unless for instruction imm extraction while instruction is unknown
 function data_t get_imm;
 	input instr_t instr;
 	unique	if(instr.opcode == LUI)		return data_t'({instr[31:12], 12'b0});

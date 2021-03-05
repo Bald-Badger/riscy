@@ -33,6 +33,6 @@ module mem
 			if(be[2]) ram[waddr][2] <= wdata;
 			if(be[3]) ram[waddr][3] <= wdata;
 	end
-		q <= (re ? ram[raddr] : 32'b0);
+		q <= (re ? ram[raddr] : 32'b0); // read entire 32b
 	end
 endmodule : mem
