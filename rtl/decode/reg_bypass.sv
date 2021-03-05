@@ -1,17 +1,17 @@
 `include "../opcode.svh"
 
 module reg_bypass (
-	input clk,
-	input rst_n,
+	input logic clk,
+	input logic rst_n,
 
 	input data_t rd_data,
-	input rd_wren,
+	input logic rd_wren,
 	input r_t rd_addr,
 
 	input r_t 	rs1_addr,
 	input r_t 	rs2_addr,
-	input 		rs1_rden,
-	input 		rs2_rden,
+	input logic	rs1_rden,
+	input logic	rs2_rden,
 
 	output data_t rs1_data,
 	output data_t rs2_data

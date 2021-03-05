@@ -9,7 +9,7 @@ module pc_adder (
 	output data_t pc_bj,	// no one likes bj
 							// bj makes it hard
 							// to predict
-	output bj_sel
+	output logic pc_sel
 );
 
 	localparam taken = 1'b1;
@@ -69,7 +69,7 @@ module pc_adder (
 	assign pc_bj = (opcode == JALR) ? {pc_add[31:1], 1'b0} : pc_add;
 
 	// 1 for branch/jump, 0 for pc + 4
-	assign bj_sel = (branch_taken)		? 1'b1 :
+	assign pc_sel = (branch_taken)		? 1'b1 :
 					(opcode == JAL)		? 1'b1 :
 					(opcode == JALR)	? 1'b1 :
 					1'b0;

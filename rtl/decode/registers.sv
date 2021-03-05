@@ -7,7 +7,7 @@ module registers (
 	input data_t instr,
 
 	input data_t rd_data,
-	input rd_wren,
+	input logic rd_wren,
 	input r_t rd_addr,
 
 	output data_t rs1_data,

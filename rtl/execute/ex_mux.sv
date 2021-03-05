@@ -1,7 +1,7 @@
 `include "../opcode.svh"
 
 module ex_mux (
-	input var instr_t	instr,
+	input instr_t	instr,
 	input data_t 	pc,
 	input data_t 	rs1,
 	input data_t 	rs2,
@@ -9,8 +9,8 @@ module ex_mux (
 	input data_t 	ex_ex_fwd_data,
 	input data_t 	mem_ex_fwd_data,
 
-	input [1:0]		fwd_a,
-	input [1:0]		fwd_b,
+	input fwd_sel_t	fwd_a,
+	input fwd_sel_t	fwd_b,
 
 	output data_t 	a_out,
 	output data_t 	b_out
@@ -23,11 +23,7 @@ module ex_mux (
 	localparam rs2_sel 	= 2'b10;
 	localparam imm_sel	= 2'b11;
 
-	// fwd mux ctrl signal types
-	localparam rs_sel 			= 2'b00;
-	localparam ex_ex_fwd_sel 	= 2'b10;
-	localparam mem_ex_fwd_sel	= 2'b11;
-
+	
 	logic [1:0] rs1_mux_sel, rs2_mux_sel;
 	data_t rs1_mux_out, rs2_mux_out;
 
@@ -56,10 +52,10 @@ module ex_mux (
 	always_comb begin : fwd_a_mux
 		a_out = NULL;
 		unique case (fwd_a)
-			rs_sel:			a_out = rs1_mux_out;
+			RS_SEL:			a_out = rs1_mux_out;
 			2'b01:			a_out = rs1_mux_out;
-			ex_ex_fwd_sel:	a_out = ex_ex_fwd_data;
-			mem_ex_fwd_sel:	a_out = mem_ex_fwd_data;	
+			EX_EX_FWD_SEL:	a_out = ex_ex_fwd_data;
+			MEM_EX_FWD_SEL:	a_out = mem_ex_fwd_data;	
 			default:		a_out = NULL;
 		endcase
 	end
@@ -67,10 +63,10 @@ module ex_mux (
 	always_comb begin : fwd_b_mux
 		b_out = NULL;
 		unique case (fwd_b)
-			rs_sel:			b_out = rs2_mux_out;
+			RS_SEL:			b_out = rs2_mux_out;
 			2'b01:			b_out = rs2_mux_out;
-			ex_ex_fwd_sel:	b_out = ex_ex_fwd_data;
-			mem_ex_fwd_sel:	b_out = mem_ex_fwd_data;	
+			EX_EX_FWD_SEL:	b_out = ex_ex_fwd_data;
+			MEM_EX_FWD_SEL:	b_out = mem_ex_fwd_data;	
 			default:		b_out = NULL;
 		endcase
 	end

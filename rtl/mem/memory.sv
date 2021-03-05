@@ -4,11 +4,13 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 
-module data_mem (
+module memory (
+	input logic 	clk,
 	input data_t	addr,
-	input data_t	data_in,
+	input data_t	data_in_raw,
+	input data_t	mem_mem_fwd_data,
+	input fwd_sel_t fwd_m2m, // mem to mem forwarding
 	input instr_t	instr,
-	input 			clk,
 
 	output data_t	data_out
 );
@@ -41,9 +43,14 @@ module data_mem (
 	end
 
 	// may need to switch endianess for storing in of memory depending on endianess
-	data_t data_in_final;
+	data_t data_in;		// after fwd
+	data_t data_in_final; // after possible endian switch
 	data_t data_out_mem; // data just out of mem, blue raw
 	data_t data_out_unmasked; // data unmasked yet
+
+	always_comb begin : sel_fwd_data
+		assign data_in = (fwd_m2m == MEM_MEM_FWD_SEL) ? mem_mem_fwd_data : data_in_raw;
+	end
 
 	// switch data endianess to little when storing if necessary
 	always_comb begin : switch_endian_in
@@ -88,4 +95,4 @@ module data_mem (
 		.q			(data_out_mem)
 	);
 
-endmodule : data_mem
+endmodule : memory

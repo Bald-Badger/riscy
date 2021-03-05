@@ -190,4 +190,12 @@ function data_t swap_endian;
             		{data[31:24]}});
 endfunction
 
+// fwd mux ctrl signal types
+typedef enum logic[1:0] {
+	RS_SEL 			= 2'b00,
+	MEM_MEM_FWD_SEL = 2'b01,
+	EX_EX_FWD_SEL 	= 2'b10,
+	MEM_EX_FWD_SEL	= 2'b11
+} fwd_sel_t;
+
 `endif

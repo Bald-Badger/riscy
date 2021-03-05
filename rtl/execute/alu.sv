@@ -2,7 +2,7 @@
 `include "./alu_define.svh"
 
 module alu (
-	input var instr_t	instr,
+	input instr_t	instr,
 	input data_t 	a_in,
 	input data_t 	b_in,
 
