@@ -27,6 +27,14 @@
 	localparam	ZIFENCEI_SUPPORT = FALSE;	// Instruction-Fetch fence, required for xv6
 
 
+	typedef enum logic[1:0] {
+		BLANK_MEM = 2'd0,	// all 0s
+		UNINT_MEM = 2'd1,	// all Xs
+		INSTR_MEM = 2'd2,	// instrution memory
+		DATA_MEM  = 2'd3	// data memory
+	} MEM_TYPE_t;
+
+
 	// Endianess define
 	typedef enum logic { 
 		LITTLE_ENDIAN = 1'b0,

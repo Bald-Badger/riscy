@@ -2,31 +2,24 @@
 
 module pc (
 	//input
-	clk, rst_n,
-	pc_bj,
-	pc_sel,			// 1 for bj, 0 for p4
+	input clk, 
+	input rst_n,
+	input data_t pc_bj,
+	input pc_sel,			// 1 for bj, 0 for p4
+	input stall, 
+
 	//output
-	pc,
-	pc_p4,
+	output data_t pc,
+	output data_t pc_p4
 );
 
-	input 	clk, rst_n, pc_sel;
-	input	data_t	pc_bj;
-	output	data_t	pc, pc_p4;
+	assign pc_p4 = pc + 32'd4; // 32 bits in byte-addressable, so 32/8 = 4
 
-	data_t pc_nxt;
-	assign pc_nxt = pc_sel ? pc_bj : pc_p4;
-	assign pc_p4 = pc + 4;
-
-	dff #(
-        .WIDTH(XLEN)
-        ) pc_ff (
-		//outout
-		.q(pc),
-		//input
-		.d(pc_nxt),
-		.clk(clk),
-		.rst_n(rst_n)
-	);
+	always_ff @(posedge clk or negedge rst_n) begin
+		if (~rst_n) pc <= NULL;
+		else if (stall) pc <= pc;
+		else if (pc_sel) pc <= pc_bj;
+		else pc <= pc_p4;
+	end
 
 endmodule

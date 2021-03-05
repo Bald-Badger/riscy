@@ -75,7 +75,8 @@ module data_mem (
 
 	mem #(
 		.ADDR_WIDTH	(XLEN),
-		.BYTES		(BYTES)
+		.BYTES		(BYTES),
+		.TYPE		(BLANK_MEM)
 	) data_mem_inst (
 		.waddr		(addr),
 		.raddr		(addr),
