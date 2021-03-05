@@ -7,9 +7,9 @@ module fetch(
 
 	// input
 	input	data_t	pc_bj,
-	input 			pc_sel,
-	input			en_instr_mem,
-	input 			stall,
+	input 	logic	pc_sel,
+	input	logic	en_instr_mem,
+	input 	logic	stall,
 
 	// output
 	output	data_t	pc_p4,
@@ -32,6 +32,7 @@ module fetch(
 
 	instr_mem instr_mem_inst (
 		.clk	(clk),
+		.rst_n	(rst_n),
 		.rden	(en_instr_mem),
 		.addr	(pc),
 		.instr	(instr)

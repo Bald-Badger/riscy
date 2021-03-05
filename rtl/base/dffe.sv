@@ -1,20 +1,20 @@
 `include "../opcode.svh"
 
 // synopsys translate_off
-`timescale 1 ps / 1 ps
+// `timescale 1 ps / 1 ps
 // synopsys translate_on
 
-module dffe (
+module dffe #(
+	WIDTH = XLEN
+) (
 	input clk,
 	input en,
 	input rst_n,
-	input d,
-	output q
- );
+	input logic[WIDTH-1:0] d,
+	output logic[WIDTH-1:0] q
+);
  
- parameter WIDTH  = XLEN;
- 
- dff #(.WIDTH(WIDTH)) dffe_inst (
+ dff #(.WIDTH(WIDTH)) dff_inst (
 	 // Output
 	.q(q),
 	// Input

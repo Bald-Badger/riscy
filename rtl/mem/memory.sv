@@ -6,6 +6,7 @@
 
 module memory (
 	input logic 	clk,
+	input logic		rst_n,
 	input data_t	addr,
 	input data_t	data_in_raw,
 	input data_t	mem_mem_fwd_data,
@@ -92,6 +93,7 @@ module memory (
 		.we			(wren),
 		.re			(rden),
 		.clk		(clk),
+		.rst_n		(rst_n),
 		.q			(data_out_mem)
 	);
 

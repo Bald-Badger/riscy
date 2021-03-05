@@ -34,6 +34,10 @@ module proc(
 		
 	
 	fetch fetch_inst (
+		// general
+		.clk			(clk),
+		.rst_n			(rst_n),
+
 		// input
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
@@ -41,7 +45,7 @@ module proc(
 		.stall			(DISABLE), // TODO:
 
 		// output
-		.pc_p4			(pcpd_f),
+		.pc_p4			(pcp4_f),
 		.pc				(pc_f),
 		.instr			(instr_f)
 	);
@@ -140,7 +144,7 @@ module proc(
 
 		// output
 		.alu_result			(alu_result_x),
-		.wren_rd			(rd_wren_x)
+		.rd_wren			(rd_wren_x)
 	);
 
 
@@ -172,10 +176,11 @@ module proc(
 	memory memory_inst (
 		// input
 		.clk				(clk),
+		.rst_n				(rst_n),
 		.addr				(alu_result_x),
 		.data_in_raw		(rs2_m),
 		.mem_mem_fwd_data	(wb_data),
-		.fwd_m2m			(fwd_mem),
+		.fwd_m2m			(fwd_m2m),
 		.instr				(instr_m),
 		
 		// output
@@ -201,7 +206,7 @@ module proc(
 		// output
 		.instr_out		(instr_w),
 		.alu_result_out	(alu_result_w),
-		.mem_data_ou	(mem_data_w),
+		.mem_data_out	(mem_data_w),
 		.pc_p4_out		(pcp4_w),
 		.rd_wren_out	(rd_wren_w)
 	);

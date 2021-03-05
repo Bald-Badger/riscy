@@ -12,7 +12,8 @@
 
 module instr_mem (
 	input data_t	addr,
-	input 			clk,
+	input logic		clk,
+	input logic 	rst_n,
 	input 			rden,
 
 	output instr_t	instr
@@ -38,11 +39,12 @@ module instr_mem (
 	) instr_mem_inst (
 		.waddr		(NULL),
 		.raddr		(addr),
-		.be			(W_EN),	// word enable (4'b1111)
+		.be			(W_EN_BIG | W_EN_LITTLE),	// 4'hF
 		.wdata		(NULL),
 		.we			(DISABLE),
 		.re			(rden),
 		.clk		(clk),
+		.rst_n		(rst_n),
 		.q			(instr_raw)
 	); 
 
