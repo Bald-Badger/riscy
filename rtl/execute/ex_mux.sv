@@ -52,22 +52,22 @@ module ex_mux (
 	always_comb begin : fwd_a_mux
 		a_out = NULL;
 		unique case (fwd_a)
-			RS_SEL:			a_out = rs1_mux_out;
-			2'b01:			a_out = rs1_mux_out;
-			EX_EX_FWD_SEL:	a_out = ex_ex_fwd_data;
-			MEM_EX_FWD_SEL:	a_out = mem_ex_fwd_data;	
-			default:		a_out = NULL;
+			RS_SEL:				a_out = rs1_mux_out;
+			MEM_MEM_FWD_SEL:	a_out = rs1_mux_out;
+			EX_EX_FWD_SEL:		a_out = ex_ex_fwd_data;
+			MEM_EX_FWD_SEL:		a_out = mem_ex_fwd_data;	
+			default:			a_out = NULL;
 		endcase
 	end
 
 	always_comb begin : fwd_b_mux
 		b_out = NULL;
 		unique case (fwd_b)
-			RS_SEL:			b_out = rs2_mux_out;
-			2'b01:			b_out = rs2_mux_out;
-			EX_EX_FWD_SEL:	b_out = ex_ex_fwd_data;
-			MEM_EX_FWD_SEL:	b_out = mem_ex_fwd_data;	
-			default:		b_out = NULL;
+			RS_SEL:				b_out = rs2_mux_out;
+			MEM_MEM_FWD_SEL:	b_out = rs2_mux_out;
+			EX_EX_FWD_SEL:		b_out = ex_ex_fwd_data;
+			MEM_EX_FWD_SEL:		b_out = mem_ex_fwd_data;	
+			default:			b_out = NULL;
 		endcase
 	end
 	

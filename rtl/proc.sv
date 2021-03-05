@@ -17,9 +17,9 @@ module proc(
 	data_t mem_data_m, mem_data_w;
 
 	// global control wire
-	fwd_sel_t fwd_a = RS_SEL;	// TODO:
-	fwd_sel_t fwd_b = RS_SEL;	// TODO:
-	fwd_sel_t fwd_m2m = RS_SEL; // TODO:
+	fwd_sel_t fwd_a 	= RS_SEL;	// TODO:
+	fwd_sel_t fwd_b 	= RS_SEL;	// TODO:
+	fwd_sel_t fwd_m2m	= RS_SEL; 	// TODO:
 	logic pc_sel;
 
 	// global data wire
@@ -30,9 +30,7 @@ module proc(
 	data_t mem_mem_fwd_data = wb_data;
 
 
-	// fetch stage
-		
-	
+	// fetch stage	
 	fetch fetch_inst (
 		// general
 		.clk			(clk),
