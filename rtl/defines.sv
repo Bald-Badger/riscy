@@ -51,18 +51,18 @@ package defines;
 
 	// Opcode define
 	typedef enum logic[6:0] { 
-		R =				7'b0110011,
-		I =				7'b0010011,
-		B =				7'b1100011,
-		LUI =			7'b0110111,
-		AUIPC =			7'b0010111,
-		JAL =			7'b1101111,
-		JALR =			7'b1100111,
-		LOAD =			7'b0000011,
-		STORE =			7'b0100011,
-		MEM =			7'b0001111,	// for fence instruction
-		SYS =			7'b1110011,	// for ECALL and  EBREAK
-		NULL_OPCODE =	7'b0000000
+		R =			7'b0110011,
+		I =			7'b0010011,
+		B =			7'b1100011,
+		LUI =		7'b0110111,
+		AUIPC =		7'b0010111,
+		JAL =		7'b1101111,
+		JALR =		7'b1100111,
+		LOAD =		7'b0000011,
+		STORE =		7'b0100011,
+		MEM =		7'b0001111,	// for fence instruction
+		SYS =		7'b1110011,	// for ECALL and EBREAK
+		NULL_OP =	7'b0000000
 	} opcode_t;
 
 
@@ -70,7 +70,6 @@ package defines;
 	typedef logic [XLEN-1:0]	data_t;
 	typedef logic [2:0] 		funct3_t;
 	typedef logic [6:0] 		funct7_t;
-	//typedef logic [11:0]		funct12_t;
 	typedef logic [4:0] 		r_t;
 	typedef logic [11:0]		imm_t; // only for I type operation
 

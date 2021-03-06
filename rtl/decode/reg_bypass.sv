@@ -27,7 +27,7 @@ module reg_bypass (
 			for (i = 0; i < 32; i++) begin
 				registers[i] <= NULL;
 			end
-		end else begin
+		end if (rd_wren) begin
 			registers[rd_addr] <= rd_data;
 		end
 	end
