@@ -63,7 +63,9 @@ module pc_adder (
 				NULL;
 	end
 	
-	data_t pc_add = pc_add_comp + imm;
+	logic carry_bit;
+	data_t pc_add;
+	assign {carry_bit, pc_add} = pc_add_comp + imm;
 
 	// JALR should mask the last bit to 0
 	assign pc_bj = (opcode == JALR) ? {pc_add[31:1], 1'b0} : pc_add;
