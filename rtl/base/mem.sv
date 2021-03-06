@@ -5,7 +5,12 @@
 // byte_enabled_simple_dual_port_ram
 // refer: https://www.intel.com/content/www/us/en/programmable/quartushelp/13.0/mergedProjects/hdl/vlog/vlog_pro_ram_inferred.htm
 
-`include "../opcode.svh"
+// currentlly using a very simple memory map for testing purpose.
+// assume 32b vitural memory space and 16b phycial memory space
+// ADDR 0x12345678 => 0x1678
+// ADDR 0x20000123 => 0x2123
+
+import defines::*;
 
 module mem
 	#(	
@@ -59,7 +64,7 @@ task init_mem;
 				ram[waddr][3] <= 32'bX;
 			end 
 		end else if (TYPE == INSTR_MEM) begin
-			// TODO:
+			$readmemh("../instr.asm", ram);
 		end else if (TYPE == DATA_MEM) begin
 			// TODO:
 		end

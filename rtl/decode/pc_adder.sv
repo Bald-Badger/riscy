@@ -1,4 +1,4 @@
-`include "../opcode.svh"
+import defines::*;
 
 module pc_adder (
 	input instr_t instr,

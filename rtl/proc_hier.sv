@@ -1,4 +1,4 @@
-`include "./opcode.svh"
+import defines::*;
 
 module proc_hier();
 

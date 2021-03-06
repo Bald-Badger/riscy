@@ -1,8 +1,9 @@
-`include "../opcode.svh"
+import defines::*;
 
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
+
 
 module memory (
 	input logic 	clk,

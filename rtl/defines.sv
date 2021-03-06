@@ -1,5 +1,9 @@
-`ifndef _opceode_svh_
-`define _opceode_svh_
+// all defines usin in RISCV (except the ones used in alu)
+
+package defines;
+
+`ifndef _defines_sv_
+`define _defines_sv_
 
 
 //	ISA define
@@ -200,3 +204,5 @@ typedef enum logic[1:0] {
 } fwd_sel_t;
 
 `endif
+
+endpackage

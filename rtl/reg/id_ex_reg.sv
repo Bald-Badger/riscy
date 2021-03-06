@@ -1,4 +1,4 @@
-`include "../opcode.svh"
+import defines::*;
 
 module id_ex_reg (
 	// common

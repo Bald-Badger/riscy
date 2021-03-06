@@ -1,5 +1,5 @@
 // top module of the processor
-`include "./opcode.svh"
+import defines::*;
 
 module proc(
 	input logic clk,

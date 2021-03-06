@@ -1,4 +1,4 @@
-`include "../opcode.svh"
+import defines::*;
 
 module mem_wb_reg (
 	// common

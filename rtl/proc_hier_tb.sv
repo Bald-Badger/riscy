@@ -1,4 +1,4 @@
-`include "./opcode.svh"
+import defines::*;
 `timescale 1ns/1ns
 
 module proc_hier_tb ();

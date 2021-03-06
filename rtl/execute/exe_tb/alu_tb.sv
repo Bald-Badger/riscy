@@ -1,4 +1,4 @@
-`include "../../opcode.svh"
+import defines::*;
 `include "../alu_define.svh"
 
 module alu_tb ();

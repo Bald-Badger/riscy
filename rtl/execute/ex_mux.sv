@@ -1,4 +1,4 @@
-`include "../opcode.svh"
+import defines::*;
 
 module ex_mux (
 	input instr_t	instr,
