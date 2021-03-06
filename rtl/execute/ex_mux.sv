@@ -40,7 +40,7 @@ module ex_mux (
 
 	always_comb begin : rs2_mux
 		rs2_mux_out = NULL;
-		unique case (rs1_mux_sel)
+		unique case (rs2_mux_sel)
 			null_sel:	rs2_mux_out = NULL;
 			2'b01:		rs2_mux_out = NULL;
 			rs2_sel:	rs2_mux_out = rs2;

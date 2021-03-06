@@ -17,7 +17,7 @@ module registers (
 	r_t rs1_addr, rs2_addr;
 	wire rs1_rden, rs2_rden;
 
-	reg_bypass reg_pass_inst (
+	reg_bypass reg_bypass_inst (
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.rd_data	(rd_data),

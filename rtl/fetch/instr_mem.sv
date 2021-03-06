@@ -35,7 +35,7 @@ module instr_mem (
 	mem #(
 		.ADDR_WIDTH	(XLEN),
 		.BYTES		(BYTES),
-		.TYPE		(BLANK_MEM)
+		.TYPE		(INSTR_MEM)
 	) instr_mem_inst (
 		.waddr		(NULL),
 		.raddr		(addr),

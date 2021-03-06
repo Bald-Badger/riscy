@@ -21,7 +21,7 @@ module execute (
 	output logic rd_wren
 );
 
-	data_t a, b, c;
+	data_t a, b;
 
 	ex_mux ex_mux_inst (
 		// input

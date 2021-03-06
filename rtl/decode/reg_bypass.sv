@@ -18,18 +18,17 @@ module reg_bypass (
 );
 
 	localparam DEPTH = 5'd32;
-	reg [XLEN-1:0] registers [DEPTH-1:0]; 
+	logic [XLEN-1:0] registers [31:0]; 
 
 	integer i;
-	always_ff @(posedge clk or negedge rst_n) begin
-		for (i = 0; i < DEPTH; i++) begin
-			if (~rst_n) begin
-				registers[i] <= 0;
-			end else if (rd_wren && ( rd_addr != 5'b0 ) && (rd_addr == i)) begin
-				registers[i] <= rd_data;
-			end else begin
-				registers[i] <= registers[i];
+	// TODO: used negedge in design to avoid bugs
+	always_ff @(negedge clk or negedge rst_n) begin
+		if (~rst_n) begin
+			for (i = 0; i < 32; i++) begin
+				registers[i] <= NULL;
 			end
+		end else begin
+			registers[rd_addr] <= rd_data;
 		end
 	end
 	
