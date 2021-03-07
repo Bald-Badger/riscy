@@ -48,8 +48,10 @@ module hazzard_ctrl (
 	end
 
 
-	logic hazzard_1a, hazzard_1b, hazzard_2a, hazzard_2b, hazzard_3;
-
+	// reference: book p579
+	// we can see that hazzard_1's forwarding have
+	// higher proority than that of hazzard_2's
+	logic hazzard_1a, hazzard_1b, hazzard_2a, hazzard_2b;
 	always_comb begin : data_hazzard_detect
 
 		hazzard_1a =	(ex_mem_wr_rd) &&
@@ -62,16 +64,12 @@ module hazzard_ctrl (
 
 		hazzard_2a =	(mem_wb_wr_rd) &&
 						(mem_wb_rd != X0) &&
-						(!(ex_mem_wr_rd && 
-							(ex_mem_wr_rd != X0) &&
-							(ex_mem_wr_rd == id_ex_rs1))) &&
+						(!(hazzard_1a)) &&
 						(mem_wb_rd == id_ex_rs1);
 		
 		hazzard_2b =	(mem_wb_wr_rd) &&
 						(mem_wb_rd != X0) &&
-						(!(ex_mem_wr_rd && 
-							(ex_mem_wr_rd != X0) &&
-							(ex_mem_wr_rd == id_ex_rs1))) &&
+						(!(hazzard_2a)) &&
 						(mem_wb_rd == id_ex_rs2);
 	
 		hazzard_3 =		(mem_store) &&
@@ -95,10 +93,114 @@ module hazzard_ctrl (
 
 	end
 
+	// hazzard when load follows a branch
+	// a true hazzard and does not be resolven by forwarding
+	logic hazzard_3a1, hazzard_3a2;	// load - branch
+	logic hazzard_3b1, hazzard_3b2;	// load - whatever - branch
+	logic hazzard_3a, hazzard_3b;
+
+	// hazzard when branch can use data from exe stage
+	logic hazzard_4a;	// can fwd to rs1
+	logic hazzard_4b;	// can fwd to rs2
+
+	// hazzard when branch can use data from mem stage
+	logic hazzard_5a;	// can fwd to rs1
+	logic hazzard_5b;	// can fwd to rs2
+
+	// hazzard when branch can use data from wb stage
+	logic hazzard_6a;	// can fwd to rs1
+	logic hazzard_6b;	// can fwd to rs2
+
+
 	always_comb begin : control_hazzard_detect
+
+		hazzard_3a1 =	(instr_x.opcode == LOAD) &&
+						(instr_d.opcode == B) &&
+						(instr_x.rd != X0) &&
+						(instr_x.rd == instr_d.rs1);
 		
+		hazzard_3a2 =	(instr_x.opcode == LOAD) &&
+						(instr_d.opcode == B) &&
+						(instr_x.rd != X0) &&
+						(instr_x.rd == instr_d.rs2);
+		
+		hazzard_3a = hazzard_3a1 || hazzard_3a2;
+		
+		hazzard_3b1 =	(instr_m.opcode == LOAD) &&
+						(instr_d.opcode == B) &&
+						(instr_m.rd != X0) &&
+						(instr_m.rd == instr_d.rs1);
+
+		hazzard_3b2 =	(instr_m.opcode == LOAD) &&
+						(instr_d.opcode == B) &&
+						(instr_m.rd != X0) &&
+						(instr_m.rd == instr_d.rs2);
+		
+		hazzard_3b = hazzard_3b1 || hazzard_3b2;
+		
+		hazzard_4a =	(instr_d.opcode == B) &&
+						(!hazzard_3a1) &&
+						(instr_x.rd != X0) &&
+						(instr_x.rd == instr_d.rs1);
+		
+		hazzard_4b =	(instr_d.opcode == B) &&
+						(!hazzard_3a2) &&
+						(instr_x.rd != X0) &&
+						(instr_x.rd == instr_d.rs2);
+		
+		hazzard_5a =	(instr_d.opcode == B) &&
+						(!hazzard_4a) &&
+						(!hazzard_3b1) &&
+						(instr_m.rd != X0) &&
+						(instr_m.rd == instr_d.rs1);
+		
+		hazzard_5b =	(instr_d.opcode == B) &&
+						(!hazzard_4b) &&
+						(!hazzard_3b2) &&
+						(instr_m.rd != X0) &&
+						(instr_m.rd == instr_d.rs2);
+
+		hazzard_6a =	(instr_d.opcode == B) &&
+						(!hazzard_5a) &&
+						(instr_w.rd != X0) &&
+						(instr_w.rd == instr_d.rs1);
+
+		hazzard_6b =	(instr_d.opcode == B) &&
+						(!hazzard_5b) &&
+						(instr_w.rd != X0) &&
+						(instr_w.rd == instr_d.rs2);
+
 	end
 
+	always_comb begin : branch_fwd_assign
+
+		fwd_rs1 =	hazzard_4a ? B_EX_SEL :
+					hazzard_5a ? B_MEM_SEL :
+					hazzard_6a ? B_WB_SEL :
+					B_RS_SEL;
+
+		fwd_rs2 =	hazzard_4b ? B_EX_SEL :
+					hazzard_5b ? B_MEM_SEL :
+					hazzard_6b ? B_WB_SEL :
+					B_RS_SEL;
+
+	end
+
+
+	always_comb begin : stall_assign
+		stall_if_id = hazzard_3a || hazzard_3b;
+		stall_id_ex = DISABLE;
+		stall_ex_mem = DISABLE;
+		stall_mem_wb = DISABLE;
+	end
+
+
+	always_comb begin : flush_assign // TODO:
+		flush_if_id = DISABLE;
+		flush_id_ex = DISABLE;
+		flush_ex_mem = DISABLE;
+		flush_mem_wb = DISABLE;
+	end
 	
 	
 endmodule : hazzard_ctrl
