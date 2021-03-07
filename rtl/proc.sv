@@ -15,7 +15,7 @@ module proc(
 	data_t 	alu_result_x, alu_result_m, alu_result_w;
 	logic 	rd_wren_x, rd_wren_m, rd_wren_w;
 	data_t 	mem_data_m, mem_data_w;
-	branch_take_t branch_take_f, branch_take_d;
+	logic	branch_take_f, branch_take_d;
 	logic	branch_taken_actual;
 
 
@@ -48,8 +48,8 @@ module proc(
 		// input
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
-		.en_instr_mem	(ENABLE), // TODO:
-		.stall			(stall_if_id), // BUG:
+		.en_instr_mem	(ENABLE),
+		.stall			(stall_if_id),
 
 		// output
 		.pc_p4			(pcp4_f),

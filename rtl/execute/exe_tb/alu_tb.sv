@@ -1,5 +1,5 @@
 import defines::*;
-`include "../alu_define.svh"
+import alu_define::*;
 
 module alu_tb ();
 	//import "DPI-C" context function int test(input int ip);

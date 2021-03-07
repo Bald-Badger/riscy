@@ -212,13 +212,6 @@ typedef enum logic[1:0] {
 	B_WB_SEL	= 2'b11
 } branch_fwd_t;
 
-// branch taken signal define
-typedef enum logic[1:0] {
-	DONT_CARE	= 2'b00,
-	NOT_TAKEN	= 2'b01,
-	TAKEN		= 2'b10
-} branch_take_t;
-
 `endif
 
 endpackage

@@ -15,7 +15,7 @@ module fetch(
 	output	data_t	pc_p4,
 	output	data_t	pc,
 	output	data_t	instr,
-	output	branch_take_t taken
+	output	logic	taken
 );
 
 	pc pc_inst (
