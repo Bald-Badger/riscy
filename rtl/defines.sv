@@ -73,6 +73,7 @@ package defines;
 	typedef logic [4:0] 		r_t;
 	typedef logic [11:0]		imm_t; // only for I type operation
 
+	r_t	X0 = 5'b00000;
 
 // instruction type define
 	typedef struct packed{
@@ -90,7 +91,9 @@ package defines;
 		funct3_t	funct3;
 		r_t			rd;
 		opcode_t	opcode;
-	} instr_I_t;		// I type	
+	} instr_I_t;		// I type
+
+	instr_t NOP = 32'h00000013;	// ADDI x0, x0, 0
 
 
 // Funt3 define
@@ -201,6 +204,20 @@ typedef enum logic[1:0] {
 	EX_EX_FWD_SEL 	= 2'b10,
 	MEM_EX_FWD_SEL	= 2'b11
 } fwd_sel_t;
+
+typedef enum logic[1:0] {
+	B_RS_SEL	= 2'b00,
+	B_EX_SEL	= 2'b01,
+	B_MEM_SEL	= 2'b10,
+	B_WB_SEL	= 2'b11
+} branch_fwd_t;
+
+// branch taken signal define
+typedef enum logic[1:0] {
+	DONT_CARE	= 2'b00,
+	NOT_TAKEN	= 2'b01,
+	TAKEN		= 2'b10
+} branch_take_t;
 
 `endif
 

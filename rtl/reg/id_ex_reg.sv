@@ -13,7 +13,7 @@ module id_ex_reg (
 	input data_t 	pc_in,
 	input data_t 	rs2_in,
 	input data_t	imm_in,
-	input data_t	pc_p4_in,	
+	input data_t	pc_p4_in,
 
 	// output
 	output instr_t	instr_out,

@@ -10,17 +10,26 @@ module proc(
 	data_t 	pc_f, pc_d, pc_x, pc_m, pc_w;
 	data_t 	pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;
 	instr_t	instr_f, instr_d, instr_x, instr_m, instr_w;
-	data_t rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;
-	data_t imm_d, imm_x;
-	data_t alu_result_x, alu_result_m, alu_result_w;
-	logic rd_wren_x, rd_wren_m, rd_wren_w;
-	data_t mem_data_m, mem_data_w;
+	data_t 	rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;
+	data_t 	imm_d, imm_x;
+	data_t 	alu_result_x, alu_result_m, alu_result_w;
+	logic 	rd_wren_x, rd_wren_m, rd_wren_w;
+	data_t 	mem_data_m, mem_data_w;
+	branch_take_t branch_take_f, branch_take_d;
+	logic	branch_taken_actual;
+
 
 	// global control wire
-	fwd_sel_t fwd_a 	= RS_SEL;	// TODO:
-	fwd_sel_t fwd_b 	= RS_SEL;	// TODO:
-	fwd_sel_t fwd_m2m	= RS_SEL; 	// TODO:
-	logic pc_sel;
+	logic 		pc_sel;
+	// for exe forward
+	fwd_sel_t	fwd_a, fwd_b, fwd_m2m;
+	// for branching forward
+	branch_fwd_t fwd_rs1, fwd_rs2;	
+	logic		stall_if_id, stall_id_ex,
+				stall_ex_mem, stall_mem_wb;
+	logic		flush_if_id, flush_id_ex,
+				flush_ex_mem, flush_mem_wb;
+
 
 	// global data wire
 	data_t wb_data;
@@ -40,32 +49,35 @@ module proc(
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
 		.en_instr_mem	(ENABLE), // TODO:
-		.stall			(DISABLE), // TODO:
+		.stall			(stall_if_id), // BUG:
 
 		// output
 		.pc_p4			(pcp4_f),
 		.pc				(pc_f),
-		.instr			(instr_f)
+		.instr			(instr_f),
+		.taken			(branch_take_f)
 	);
 
 
 	// fetch-decode reg
 	if_id_reg if_id_reg_inst (
 		// general
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.flush		(DISABLE),	// TODO:
-		.en			(ENABLE),	// TODO:
+		.clk			(clk),
+		.rst_n			(rst_n),
+		.flush			(flush_if_id),
+		.en				(!stall_if_id),
 
 		// input
-		.pc_p4_in	(pcp4_f),
-		.pc_in		(pc_f),
-		.instr_in	(instr_f),
+		.pc_p4_in		(pcp4_f),
+		.pc_in			(pc_f),
+		.instr_in		(instr_f),
+		.branch_take_in	(branch_take_f),
 		
 		// output
-		.pc_p4_out	(pcp4_d),
-		.pc_out		(pc_d),
-		.instr_out	(instr_d)
+		.pc_p4_out		(pcp4_d),
+		.pc_out			(pc_d),
+		.instr_out		(instr_d),
+		.branch_take_out(branch_take_d)
 	);
 
 
@@ -79,22 +91,29 @@ module proc(
 
 	decode decode_inst (
 		// general
-		.clk	(clk),
-		.rst_n	(rst_n),
+		.clk		(clk),
+		.rst_n		(rst_n),
 
 		// input
-		.pc		(pc_d),
-		.instr	(instr_d),
-		.wd		(wb_data),
-		.waddr	(rd_addr),
-		.wren	(rd_wren_w),
+		.pc			(pc_d),
+		.instr		(instr_d),
+		.wd			(wb_data),
+		.waddr		(rd_addr),
+		.wren		(rd_wren_w),
+		// for branch forwarding
+		.ex_data	(alu_result_x),
+		.mem_data	(alu_result_m),
+		.wb_data	(wb_data),
+		.fwd_rs1	(fwd_rs1),
+		.fwd_rs2	(fwd_rs2),
 
 		// output
-		.pc_bj	(pc_bj),
-		.pc_sel	(pc_sel),
-		.rs1	(rs1_d),
-		.rs2	(rs2_d),
-		.imm	(imm_d)
+		.pc_bj		(pc_bj),
+		.pc_sel		(pc_sel),
+		.rs1		(rs1_d),
+		.rs2		(rs2_d),
+		.imm		(imm_d),
+		.branch_taken(branch_taken_actual)
 	);
 
 
@@ -103,8 +122,8 @@ module proc(
 		// common
 		.clk		(clk),
 		.rst_n		(rst_n),
-		.flush		(DISABLE),
-		.en			(ENABLE),
+		.flush		(flush_id_ex),
+		.en			(!stall_id_ex),
 
 		// input
 		.instr_in	(instr_d),
@@ -151,8 +170,8 @@ module proc(
 		// common
 		.clk			(clk),
 		.rst_n			(rst_n),
-		.flush			(DISABLE),
-		.en				(ENABLE),
+		.flush			(flush_ex_mem),
+		.en				(!stall_ex_mem),
 
 		// input
 		.instr_in		(instr_x),
@@ -191,8 +210,8 @@ module proc(
 		// common
 		.clk			(clk),
 		.rst_n			(rst_n),
-		.flush			(DISABLE),
-		.en				(ENABLE),
+		.flush			(flush_mem_wb),
+		.en				(!stall_mem_wb),
 
 		// input
 		.instr_in		(instr_m),
@@ -220,6 +239,42 @@ module proc(
 
 		// output
 		.wb_data	(wb_data)
+	);
+
+	hazzard_ctrl hazzard_ctrl_inst (
+		// input signal
+		.instr_f		(instr_f),
+		.instr_d		(instr_d),
+		.instr_x		(instr_x),
+		.instr_m		(instr_m),
+		.instr_w		(instr_w),
+
+		.ex_mem_wr_rd	(rd_wren_m),
+		.mem_wb_wr_rd	(rd_wren_w),
+
+		.branch_predict	(branch_take_d),
+		.branch_actual	(branch_taken_actual),
+		
+		// output
+		// forwarding signal
+		.fwd_a			(fwd_a),
+		.fwd_b			(fwd_b),
+		.fwd_m2m		(fwd_m2m),
+
+		.fwd_rs1		(fwd_rs1),
+		.fwd_rs2		(fwd_rs2),
+
+		// stall signal
+		.stall_if_id	(stall_if_id),
+		.stall_id_ex	(stall_id_ex),
+		.stall_ex_mem	(stall_ex_mem),
+		.stall_mem_wb	(stall_mem_wb),
+
+		// flush signal
+		.flush_if_id	(flush_if_id),
+		.flush_id_ex	(flush_id_ex),
+		.flush_ex_mem	(flush_ex_mem),
+		.flush_mem_wb	(flush_mem_wb)
 	);
 
 

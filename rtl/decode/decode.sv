@@ -11,13 +11,19 @@ module decode(
 	input data_t 	wd, // write data
 	input r_t 		waddr,
 	input logic 	wren,
+	input data_t	ex_data,
+	input data_t	mem_data,
+	input data_t	wb_data,
+	input branch_fwd_t fwd_rs1,
+	input branch_fwd_t fwd_rs2,
 
 	// output
 	output data_t 	pc_bj,
 	output logic 	pc_sel,
 	output data_t 	rs1,
 	output data_t 	rs2,
-	output data_t 	imm
+	output data_t 	imm,
+	output logic	branch_taken
 );
 	
 	pc_adder pc_adder_inst (
@@ -26,10 +32,16 @@ module decode(
 		.pc			(pc),
 		.rs1		(rs1),
 		.rs2		(rs2),
+		.ex_data	(ex_data),
+		.mem_data	(mem_data),
+		.wb_data	(wb_data),
+		.fwd_rs1	(fwd_rs1),
+		.fwd_rs2	(fwd_rs2),
 
 		// output
 		.pc_bj		(pc_bj),
-		.pc_sel		(pc_sel)
+		.pc_sel		(pc_sel),
+		.branch_taken(branch_taken)
 	);
 
 	registers registers_inst (

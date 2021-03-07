@@ -1,3 +1,5 @@
+package alu_define;
+
 `ifndef _alu_define_svh_
 `define _alu_define_svh_
 
@@ -31,3 +33,5 @@ typedef enum logic[2:0] {
 
 
 `endif
+
+endpackage

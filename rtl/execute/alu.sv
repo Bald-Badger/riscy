@@ -1,5 +1,5 @@
 import defines::*;
-`include "./alu_define.svh"
+import alu_define::*;
 
 module alu (
 	input instr_t	instr,

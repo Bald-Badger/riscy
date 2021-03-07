@@ -14,7 +14,8 @@ module fetch(
 	// output
 	output	data_t	pc_p4,
 	output	data_t	pc,
-	output	data_t	instr
+	output	data_t	instr,
+	output	branch_take_t taken
 );
 
 	pc pc_inst (
@@ -36,6 +37,11 @@ module fetch(
 		.rden	(en_instr_mem),
 		.addr	(pc),
 		.instr	(instr)
+	);
+
+	branch_predict branch_predictor (
+		.instr	(instr),
+		.taken	(taken)
 	);
 	
 endmodule

@@ -5,11 +5,17 @@ module pc_adder (
 	input data_t pc,
 	input data_t rs1,
 	input data_t rs2,
+	input data_t ex_data,
+	input data_t mem_data,
+	input data_t wb_data,
+	input branch_fwd_t fwd_rs1,
+	input branch_fwd_t fwd_rs2,
 
 	output data_t pc_bj,	// no one likes bj
 							// bj makes it hard
 							// to predict
-	output logic pc_sel
+	output logic pc_sel,
+	output logic branch_taken
 );
 
 	localparam taken = 1'b1;
@@ -22,8 +28,23 @@ module pc_adder (
 		funct3 = instr.funct3;
 	end
 
-	wire [XLEN+1:0] rs_diff_unsign = ({1'b0, rs2} - {1'b0, rs1}); // 34 bits
-	wire [XLEN:0] rs_diff_sign = $signed(rs2) - $signed(rs1); // 33 bits
+	data_t op1, op2;
+	always_comb begin : branch_forward_mux
+		op1 =	(fwd_rs1 == B_RS_SEL) ? rs1 :
+				(fwd_rs1 == B_EX_SEL) ? ex_data :
+				(fwd_rs1 == B_MEM_SEL) ? mem_data :
+				(fwd_rs1 == B_WB_SEL) ? wb_data :
+				rs1;
+
+		op2 =	(fwd_rs2 == B_RS_SEL) ? rs2 :
+				(fwd_rs2 == B_EX_SEL) ? ex_data :
+				(fwd_rs2 == B_MEM_SEL) ? mem_data :
+				(fwd_rs2 == B_WB_SEL) ? wb_data :
+				rs2;
+	end
+
+	wire [XLEN+1:0] rs_diff_unsign = ({1'b0, op2} - {1'b0, op1}); // 34 bits
+	wire [XLEN:0] rs_diff_sign = $signed(op2) - $signed(op1); // 33 bits
 	wire beq_take	= (rs_diff_sign == 34'b0);				// pass
 	wire bne_take 	= ~beq_take;						// pass
 	wire blt_take 	= $signed(rs_diff_sign[XLEN:0]) > 0;
@@ -31,13 +52,13 @@ module pc_adder (
 	wire bge_take 	= ~blt_take;
 	wire bgeu_take 	= ~bltu_take;
 
-	wire branch_taken =	((funct3 == BEQ && beq_take)	? taken :
-						(funct3 == BNE && bne_take) 	? taken :
-						(funct3 == BLT && blt_take) 	? taken :
-						(funct3 == BLTU && bltu_take) 	? taken :
-						(funct3 == BGE && bge_take) 	? taken :
-						(funct3 == BGEU && bgeu_take) 	? taken :
-						not_taken) && (opcode == B);
+	assign branch_taken =	((funct3 == BEQ && beq_take)	? taken :
+							(funct3 == BNE && bne_take) 	? taken :
+							(funct3 == BLT && blt_take) 	? taken :
+							(funct3 == BLTU && bltu_take) 	? taken :
+							(funct3 == BGE && bge_take) 	? taken :
+							(funct3 == BGEU && bgeu_take) 	? taken :
+							not_taken) && (opcode == B);
 
 
 	/*
@@ -49,7 +70,7 @@ module pc_adder (
 	always_comb begin
 		pc_add_comp =	(branch_taken)		? pc  :
 						(opcode == JAL)		? pc  :
-						(opcode == JALR)	? rs1 :
+						(opcode == JALR)	? op1 :
 						NULL;
 	end
 
