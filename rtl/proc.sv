@@ -34,9 +34,14 @@ module proc(
 	// global data wire
 	data_t wb_data;
 	data_t pc_bj;
-	data_t ex_ex_fwd_data = alu_result_m;
-	data_t mem_ex_fwd_data = wb_data;
-	data_t mem_mem_fwd_data = wb_data;
+	data_t ex_ex_fwd_data;
+	data_t mem_ex_fwd_data;
+	data_t mem_mem_fwd_data;
+	always_comb begin : fwd_data_assign
+		ex_ex_fwd_data = alu_result_m;
+		mem_ex_fwd_data = wb_data;
+		mem_mem_fwd_data = wb_data;
+	end
 
 
 	// fetch stage	

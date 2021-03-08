@@ -18,7 +18,7 @@ module reg_bypass (
 );
 
 	localparam DEPTH = 5'd32;
-	logic [XLEN-1:0] registers [31:0]; 
+	logic [XLEN-1:0] registers [0:31]; 
 
 	integer i;
 	// TODO: used negedge in design to avoid bugs
