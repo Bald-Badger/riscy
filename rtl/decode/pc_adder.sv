@@ -30,16 +30,16 @@ module pc_adder (
 
 	data_t op1, op2;
 	always_comb begin : branch_forward_mux
-		op1 =	(fwd_rs1 == B_RS_SEL) ? rs1 :
-				(fwd_rs1 == B_EX_SEL) ? ex_data :
-				(fwd_rs1 == B_MEM_SEL) ? mem_data :
-				(fwd_rs1 == B_WB_SEL) ? wb_data :
+		op1 =	(fwd_rs1 == B_RS_SEL) 	? rs1 :
+				(fwd_rs1 == B_EX_SEL) 	? ex_data :
+				(fwd_rs1 == B_MEM_SEL)	? mem_data :
+				(fwd_rs1 == B_WB_SEL) 	? wb_data :
 				rs1;
 
-		op2 =	(fwd_rs2 == B_RS_SEL) ? rs2 :
-				(fwd_rs2 == B_EX_SEL) ? ex_data :
-				(fwd_rs2 == B_MEM_SEL) ? mem_data :
-				(fwd_rs2 == B_WB_SEL) ? wb_data :
+		op2 =	(fwd_rs2 == B_RS_SEL) 	? rs2 :
+				(fwd_rs2 == B_EX_SEL) 	? ex_data :
+				(fwd_rs2 == B_MEM_SEL)	? mem_data :
+				(fwd_rs2 == B_WB_SEL) 	? wb_data :
 				rs2;
 	end
 
@@ -78,10 +78,7 @@ module pc_adder (
 	// for JALR, the imm is counted in multuple of single byte
 	data_t imm;
 	always_comb begin
-		imm = 	(branch_taken)		? get_imm(instr):
-				(opcode == JAL)		? {instr[31]*12, instr[19:12], instr[20], instr[30:21], 1'b0}:  
-				(opcode == JALR)	? {instr[31]*20, instr[31:20]} :  // the get_imm for JAL and JALR is 4, for ALU
-				NULL;
+		imm = get_imm(instr);
 	end
 	
 	logic carry_bit;

@@ -4,6 +4,7 @@ import defines::*;
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 
+// TODO: write on fall edge, read on raise rdge
 
 module memory (
 	input logic 	clk,

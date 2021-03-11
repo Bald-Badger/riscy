@@ -105,6 +105,7 @@ module proc(
 		.wd			(wb_data),
 		.waddr		(rd_addr),
 		.wren		(rd_wren_w),
+		
 		// for branch forwarding
 		.ex_data	(alu_result_x),
 		.mem_data	(alu_result_m),

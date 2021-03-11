@@ -17,6 +17,8 @@ module reg_bypass (
 	output data_t rs2_data
 );
 
+	// TODO: write on fall edge, read on raise rdge
+
 	localparam DEPTH = 5'd32;
 	logic [XLEN-1:0] registers [0:31]; 
 

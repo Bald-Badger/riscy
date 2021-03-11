@@ -24,7 +24,7 @@ module if_id_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(pc_p4_in),
+		.d		(flush ? 0 : pc_p4_in),
 		.q		(pc_p4_out)
 	);
 
@@ -32,7 +32,7 @@ module if_id_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(pc_in),
+		.d		(flush ? 0 : pc_in),
 		.q		(pc_out)
 	);
 
@@ -40,7 +40,7 @@ module if_id_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(instr_in),
+		.d		(flush ? 0 : instr_in),
 		.q		(instr_out)
 	);
 
@@ -48,7 +48,7 @@ module if_id_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(branch_take_in),
+		.d		(flush ? 1'b0 : branch_take_in),
 		.q		(branch_take_out)
 	);
 

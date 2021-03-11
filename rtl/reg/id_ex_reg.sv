@@ -28,7 +28,7 @@ module id_ex_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(instr_in),
+		.d		(flush ? 0 : instr_in),
 		.q		(instr_out)
 	);
 
@@ -36,7 +36,7 @@ module id_ex_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(rs1_in),
+		.d		(flush ? 0 : rs1_in),
 		.q		(rs1_out)
 	);
 
@@ -44,7 +44,7 @@ module id_ex_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(pc_in),
+		.d		(flush ? 0 : pc_in),
 		.q		(pc_out)
 	);
 
@@ -52,7 +52,7 @@ module id_ex_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(rs2_in),
+		.d		(flush ? 0 : rs2_in),
 		.q		(rs2_out)
 	);
 
@@ -60,7 +60,7 @@ module id_ex_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(imm_in),
+		.d		(flush ? 0 : imm_in),
 		.q		(imm_out)
 	);
 	
@@ -68,7 +68,7 @@ module id_ex_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(pc_p4_in),
+		.d		(flush ? 0 : pc_p4_in),
 		.q		(pc_p4_out)
 	);
 	

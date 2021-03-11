@@ -93,8 +93,9 @@ package defines;
 		opcode_t	opcode;
 	} instr_I_t;		// I type
 
-	instr_t NOP = 32'h00000013;	// ADDI x0, x0, 0
-
+	instr_t NOP = 32'h0000_0013;	// ADDI x0, x0, 0
+	instr_t HALT = 32'h0000_0063;	// BEQ x0, x0, 0	
+	
 
 // Funt3 define
     // R type funt3
@@ -182,10 +183,10 @@ function data_t get_imm;
 	else 	if(instr.opcode == AUIPC)	return data_t'({instr[31:12], 12'b0});
 	else 	if(instr.opcode == JAL)		return data_t'({32'd4});	// pc + 4 for ALU
 	else 	if(instr.opcode == JALR)	return data_t'({32'd4});	// pc + 4 for ALU
-	else 	if(instr.opcode == B)		return data_t'({instr[31]*20, instr[7], instr[30:25], instr[11:8], 1'b0});
-	else 	if(instr.opcode == LOAD)	return data_t'({instr[31]*20, instr[31:20]});
-	else 	if(instr.opcode == STORE)	return data_t'({instr[31]*20, instr[31:25], instr[11:7]});
-	else 	if(instr.opcode == I)		return data_t'({instr[31]*20, instr[31:20]});
+	else 	if(instr.opcode == B)		return data_t'({ {20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0});
+	else 	if(instr.opcode == LOAD)	return data_t'({ {20{instr[31]}} , instr[31:20]});
+	else 	if(instr.opcode == STORE)	return data_t'({ {20{instr[31]}} , instr[31:25], instr[11:7]});
+	else 	if(instr.opcode == I)		return data_t'({ {20{instr[31]}} , instr[31:20]});
 	else 								return data_t'(NULL);
 endfunction
 

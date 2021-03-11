@@ -13,10 +13,10 @@ module clkrst #(
 	initial begin
 		clk = 1'b0;
 		rst_n = 1'b0;
-		repeat(5) @(negedge clk);
+		repeat(2) @(negedge clk);
 		#1;
 		rst_n = 1'b1;
-		repeat(100) @(negedge clk);
+		repeat(20) @(negedge clk);
 		$stop();
 	end
 

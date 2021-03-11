@@ -98,6 +98,7 @@ module hazzard_ctrl (
 
 	// hazzard when load follows a branch
 	// a true hazzard and does not be resolven by forwarding
+	// both hazzard 4 and harrard 5 requires to stall pipeline on F and D stages
 	logic hazzard_4a, hazzard_4b;	// load - branch
 	logic hazzard_5a, hazzard_5b;	// load - whatever - branch
 	logic hazzard_4, hazzard_5;
@@ -194,19 +195,26 @@ module hazzard_ctrl (
 
 	always_comb begin : stall_assign
 		stall_if_id = hazzard_4 || hazzard_5;
-		stall_id_ex = DISABLE;
+		stall_id_ex = stall_if_id;
 		stall_ex_mem = DISABLE;
 		stall_mem_wb = DISABLE;
 	end
 
+/*
+I'm afraid of having timing issue on my design so
+I'm thing about using negedge triggered register file in decode 
+stage as well as negedge triggered memory write. what
+would be the potential implementations of this approach. 
+any drawbacks?
+*/
 
 	logic jump;
 	always_comb begin : flush_crtl_signal_assign
 		jump = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
 	end
 	always_comb begin : flush_assign // TODO:
-		flush_if_id = DISABLE;
-		flush_id_ex = DISABLE;
+		flush_if_id = jump || branch_actual;
+		flush_id_ex = flush_if_id;
 		flush_ex_mem = DISABLE;
 		flush_mem_wb = DISABLE;
 	end
