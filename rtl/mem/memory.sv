@@ -1,7 +1,7 @@
 import defines::*;
 
 // synopsys translate_off
-`timescale 1 ps / 1 ps
+// `timescale 1 ps / 1 ps
 // synopsys translate_on
 
 // TODO: write on fall edge, read on raise rdge
@@ -46,10 +46,10 @@ module memory (
 	end
 
 	// may need to switch endianess for storing in of memory depending on endianess
-	data_t data_in;		// after fwd
-	data_t data_in_final; // after possible endian switch
-	data_t data_out_mem; // data just out of mem, blue raw
-	data_t data_out_unmasked; // data unmasked yet
+	data_t data_in;				// after fwd
+	data_t data_in_final; 		// after possible endian switch
+	data_t data_out_mem; 		// data just out of mem, blue raw
+	data_t data_out_unmasked;	// data unmasked yet
 
 	always_comb begin : sel_fwd_data
 		assign data_in = (fwd_m2m == MEM_MEM_FWD_SEL) ? mem_mem_fwd_data : data_in_raw;
@@ -71,8 +71,8 @@ module memory (
 
 		if (wren) begin
 			unique case (funct3)
-				LB: 	 data_out = {d[7]*24, d[7:0]};
-				LH: 	 data_out = {d[15]*24, d[15:0]};
+				LB: 	 data_out = {{24{d[7]}}, d[7:0]};
+				LH: 	 data_out = {{24{d[15]}}, d[15:0]};
 				LW: 	 data_out = d;
 				LBU: 	 data_out = {24'b0, d[7:0]};
 				LHU: 	 data_out = {16'b0, d[15:0]};

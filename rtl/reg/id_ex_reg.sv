@@ -28,7 +28,7 @@ module id_ex_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(flush ? 0 : instr_in),
+		.d		(flush ? NOP : instr_in),
 		.q		(instr_out)
 	);
 

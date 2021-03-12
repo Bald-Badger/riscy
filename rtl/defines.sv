@@ -135,7 +135,8 @@ package defines;
 
     // J type have no funt3
     //funct3_t JAL     =	3'b000;	// jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm << 1)
-    //funct3_t JALR    =	3'b000;	// jump and link registor, rd <= (pc_of_jalr + 4),  pc <= (rs1 + imm) && 0xfffe (set the last bit is always 0)
+    //funct3_t JALR    =	3'b000;	// jump and link registor, rd <= (pc_of_jalr + 4),  
+									// pc <= (rs1 + imm) && 0xfffe (set the last bit is always 0)
 
     // S type funt3 - Load
     funct3_t LB      =	3'b000;		// load 8 bits and sign extend to 32 bits
@@ -177,6 +178,7 @@ endfunction
 
 
 // very expensive, avoid to use unless for instruction imm extraction while instruction is unknown
+// for alu imm calculation, not for branch / jump imm calculation
 function data_t get_imm;
 	input instr_t instr;
 	unique	if(instr.opcode == LUI)		return data_t'({instr[31:12], 12'b0});

@@ -214,7 +214,7 @@ any drawbacks?
 	end
 	always_comb begin : flush_assign // TODO:
 		flush_if_id = jump || branch_actual;
-		flush_id_ex = flush_if_id;
+		flush_id_ex = DISABLE;
 		flush_ex_mem = DISABLE;
 		flush_mem_wb = DISABLE;
 	end

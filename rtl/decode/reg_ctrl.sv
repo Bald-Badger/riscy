@@ -32,7 +32,5 @@ module reg_ctrl (
 		rs1_addr = 	(rs1_rden) ? instr.rs1 : 5'b0;
 		rs2_addr = 	(rs2_rden) ? instr.rs2 : 5'b0;
 	end
-
-	
 						
 endmodule

@@ -78,7 +78,12 @@ module pc_adder (
 	// for JALR, the imm is counted in multuple of single byte
 	data_t imm;
 	always_comb begin
-		imm = get_imm(instr);
+		imm = NULL;
+		unique case (opcode)
+			B: imm = { {20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0};
+			JAL: imm = {{11{instr[31]}}, instr[31], instr[19:12], instr[20], instr[30:21], 1'b0};
+			JALR: imm = {{20{instr[31]}}, instr[31:20]};
+		endcase
 	end
 	
 	logic carry_bit;
