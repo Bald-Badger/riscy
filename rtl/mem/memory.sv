@@ -6,6 +6,9 @@ import defines::*;
 
 // TODO: write on fall edge, read on raise rdge
 
+// TODO: add - save 这种情况如何forward
+// addi x1, x1, 4; sb x1, 0(x1)
+
 module memory (
 	input logic 	clk,
 	input logic		rst_n,

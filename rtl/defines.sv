@@ -5,7 +5,6 @@ package defines;
 `ifndef _defines_sv_
 `define _defines_sv_
 
-
 //	ISA define
 	localparam 	XLEN 	= 	32;				// RV32
 	localparam	N 		= 	XLEN;	 		// in case I forget should be XLEN instead of N

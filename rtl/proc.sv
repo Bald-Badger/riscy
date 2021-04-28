@@ -88,7 +88,6 @@ module proc(
 
 	// decode stage
 	// wire used first in decode stage
-	
 	r_t rd_addr;
 	always_comb begin
 		rd_addr = instr_w.rd;
@@ -150,6 +149,9 @@ module proc(
 
 
 	// execute stage
+	// data wire first used in execute stage
+	data_t rs2_fwd;
+
 	execute execute_inst (
 		// ctrl
 		.fwd_a				(fwd_a),
@@ -167,7 +169,8 @@ module proc(
 
 		// output
 		.alu_result			(alu_result_x),
-		.rd_wren			(rd_wren_x)
+		.rd_wren			(rd_wren_x),
+		.rs2_fwd			(rs2_fwd)
 	);
 
 
@@ -182,7 +185,7 @@ module proc(
 		// input
 		.instr_in		(instr_x),
 		.alu_result_in	(alu_result_x),
-		.rs2_in			(rs2_x),
+		.rs2_in			(rs2_fwd),
 		.pc_p4_in		(pcp4_x),
 		.rd_wren_in		(rd_wren_x),
 
