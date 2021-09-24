@@ -1,0 +1,3 @@
+[submodule "sim/Assembly-To-Machine-Code-RISC-V"]
+	path = sim/Assembly-To-Machine-Code-RISC-V
+	url = https://github.com/Kritagya-Agarwal/Assembly-To-Machine-Code-RISC-V.git

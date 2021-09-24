@@ -65,7 +65,7 @@ testbench/
 _sim/
 _output_files/
 output_files/
-sim/
+work/
 modelsim/
 .idea/
 work/
