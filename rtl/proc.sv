@@ -203,7 +203,7 @@ module proc(
 		// input
 		.clk				(clk),
 		.rst_n				(rst_n),
-		.addr				(alu_result_x),
+		.addr				(alu_result_m),
 		.data_in_raw		(rs2_m),
 		.mem_mem_fwd_data	(wb_data),
 		.fwd_m2m			(fwd_m2m),

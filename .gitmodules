@@ -4,3 +4,6 @@
 [submodule "sim/riscv-assembler"]
 	path = sim/riscv-assembler
 	url = https://github.com/kcelebi/riscv-assembler.git
+[submodule "sim/riscemu"]
+	path = sim/riscemu
+	url = https://github.com/AntonLydike/riscemu.git
