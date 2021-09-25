@@ -71,3 +71,6 @@ modelsim/
 work/
 PLLJ_PLLSPE_INFO.txt
 transcript
+vsim.wlf
+*.mpf
+*.mti
