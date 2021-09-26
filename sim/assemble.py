@@ -32,6 +32,8 @@ def process_file():
         lines[i] = lines[i][2:]
     f = open(out_name, 'w')
     f.writelines(lines)
+    zeros = ['00000000\n']*10
+    f.writelines(zeros)
     f.close()
 
 

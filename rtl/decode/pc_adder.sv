@@ -80,8 +80,8 @@ module pc_adder (
 	always_comb begin
 		imm = NULL;
 		unique case (opcode)
-			B: imm = { {20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0};
-			JAL: imm = {{11{instr[31]}}, instr[31], instr[19:12], instr[20], instr[30:21], 1'b0};
+			B: imm = {{20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0};
+			JAL: imm = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
 			JALR: imm = {{20{instr[31]}}, instr[31:20]};
 			default: imm = NULL;
 		endcase

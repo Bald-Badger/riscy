@@ -1,6 +1,8 @@
-addi x1, x0, 128
-addi x2, x0, 2
-sw x2, 8(x1)
-add x0, x0, x0
-add x0, x0, x0
-add x0, x0, x0
+    li x1, 0
+    li x2, 5
+loop_head:
+    bge x1, x2, loop_end
+    addi x1, x1, 1
+    j loop_head
+loop_end:
+    li x3, 7
