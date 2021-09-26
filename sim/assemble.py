@@ -51,7 +51,13 @@ def append_zeros():
     f.close()
 
 
-def assemble():
+def find(name, path):
+    for root, dirs, files in os.walk(path):
+        if name in files:
+            return os.path.join(root, name)
+
+
+def assemble_default():
     example = "java -jar rars.jar dump 0x00400000-0x00401000 " \
               "HexText instr.asm instr.s"
     addr = "0x00400000-0x00401000"
@@ -59,6 +65,24 @@ def assemble():
     os.system(cmd)
 
 
+def assemble(filename=''):
+    if filename == '':
+        assemble_default()
+        return
+
+    example = "java -jar rars.jar dump 0x00400000-0x00401000 " \
+              "HexText instr.asm instr.s"
+    addr = "0x00400000-0x00401000"
+    in_name = find(filename, '.\\tests')
+    if in_name is None:
+        print("file: " + filename + "not found")
+        return
+    cmd = "java -jar rars.jar dump " + addr + " HexText " + out_name + " " + in_name
+    print("assembling file: " + in_name)
+    os.system(cmd)
+
+
 if __name__ == '__main__':
-    assemble()
+    assemble('add.s')
     append_zeros()
+

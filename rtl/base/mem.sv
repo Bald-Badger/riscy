@@ -36,7 +36,7 @@ module mem
 
 	// use a multi-dimensional packed array to model individual bytes within the word
 	//logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:(WORDS-1)];
-	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:64]; // use small memory for now
+	logic [BYTES-1:0][BYTE_WIDTH-1:0] ram[0:MEM_SPACE]; // use small memory for now
 
 	// TODO: change to always_ff in FPGA run
 	// TODO: used negedge trigger memory to get around bugs

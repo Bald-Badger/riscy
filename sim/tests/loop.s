@@ -11,11 +11,11 @@ loop:
 	bne t1, zero, success
 failure:
 	li a0, 0
-	li a7, 93
+	li a7, 93 
 	ecall
-
+	
 success:
-	li a0, 42
+	li a0, 42 
 	li a7, 93
 	ecall
-
+	

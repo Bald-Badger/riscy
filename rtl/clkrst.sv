@@ -16,7 +16,7 @@ module clkrst #(
 		repeat(2) @(negedge clk);
 		#1;
 		rst_n = 1'b1;
-		repeat(20) @(negedge clk);
+		repeat(1000) @(negedge clk);
 		$stop();
 	end
 
