@@ -7,3 +7,6 @@
 [submodule "sim/riscemu"]
 	path = sim/riscemu
 	url = https://github.com/AntonLydike/riscemu.git
+[submodule "sim/rars"]
+	path = sim/rars
+	url = https://github.com/TheThirdOne/rars.git
