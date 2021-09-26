@@ -74,3 +74,4 @@ transcript
 vsim.wlf
 *.mpf
 *.mti
+instr.asm
