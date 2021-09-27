@@ -44,8 +44,8 @@ def process_file():
     append_zeros()
 
 
-def append_zeros():
-    f = open(out_name, 'a')
+def append_zeros(name=out_name):
+    f = open(name, 'a')
     zeros = ['00000000\n'] * 10
     f.writelines(zeros)
     f.close()
@@ -65,10 +65,13 @@ def assemble_default():
     os.system(cmd)
 
 
-def assemble(filename=''):
+def assemble(filename='', out_name=''):
     if filename == '':
         assemble_default()
         return
+
+    if out_name == '':
+        out_name = 'instr.asm'
 
     example = "java -jar rars.jar dump 0x00400000-0x00401000 " \
               "HexText instr.asm instr.s"
@@ -80,9 +83,12 @@ def assemble(filename=''):
     cmd = "java -jar rars.jar dump " + addr + " HexText " + out_name + " " + in_name
     print("assembling file: " + in_name)
     os.system(cmd)
+    append_zeros(out_name)
 
 
 if __name__ == '__main__':
-    assemble('add.s')
-    append_zeros()
+    mylist = os.listdir('.\\tests\\riscv-tests')
+    compile_list = ['add.s', 'addi.s', 'and.s', 'andi.s', 'lui.s', 'or.s', 'ori.s', 'simple.s', 'sll.s', 'slli.s', 'slt.s', 'slti.s', 'sltiu.s', 'sltu.s', 'sra.s', 'srai.s', 'srl.s', 'srli.s', 'sub.s', 'xor.s', 'xori.s']
+    for f in compile_list:
+        assemble(f, f[:-2]+'.asm')
 

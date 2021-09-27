@@ -3,7 +3,8 @@ import defines::*;
 
 module proc(
 	input logic clk,
-	input logic rst_n
+	input logic rst_n,
+	output logic ebreak_start	// actually 3 cycles after ebreak, pipeline cleared
 );
 	
 	// stage-specific common data wires
@@ -33,7 +34,6 @@ module proc(
 	// ebreak
 	logic ebreak;
 	logic ebreak_stall;	// stall from ebreak, waiting pipeline clear
-
 
 	// global data wire
 	data_t wb_data;
@@ -296,8 +296,6 @@ module proc(
 	);
 
 
-assign ebreak = (instr_d == EBREAK) ? 1'b1 : 1'b0;
-
 typedef enum reg[2:0] {
 	EBREAK_IDLE,
 	EBREAK_CNT_1,
@@ -306,6 +304,8 @@ typedef enum reg[2:0] {
 	EBREAK_WAIT		// wait for return instruction from debugger
 } ebreak_state_t;
 ebreak_state_t ebreak_state, ebreak_nxt_state;
+assign ebreak = (instr_d == EBREAK) ? 1'b1 : 1'b0;
+assign ebreak_start = (ebreak_state == EBREAK_WAIT) ? 1'b1 : 1'b0;
 
 always_ff @(posedge clk or negedge rst_n)
   if (!rst_n)
@@ -344,7 +344,6 @@ always_comb begin : ebreak_fsm
 		end
 
 		EBREAK_WAIT: begin
-			$stop();
 			if (ebreak_return) begin
 				ebreak_nxt_state = EBREAK_IDLE;
 				ebreak_stall = 1'b0;

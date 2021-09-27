@@ -2,18 +2,20 @@ import defines::*;
 
 module proc_hier();
 
-	logic clk, rst_n;
+	logic	clk, rst_n;
+	logic	ebreak_start;
 
 	clkrst #(
-		.FREQ	(FREQ)
+		.FREQ			(FREQ)
 	) clk_rst_gen_nst (
-		.clk	(clk),
-		.rst_n	(rst_n)
+		.clk			(clk),
+		.rst_n			(rst_n)
 	);
 
 	proc processor_inst (
-		.clk	(clk),
-		.rst_n	(rst_n)
+		.clk			(clk),
+		.rst_n			(rst_n),
+		.ebreak_start	(ebreak_start)
 	);
 	
 endmodule
