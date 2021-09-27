@@ -20,6 +20,7 @@ module proc(
 
 
 	// global control wire
+
 	logic 		pc_sel;
 	// for exe forward
 	fwd_sel_t	fwd_a, fwd_b, fwd_m2m;
@@ -29,6 +30,9 @@ module proc(
 				stall_ex_mem, stall_mem_wb;
 	logic		flush_if_id, flush_id_ex,
 				flush_ex_mem, flush_mem_wb;
+	// ebreak
+	logic ebreak;
+	logic ebreak_stall;	// stall from ebreak, waiting pipeline clear
 
 
 	// global data wire
@@ -44,6 +48,11 @@ module proc(
 	end
 
 
+	// external signal
+	logic ebreak_return;
+	assign ebreak_return = 1'b0;
+
+
 	// fetch stage	
 	fetch fetch_inst (
 		// general
@@ -54,7 +63,7 @@ module proc(
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
 		.en_instr_mem	(ENABLE),
-		.stall			(stall_if_id),
+		.stall			(stall_if_id | ebreak_stall),
 
 		// output
 		.pc_p4			(pcp4_f),
@@ -70,7 +79,7 @@ module proc(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.flush			(flush_if_id),
-		.en				(!stall_if_id),
+		.en				((!stall_if_id) & (!ebreak_stall)),
 
 		// input
 		.pc_p4_in		(pcp4_f),
@@ -286,5 +295,71 @@ module proc(
 		.flush_mem_wb	(flush_mem_wb)
 	);
 
+
+assign ebreak = (instr_d == EBREAK) ? 1'b1 : 1'b0;
+
+typedef enum reg[2:0] {
+	EBREAK_IDLE,
+	EBREAK_CNT_1,
+	EBREAK_CNT_2,
+	EBREAK_CNT_3,
+	EBREAK_WAIT		// wait for return instruction from debugger
+} ebreak_state_t;
+ebreak_state_t ebreak_state, ebreak_nxt_state;
+
+always_ff @(posedge clk or negedge rst_n)
+  if (!rst_n)
+    ebreak_state <= EBREAK_IDLE;
+  else
+    ebreak_state <= ebreak_nxt_state;
+
+always_comb begin : ebreak_fsm
+	ebreak_nxt_state = EBREAK_IDLE;
+	ebreak_stall = 1'b0;
+	case (ebreak_state)
+
+		EBREAK_IDLE: begin
+			if (ebreak) begin
+				ebreak_nxt_state = EBREAK_CNT_1;
+				ebreak_stall = 1'b1;
+			end else begin
+				ebreak_nxt_state = EBREAK_IDLE;
+				ebreak_stall = 1'b0;
+			end
+		end
+
+		EBREAK_CNT_1: begin
+			ebreak_nxt_state = EBREAK_CNT_2;
+			ebreak_stall = 1'b1;
+		end
+
+		EBREAK_CNT_2: begin
+			ebreak_nxt_state = EBREAK_CNT_3;
+			ebreak_stall = 1'b1;
+		end
+
+		EBREAK_CNT_3: begin
+			ebreak_nxt_state = EBREAK_WAIT;
+			ebreak_stall = 1'b0;
+		end
+
+		EBREAK_WAIT: begin
+			$stop();
+			if (ebreak_return) begin
+				ebreak_nxt_state = EBREAK_IDLE;
+				ebreak_stall = 1'b0;
+			end else begin
+				ebreak_nxt_state = EBREAK_WAIT;
+				ebreak_stall = 1'b1;
+			end
+		end
+
+		default: begin
+			ebreak_nxt_state = EBREAK_IDLE;
+			ebreak_stall = 1'b0;
+		end
+
+	endcase
+end
 
 endmodule : proc

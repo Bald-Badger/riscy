@@ -75,3 +75,7 @@ vsim.wlf
 *.mpf
 *.mti
 instr.asm
+vsim_stacktrace.vstf
+
+
+

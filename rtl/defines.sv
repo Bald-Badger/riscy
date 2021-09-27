@@ -93,8 +93,10 @@ package defines;
 		opcode_t	opcode;
 	} instr_I_t;		// I type
 
-	instr_t NOP = 32'h0000_0013;	// ADDI x0, x0, 0
-	instr_t HALT = 32'h0000_0063;	// BEQ x0, x0, 0	
+	instr_t NOP 	= 32'h0000_0013;	// ADDI x0, x0, 0
+	instr_t HALT	= 32'h0000_0063;	// BEQ x0, x0, 0
+	instr_t EBREAK	= 32'h0000_0073;
+	instr_t ECALL	= 32'h0010_0073;
 	
 
 // Funt3 define
