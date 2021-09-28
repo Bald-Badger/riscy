@@ -12,9 +12,14 @@ if [file exists work] {
 }
 vlib work
 
-# Compile the HDL source(s)
+# compile packages
 vlog -work work -vopt -sv -stats=none  ../rtl/defines.sv
-vlog -work work -vopt -sv -stats=none  ../rtl/proc_hier_tb.sv
+
+# compile top level tb
+vlog -work work -vopt -sv -stats=none  ../rtl/tb/smoke_test_single.sv
+
+# Compile the HDL source(s)
+
 vlog -work work -vopt -sv -stats=none  ../rtl/proc_hier.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/proc.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/clkrst.sv
@@ -53,6 +58,6 @@ vlog -work work -vopt -sv -stats=none  ../rtl/reg/mem_wb_reg.sv
 
 # Simulate the design
 onerror {quit -sim}
-vsim -gui work.proc_hier_tb -voptargs=+acc
+vsim -gui work.smoke_test_single -voptargs=+acc
 run -all
-# quit -f
+quit -f
