@@ -55,30 +55,59 @@ module hazzard_ctrl (
 	logic hazzard_2a, hazzard_2b;	// mem - ex data hazzard
 	logic hazzard_3;				// mem - mem data hazzard
 
+	logic ex_mem_rs1_rd, mem_wb_rs1_rd;
+	assign ex_mem_rs1_rd =	(instr_x.opcode == JALR) ? 1'b1 :
+							(instr_x.opcode == B) ? 1'b1 :
+							(instr_x.opcode == LOAD) ? 1'b1 :
+							(instr_x.opcode == STORE) ? 1'b1 :
+							(instr_x.opcode == I) ? 1'b1 :
+							(instr_x.opcode == R) ? 1'b1 :
+							(instr_x.opcode == MEM) ? 1'b1 : 1'b0;
+
+	assign mem_wb_rs1_rd =	(instr_m.opcode == JALR) ? 1'b1 :
+							(instr_m.opcode == B) ? 1'b1 :
+							(instr_m.opcode == LOAD) ? 1'b1 :
+							(instr_m.opcode == STORE) ? 1'b1 :
+							(instr_m.opcode == I) ? 1'b1 :
+							(instr_m.opcode == R) ? 1'b1 :
+							(instr_m.opcode == MEM) ? 1'b1 : 1'b0;
+
+	logic ex_mem_rs2_rd, mem_wb_rs2_rd;
+	assign ex_mem_rs2_rd =	(instr_x.opcode == R) ? 1'b1 :
+							(instr_x.opcode == STORE) ? 1'b1 :
+							(instr_x.opcode == B) ? 1'b1 : 1'b0;
+	assign mem_wb_rs2_rd =	(instr_m.opcode == R) ? 1'b1 :
+							(instr_m.opcode == STORE) ? 1'b1 :
+							(instr_m.opcode == B) ? 1'b1 : 1'b0;
+
+
 	always_comb begin : data_hazzard_detect
 
 		hazzard_1a =	(ex_mem_wr_rd) &&
 						(ex_mem_rd != X0) &&
-						(ex_mem_rd == id_ex_rs1);
+						(ex_mem_rd == id_ex_rs1) &&
+						ex_mem_rs1_rd;
 	
 		hazzard_1b =	(ex_mem_wr_rd) &&
 						(ex_mem_rd != X0) &&
-						(ex_mem_rd == id_ex_rs2);
+						(ex_mem_rd == id_ex_rs2) &&
+						ex_mem_rs2_rd;
 
 		hazzard_2a =	(mem_wb_wr_rd) &&
 						(mem_wb_rd != X0) &&
 						(!(hazzard_1a)) &&
-						(mem_wb_rd == id_ex_rs1);
-		
+						(mem_wb_rd == id_ex_rs1) &&
+						mem_wb_rs1_rd;
+
 		hazzard_2b =	(mem_wb_wr_rd) &&
 						(mem_wb_rd != X0) &&
 						(!(hazzard_2a)) &&
-						(mem_wb_rd == id_ex_rs2);
+						(mem_wb_rd == id_ex_rs2) &&
+						mem_wb_rs2_rd;
 	
 		hazzard_3 =		(mem_store) &&
 						(ex_mem_rd != X0) && 
 						(mem_wb_rd == ex_mem_rs2);
-
 	end
 
 
