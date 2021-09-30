@@ -35,7 +35,6 @@ module hazzard_ctrl (
 	output logic flush_mem_wb
 );
 	
-
 	r_t id_ex_rs1, id_ex_rs2, ex_mem_rs2, ex_mem_rd, mem_wb_rd;
 	logic mem_store;
 	always_comb begin : input_sig
@@ -55,6 +54,8 @@ module hazzard_ctrl (
 	logic hazzard_2a, hazzard_2b;	// mem - ex data hazzard
 	logic hazzard_3;				// mem - mem data hazzard
 
+	// TODO: add forward logic for instr out of base instruction
+	// e.g. fence, csr, mult, div. etc
 	logic ex_mem_rs1_rd, mem_wb_rs1_rd;
 	assign ex_mem_rs1_rd =	(instr_x.opcode == JALR) ? 1'b1 :
 							(instr_x.opcode == B) ? 1'b1 :

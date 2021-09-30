@@ -21,15 +21,15 @@ package defines;
 
 	// sopported extension
 	// this part is and only accessed by verilog generate function. 
-	localparam	I_SUPPORT = TRUE;			// Base (Integer) operations, must implement
-	localparam	M_SUPPORT = FALSE;			// Integer Mult / Dvi, should implement
-	localparam	A_SUPPORT = FALSE;			// Atomic instructions, required for xv6
-	localparam	F_SUPPORT = FALSE;			// Single-Precision FP, implement if enough FPGA space
-	localparam	D_SUPPORT = FALSE;			// Double-Precision FP, should not implement
-	localparam	Q_SUPPORT = FALSE;			// Quad-Precision FP, should not implement
-	localparam	C_SUPPORT = FALSE;			// Compressed Instructions, should not implement (unless embedded or VLIW)
-	localparam	ZICSR_SUPPORT = FALSE;		// Control and status register, required for xv6
-	localparam	ZIFENCEI_SUPPORT = FALSE;	// Instruction-Fetch fence, required for xv6
+	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
+	localparam	M_SUPPORT		= FALSE;	// Integer Mult / Dvi, should implement
+	localparam	A_SUPPORT		= FALSE;	// Atomic instructions, required for xv6
+	localparam	F_SUPPORT		= FALSE;	// Single-Precision FP, implement if enough FPGA space
+	localparam	D_SUPPORT		= FALSE;	// Double-Precision FP, should not implement
+	localparam	Q_SUPPORT		= FALSE;	// Quad-Precision FP, should not implement
+	localparam	C_SUPPORT		= FALSE;	// Compressed Instructions, should not implement (unless embedded or VLIW)
+	localparam	CSR_SUPPORT		= FALSE;	// Control and status register, required for xv6
+	localparam	FENCE_SUPPORT	= FALSE;	// Instruction-Fetch fence, required for xv6
 
 
 	typedef enum logic[1:0] {
@@ -61,7 +61,8 @@ package defines;
 		LOAD =		7'b0000011,
 		STORE =		7'b0100011,
 		MEM =		7'b0001111,	// for fence instruction
-		SYS =		7'b1110011,	// for ECALL and EBREAK
+		SYS =		7'b1110011,	// ECALL, EBREAK, and CSR
+		ATMO =		7'b0101111, // atomic instr	
 		NULL_OP =	7'b0000000
 	} opcode_t;
 
@@ -100,19 +101,28 @@ package defines;
 	
 
 // Funt3 define
-    // R type funt3
-    funct3_t ADD     =	3'b000;		// rd <= rs1 + rs2, no overflow exception
-    funct3_t SUB     =	3'b000;		// rd <= rs1 - rs2, no overflow exception
-    funct3_t AND     =	3'b111;
-    funct3_t OR      =	3'b110;
-    funct3_t XOR     =	3'b100;
-    funct3_t SLT     =	3'b010;		// set less than, rd <= 1 if rs1 < rs2
-    funct3_t SLTU    =	3'b011;		// set less than unsigned, rd <= 1 if rs1 < rs2
-    funct3_t SLL     =	3'b001;		// logical shift left, rd <= rs1 << rs2[4:0]
-    funct3_t SRL     =	3'b101;		// logical shift right rd <= rs1 >> rs2[4:0]
-    funct3_t SRA     =	3'b101;		// arithmetic shift right
+    // R type funct3
+    funct3_t ADD	=	3'b000;		// rd <= rs1 + rs2, no overflow exception
+    funct3_t SUB	=	3'b000;		// rd <= rs1 - rs2, no overflow exception
+    funct3_t AND	=	3'b111;
+    funct3_t OR		=	3'b110;
+    funct3_t XOR	=	3'b100;
+    funct3_t SLT	=	3'b010;		// set less than, rd <= 1 if rs1 < rs2
+    funct3_t SLTU	=	3'b011;		// set less than unsigned, rd <= 1 if rs1 < rs2
+    funct3_t SLL	=	3'b001;		// logical shift left, rd <= rs1 << rs2[4:0]
+    funct3_t SRL	=	3'b101;		// logical shift right rd <= rs1 >> rs2[4:0]
+    funct3_t SRA	=	3'b101;		// arithmetic shift right
+	// MUL (same opcode as R) funct3
+	funct3_t MUL 	=	3'b000;		// (sign rs1*sign rs2)[XLEN-1:0] => rd
+	funct3_t MULH	=	3'b001;		// (sign rs1*sign rs2)[2*XLEN-1:XLEN] => rd
+	funct3_t HULHSU	=	3'b010;		// (sign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
+	funct3_t MULHU	=	3'b011;		// (unsign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
+	funct3_t DIV	=	3'b100;		// sign rs1 / sign rs2
+	funct3_t DIVU	=	3'b101;		// unsign rs1 / unsign rs2
+	funct3_t REM	=	3'b110;		// sign rs1 % sign rs2
+	funct3_t REMU	=	3'b111;		// unsign rs1 % unsign rs2
 
-    // I type funt3
+    // I type funct3
     funct3_t ADDI    =	3'b000;
     funct3_t ANDI    =	3'b111;
     funct3_t ORI     =	3'b110;
@@ -123,7 +133,7 @@ package defines;
     funct3_t SRLI    =	3'b101;		// logical shift right imm
     funct3_t SRAI    =	3'b101;		// arithmetic shift right imm
 
-    // B type funt3                branch imm have to shift left for 1
+    // B type funct3                branch imm have to shift left for 1
     funct3_t BEQ     =	3'b000;		// branch if rs1 == rs2
     funct3_t BNE     =	3'b001;		// branch if rs1 != rs2
     funct3_t BLT     =	3'b100;		// branch if rs1 < rs2 signed
@@ -131,31 +141,45 @@ package defines;
     funct3_t BGE     =	3'b101;		// branch if rs1 >= rs2 signed
     funct3_t BGEU    =	3'b111;		// branch if rs1 >= rs2 unsigned
 
-    // U type have no funt3 
+    // U type have no funct3 
     //funct3_t LUI     =	3'b000;	// rd <= {imm, 12'b0}
     //funct3_t AUIPC   =	3'b000;	// pc, rd <= (pc_of_auipc + {imm, 12'b0})
 
-    // J type have no funt3
+    // J type have no funct3
     //funct3_t JAL     =	3'b000;	// jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm << 1)
     //funct3_t JALR    =	3'b000;	// jump and link registor, rd <= (pc_of_jalr + 4),  
 									// pc <= (rs1 + imm) && 0xfffe (set the last bit is always 0)
 
-    // S type funt3 - Load
+    // S type funct3 - Load
     funct3_t LB      =	3'b000;		// load 8 bits and sign extend to 32 bits
     funct3_t LH      =	3'b001;		// load 16 bits and sign extend to 32 bits
     funct3_t LW      =	3'b010;		// rd <= mem[rs1 + imm]
     funct3_t LBU     =	3'b100;		// load 8 bits and zero extend to 32 bits
     funct3_t LHU     =	3'b101;		// load 16 bits and zero extend to 32 bits
 
-    // S type funt3 - Store
+    // S type funct3 - Store
     funct3_t SB      =	3'b000;      
     funct3_t SH      =	3'b001;
     funct3_t SW      =	3'b010;		// mem[rs1 + imm] <= rs2
     //funct3_t SBU     =	3'b100; not used
     //funct3_t SHU     =	3'b101; not used
 
-    // Fence (Memory ordering) funt3
-    funct3_t FENCE   =	3'b000;
+    // Fence (Memory ordering) funct3
+    funct3_t FENCE	=	3'b000;
+	funct3_t FENCEI	=	3'b001;	
+
+	// SYS (ECALL, EBREAK, and CSR) funct3
+	funct3_t CSRRW =	3'b001;	// Atomic read/write CSR
+	funct3_t CSRRS =	3'b010;	// Atomic Read and Clear Bits
+	funct3_t CSRRC =	3'b011;
+	funct3_t CSRRWI =	3'b101;
+	funct3_t CSRRSI =	3'b101;
+	funct3_t CSRRSI =	3'b110;
+	funct3_t CSRRCI =	3'b111;
+
+	// ATMO (atomic instruction) funct3
+	// TODO: implement
+
 
 	// little endian mask (and-mask, not or-mask)
 	logic[XLEN-1:0] B_MASK_LITTLE = 32'hFF_00_00_00;
