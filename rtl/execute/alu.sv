@@ -59,12 +59,12 @@ module alu (
 	always_comb begin : shifter
 		shift_result = NULL;
 		unique case ({shift_type, funct3, opcode})
-			{logical, SLL, R}: 		shift_result = a_in << b_in[4:0];
-			{logical, SRL, R}: 		shift_result = a_in >> b_in[4:0];
-			{arithmetic, SRA, R}:	shift_result = a_in >>> b_in[4:0];
-			{logical, SLLI, I}:		shift_result = a_in << $unsigned(shamt);
-			{logical, SRLI, I}:		shift_result = a_in >> $unsigned(shamt);
-			{arithmetic, SRAI, I}:	shift_result = a_in >>> $unsigned(shamt);
+			{logical, SLL, R}: 		shift_result = a_in 			<<	b_in[4:0];
+			{logical, SRL, R}: 		shift_result = a_in 			>>	b_in[4:0];
+			{arithmetic, SRA, R}:	shift_result = $signed(a_in)	>>>	b_in[4:0];
+			{logical, SLLI, I}:		shift_result = a_in 			<<	$unsigned(shamt);
+			{logical, SRLI, I}:		shift_result = a_in 			>>	$unsigned(shamt);
+			{arithmetic, SRAI, I}:	shift_result = $signed(a_in) 	>>>	$unsigned(shamt);
 			default: 				shift_result = NULL;
 		endcase
 	end
