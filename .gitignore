@@ -69,6 +69,7 @@ work/
 modelsim/
 .idea/
 work/
+par/
 PLLJ_PLLSPE_INFO.txt
 transcript
 vsim.wlf

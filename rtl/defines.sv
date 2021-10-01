@@ -9,7 +9,7 @@ package defines;
 	localparam 	XLEN 		= 	32;			// RV32
 	localparam	N 			= 	XLEN;	 	// in case I forget should be XLEN instead of N
 	localparam 	FREQ 		= 	5e7;		// bus clock, 50Mhz crystal oscillator on FPGA board
-	localparam	MEM_SPACE	=	1024 - 1;	// memory space in words
+	localparam	MEM_SPACE	=	256 - 1;	// memory space in words
 
 //	constant define
 	localparam	BYTES 	= XLEN / 8; 		// num of byte in a word
@@ -173,7 +173,6 @@ package defines;
 	funct3_t CSRRS =	3'b010;	// Atomic Read and Clear Bits
 	funct3_t CSRRC =	3'b011;
 	funct3_t CSRRWI =	3'b101;
-	funct3_t CSRRSI =	3'b101;
 	funct3_t CSRRSI =	3'b110;
 	funct3_t CSRRCI =	3'b111;
 
@@ -205,6 +204,7 @@ endfunction
 
 // very expensive, avoid to use unless for instruction imm extraction while instruction is unknown
 // for alu imm calculation, not for branch / jump imm calculation
+/*
 function data_t get_imm;
 	input instr_t instr;
 	unique	if(instr.opcode == LUI)		return data_t'({instr[31:12], 12'b0});
@@ -216,6 +216,23 @@ function data_t get_imm;
 	else 	if(instr.opcode == STORE)	return data_t'({ {20{instr[31]}} , instr[31:25], instr[11:7]});
 	else 	if(instr.opcode == I)		return data_t'({ {20{instr[31]}} , instr[31:20]});
 	else 								return data_t'(NULL);
+endfunction
+*/
+
+
+function data_t get_imm;
+	input instr_t instr;
+	unique case (instr.opcode)
+		LUI:		return data_t'({instr[31:12], 12'b0});
+		AUIPC:		return data_t'({instr[31:12], 12'b0});
+		JAL:		return data_t'({32'd4});	// pc + 4 for ALU
+		JALR:		return data_t'({32'd4});	// pc + 4 for ALU
+		B:			return data_t'({ {20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0});
+		LOAD:		return data_t'({ {20{instr[31]}} , instr[31:20]});
+		STORE:		return data_t'({ {20{instr[31]}} , instr[31:25], instr[11:7]});
+		I:			return data_t'({ {20{instr[31]}} , instr[31:20]});
+		default:	return NULL;
+	endcase
 endfunction
 
 function data_t swap_endian;

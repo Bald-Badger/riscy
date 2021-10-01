@@ -19,7 +19,6 @@ module reg_bypass (
 
 	// TODO: write on fall edge, read on raise rdge
 
-	localparam DEPTH = 5'd32;
 	logic [XLEN-1:0] registers [0:31]; 
 
 	integer i;

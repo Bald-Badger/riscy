@@ -112,29 +112,33 @@ module alu (
 		unique case (opcode)
 
 			R: begin
-				unique if	(funct3 == ADD)		c_out = add_sub_result; // same as SUB
-				else if		(funct3 == AND) 	c_out = and_result;
-				else if		(funct3 == OR) 		c_out = or_result;
-				else if		(funct3 == XOR) 	c_out = xor_result;
-				else if		(funct3 == SLT) 	c_out = set_result;
-				else if		(funct3 == SLTU)	c_out = set_result;
-				else if		(funct3 == SLL) 	c_out = shift_result;
-				else if		(funct3 == SRL) 	c_out = shift_result; // same as SRA
-				else 							c_out = NULL;
 				rd_wr = 1'b1;
+				unique case (funct3)
+					ADD:		c_out = add_sub_result;	// same as SUB
+					AND: 		c_out = and_result;
+					OR: 		c_out = or_result;
+					XOR: 		c_out = xor_result;
+					SLT: 		c_out = set_result;
+					SLTU:		c_out = set_result;
+					SLL: 		c_out = shift_result;
+					SRL: 		c_out = shift_result;	// same as SRA
+					default:	c_out = NULL;
+				endcase
 			end
-
+			
 			I: begin
-				unique if	(funct3 == ADDI)	c_out = add_sub_result;
-				else if		(funct3 == ANDI) 	c_out = and_result;
-				else if		(funct3 == ORI) 	c_out = or_result;
-				else if		(funct3 == XORI) 	c_out = xor_result;
-				else if		(funct3 == SLTI) 	c_out = set_result;
-				else if		(funct3 == SLTIU)	c_out = set_result;
-				else if		(funct3 == SLLI) 	c_out = shift_result;
-				else if		(funct3 == SRLI) 	c_out = shift_result; // same as SRAI
-				else 							c_out = NULL;
 				rd_wr = 1'b1;
+				unique case (funct3)
+					ADD:		c_out = add_sub_result;	// same as SUB
+					AND: 		c_out = and_result;
+					OR: 		c_out = or_result;
+					XOR: 		c_out = xor_result;
+					SLT: 		c_out = set_result;
+					SLTU:		c_out = set_result;
+					SLL: 		c_out = shift_result;
+					SRL: 		c_out = shift_result;	// same as SRA
+					default:	c_out = NULL;
+				endcase
 			end
 
 			B: begin
