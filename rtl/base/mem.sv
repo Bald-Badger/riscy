@@ -40,18 +40,24 @@ module mem
 
 	// TODO: change to always_ff in FPGA run
 	// TODO: used negedge trigger memory to get around bugs
-	always @(negedge clk or negedge rst_n) begin	
+	always_ff @(negedge clk) begin	
 		if (we) begin
 			// edit this code if using other than four bytes per word
 			if(be[0]) ram[waddr[ADDR_WIDTH-1:2]][0] <= wdata[7:0];
 			if(be[1]) ram[waddr[ADDR_WIDTH-1:2]][1] <= wdata[15:8];
 			if(be[2]) ram[waddr[ADDR_WIDTH-1:2]][2] <= wdata[23:16];
 			if(be[3]) ram[waddr[ADDR_WIDTH-1:2]][3] <= wdata[31:24];
+		end else begin
+			ram[waddr[ADDR_WIDTH-1:2]][0] <= ram[waddr[ADDR_WIDTH-1:2]][0];
+			ram[waddr[ADDR_WIDTH-1:2]][1] <= ram[waddr[ADDR_WIDTH-1:2]][1];
+			ram[waddr[ADDR_WIDTH-1:2]][2] <= ram[waddr[ADDR_WIDTH-1:2]][2];
+			ram[waddr[ADDR_WIDTH-1:2]][3] <= ram[waddr[ADDR_WIDTH-1:2]][3];
 		end
-		q = (re ? ram[raddr[ADDR_WIDTH-1:2]] : NULL); // read entire 32b
 	end
 
+	assign q = (re ? ram[raddr[ADDR_WIDTH-1:2]] : NULL); // read entire 32b
 
+/*
 	initial begin
 			if (TYPE == BLANK_MEM) begin
 				for (int i = 0; i < 2**ADDR_WIDTH; i++) begin
@@ -73,5 +79,5 @@ module mem
 				$readmemh("data.asm", ram);
 			end
 	end
-
+*/
 endmodule : mem
