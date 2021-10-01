@@ -20,7 +20,7 @@ module if_id_reg (
 	output logic	branch_take_out
 );
 
-	dffe #(.WIDTH(XLEN)) pc_p4_reg (
+	dffe_wrap #(.WIDTH(XLEN)) pc_p4_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -28,7 +28,7 @@ module if_id_reg (
 		.q		(pc_p4_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) pc_reg (
+	dffe_wrap #(.WIDTH(XLEN)) pc_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -36,7 +36,7 @@ module if_id_reg (
 		.q		(pc_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) instr_reg (
+	dffe_wrap #(.WIDTH(XLEN)) instr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -44,7 +44,7 @@ module if_id_reg (
 		.q		(instr_out)
 	);
 
-	dffe #(.WIDTH(1)) branch_take_reg (
+	dffe_wrap #(.WIDTH(1)) branch_take_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),

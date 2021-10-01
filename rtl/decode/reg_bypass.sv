@@ -23,7 +23,8 @@ module reg_bypass (
 
 	integer i;
 	// TODO: used negedge in design to avoid bugs
-	always_ff @(negedge clk or negedge rst_n) begin
+	/*
+	always @(negedge clk or negedge rst_n) begin
 		if (~rst_n) begin
 			for (i = 0; i < 32; i++) begin
 				registers[i] <= NULL;
@@ -31,6 +32,14 @@ module reg_bypass (
 		end if (rd_wren) begin
 			registers[rd_addr] <= rd_data;
 		end
+	end
+	*/
+	always @(negedge clk) begin
+	
+	if (rd_wren) begin
+		registers[rd_addr] <= rd_data;
+	end
+
 	end
 	
 

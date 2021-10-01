@@ -4,7 +4,7 @@ import defines::*;
 // `timescale 1 ps / 1 ps
 // synopsys translate_on
 
-module dff #(
+module dff_wrap #(
 	WIDTH = XLEN
 ) (
 	input 	logic 	clk,

@@ -55,7 +55,7 @@ module memory (
 	data_t data_out_unmasked;	// data unmasked yet
 
 	always_comb begin : sel_fwd_data
-		assign data_in = (fwd_m2m == MEM_MEM_FWD_SEL) ? mem_mem_fwd_data : data_in_raw;
+		data_in = (fwd_m2m == MEM_MEM_FWD_SEL) ? mem_mem_fwd_data : data_in_raw;
 	end
 
 	// switch data endianess to little when storing if necessary
@@ -68,7 +68,9 @@ module memory (
 		data_out_unmasked = (ENDIANESS == BIG_ENDIAN) ? data_out_mem : swap_endian(data_out_mem);
 	end
 
-	data_t d = data_out_unmasked; // abbr for shorter code
+	data_t d;
+	assign d = data_out_unmasked; // abbr for shorter code
+	
 	always_comb begin : output_mask_pharse
 		data_out = NULL;
 

@@ -4,7 +4,9 @@ import defines::*;
 // `timescale 1 ps / 1 ps
 // synopsys translate_on
 
-module dffe #(
+// quartus have dffe primitive but not parameterizable, i dont like it
+
+module dffe_wrap #(
 	WIDTH = XLEN
 ) (
 	input clk,
@@ -14,7 +16,7 @@ module dffe #(
 	output logic[WIDTH-1:0] q
 );
  
- dff #(.WIDTH(WIDTH)) dff_inst (
+ dff_wrap #(.WIDTH(WIDTH)) dff_inst (
 	 // Output
 	.q(q),
 	// Input

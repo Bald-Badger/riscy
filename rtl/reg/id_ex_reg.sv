@@ -24,7 +24,7 @@ module id_ex_reg (
 	output data_t	pc_p4_out
 );
 
-	dffe #(.WIDTH(XLEN)) instr_reg (
+	dffe_wrap #(.WIDTH(XLEN)) instr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -32,7 +32,7 @@ module id_ex_reg (
 		.q		(instr_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) rs1_reg (
+	dffe_wrap #(.WIDTH(XLEN)) rs1_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -40,7 +40,7 @@ module id_ex_reg (
 		.q		(rs1_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) pc_reg (
+	dffe_wrap #(.WIDTH(XLEN)) pc_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -48,7 +48,7 @@ module id_ex_reg (
 		.q		(pc_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) rs2_reg (
+	dffe_wrap #(.WIDTH(XLEN)) rs2_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -56,7 +56,7 @@ module id_ex_reg (
 		.q		(rs2_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) imm_reg (
+	dffe_wrap #(.WIDTH(XLEN)) imm_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -64,7 +64,7 @@ module id_ex_reg (
 		.q		(imm_out)
 	);
 	
-	dffe #(.WIDTH(XLEN)) pc_p4_reg (
+	dffe_wrap #(.WIDTH(XLEN)) pc_p4_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),

@@ -22,7 +22,7 @@ module ex_mem_reg (
 	output logic	rd_wren_out
 );
 
-	dffe #(.WIDTH(XLEN)) instr_reg (
+	dffe_wrap #(.WIDTH(XLEN)) instr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -30,7 +30,7 @@ module ex_mem_reg (
 		.q		(instr_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) alu_result_reg (
+	dffe_wrap #(.WIDTH(XLEN)) alu_result_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -38,7 +38,7 @@ module ex_mem_reg (
 		.q		(alu_result_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) rs2_reg (
+	dffe_wrap #(.WIDTH(XLEN)) rs2_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -46,7 +46,7 @@ module ex_mem_reg (
 		.q		(rs2_out)
 	);
 
-	dffe #(.WIDTH(XLEN)) pc_p4_reg (
+	dffe_wrap #(.WIDTH(XLEN)) pc_p4_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -54,7 +54,7 @@ module ex_mem_reg (
 		.q		(pc_p4_out)
 	);
 
-	dffe #(.WIDTH(1)) rd_wren_reg (
+	dffe_wrap #(.WIDTH(1)) rd_wren_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
