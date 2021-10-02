@@ -9,7 +9,7 @@ package defines;
 	localparam 	XLEN 		= 	32;			// RV32
 	localparam	N 			= 	XLEN;	 	// in case I forget should be XLEN instead of N
 	localparam 	FREQ 		= 	5e7;		// bus clock, 50Mhz crystal oscillator on FPGA board
-	localparam	MEM_SPACE	=	256 - 1;	// memory space in words
+	localparam	MEM_SPACE	=	8 - 1;	// memory space in words
 
 //	constant define
 	localparam	BYTES 	= XLEN / 8; 		// num of byte in a word
