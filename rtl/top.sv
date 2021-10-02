@@ -10,10 +10,10 @@ module top (
 	assign rst_n = (but_rst_n & locked);
 	
 	pll	pll_inst (
-	.areset ( but_rst_n ),
-	.inclk0 ( osc_clk ),
-	.c0 ( clk ),
-	.locked ( locked )
+		.areset		(but_rst_n),
+		.inclk0		(osc_clk),
+		.c0			(clk),
+		.locked		(locked)
 	);
 
 	proc processor_inst (

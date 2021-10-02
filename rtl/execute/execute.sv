@@ -18,8 +18,7 @@ module execute (
 
 	// output
 	output data_t alu_result,
-	output logic rd_wren,
-	output data_t rs2_fwd
+	output logic rd_wren
 );
 
 	data_t a, b;

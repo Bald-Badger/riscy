@@ -77,7 +77,7 @@ module memory (
 		if (wren) begin
 			unique case (funct3)
 				LB: 	 data_out = {{24{d[7]}}, d[7:0]};
-				LH: 	 data_out = {{24{d[15]}}, d[15:0]};
+				LH: 	 data_out = {{16{d[15]}}, d[15:0]};
 				LW: 	 data_out = d;
 				LBU: 	 data_out = {24'b0, d[7:0]};
 				LHU: 	 data_out = {16'b0, d[15:0]};

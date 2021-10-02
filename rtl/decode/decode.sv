@@ -25,10 +25,6 @@ module decode(
 	output data_t 	imm,
 	output logic	branch_taken
 );
-	data_t instr_plain;
-	always_comb begin
-		instr_plain = data_t'(instr);
-	end
 	
 	pc_adder pc_adder_inst (
 		// input 

@@ -95,15 +95,15 @@ module alu (
 
 		// I could not use one single adder to achieve both add, sub, and set
 		/*
-		set_flag = 	(funct3 == SLT & $signed(adder_out[XLEN-1:0]) > 32'b0) ? 32'b1 :
-					(funct3 == SLTU & $signed(adder_out[XLEN-1:0]) > 33'b0) ? 32'b1 :
-					0;
+		set_flag = 	(funct3 == SLT & $signed(adder_out[XLEN-1:0]) > 32'b0) ? 1'b1 :
+					(funct3 == SLTU & $signed(adder_out[XLEN-1:0]) > 33'b0) ? 1'b1 :
+					1'b0;
 		*/
-		set_signed_flag = ($signed(a_in) < $signed(b_in)) ? 32'b1 : 32'b0;
-		set_unsigned_flag = ($unsigned(a_in) < $unsigned(b_in)) ? 32'b1 : 32'b0;
-		set_flag = 	(funct3 == SLT & set_signed_flag) ? 32'b1 :
-					(funct3 == SLTU & set_unsigned_flag) ? 32'b1 :
-					0;
+		set_signed_flag = ($signed(a_in) < $signed(b_in)) ? 1'b1 : 1'b0;
+		set_unsigned_flag = ($unsigned(a_in) < $unsigned(b_in)) ? 1'b1 : 1'b0;
+		set_flag = 	(funct3 == SLT & set_signed_flag) ? 1'b1 :
+					(funct3 == SLTU & set_unsigned_flag) ? 1'b1 :
+					1'b0;
 	end
 
 	always_comb begin : output_sel

@@ -158,8 +158,6 @@ module proc(
 
 
 	// execute stage
-	// data wire first used in execute stage
-	data_t rs2_fwd;
 
 	execute execute_inst (
 		// ctrl
@@ -178,8 +176,7 @@ module proc(
 
 		// output
 		.alu_result			(alu_result_x),
-		.rd_wren			(rd_wren_x),
-		.rs2_fwd			(rs2_fwd)
+		.rd_wren			(rd_wren_x)
 	);
 
 
@@ -194,7 +191,7 @@ module proc(
 		// input
 		.instr_in		(instr_x),
 		.alu_result_in	(alu_result_x),
-		.rs2_in			(rs2_fwd),
+		.rs2_in			(rs2_x),
 		.pc_p4_in		(pcp4_x),
 		.rd_wren_in		(rd_wren_x),
 
@@ -214,7 +211,7 @@ module proc(
 		.rst_n				(rst_n),
 		.addr				(alu_result_m),
 		.data_in_raw		(rs2_m),
-		.mem_mem_fwd_data	(wb_data),
+		.mem_mem_fwd_data	(mem_mem_fwd_data),
 		.fwd_m2m			(fwd_m2m),
 		.instr				(instr_m),
 		
