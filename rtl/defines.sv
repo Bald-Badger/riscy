@@ -22,7 +22,7 @@ package defines;
 	// sopported extension
 	// this part is and only accessed by verilog generate function. 
 	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
-	localparam	M_SUPPORT		= FALSE;	// Integer Mult / Dvi, should implement
+	localparam	M_SUPPORT		= TRUE;		// Integer Mult / Dvi, should implement
 	localparam	A_SUPPORT		= FALSE;	// Atomic instructions, required for xv6
 	localparam	F_SUPPORT		= FALSE;	// Single-Precision FP, implement if enough FPGA space
 	localparam	D_SUPPORT		= FALSE;	// Double-Precision FP, should not implement
@@ -182,6 +182,9 @@ package defines;
 	// TODO: implement
 
 
+// funct7 define (R only)
+	funct7_t M_INSTR = 7'b000_0001;
+
 	// little endian mask (and-mask, not or-mask)
 	logic[XLEN-1:0] B_MASK_LITTLE = 32'hFF_00_00_00;
 	logic[XLEN-1:0] H_MASK_LITTLE = 32'hFF_FF_00_00;
@@ -202,24 +205,6 @@ function data_t sign_extend;
 	input imm_t imm;
 	return data_t'({imm[11]*20, imm[11:0]});
 endfunction
-
-
-// very expensive, avoid to use unless for instruction imm extraction while instruction is unknown
-// for alu imm calculation, not for branch / jump imm calculation
-/*
-function data_t get_imm;
-	input instr_t instr;
-	unique	if(instr.opcode == LUI)		return data_t'({instr[31:12], 12'b0});
-	else 	if(instr.opcode == AUIPC)	return data_t'({instr[31:12], 12'b0});
-	else 	if(instr.opcode == JAL)		return data_t'({32'd4});	// pc + 4 for ALU
-	else 	if(instr.opcode == JALR)	return data_t'({32'd4});	// pc + 4 for ALU
-	else 	if(instr.opcode == B)		return data_t'({ {20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0});
-	else 	if(instr.opcode == LOAD)	return data_t'({ {20{instr[31]}} , instr[31:20]});
-	else 	if(instr.opcode == STORE)	return data_t'({ {20{instr[31]}} , instr[31:25], instr[11:7]});
-	else 	if(instr.opcode == I)		return data_t'({ {20{instr[31]}} , instr[31:20]});
-	else 								return data_t'(NULL);
-endfunction
-*/
 
 
 function data_t get_imm;

@@ -15,7 +15,8 @@ module alu (
 			xor_result,
 			set_result,
 			shift_result,
-			add_sub_result;
+			add_sub_result
+			mult_div_rem_result;
 
 
 	logic[4:0]	shamt;
@@ -106,6 +107,14 @@ module alu (
 					1'b0;
 	end
 
+
+	mult_div mul_div_remer(
+		.instr(instr),
+		.a_in(a_in),
+		.b_in(b_in),
+		.c_out(mult_div_rem_result)
+	);
+	
 	always_comb begin : output_sel
 		c_out = NULL;
 		rd_wr = 1'b0;
@@ -113,16 +122,24 @@ module alu (
 
 			R: begin
 				rd_wr = 1'b1;
-				unique case (funct3)
-					ADD:		c_out = add_sub_result;	// same as SUB
-					AND: 		c_out = and_result;
-					OR: 		c_out = or_result;
-					XOR: 		c_out = xor_result;
-					SLT: 		c_out = set_result;
-					SLTU:		c_out = set_result;
-					SLL: 		c_out = shift_result;
-					SRL: 		c_out = shift_result;	// same as SRA
-					default:	c_out = NULL;
+				unique case (instr.funct7)
+					M_INSTR: begin
+						mult_div_rem_result;
+					end
+
+					default: begin
+						unique case (funct3)
+							ADD:	c_out = add_sub_result;	// same as SUB
+							AND: 	c_out = and_result;
+							OR: 	c_out = or_result;
+							XOR: 	c_out = xor_result;
+							SLT: 	c_out = set_result;
+							SLTU:	c_out = set_result;
+							SLL: 	c_out = shift_result;
+							SRL: 	c_out = shift_result;	// same as SRA
+							default:c_out = NULL;
+						endcase
+					end
 				endcase
 			end
 			
