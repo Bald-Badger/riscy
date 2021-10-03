@@ -88,7 +88,8 @@ def assemble(filename='', out_name=''):
 
 if __name__ == '__main__':
     mylist = os.listdir('.\\tests\\riscv-tests')
-    compile_list = ['add.s', 'addi.s', 'and.s', 'andi.s', 'lui.s', 'or.s', 'ori.s', 'simple.s', 'sll.s', 'slli.s', 'slt.s', 'slti.s', 'sltiu.s', 'sltu.s', 'sra.s', 'srai.s', 'srl.s', 'srli.s', 'sub.s', 'xor.s', 'xori.s']
+    print(mylist)
+    compile_list = ['add.s', 'addi.s', 'and.s', 'andi.s', 'div.s', 'divu.s', 'lui.s', 'mul.s', 'mulh.s', 'mulhsu.s', 'mulhu.s', 'or.s', 'ori.s', 'rem.s', 'remu.s', 'simple.s', 'sll.s', 'slli.s', 'slt.s', 'slti.s', 'sltiu.s', 'sltu.s', 'sra.s', 'srai.s', 'srl.s', 'srli.s', 'sub.s', 'xor.s', 'xori.s']
     for f in compile_list:
         assemble(f, f[:-2]+'.asm')
 

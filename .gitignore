@@ -62,7 +62,6 @@ incremental_db/
 simulation/
 timing/
 testbench/
-_sim/
 _output_files/
 output_files/
 work/
