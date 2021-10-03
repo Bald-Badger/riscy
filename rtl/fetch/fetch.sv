@@ -14,7 +14,7 @@ module fetch(
 	// output
 	output	data_t	pc_p4,
 	output	data_t	pc,
-	output	instr_t	instr,
+	output	data_t	instr,
 	output	logic	taken
 );
 

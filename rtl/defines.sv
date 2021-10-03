@@ -9,7 +9,7 @@ package defines;
 	localparam 	XLEN 		= 	32;			// RV32
 	localparam	N 			= 	XLEN;	 	// in case I forget should be XLEN instead of N
 	localparam 	FREQ 		= 	5e7;		// bus clock, 50Mhz crystal oscillator on FPGA board
-	localparam	MEM_SPACE	=	8 - 1;	// memory space in words
+	localparam	MEM_SPACE	=	8 - 1;		// memory space in words
 
 //	constant define
 	localparam	BYTES 	= XLEN / 8; 		// num of byte in a word
@@ -69,6 +69,8 @@ package defines;
 
 // basic data type define
 	typedef logic [XLEN-1:0]	data_t;
+	typedef logic [XLEN-1:0]	word_t;
+	typedef logic [2*XLEN-1:0]	double_word_t;
 	typedef logic [2:0] 		funct3_t;
 	typedef logic [6:0] 		funct7_t;
 	typedef logic [4:0] 		r_t;
@@ -115,7 +117,7 @@ package defines;
 	// MUL (same opcode as R) funct3
 	funct3_t MUL 	=	3'b000;		// (sign rs1*sign rs2)[XLEN-1:0] => rd
 	funct3_t MULH	=	3'b001;		// (sign rs1*sign rs2)[2*XLEN-1:XLEN] => rd
-	funct3_t HULHSU	=	3'b010;		// (sign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
+	funct3_t MULHSU	=	3'b010;		// (sign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
 	funct3_t MULHU	=	3'b011;		// (unsign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
 	funct3_t DIV	=	3'b100;		// sign rs1 / sign rs2
 	funct3_t DIVU	=	3'b101;		// unsign rs1 / unsign rs2
