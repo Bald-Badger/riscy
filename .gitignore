@@ -81,3 +81,9 @@ vsim_stacktrace.vstf
 
 
 sim/transcript.txt
+*.qpg
+*.qtl
+*.qdb
+_info
+_vmake
+_data/
