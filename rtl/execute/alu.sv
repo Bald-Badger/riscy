@@ -15,7 +15,7 @@ module alu (
 			xor_result,
 			set_result,
 			shift_result,
-			add_sub_result
+			add_sub_result,
 			mult_div_rem_result;
 
 
@@ -124,7 +124,7 @@ module alu (
 				rd_wr = 1'b1;
 				unique case (instr.funct7)
 					M_INSTR: begin
-						mult_div_rem_result;
+						c_out = mult_div_rem_result;
 					end
 
 					default: begin
