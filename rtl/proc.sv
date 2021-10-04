@@ -1,14 +1,16 @@
 // top module of the processor
+
+// synopsys translate_off
+`timescale 1 ps / 1 ps
+// synopsys translate_on
+
 import defines::*;
 
 module proc(
-	input logic osc_clk,
-	input logic but_rst_n,
+	input logic clk,
+	input logic rst_n,
 	output logic ebreak_start	// actually 3 cycles after ebreak, pipeline cleared
 );
-	
-	logic clk, rst_n, locked;
-	assign rst_n = (but_rst_n & locked);
 
 	// stage-specific common data wires
 	data_t 	pc_f, pc_d, pc_x; // pc_m, pc_w;
@@ -54,14 +56,6 @@ module proc(
 	// external signal
 	logic ebreak_return;
 	assign ebreak_return = 1'b0;
-
-	// pll clock
-	pll	pll_inst (
-		.areset		(but_rst_n),
-		.inclk0		(osc_clk),
-		.c0			(clk),
-		.locked		(locked)
-	);
 
 	// fetch stage	
 	fetch fetch_inst (

@@ -1,5 +1,9 @@
+// synopsys translate_off
+`timescale 1 ps / 1 ps
+// synopsys translate_on
+
 import defines::*;
-`timescale 1ns/1ns
+
 module clkrst #(
 	FREQ = FREQ
 ) (
@@ -7,14 +11,16 @@ module clkrst #(
 	output logic rst_n
 );
 
-	localparam period = 1e9/FREQ;
+	localparam period = 1e12/FREQ;	// in ps
 	localparam half_period = period/2;
 
 	initial begin
 		clk = 1'b0;
+		rst_n = 1'b1;
+		repeat(10) @(negedge clk);
 		rst_n = 1'b0;
-		repeat(2) @(negedge clk);
-		#1;
+		repeat(10) @(negedge clk);
+		#5;
 		rst_n = 1'b1;
 		repeat(1000) @(negedge clk);
 		$stop();

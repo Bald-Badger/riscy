@@ -40,7 +40,7 @@ module mem
 
 	// TODO: change to always_ff in FPGA run
 	// TODO: used negedge trigger memory to get around bugs
-	always_ff @(negedge clk) begin	
+	always @(negedge clk) begin	
 		if (we) begin
 			// edit this code if using other than four bytes per word
 			if(be[0]) ram[waddr[ADDR_WIDTH-1:2]][0] <= wdata[7:0];
@@ -57,27 +57,27 @@ module mem
 
 	assign q = (re ? ram[raddr[ADDR_WIDTH-1:2]] : NULL); // read entire 32b
 
-/*
+
 	initial begin
-			if (TYPE == BLANK_MEM) begin
-				for (int i = 0; i < 2**ADDR_WIDTH; i++) begin
-					ram[waddr][0] <= 8'b0;
-					ram[waddr][1] <= 8'b0;
-					ram[waddr][2] <= 8'b0;
-					ram[waddr][3] <= 8'b0;
-				end 
-			end else if (TYPE == UNINT_MEM) begin
-				for (int i = 0; i < 2**ADDR_WIDTH; i++) begin
-					ram[waddr][0] <= 8'bX;
-					ram[waddr][1] <= 8'bX;
-					ram[waddr][2] <= 8'bX;
-					ram[waddr][3] <= 8'bX;
-				end 
-			end else if (TYPE == INSTR_MEM) begin
-				$readmemh("instr.asm", ram);
-			end else if (TYPE == DATA_MEM) begin
-				$readmemh("data.asm", ram);
-			end
+		if (TYPE == BLANK_MEM) begin
+			for (int i = 0; i < 2**ADDR_WIDTH; i++) begin
+				ram[waddr][0] <= 8'b0;
+				ram[waddr][1] <= 8'b0;
+				ram[waddr][2] <= 8'b0;
+				ram[waddr][3] <= 8'b0;
+			end 
+		end else if (TYPE == UNINT_MEM) begin
+			for (int i = 0; i < 2**ADDR_WIDTH; i++) begin
+				ram[waddr][0] <= 8'bX;
+				ram[waddr][1] <= 8'bX;
+				ram[waddr][2] <= 8'bX;
+				ram[waddr][3] <= 8'bX;
+			end 
+		end else if (TYPE == INSTR_MEM) begin
+			$readmemh("instr.asm", ram);
+		end else if (TYPE == DATA_MEM) begin
+			$readmemh("data.asm", ram);
+		end
 	end
-*/
+
 endmodule : mem

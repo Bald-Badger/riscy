@@ -25,9 +25,13 @@ vlog -work work -vopt -sv -stats=none  ../rtl/proc.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/clkrst.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/hazzard_ctrl.sv
 
-vlog -work work -vopt -sv -stats=none  ../rtl/base/dff.sv
-vlog -work work -vopt -sv -stats=none  ../rtl/base/dffe.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/base/dff_wrap.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/base/dffe_wrap.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/base/mem.sv
+
+vlog -work work -vopt -sv -stats=none  ../rtl/ip/divide/div.v
+vlog -work work -vopt -sv -stats=none  ../rtl/ip/mult/mult.v
+vlog -work work -vopt -sv -stats=none  ../rtl/ip/pll/pll.v
 
 vlog -work work -vopt -sv -stats=none  ../rtl/fetch/branch_predict.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/fetch/fetch.sv
@@ -45,6 +49,7 @@ vlog -work work -vopt -sv -stats=none  ../rtl/execute/alu_define.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/alu.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/ex_mux.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/execute.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/execute/mult_div.sv
 
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/memory.sv
 
@@ -58,6 +63,7 @@ vlog -work work -vopt -sv -stats=none  ../rtl/reg/mem_wb_reg.sv
 
 # Simulate the design
 onerror {quit -sim}
-vsim -gui work.smoke_test_single -voptargs=+acc
+# vsim -gui work.smoke_test_single -voptargs=+acc
+vsim work.smoke_test_single  -L lpm_ver -L altera_mf_ver
 run -all
 quit -f
