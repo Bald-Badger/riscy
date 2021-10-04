@@ -32,6 +32,18 @@ module instr_mem (
 					);
 	end
 
+/*
+	ram_32b_1024wd	instr_mem_inst (
+		.address	( addr ),
+		.clock		( clk ),
+		.data		( NULL ),
+		.rden		( rden ),
+		.wren		( DISABLE ),
+		.q			( instr_raw )
+	);
+*/
+
+
 	mem #(
 		.ADDR_WIDTH	(XLEN),
 		.BYTES		(BYTES),
@@ -47,5 +59,6 @@ module instr_mem (
 		.rst_n		(rst_n),
 		.q			(instr_raw)
 	); 
+
 
 endmodule : instr_mem

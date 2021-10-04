@@ -32,6 +32,9 @@ vlog -work work -vopt -sv -stats=none  ../rtl/base/mem.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/ip/divide/div.v
 vlog -work work -vopt -sv -stats=none  ../rtl/ip/mult/mult.v
 vlog -work work -vopt -sv -stats=none  ../rtl/ip/pll/pll.v
+vlog -work work -vopt -sv -stats=none  ../rtl/ip/ram/ram_32b_1024wd.v
+vlog -work work -vopt -sv -stats=none  ../rtl/ip/ram/ram_32b_2048wd.v
+
 
 vlog -work work -vopt -sv -stats=none  ../rtl/fetch/branch_predict.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/fetch/fetch.sv

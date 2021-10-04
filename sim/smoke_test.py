@@ -12,7 +12,7 @@ if __name__ == '__main__':
         dest = "./instr.asm"
         shutil.copyfile(src, dest)
         os.system(cmd)
-        f = open("./result.txt")
+        f = open("./result.txt", 'r')
         result = f.readline()
         f.close()
         print("test: " + test + " " + result)
