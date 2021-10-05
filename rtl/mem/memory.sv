@@ -88,6 +88,7 @@ module memory (
 		end
 	end
 
+/*
 	mem #(
 		.ADDR_WIDTH	(XLEN),
 		.BYTES		(BYTES),
@@ -102,6 +103,18 @@ module memory (
 		.clk		(clk),
 		.rst_n		(rst_n),
 		.q			(data_out_mem)
+	);
+*/
+
+
+	ram_32b_2048wd	data_mem_inst (
+	.address ( addr ),
+	.byteena ( be ),
+	.clock ( clk ),
+	.data ( data_in_final ),
+	.rden ( rden ),
+	.wren ( wren ),
+	.q ( data_out_mem )
 	);
 
 endmodule : memory

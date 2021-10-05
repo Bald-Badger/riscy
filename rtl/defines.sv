@@ -1,4 +1,4 @@
-// all defines usin in RISCV (except the ones used in alu)
+// all defines using in RISCV (except the ones used in alu)
 
 package defines;
 

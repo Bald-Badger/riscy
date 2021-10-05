@@ -36,9 +36,9 @@ module reg_bypass (
 	*/
 	always @(negedge clk) begin
 	
-	if (rd_wren) begin
-		registers[rd_addr] <= rd_data;
-	end
+		if (rd_wren) begin
+			registers[rd_addr] <= rd_data;
+		end
 
 	end
 	

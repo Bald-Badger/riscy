@@ -3,7 +3,7 @@ import shutil
 
 
 if __name__ == '__main__':
-    test_list = os.listdir('./tests/asm')
+    test_list = os.listdir('./tests/mc')
     transcript = "./transcript.txt"
     cmd = "vsim -c -do ./run_all.do > ./transcript.txt"
     # cmd = "vsim -c -do ./run_all.do"

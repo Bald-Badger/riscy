@@ -122,9 +122,9 @@ end
 always_comb begin : div_by_0_sel
 	unique case (instr.funct3)
 		DIVU:	div_by_0_out = {XLEN{1'b1}};
-		REMU:	div_by_0_out = div_a_in;
+		REMU:	div_by_0_out = a_in;
 		DIV:	div_by_0_out = {XLEN{1'b1}};
-		REM:	div_by_0_out = div_a_in;
+		REM:	div_by_0_out = b_in;
 		default:div_by_0_out = NULL;
 	endcase
 end

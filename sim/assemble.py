@@ -10,6 +10,7 @@ in_name = 'instr.s'
 middle_name = 'instr.txt'
 out_name = 'instr.asm'
 
+
 def old_main():
     cnv = AssemblyConverter(output_type='tp', hexMode=True)
     cnv.convert(in_name)
@@ -71,7 +72,7 @@ def assemble(filename='', out_name=''):
         return
 
     if out_name == '':
-        out_name = 'instr.asm'
+        out_name = 'instr.mc'
 
     example = "java -jar rars.jar dump 0x00400000-0x00401000 " \
               "HexText instr.asm instr.s"
@@ -84,12 +85,66 @@ def assemble(filename='', out_name=''):
     print("assembling file: " + in_name)
     os.system(cmd)
     append_zeros(out_name)
+    try:
+        shutil.move('./'+out_name, './tests/mc/'+out_name[:-3]+'.mc')
+    except FileNotFoundError:
+        print('file not found, skipped file copy')
+
+
+def compile_smoke_test():
+    mylist = os.listdir('.\\tests\\riscv-tests')
+    print(mylist)
+    smoke_list = ['add.s', 'addi.s', 'and.s', 'andi.s', 'div.s', 'divu.s', 'lui.s', 'mul.s', 'mulh.s', 'mulhsu.s', 'mulhu.s', 'or.s', 'ori.s', 'rem.s', 'remu.s', 'simple.s', 'sll.s', 'slli.s', 'slt.s', 'slti.s', 'sltiu.s', 'sltu.s', 'sra.s', 'srai.s', 'srl.s', 'srli.s', 'sub.s', 'xor.s', 'xori.s']
+    for f in smoke_list:
+        assemble(f, f[:-2]+'.mc')
+
+
+
+'''
+DEPTH = 32;                   -- The size of memory in words
+WIDTH = 8;                    -- The size of data in bits
+ADDRESS_RADIX = HEX;          -- The radix for address values
+DATA_RADIX = BIN;             -- The radix for data values
+CONTENT                       -- start of (address : data pairs)
+BEGIN
+
+00 : 00000000;                -- memory address : data
+01 : 00000001;
+02 : 00000010;
+03 : 00000011;
+04 : 00000100;
+05 : 00000101;
+06 : 00000110;
+07 : 00000111;
+08 : 00001000;
+09 : 00001001;
+0A : 00001010;
+0B : 00001011;
+0C : 00001100;
+
+END;
+'''
+def mc_to_mif():
+    fix =   "DEPTH = 1024;                   -- The size of memory in words\n" \
+            "WIDTH = 32;                    -- The size of data in bits\n" \
+            "ADDRESS_RADIX = HEX;          -- The radix for address values\n" \
+            "DATA_RADIX = HEX;             -- The radix for data values\n" \
+            "CONTENT                       -- start of (address : data pairs)\n" \
+            "BEGIN \n\n"
+    f = open('instr.mif', 'w')
+    f.write(fix)
+    mc = open('./tests/mc/simple.mc', 'r')
+    instr = mc.readlines()
+    for i in range(instr.__len__()):
+        index = hex(i)[2:]
+        f.write(index+' : ')
+        f.write(instr[i][:-1])
+        f.write(';\n')
+    f.write("\nEND;\n")
+    f.close()
+
 
 
 if __name__ == '__main__':
-    mylist = os.listdir('.\\tests\\riscv-tests')
-    print(mylist)
-    compile_list = ['add.s', 'addi.s', 'and.s', 'andi.s', 'div.s', 'divu.s', 'lui.s', 'mul.s', 'mulh.s', 'mulhsu.s', 'mulhu.s', 'or.s', 'ori.s', 'rem.s', 'remu.s', 'simple.s', 'sll.s', 'slli.s', 'slt.s', 'slti.s', 'sltiu.s', 'sltu.s', 'sra.s', 'srai.s', 'srl.s', 'srli.s', 'sub.s', 'xor.s', 'xori.s']
-    for f in compile_list:
-        assemble(f, f[:-2]+'.asm')
+    mc_to_mif()
 

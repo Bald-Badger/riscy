@@ -57,7 +57,7 @@ module mem
 
 	assign q = (re ? ram[raddr[ADDR_WIDTH-1:2]] : NULL); // read entire 32b
 
-
+/*
 	initial begin
 		if (TYPE == BLANK_MEM) begin
 			for (int i = 0; i < 2**ADDR_WIDTH; i++) begin
@@ -79,5 +79,5 @@ module mem
 			$readmemh("data.asm", ram);
 		end
 	end
-
+*/
 endmodule : mem
