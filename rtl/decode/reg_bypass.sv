@@ -19,29 +19,26 @@ module reg_bypass (
 
 	// TODO: write on fall edge, read on raise rdge
 
-	logic [XLEN-1:0] registers [0:31]; 
+	reg [XLEN-1:0] registers [0:31]; 
 
 	integer i;
-	// TODO: used negedge in design to avoid bugs
-	/*
-	always @(negedge clk or negedge rst_n) begin
+
+	always_ff @(negedge clk or negedge rst_n) begin
 		if (~rst_n) begin
 			for (i = 0; i < 32; i++) begin
 				registers[i] <= NULL;
 			end
-		end if (rd_wren) begin
-			registers[rd_addr] <= rd_data;
+		end else begin
+			for (i = 0; i < 32; i++) begin
+				if ((i == rd_addr) && (rd_wren)) begin
+					registers[i] <= rd_data;
+				end else begin
+					registers[i] <= registers[i];
+				end
+			end
 		end
 	end
-	*/
-	always @(negedge clk) begin
-	
-		if (rd_wren) begin
-			registers[rd_addr] <= rd_data;
-		end
 
-	end
-	
 
 	// bypass logic
 	wire bypass_rs1 = (rd_wren && rs1_rden) && (rs1_addr == rd_addr);
