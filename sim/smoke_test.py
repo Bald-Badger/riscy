@@ -3,13 +3,16 @@ import shutil
 
 
 if __name__ == '__main__':
-    test_list = os.listdir('./tests/mc')
+    test_list = os.listdir('./tests/mif')
     transcript = "./transcript.txt"
-    cmd = "vsim -c -do ./run_all.do > ./transcript.txt"
-    # cmd = "vsim -c -do ./run_all.do"
+    visiable = False
+    if visiable:
+        cmd = "vsim -c -do ./run_all.do"
+    else:
+        cmd = "vsim -c -do ./run_all.do > ./transcript.txt"
     for test in test_list:
-        src = "./tests/asm/" + test
-        dest = "./instr.asm"
+        src = "./tests/mif/" + test
+        dest = "./instr.mif"
         shutil.copyfile(src, dest)
         os.system(cmd)
         f = open("./result.txt", 'r')

@@ -99,7 +99,7 @@ def compile_smoke_test():
         assemble(f, f[:-2]+'.mc')
 
 
-
+# example .mif format
 '''
 DEPTH = 32;                   -- The size of memory in words
 WIDTH = 8;                    -- The size of data in bits
@@ -124,16 +124,16 @@ BEGIN
 
 END;
 '''
-def mc_to_mif():
+def mc_to_mif(mc_file, out_name):
     fix =   "DEPTH = 1024;                   -- The size of memory in words\n" \
             "WIDTH = 32;                    -- The size of data in bits\n" \
             "ADDRESS_RADIX = HEX;          -- The radix for address values\n" \
             "DATA_RADIX = HEX;             -- The radix for data values\n" \
             "CONTENT                       -- start of (address : data pairs)\n" \
             "BEGIN \n\n"
-    f = open('instr.mif', 'w')
+    f = open(out_name, 'w')
     f.write(fix)
-    mc = open('./tests/mc/simple.mc', 'r')
+    mc = open(mc_file, 'r')
     instr = mc.readlines()
     for i in range(instr.__len__()):
         index = hex(i)[2:]
@@ -144,7 +144,14 @@ def mc_to_mif():
     f.close()
 
 
+def mc_to_mif_all():
+    mylist = os.listdir('./tests/mc')
+    for files in mylist:
+        mc_file = './tests/mc/' + files
+        out_name = './tests/mif/' + files[0:-3] + '.mif'
+        mc_to_mif(mc_file, out_name)
+
 
 if __name__ == '__main__':
-    mc_to_mif()
+    mc_to_mif_all()
 

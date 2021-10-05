@@ -88,7 +88,8 @@ module pc_adder (
 	end
 	
 	data_t pc_add, pc_add_carry;
-	assign pc_add_carry = pc_add_comp + imm;
+	// instr mem used to be latch based but now ff based, -4 to get around bug
+	assign pc_add_carry = pc_add_comp + imm - 32'd4; 
 	assign pc_add = pc_add_carry[XLEN-1 : 0];
 
 	// JALR should mask the last bit to 0

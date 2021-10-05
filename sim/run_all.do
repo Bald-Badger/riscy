@@ -35,7 +35,6 @@ vlog -work work -vopt -sv -stats=none  ../rtl/ip/pll/pll.v
 vlog -work work -vopt -sv -stats=none  ../rtl/ip/ram/ram_32b_1024wd.v
 vlog -work work -vopt -sv -stats=none  ../rtl/ip/ram/ram_32b_2048wd.v
 
-
 vlog -work work -vopt -sv -stats=none  ../rtl/fetch/branch_predict.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/fetch/fetch.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/fetch/instr_mem.sv
@@ -67,6 +66,6 @@ vlog -work work -vopt -sv -stats=none  ../rtl/reg/mem_wb_reg.sv
 # Simulate the design
 onerror {quit -sim}
 # vsim -gui work.smoke_test_single -voptargs=+acc
-vsim work.smoke_test_single  -L lpm_ver -L altera_mf_ver
+vsim work.smoke_test_single -L lpm_ver -L altera_mf_ver
 run -all
 quit -f

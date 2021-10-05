@@ -34,10 +34,10 @@ module instr_mem (
 
 
 	ram_32b_1024wd	instr_mem_inst (
-		.address	( addr ),
+		.address	( addr[11:2] ),
 		.clock		( clk ),
 		.data		( NULL ),
-		.rden		( rden ),
+		.rden		( ENABLE ),
 		.wren		( DISABLE ),
 		.q			( instr_raw )
 	);
