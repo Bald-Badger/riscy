@@ -95,6 +95,7 @@ def compile_smoke_test():
     mylist = os.listdir('.\\tests\\riscv-tests')
     print(mylist)
     smoke_list = ['add.s', 'addi.s', 'and.s', 'andi.s', 'div.s', 'divu.s', 'lui.s', 'mul.s', 'mulh.s', 'mulhsu.s', 'mulhu.s', 'or.s', 'ori.s', 'rem.s', 'remu.s', 'simple.s', 'sll.s', 'slli.s', 'slt.s', 'slti.s', 'sltiu.s', 'sltu.s', 'sra.s', 'srai.s', 'srl.s', 'srli.s', 'sub.s', 'xor.s', 'xori.s']
+    smoke_list.append('my_test_ldst.s')
     for f in smoke_list:
         assemble(f, f[:-2]+'.mc')
 
@@ -152,6 +153,10 @@ def mc_to_mif_all():
         mc_to_mif(mc_file, out_name)
 
 
-if __name__ == '__main__':
+def compile_all():
+    compile_smoke_test()
     mc_to_mif_all()
 
+
+if __name__ == '__main__':
+    compile_all()

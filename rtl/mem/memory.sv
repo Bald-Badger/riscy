@@ -4,7 +4,6 @@ import defines::*;
 // `timescale 1 ps / 1 ps
 // synopsys translate_on
 
-// TODO: write on fall edge, read on raise rdge
 
 // TODO: add - save 这种情况如何forward
 // addi x1, x1, 4; sb x1, 0(x1)
@@ -24,12 +23,34 @@ module memory (
 	opcode_t		opcode;
 	funct3_t		funct3;
 	logic 			wren, rden;
+	logic			addr_misalign;
+	logic  			misalign_trap;
 
 	always_comb begin
 		opcode = instr.opcode;
 		funct3 = instr.funct3;
 		rden = (opcode == LOAD);
 		wren = (opcode == STORE);
+	end
+
+	assign misalign_trap = addr_misalign && (rden || wren);
+	always_comb begin : misalign_detection
+		unique case (funct3)
+			LB:		addr_misalign = 1'b0;
+			LH:		addr_misalign = addr[0];
+			LW:		addr_misalign = &addr[1:0];
+			LBU:	addr_misalign = 1'b0;
+			LHU:	addr_misalign = addr[0];
+			//SB:		addr_misalign = 1'b0;		// same with LB
+			//SH:		addr_misalign = addr[0];	// same with LH
+			//SW:		addr_misalign = &addr[1:0];	// same with SW
+			default:addr_misalign = 1'b0; 
+		endcase
+	end
+
+	always @(posedge addr_misalign) begin
+		$display("address misalign detected");
+		$timeformat(-12, 0, "ps");
 	end
 
 
@@ -88,6 +109,18 @@ module memory (
 		end
 	end
 
+
+	ram_32b_2048wd	data_mem_inst (
+	.address ( addr[10:2] ),
+	.byteena ( be ),
+	.clock ( clk ),
+	.data ( data_in_final ),
+	.rden ( rden ),
+	.wren ( wren ),
+	.q ( data_out_mem )
+	);
+
+
 /*
 	mem #(
 		.ADDR_WIDTH	(XLEN),
@@ -105,16 +138,5 @@ module memory (
 		.q			(data_out_mem)
 	);
 */
-
-
-	ram_32b_2048wd	data_mem_inst (
-	.address ( addr ),
-	.byteena ( be ),
-	.clock ( clk ),
-	.data ( data_in_final ),
-	.rden ( rden ),
-	.wren ( wren ),
-	.q ( data_out_mem )
-	);
 
 endmodule : memory

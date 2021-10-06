@@ -87,3 +87,6 @@ _info
 _vmake
 _data/
 sim/result.txt
+sim/instr.ver
+sim/instr.mif
+sim/instr.mif
