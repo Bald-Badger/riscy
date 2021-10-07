@@ -48,7 +48,7 @@ module memory (
 		endcase
 	end
 
-	always @(posedge addr_misalign) begin
+	always @(posedge misalign_trap) begin
 		$display("address misalign detected");
 		$timeformat(-12, 0, "ps");
 	end
@@ -111,7 +111,7 @@ module memory (
 
 
 	ram_32b_2048wd	data_mem_inst (
-	.address ( addr[10:2] ),
+	.address ( addr[12:2] ),
 	.byteena ( be ),
 	.clock ( clk ),
 	.data ( data_in_final ),
