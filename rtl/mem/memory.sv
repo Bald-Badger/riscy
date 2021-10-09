@@ -1,7 +1,7 @@
 import defines::*;
 
 // synopsys translate_off
-// `timescale 1 ps / 1 ps
+`timescale 1 ps / 1 ps
 // synopsys translate_on
 
 
@@ -47,12 +47,13 @@ module memory (
 			default:addr_misalign = 1'b0; 
 		endcase
 	end
-
+	
+	// synthesis translate_off   
 	always @(posedge misalign_trap) begin
 		$display("address misalign detected");
 		$timeformat(-12, 0, "ps");
 	end
-
+	// synthesis translate_on 
 
 	logic[BYTES-1:0] be;
 	always_comb begin : byte_enable_pharse

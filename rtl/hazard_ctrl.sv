@@ -8,6 +8,7 @@ module hazard_ctrl (
 	input instr_t instr_m,
 	input instr_t instr_w,
 
+	// input logic id_ex_wr_rd
 	input logic ex_mem_wr_rd,
 	input logic mem_wb_wr_rd,
 
@@ -21,6 +22,8 @@ module hazard_ctrl (
 
 	output branch_fwd_t fwd_rs1,
 	output branch_fwd_t fwd_rs2,
+
+	// output store_fwd_t fwd_store,
 
 	// stall signal
 	output logic stall_if_id,
@@ -174,6 +177,8 @@ module hazard_ctrl (
 		
 		hazard_5 = hazard_5a || hazard_5b;
 		
+		// TODO: make sure rd write before trigger
+		// FATAL
 		hazard_6a =	(instr_d.opcode == B) &&
 					(!hazard_4a) &&
 					(instr_x.rd != X0) &&
@@ -231,18 +236,34 @@ module hazard_ctrl (
 	end
 
 /*
-I'm afraid of having timing issue on my design so
-I'm thing about using negedge triggered register file in decode 
-stage as well as negedge triggered memory write. what
-would be the potential implementations of this approach. 
-any drawbacks?
+	// hazard when a store can use its value from later pipeline
+	// instead of reading it from register files
+	logic hazard_9a;	// ex - decode fwd to rs2
+	logic hazard_9b;	// mem - decode fwd to rs2
+	//logic hazard_9c;	// wb - decode fwd to rs2; not needed thanks to reg bypass
+
+	always_comb begin : store_hazzard_detect
+		hazard_9a =	(instr_d.opcode == STORE) &&
+					(instr_x.rd != X0) &&
+					(id_ex_wr_rd) &&
+					(instr_x.rd == instr_d.rs2);
+		
+		hazard_9b =	(instr_d.opcode == STORE) &&
+					(instr_m.rd != X0) &&
+					(ex_mem_wr_rd) &&
+					(!hazard_9a) &&
+					(instr_m.rd == instr_d.rs2);
+	end
+
+	always_comb begin : store_fwd_assign
+	end
 */
 
 	logic jump;
 	always_comb begin : flush_crtl_signal_assign
 		jump = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
 	end
-	always_comb begin : flush_assign // TODO:
+	always_comb begin : flush_assign
 		flush_if_id = jump || branch_actual;
 		flush_id_ex = DISABLE;
 		flush_ex_mem = DISABLE;

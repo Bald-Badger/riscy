@@ -250,6 +250,13 @@ typedef enum logic[1:0] {
 	B_WB_SEL	= 2'b11
 } branch_fwd_t;
 
+/*
+typedef enum logic[1:0] {
+	RS_STORE_SEL	= 2'b00,
+	EX_ID_STORE_SEL	= 2'b00,
+	MEM_ID_STORE_SEL= 2'b00,
+} store_fwd_t;
+*/
 
 // register names
 r_t ZERO	= X0;

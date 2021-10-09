@@ -162,7 +162,6 @@ module proc(
 
 
 	// execute stage
-
 	execute execute_inst (
 		// ctrl
 		.fwd_a				(fwd_a),
@@ -268,6 +267,7 @@ module proc(
 		.instr_m		(instr_m),
 		.instr_w		(instr_w),
 
+		// .id_ex_wr_rd	(rd_wren_x)
 		.ex_mem_wr_rd	(rd_wren_m),
 		.mem_wb_wr_rd	(rd_wren_w),
 
