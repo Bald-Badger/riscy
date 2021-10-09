@@ -5,7 +5,7 @@ import shutil
 if __name__ == '__main__':
     test_list = os.listdir('./tests/mif')
     transcript = "./transcript.txt"
-    visiable = False
+    visiable = True
     if visiable:
         cmd = "vsim -c -do ./run_all.do"
     else:

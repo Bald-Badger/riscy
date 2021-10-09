@@ -73,10 +73,15 @@ package defines;
 	typedef logic [2*XLEN-1:0]	double_word_t;
 	typedef logic [2:0] 		funct3_t;
 	typedef logic [6:0] 		funct7_t;
-	typedef logic [4:0] 		r_t;
 	typedef logic [11:0]		imm_t; // only for I type operation
 
-	r_t	X0 = 5'b00000;
+	typedef enum logic[4:0] {
+		X0, X1, X2, X3, X4, X5, X6, X7,
+		X8, X9, X10, X11, X12, X13, X14, X15,
+		X16, X17, X18, X19, X20, X21, X22, X23,
+		X24, X25, X26, X27, X28, X29, X30, X31
+	} r_t;
+
 
 // instruction type define
 	typedef struct packed{
@@ -244,6 +249,40 @@ typedef enum logic[1:0] {
 	B_MEM_SEL	= 2'b10,
 	B_WB_SEL	= 2'b11
 } branch_fwd_t;
+
+
+r_t ZERO	= X0;
+r_t RA		= X1;
+r_t SP		= X2;
+r_t GP		= X3; 
+r_t TP		= X4; 
+r_t T0		= X5; 
+r_t T1		= X6; 
+r_t T2		= X7;
+r_t S0		= X8; 
+r_t S1		= X9; 
+r_t A0		= X10; 
+r_t A1		= X11; 
+r_t A2		= X12; 
+r_t A3		= X13; 
+r_t A4		= X14; 
+r_t A5		= X15;
+r_t A6		= X16;
+r_t A7		= X17;
+r_t S2		= X18;
+r_t S3		= X19; 
+r_t S4		= X20; 
+r_t S5		= X21; 
+r_t S6		= X22;
+r_t S7		= X23;
+r_t S8		= X24;
+r_t S9		= X25; 
+r_t S10		= X26; 
+r_t S11		= X27;
+r_t T3		= X28;
+r_t T4		= X29;
+r_t T5		= X30;
+r_t T6		= X31;
 
 `endif
 
