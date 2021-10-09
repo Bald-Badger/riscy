@@ -251,6 +251,7 @@ typedef enum logic[1:0] {
 } branch_fwd_t;
 
 
+// register names
 r_t ZERO	= X0;
 r_t RA		= X1;
 r_t SP		= X2;

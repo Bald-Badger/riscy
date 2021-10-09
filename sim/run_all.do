@@ -23,7 +23,7 @@ vlog -work work -vopt -sv -stats=none  ../rtl/tb/smoke_test_single.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/proc_hier.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/proc.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/clkrst.sv
-vlog -work work -vopt -sv -stats=none  ../rtl/hazzard_ctrl.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/hazard_ctrl.sv
 
 vlog -work work -vopt -sv -stats=none  ../rtl/base/dff_wrap.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/base/dffe_wrap.sv

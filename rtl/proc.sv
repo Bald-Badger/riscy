@@ -260,7 +260,7 @@ module proc(
 		.wb_data	(wb_data)
 	);
 
-	hazzard_ctrl hazzard_ctrl_inst (
+	hazard_ctrl hazard_ctrl_inst (
 		// input signal
 		.instr_f		(instr_f),
 		.instr_d		(instr_d),
