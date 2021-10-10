@@ -41,9 +41,6 @@ module memory (
 			LW:		addr_misalign = &addr[1:0];
 			LBU:	addr_misalign = 1'b0;
 			LHU:	addr_misalign = addr[0];
-			//SB:		addr_misalign = 1'b0;		// same with LB
-			//SH:		addr_misalign = addr[0];	// same with LH
-			//SW:		addr_misalign = &addr[1:0];	// same with SW
 			default:addr_misalign = 1'b0; 
 		endcase
 	end
@@ -54,6 +51,7 @@ module memory (
 		$timeformat(-12, 0, "ps");
 	end
 	// synthesis translate_on 
+
 
 	logic[BYTES-1:0] be;
 	always_comb begin : byte_enable_pharse
@@ -111,6 +109,8 @@ module memory (
 	end
 
 
+
+
 	ram_32b_2048wd	data_mem_inst (
 	.address ( addr[12:2] ),
 	.byteena ( be ),
@@ -120,5 +120,6 @@ module memory (
 	.wren ( wren ),
 	.q ( data_out_mem )
 	);
+
 
 endmodule : memory

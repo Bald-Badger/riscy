@@ -295,4 +295,4 @@ r_t T6		= X31;
 
 `endif
 
-endpackage
+endpackage : defines
