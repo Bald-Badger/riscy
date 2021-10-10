@@ -32,6 +32,10 @@ module proc(
 	fwd_sel_t	fwd_a, fwd_b, fwd_m2m;
 	// for branching forward
 	branch_fwd_t fwd_rs1, fwd_rs2;	
+	// for memory forwad from latter stage to ID to read rs2
+	store_fwd_t fwd_store;
+
+	// stall and flush
 	logic		stall_if_id, stall_id_ex,
 				stall_ex_mem, stall_mem_wb;
 	logic		flush_if_id, flush_id_ex,
@@ -134,6 +138,14 @@ module proc(
 		.branch_taken(branch_taken_actual)
 	);
 
+	data_t rs2_d_after_fwd;
+	always_comb begin : rs2_d_after_fwd_assign
+		rs2_d_after_fwd =	(fwd_store == RS_STORE_SEL) ? rs2_d :
+							(fwd_store == EX_ID_STORE_SEL) ? alu_result_x :
+							(fwd_store == MEM_ID_STORE_SEL) ? alu_result_m :
+							(fwd_store == WB_ID_STORE_SEL) ? alu_result_w :
+							NULL;
+	end
 
 	// decode-execute stage reg
 	id_ex_reg id_ex_reg_inst (
@@ -146,7 +158,7 @@ module proc(
 		// input
 		.instr_in	(instr_d),
 		.rs1_in		(rs1_d),
-		.rs2_in		(rs2_d),
+		.rs2_in		(rs2_d_after_fwd),
 		.pc_in		(pc_d),
 		.imm_in		(imm_d),
 		.pc_p4_in	(pcp4_d),
@@ -267,7 +279,7 @@ module proc(
 		.instr_m		(instr_m),
 		.instr_w		(instr_w),
 
-		// .id_ex_wr_rd	(rd_wren_x)
+		.id_ex_wr_rd	(rd_wren_x),
 		.ex_mem_wr_rd	(rd_wren_m),
 		.mem_wb_wr_rd	(rd_wren_w),
 
@@ -282,6 +294,8 @@ module proc(
 
 		.fwd_rs1		(fwd_rs1),
 		.fwd_rs2		(fwd_rs2),
+
+		.fwd_store		(fwd_store),
 
 		// stall signal
 		.stall_if_id	(stall_if_id),

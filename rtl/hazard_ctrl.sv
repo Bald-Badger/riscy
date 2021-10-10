@@ -8,7 +8,7 @@ module hazard_ctrl (
 	input instr_t instr_m,
 	input instr_t instr_w,
 
-	// input logic id_ex_wr_rd
+	input logic id_ex_wr_rd,
 	input logic ex_mem_wr_rd,
 	input logic mem_wb_wr_rd,
 
@@ -23,7 +23,7 @@ module hazard_ctrl (
 	output branch_fwd_t fwd_rs1,
 	output branch_fwd_t fwd_rs2,
 
-	// output store_fwd_t fwd_store,
+	output store_fwd_t fwd_store,
 
 	// stall signal
 	output logic stall_if_id,
@@ -231,12 +231,12 @@ module hazard_ctrl (
 		stall_mem_wb = DISABLE;
 	end
 
-/*
+
 	// hazard when a store can use its value from later pipeline
 	// instead of reading it from register files
 	logic hazard_9a;	// ex - decode fwd to rs2
 	logic hazard_9b;	// mem - decode fwd to rs2
-	//logic hazard_9c;	// wb - decode fwd to rs2; not needed thanks to reg bypass
+	logic hazard_9c;	// wb - decode fwd to rs2
 
 	always_comb begin : store_hazzard_detect
 		hazard_9a =	(instr_d.opcode == STORE) &&
@@ -249,11 +249,21 @@ module hazard_ctrl (
 					(ex_mem_wr_rd) &&
 					(!hazard_9a) &&
 					(instr_m.rd == instr_d.rs2);
+
+		hazard_9c =	(instr_d.opcode == STORE) &&
+					(instr_m.rd != X0) &&
+					(mem_wb_wr_rd) &&
+					(!hazard_9b) &&
+					(instr_w.rd == instr_d.rs2);
 	end
 
 	always_comb begin : store_fwd_assign
+		fwd_store =	(hazard_9a)	? EX_ID_STORE_SEL:
+					(hazard_9b)	? MEM_ID_STORE_SEL:
+					(hazard_9c)	? WB_ID_STORE_SEL:
+					RS_STORE_SEL;
 	end
-*/
+
 
 	logic jump;
 	always_comb begin : flush_crtl_signal_assign
