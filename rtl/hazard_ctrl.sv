@@ -63,7 +63,6 @@ module hazard_ctrl (
 	assign ex_mem_rs1_rd =	(instr_x.opcode == JALR) ? 1'b1 :
 							(instr_x.opcode == B) ? 1'b1 :
 							(instr_x.opcode == LOAD) ? 1'b1 :
-							(instr_x.opcode == STORE) ? 1'b1 :
 							(instr_x.opcode == I) ? 1'b1 :
 							(instr_x.opcode == R) ? 1'b1 :
 							(instr_x.opcode == MEM) ? 1'b1 : 1'b0;
@@ -71,17 +70,14 @@ module hazard_ctrl (
 	assign mem_wb_rs1_rd =	(instr_m.opcode == JALR) ? 1'b1 :
 							(instr_m.opcode == B) ? 1'b1 :
 							(instr_m.opcode == LOAD) ? 1'b1 :
-							(instr_m.opcode == STORE) ? 1'b1 :
 							(instr_m.opcode == I) ? 1'b1 :
 							(instr_m.opcode == R) ? 1'b1 :
 							(instr_m.opcode == MEM) ? 1'b1 : 1'b0;
 
 	logic ex_mem_rs2_rd, mem_wb_rs2_rd;
 	assign ex_mem_rs2_rd =	(instr_x.opcode == R) ? 1'b1 :
-							(instr_x.opcode == STORE) ? 1'b1 :
 							(instr_x.opcode == B) ? 1'b1 : 1'b0;
 	assign mem_wb_rs2_rd =	(instr_m.opcode == R) ? 1'b1 :
-							(instr_m.opcode == STORE) ? 1'b1 :
 							(instr_m.opcode == B) ? 1'b1 : 1'b0;
 
 
@@ -91,7 +87,7 @@ module hazard_ctrl (
 					(ex_mem_rd != X0) &&
 					(ex_mem_rd == id_ex_rs1) &&
 					ex_mem_rs1_rd;
-	
+
 		hazard_1b =	(ex_mem_wr_rd) &&
 					(ex_mem_rd != X0) &&
 					(ex_mem_rd == id_ex_rs2) &&
