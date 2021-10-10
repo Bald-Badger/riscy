@@ -58,7 +58,7 @@ module memory (
 	logic[BYTES-1:0] be;
 	always_comb begin : byte_enable_pharse
 		be = 4'b0;
-		if (wren) begin
+		if (wren || rden) begin
 			unique case (funct3)
 				SB: be = (BIG_ENDIAN) ? B_EN_BIG : B_EN_LITTLE;
 				SH: be = (BIG_ENDIAN) ? H_EN_BIG : H_EN_LITTLE;
