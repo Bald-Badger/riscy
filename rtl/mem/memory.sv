@@ -121,23 +121,4 @@ module memory (
 	.q ( data_out_mem )
 	);
 
-
-/*
-	mem #(
-		.ADDR_WIDTH	(XLEN),
-		.BYTES		(BYTES),
-		.TYPE		(BLANK_MEM)
-	) data_mem_inst (
-		.waddr		(addr),
-		.raddr		(addr),
-		.be			(be),
-		.wdata		(data_in_final),
-		.we			(wren),
-		.re			(rden),
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.q			(data_out_mem)
-	);
-*/
-
 endmodule : memory
