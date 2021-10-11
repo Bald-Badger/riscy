@@ -37,7 +37,7 @@
 *.html
 *.jdi
 *.jpg
-# *.mif
+*.mif
 *.pin
 *.pof
 *.ptf.*
@@ -50,11 +50,10 @@
 *.sopc_builder
 *.summary
 *.tcl
-# *.txt
+*.txt
 *~
 *example*
 *sopc_*
-# *.sdc # I want those timing files
 
 # ignore Quartus II generated folders
 db/
@@ -67,7 +66,6 @@ output_files/
 work/
 modelsim/
 .idea/
-work/
 par/
 PLLJ_PLLSPE_INFO.txt
 transcript
@@ -76,8 +74,6 @@ vsim.wlf
 *.mti
 instr.asm
 vsim_stacktrace.vstf
-
-
 
 sim/transcript.txt
 *.qpg
@@ -89,4 +85,4 @@ _data/
 sim/result.txt
 sim/instr.ver
 sim/instr.mif
-sim/instr.mif
+eda/
