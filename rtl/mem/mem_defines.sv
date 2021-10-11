@@ -9,23 +9,23 @@ import defines::*;
 /*
 	Cache model:
 
+	cache flag line:
+	valid0 - dirty0 - tag0 - valid1 - dirty1 - tag1 - LRU - X  
+	|-----------------------flag----48b---------------------|
+	   1        1      19       1        1       19     1   5
 
-
-	cache line:
-	X - valid0 - dirty0 - tag0 - data0 - \
-	X - valid1 - dirty1 - tag1 - data1 - X - LRU
-	2      1        1      20     32     15   1
+	cache data line:
+	data0w0 - data0w1 - data0w2 - data0w3 - data1w0 - data1w1 - data1w2 - data1w3
+	|----------------------------data----128b-----------------------------------|
+	   32        32       32        32        32        32        32        32    
 
 	writing policy:	write back - write back to memory when evict
 					write allocate - miss-write are being written into cache
 	replacement policy:	LRU: evict the least recent used way
 
-*/
-
-/*
 	Address representation:
 	31-------------------13 12----------4     3-2           1-0
-			tag(19)           index(9)     word_off(2)   byte_off(2)
+			tag(19)            index(9)    word_off(2)   byte_off(2)
 */
 
 localparam tag_len		= 19;
@@ -33,40 +33,47 @@ localparam index_len	= 9;
 localparam word_off		= 2;
 localparam byte_off		= 2;
 
-typedef logic[9:0]	index_t;
-
-typedef logic 		valid_t;
-typedef logic 		dirty_t;
-typedef logic[19:0]	tag_t;
-typedef logic[1:0]	x2_t;
-typedef logic[14:0]	x15_t;
-typedef logic		lru_t;
+typedef logic [index_len - 1 : 0]	index_t;
+typedef logic [tag_len - 1 : 0]		tag_t;
+typedef logic [4 : 0]				x5_t;
 
 typedef struct packed{
-	x2_t		x2_0;
-	valid_t		v0;
-	dirty_t		d0;
+	logic		valid0;
+	logic		dirty0;
 	tag_t		tag0;
-	data_t		data0;
-	x2_t		x2_1;
-	valid_t		v1;
-	dirty_t		d1;
+	logic		valid1;
+	logic		dirty1;
 	tag_t		tag1;
-	data_t		data1;
-	x15_t		x15;
-	lru_t		lru;
+	logic		lru;
+	x5_t		x5;
+} flag_line_t;
+
+typedef struct packed {
+	data_t		data0w0;
+	data_t		data0w1;
+	data_t		data0w2;
+	data_t		data0w3;
+	data_t		data1w0;
+	data_t		data1w1;
+	data_t		data1w2;
+	data_t		data1w3;
+} data_line_t;
+
+typedef struct {
+	flag_line_t	flag;
+	data_line_t	data;
 } cache_line_t;
 
 // {en, comp, write}
-typedef enum logic[2:0] {
+typedef enum logic [2:0] {
 	CACHE_IDLE		= 3'b000,	// does nothing
 	COMP_READ		= 3'b110,	// load instr
 	COMP_WRITE		= 3'b111,	// store instr
-	ACCESS_READ		= 3'b100,	// 
+	ACCESS_READ		= 3'b100,
 	ACCESS_WRITE	= 3'b101,
 	CACHE_ERR_1		= 3'b001,
 	CACHE_ERR_2		= 3'b010,
-	CACHE_ERR_3		= 3'b011,
+	CACHE_ERR_3		= 3'b011
 } cache_access_t;
 
 `endif

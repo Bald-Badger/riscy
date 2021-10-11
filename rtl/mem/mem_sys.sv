@@ -80,7 +80,7 @@ sram_model sram (
 );
 
 mem_ctrl mem_ctrl_inst(
-
+	
 );
 
 // TODO: implement instruction cache

@@ -112,11 +112,11 @@ module memory (
 
 
 
-	ram_32b_2048wd	data_mem_inst (
-	.address ( addr[12:2] ),
-	.byteena ( be ),
+	ram_32b_1024wd	data_mem_inst (
+	.address ( addr[11:2] ),
+	//.byteena ( be ),
 	.clock ( clk ),
-	.data ( data_in_final ),
+	.data ( data_in_final ),	
 	.rden ( rden ),
 	.wren ( wren ),
 	.q ( data_out_mem )
