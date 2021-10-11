@@ -72,7 +72,7 @@ transcript
 vsim.wlf
 *.mpf
 *.mti
-instr.asm
+
 vsim_stacktrace.vstf
 
 sim/transcript.txt
@@ -85,4 +85,4 @@ _data/
 sim/result.txt
 sim/instr.ver
 sim/instr.mif
-eda/
+sim/riscv-arch-test
