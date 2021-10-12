@@ -110,8 +110,6 @@ module memory (
 	end
 
 
-
-
 	ram_32b_1024wd	data_mem_inst (
 	.address ( addr[11:2] ),
 	//.byteena ( be ),
