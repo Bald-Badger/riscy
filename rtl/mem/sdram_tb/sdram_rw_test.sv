@@ -37,20 +37,20 @@ module sdram_rw_test(
     output        led                       //状态指示灯
     );
     
-//wire define
-wire        clk_50m;                        //SDRAM 读写测试时钟
-wire        clk_100m;                       //SDRAM 控制器时钟
-wire        clk_100m_shift;                 //相位偏移时钟
+//logic define
+logic        clk_50m;                        //SDRAM 读写测试时钟
+logic        clk_100m;                       //SDRAM 控制器时钟
+logic        clk_100m_shift;                 //相位偏移时钟
      
-wire        wr_en;                          //SDRAM 写端口:写使能
-wire [15:0] wr_data;                        //SDRAM 写端口:写入的数据
-wire        rd_en;                          //SDRAM 读端口:读使能
-wire [15:0] rd_data;                        //SDRAM 读端口:读出的数据
-wire        sdram_init_done;                //SDRAM 初始化完成信号
+logic        wr_en;                          //SDRAM 写端口:写使能
+logic [15:0] wr_data;                        //SDRAM 写端口:写入的数据
+logic        rd_en;                          //SDRAM 读端口:读使能
+logic [15:0] rd_data;                        //SDRAM 读端口:读出的数据
+logic        sdram_init_done;                //SDRAM 初始化完成信号
 
-wire        locked;                         //PLL输出有效标志
-wire        sys_rst_n;                      //系统复位信号
-wire        error_flag;                     //读写测试错误标志
+logic        locked;                         //PLL输出有效标志
+logic        sys_rst_n;                      //系统复位信号
+logic        error_flag;                     //读写测试错误标志
 
 //*****************************************************
 //**                    main code
@@ -70,19 +70,9 @@ pll_clk u_pll_clk(
     .locked             (locked)
     );
 
-//SDRAM测试模块，对SDRAM进行读写测试
-sdram_test u_sdram_test(
-    .clk_50m            (clk_50m),
-    .rst_n              (sys_rst_n),
-    
-    .wr_en              (wr_en),
-    .wr_data            (wr_data),
-    .rd_en              (rd_en),
-    .rd_data            (rd_data),   
-    
-    .sdram_init_done    (sdram_init_done),    
-    .error_flag         (error_flag)
-    );
+
+logic idle;
+assign idle = u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
 
 //利用LED灯指示SDRAM读写测试的结果
 led_disp u_led_disp(
@@ -93,8 +83,60 @@ led_disp u_led_disp(
     .led                (led)             
     );
 
+logic[23:0] wr_addr,rd_addr;
+logic wr_load, rd_load;
+logic sdram_rden;
+logic sdram_idle;
+integer i;
+assign sdram_idle = u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
+
+task write_data();
+	@(negedge clk_50m);
+	wr_load = 1;
+	wr_addr = 12;
+	@(negedge clk_50m);
+	wr_load = 0;
+	wr_en = 1;
+	for (i = 0; i < 8; i++) begin
+		wr_data = i * 2 + 1;
+		@ (posedge clk_50m);
+	end
+	wr_en = 0;
+endtask 
+
+task read_data();
+	@(negedge clk_50m);
+	rd_load = 1;
+	rd_addr = 12;
+	sdram_rden = 1;
+	@(negedge clk_50m);
+	rd_load = 0;
+	for (i = 0; i < 8; i++) begin
+		@ (posedge clk_50m);
+	end
+	sdram_rden = 0;
+	rd_en = 1;
+endtask 
+
+initial begin
+	wr_addr = 0;
+	rd_addr = 0;
+	wr_load = 0;
+	rd_load = 0;
+	wr_en = 0;
+	rd_en = 0;
+	sdram_rden = 0;
+	@(posedge sdram_init_done);
+	@(posedge sdram_idle);
+	$stop();
+	write_data();
+	@(posedge sdram_idle);
+	read_data();
+end
+
 //SDRAM 控制器顶层模块,封装成FIFO接口
 //SDRAM 控制器地址组成: {bank_addr[1:0],row_addr[12:0],col_addr[8:0]}
+//TODO: wr_max_addr, rd_max_addr can be trival value
 sdram_top u_sdram_top(
 	.ref_clk			(clk_100m),			//sdram	控制器参考时钟
 	.out_clk			(clk_100m_shift),	//用于输出的相位偏移时钟
@@ -104,22 +146,22 @@ sdram_top u_sdram_top(
 	.wr_clk 			(clk_50m),		    //写端口FIFO: 写时钟
 	.wr_en				(wr_en),			//写端口FIFO: 写使能
 	.wr_data		    (wr_data),		    //写端口FIFO: 写数据
-	.wr_min_addr		(24'd0),			//写SDRAM的起始地址
-	.wr_max_addr		(24'd1024),		    //写SDRAM的结束地址
-	.wr_len			    (10'd512),			//写SDRAM时的数据突发长度
-	.wr_load			(~sys_rst_n),		//写端口复位: 复位写地址,清空写FIFO
+	.wr_min_addr		(wr_addr),			//写SDRAM的起始地址
+	.wr_max_addr		(wr_addr + 8),		    //写SDRAM的结束地址
+	.wr_len			    (10'd8),			//写SDRAM时的数据突发长度
+	.wr_load			(~sys_rst_n || wr_load),//写端口复位: 复位写地址,清空写FIFO
    
     //用户读端口
 	.rd_clk 			(clk_50m),			//读端口FIFO: 读时钟
     .rd_en				(rd_en),			//读端口FIFO: 读使能
 	.rd_data	    	(rd_data),		    //读端口FIFO: 读数据
-	.rd_min_addr		(24'd0),			//读SDRAM的起始地址
-	.rd_max_addr		(24'd1024),	    	//读SDRAM的结束地址
-	.rd_len 			(10'd512),			//从SDRAM中读数据时的突发长度
-	.rd_load			(~sys_rst_n),		//读端口复位: 复位读地址,清空读FIFO
+	.rd_min_addr		(rd_addr),		//读SDRAM的起始地址
+	.rd_max_addr		(rd_addr + 8),	    //读SDRAM的结束地址
+	.rd_len 			(10'd8),			//从SDRAM中读数据时的突发长度
+	.rd_load			(~sys_rst_n || rd_load),//读端口复位: 复位读地址,清空读FIFO
 	   
      //用户控制端口  
-	.sdram_read_valid	(1'b1),             //SDRAM 读使能
+	.sdram_read_valid	(sdram_rden),             //SDRAM 读使能
 	.sdram_init_done	(sdram_init_done),	//SDRAM 初始化完成标志
    
 	//SDRAM 芯片接口
