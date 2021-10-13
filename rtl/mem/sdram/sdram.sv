@@ -66,11 +66,11 @@ state_t state, nxt_state;
 
 //待PLL输出稳定之后，停止系统复位
 assign sys_rst_n = rst_n & locked;
-assign about_to_refresh = u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd770;
+assign about_to_refresh = u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd775;
 assign idle = u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
 assign busy = (state != IDLE) && sdram_init_done;
 
-always_ff @(posedge clk_100m or negedge sys_rst_n)
+always_ff @(posedge clk_50m or negedge sys_rst_n)
 	if (!sys_rst_n)
 		state <= IDLE;
 	else
@@ -154,7 +154,7 @@ always_comb begin : SDRAM_user_input_fsm
 		end
 
 		WR_WAIT: begin
-			if (idle) begin
+			if (u_sdram_top.u_sdram_fifo_ctrl.write_done_flag) begin
 				nxt_state = DONE;
 			end else begin
 				nxt_state = WR_WAIT;
@@ -167,9 +167,12 @@ always_comb begin : SDRAM_user_input_fsm
 		end
 
 		RD_WAIT: begin
-			if (u_sdram_top.u_sdram_fifo_ctrl.rdf_use == 7) begin
+			if (u_sdram_top.u_sdram_fifo_ctrl.read_done_flag) begin
 				nxt_state = RD0;
 				rd_en = 1;
+			end else begin
+				nxt_state = RD_WAIT;
+				rd_en = 0;
 			end
 		end
 
@@ -241,14 +244,128 @@ always_comb begin : SDRAM_user_input_fsm
 end
 
 
-// TODO:
+integer i;
 always_ff @( posedge clk_50m ) begin : load_data
-	if (~sys_rst_n) begin
-		data_line_out <= 128'b0;
+	if (~rst_n) begin
+		data_line_out.w0 <= 16'b0;
+		data_line_out.w1 <= 16'b0;
+		data_line_out.w2 <= 16'b0;
+		data_line_out.w3 <= 16'b0;
+		data_line_out.w4 <= 16'b0;
+		data_line_out.w5 <= 16'b0;
+		data_line_out.w6 <= 16'b0;
+		data_line_out.w7 <= 16'b0;
 	end else begin
 		unique case (rd_index)
-			RD_DISABLE : 
-			default: 
+			RD_DISABLE : begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW0: begin
+				data_line_out.w0 <= rd_data;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW1: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= rd_data;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW2: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= rd_data;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW3: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= rd_data;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW4: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= rd_data;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW5: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= rd_data;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW6: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= rd_data;
+				data_line_out.w7 <= data_line_out.w7;
+			end
+
+			RDW7: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= rd_data;
+			end
+
+			default: begin
+				data_line_out.w0 <= data_line_out.w0;
+				data_line_out.w1 <= data_line_out.w1;
+				data_line_out.w2 <= data_line_out.w2;
+				data_line_out.w3 <= data_line_out.w3;
+				data_line_out.w4 <= data_line_out.w4;
+				data_line_out.w5 <= data_line_out.w5;
+				data_line_out.w6 <= data_line_out.w6;
+				data_line_out.w7 <= data_line_out.w7;
+			end
 		endcase
 	end
 end
