@@ -79,26 +79,26 @@ typedef enum logic [2:0] {
 
 typedef logic[sdram_word - 1:0] sdram_wd_t;
 typedef struct packed {
-	sdram_wd	w0;
-	sdram_wd	w1;
-	sdram_wd	w2;
-	sdram_wd	w3;
-	sdram_wd	w4;
-	sdram_wd	w5;
-	sdram_wd	w6,
-	sdram_wd	w7;
+	sdram_wd_t	w0;
+	sdram_wd_t	w1;
+	sdram_wd_t	w2;
+	sdram_wd_t	w3;
+	sdram_wd_t	w4;
+	sdram_wd_t	w5;
+	sdram_wd_t	w6;
+	sdram_wd_t	w7;
 } SDRAM_8_wd_t;
 
 typedef enum logic[3:0] {
-	RD_DISABLE = 4'b00000;
-	RDW0 = 4'b1000;
-	RDW1 = 4'b1001;
-	RDW2 = 4'b1010;
-	RDW3 = 4'b1011;
-	RDW4 = 4'b1100;
-	RDW5 = 4'b1101;
-	RDW6 = 4'b1110;
-	RDW7 = 4'b1111;
+	RD_DISABLE = 4'b0000,
+	RDW0 = 4'b1000,
+	RDW1 = 4'b1001,
+	RDW2 = 4'b1010,
+	RDW3 = 4'b1011,
+	RDW4 = 4'b1100,
+	RDW5 = 4'b1101,
+	RDW6 = 4'b1110,
+	RDW7 = 4'b1111
 } rd_index_t;
 
 `endif

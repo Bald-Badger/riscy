@@ -20,7 +20,7 @@ module sdram(
 	// a transaction is complete when valid && done
 	input	logic	[23:0]	addr,
 	input	logic			wr,
-	input	logic			rd
+	input	logic			rd,
 	input	logic			valid,
 	input	SDRAM_8_wd_t	data_line_in,
 	output	SDRAM_8_wd_t	data_line_out,
@@ -37,27 +37,25 @@ logic		wr_en;                          //SDRAM 写端口:写使能
 logic[15:0]	wr_data;                        //SDRAM 写端口:写入的数据
 logic		rd_en;                          //SDRAM 读端口:读使能
 logic[15:0]	rd_data;                        //SDRAM 读端口:读出的数据
-logic		sdram_init_done;                //SDRAM 初始化完成信号
 
 logic		locked;                         //PLL输出有效标志
 logic		sys_rst_n;                      //系统复位信号
 
 logic		idle;
 rd_index_t	rd_index;						//index of where rd_data is placed in data_line_out
-logic		sdram_read						// read sdram, not read fifo
-											// rden reads fifo
+logic		sdram_read;						// read sdram, not read fifo
+											// rd_en reads fifo
+logic		about_to_refresh;				// yield all operation, wait to finish
+logic 		busy;							// FSM not in idle state
+logic		load;
 
-//待PLL输出稳定之后，停止系统复位
-assign sys_rst_n = rst_n & locked;
 
-assign idle = u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
-
-typedef enum [4:0] {
+typedef enum logic[4:0] {
 	IDLE,
 	RFS,	// SDRAM refresh, cant do anything during refresh
 	WR_LOAD,
 	WR0, WR1, WR2, WR3, WR4, WR5, WR6, WR7,
-	WR_WAIT
+	WR_WAIT,
 	RD_LOAD,
 	RD0, RD1, RD2, RD3, RD4, RD5, RD6, RD7,
 	RD_WAIT,
@@ -65,6 +63,12 @@ typedef enum [4:0] {
 } state_t;
 
 state_t state, nxt_state;
+
+//待PLL输出稳定之后，停止系统复位
+assign sys_rst_n = rst_n & locked;
+assign about_to_refresh = u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd770;
+assign idle = u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
+assign busy = (state != IDLE) && sdram_init_done;
 
 always_ff @(posedge clk_100m or negedge sys_rst_n)
 	if (!sys_rst_n)
@@ -85,14 +89,14 @@ always_comb begin : SDRAM_user_input_fsm
 			// refresh instr gives out when counter reach 11'd780;
 			if (!sdram_init_done) begin
 				nxt_state = IDLE;
-			end else if (u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh > 11'd770) begin
+			end else if (about_to_refresh) begin
 				nxt_state = RFS;
 			end else if (valid && wr) begin
-				nxt_state = wr_load;
+				nxt_state = WR_LOAD;
 			end else if (valid && rd) begin
-				nxt_state = rd_load;
+				nxt_state = RD_LOAD;
 			end else begin
-				nex_state = IDLE;
+				nxt_state = IDLE;
 			end
 		end
 
@@ -164,57 +168,57 @@ always_comb begin : SDRAM_user_input_fsm
 
 		RD_WAIT: begin
 			if (u_sdram_top.u_sdram_fifo_ctrl.rdf_use == 7) begin
-				nex_state = RD0;
-				rden = 1;
+				nxt_state = RD0;
+				rd_en = 1;
 			end
 		end
 
 		RD0: begin
 			nxt_state = RD1;
 			rd_index = RDW0;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		RD1: begin
 			nxt_state = RD2;
 			rd_index = RDW1;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		RD2: begin
 			nxt_state = RD3;
 			rd_index = RDW2;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		RD3: begin
 			nxt_state = RD4;
 			rd_index = RDW3;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		RD4: begin
 			nxt_state = RD5;
 			rd_index = RDW4;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		RD5: begin
 			nxt_state = RD6;
 			rd_index = RDW5;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		RD6: begin
 			nxt_state = RD7;
 			rd_index = RDW6;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		RD7: begin
 			nxt_state = DONE;
 			rd_index = RDW7;
-			rden = 1;
+			rd_en = 1;
 		end
 
 		DONE: begin
@@ -223,13 +227,30 @@ always_comb begin : SDRAM_user_input_fsm
 		end
 
 		RFS: begin
-			
+			if (~about_to_refresh && idle) begin
+				nxt_state = IDLE;
+			end else begin
+				nxt_state = RFS;
+			end
 		end
 
 		default: begin
-			
+			nxt_state = IDLE;
 		end
 	endcase
+end
+
+
+// TODO:
+always_ff @( posedge clk_50m ) begin : load_data
+	if (~sys_rst_n) begin
+		data_line_out <= 128'b0;
+	end else begin
+		unique case (rd_index)
+			RD_DISABLE : 
+			default: 
+		endcase
+	end
 end
 
 //例化PLL, 产生各模块所需要的时钟
@@ -286,4 +307,4 @@ sdram_top u_sdram_top(
 	.sdram_dqm			(sdram_dqm)         //SDRAM 数据掩码
     );
 
-endmodule sdram
+endmodule : sdram
