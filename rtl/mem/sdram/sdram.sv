@@ -48,7 +48,32 @@ logic		sdram_read;						// read sdram, not read fifo
 logic		about_to_refresh;				// yield all operation, wait to finish
 logic 		busy;							// FSM not in idle state
 logic		load;
+logic		write_done_flag; // half cycle
+logic		read_done_flag;
+logic		write_done_0, write_done_1;
+logic		read_done_0, read_done_1;
+logic		write_done;	// full cycle
+logic		read_done;
 
+always_comb begin : r_w_flag_assign
+	write_done_flag = u_sdram_top.u_sdram_fifo_ctrl.write_done_flag;
+	read_done_flag = u_sdram_top.u_sdram_fifo_ctrl.read_done_flag;
+	write_done = write_done_0 || write_done_1;
+	read_done = read_done_0 || read_done_1;
+end
+
+always_ff @(posedge clk_100m_shift or negedge rst_n)
+	if (!rst_n) begin
+		write_done_0 <= 1'b0;
+		write_done_1 <= 1'b0;
+		read_done_0 <= 1'b0;
+		read_done_1 <= 1'b1;
+	end else begin
+		write_done_0 <= write_done_flag;
+		write_done_1 <= write_done_0;
+		read_done_0 <= read_done_flag;
+		read_done_1 <= read_done_0;
+	end
 
 typedef enum logic[4:0] {
 	IDLE,
@@ -83,6 +108,7 @@ always_comb begin : SDRAM_user_input_fsm
 	rd_en = 1'b0;
 	load = 1'b0;
 	rd_index = RD_DISABLE;
+	sdram_read = 1'b0;
 	done = 1'b0;
 	case (state)
 		IDLE: begin
@@ -154,7 +180,7 @@ always_comb begin : SDRAM_user_input_fsm
 		end
 
 		WR_WAIT: begin
-			if (u_sdram_top.u_sdram_fifo_ctrl.write_done_flag) begin
+			if (write_done) begin
 				nxt_state = DONE;
 			end else begin
 				nxt_state = WR_WAIT;
@@ -167,12 +193,14 @@ always_comb begin : SDRAM_user_input_fsm
 		end
 
 		RD_WAIT: begin
-			if (u_sdram_top.u_sdram_fifo_ctrl.read_done_flag) begin
+			if (read_done) begin
 				nxt_state = RD0;
-				rd_en = 1;
+				sdram_read = 1'b0;
+				rd_en = 1'b1;
 			end else begin
 				nxt_state = RD_WAIT;
-				rd_en = 0;
+				sdram_read = 1'b1;
+				rd_en = 1'b0;
 			end
 		end
 
@@ -221,7 +249,6 @@ always_comb begin : SDRAM_user_input_fsm
 		RD7: begin
 			nxt_state = DONE;
 			rd_index = RDW7;
-			rd_en = 1;
 		end
 
 		DONE: begin

@@ -1,3 +1,5 @@
+`timescale 1 ps / 1 ps
+
 module mem_sys (
 	input logic			clk,
 	input logic			rst_n,
@@ -7,11 +9,10 @@ module mem_sys (
 	input logic			wr,
 	input logic			rd,
 	input logic			valid,
-
+	
 	output data_t		d_out,
-	output logic		ready		
+	output logic		done
 );
-
 
 // dcache nets
 data_t		data_in_dcache,

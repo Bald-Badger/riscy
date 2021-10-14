@@ -140,6 +140,6 @@ sdr u_sdram(
     .Addr           (sdram_addr),         //SDRAM ?/???
     .Dq             (sdram_data),         //SDRAM ??
     .Dqm            (sdram_dqm)           //SDRAM ????
-    );
+);
     
 endmodule : sdram_my_tb
