@@ -1,35 +1,47 @@
-`timescale 1ns/1ns
+`timescale 1ps/1ps
 import defines::*;
 import mem_defines::*;
 
 module sdram_my_tb;
 
-//reg define
-reg         clock_50m;                    //50Mhz????
-reg         rst_n;                        //????????
+//logic define
+logic		clk;
+logic		rst_n, but_rst_n;
+logic		locked;
                                           
 //logic define                             
-logic        sdram_clk;                    //SDRAM ????    
-logic        sdram_cke;                    //SDRAM ????    
-logic        sdram_cs_n;                   //SDRAM ??    
-logic        sdram_ras_n;                  //SDRAM ???    
-logic        sdram_cas_n;                  //SDRAM ???    
-logic        sdram_we_n;                   //SDRAM ???    
-logic [ 1:0] sdram_ba;                     //SDRAM Bank??    
-logic [12:0] sdram_addr;                   //SDRAM ?/???    
-wire [15:0] sdram_data;                   //SDRAM ??    
-logic [ 1:0] sdram_dqm;                    //SDRAM ????    
+logic		sdram_clk;
+logic		sdram_cke;
+logic		sdram_cs_n;
+logic		sdram_ras_n;
+logic		dram_cas_n;
+logic		sdram_we_n;
+logic[1:0]	sdram_ba;
+logic[12:0]	sdram_addr;
+wire [15:0]	sdram_data;
+logic[1:0]	sdram_dqm;
                                           
 
 initial begin
-  clock_50m = 0;
-  rst_n     = 0;                      
-  #100                                    //????100ns
-  rst_n     = 1;
+  clk = 0;
+  but_rst_n     = 0;                      
+  #100000
+  but_rst_n     = 1;
 end
+assign rst_n = (but_rst_n & locked);
 
 //??50Mhz??,????20ns
-always #10 clock_50m = ~clock_50m; 
+always #10000 clk = ~clk; 
+
+pll_clk	pll_inst (
+	.areset		(~but_rst_n),
+	.inclk0		(clk),
+	.locked		(locked),
+	.c0			(clk_50m),
+	.c1			(clk_100m),
+	.c2			(clk_100m_shift)
+);
+
 
 data_t			addr_int;
 sdram_addr_t	addr;
@@ -39,7 +51,7 @@ sdram_8_wd_t	data_line_in, data_line_out;
 logic wr, rd, valid, done, sdram_init_done;
 data_t	mem_data_32b;
 logic[15:0] mem_data_16b;
-reg [15:0] mem [0:16777216];
+logic [15:0] mem [0:16777216];
 integer err;
 
 integer i;
@@ -62,13 +74,13 @@ endfunction
 
 
 function sdram_addr_t rand_addr();
-	addr_int = $urandom() & 32'h0000_07fe;
+	addr_int = $urandom() & 32'hffff_fffe;
 	return sdram_addr_t'(addr_int[23:0]);
 endfunction
 
 
 task write_test(input sdram_addr_t address);
-	@(posedge clock_50m);
+	@(posedge clk_50m);
 	addr = address;
 	data_line_in = {{mem[addr]},
 					{mem[addr+1]},
@@ -81,18 +93,18 @@ task write_test(input sdram_addr_t address);
 	wr = 1;
 	valid = 1;
 	@(posedge done);
-	@(negedge clock_50m);
+	@(negedge clk_50m);
 	wr = 0;
 	valid = 0;
 endtask
 
 task read_test(input sdram_addr_t address);
-	@(posedge clock_50m);
+	@(posedge clk_50m);
 	addr = address;
 	rd = 1;
 	valid = 1;
 	@(posedge done);
-	@(negedge clock_50m);
+	@(negedge clk_50m);
 	rd = 0;
 	valid = 0;
 	assert (data_line_out == {{mem[addr]},
@@ -115,12 +127,12 @@ task init ();
 	data_line_in = 0;
 	err = 0;	
 	@(posedge sdram_init_done);
-	@(negedge clock_50m);
+	@(negedge clk_50m);
 endtask
 
 
 sdram_addr_t addr_gen;
-integer num = 10000;
+integer num = 100000;
 initial begin
 	init();
 	for (i = 0; i < num; i++) begin
@@ -129,7 +141,7 @@ initial begin
 		read_test(addr_gen);
 	end
 
-	repeat(100) @(negedge clock_50m);
+	repeat(100) @(negedge clk_50m);
 	if (err) begin
 		$display("test failed");
 	end else begin
@@ -141,7 +153,9 @@ end
 
 //??SDRAM??????
 sdram sdram_ctrl_inst(
-    .clk            (clock_50m),          //FPGA???50M
+    .clk_50m		(clk_50m),
+	.clk_100m		(clk_100m),
+	.clk_100m_shift	(clk_100m_shift),
     .rst_n          (rst_n),              //??????????
         
     .sdram_clk      (sdram_clk),          //SDRAM ????

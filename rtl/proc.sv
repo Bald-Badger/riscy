@@ -8,6 +8,8 @@ import defines::*;
 
 module proc(
 	input logic clk,
+	input logic clk_100m,
+	input logic clk_100m_shift,
 	input logic rst_n,
 	output logic ebreak_start	// actually 3 cycles after ebreak, pipeline cleared
 );
@@ -223,6 +225,8 @@ module proc(
 	memory memory_inst (
 		// input
 		.clk				(clk),
+		.clk_100m			(clk_100m),
+		.clk_100m_shift		(clk_100m_shift),
 		.rst_n				(rst_n),
 		.addr				(alu_result_m),
 		.data_in_raw		(rs2_m),

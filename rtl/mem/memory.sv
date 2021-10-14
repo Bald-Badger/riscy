@@ -11,6 +11,8 @@ import mem_defines::*;
 
 module memory (
 	input logic 	clk,
+	input logic		clk_100m,
+	input logic		clk_100m_shift,
 	input logic		rst_n,
 	input data_t	addr,
 	input data_t	data_in_raw,

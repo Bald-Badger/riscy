@@ -9,47 +9,44 @@ import mem_defines::*;
 	change sdram_cmd.v parameter into whole page burst mode
 	and change wr_len
 	if want to store less than 8 word, change wr_len only
-	and it sould be just fine
+	and it sould be just fine (not verified)
 */
 module sdram(
-    input					clk,			//FPGA外部时钟，50M
-    input					rst_n,			//按键复位，低电平有效
+    input	logic			clk_50m,
+	input	logic			clk_100m,
+	input	logic			clk_100m_shift,
+    input	logic			rst_n,
     //SDRAM 芯片接口
-    output					sdram_clk,		//SDRAM 芯片时钟
-    output					sdram_cke,		//SDRAM 时钟有效
-    output					sdram_cs_n,		//SDRAM 片选
-    output       	 		sdram_ras_n,	//SDRAM 行有效
-    output     	   			sdram_cas_n,	//SDRAM 列有效
-    output        			sdram_we_n,		//SDRAM 写有效
-    output	[ 1:0]			sdram_ba,		//SDRAM Bank地址
-    output	[12:0]			sdram_addr,		//SDRAM 行/列地址
-    inout	[15:0]			sdram_data,		//SDRAM 数据
-    output	[ 1:0]			sdram_dqm,		//SDRAM 数据掩码
+    output	logic			sdram_clk,		//SDRAM clock
+    output	logic			sdram_cke,		//SDRAM clock enable
+    output	logic			sdram_cs_n,		//SDRAM chip select
+    output	logic			sdram_ras_n,	//SDRAM row enable
+    output	logic			sdram_cas_n,	//SDRAM colomn enable
+    output	logic 			sdram_we_n,		//SDRAM write enable
+    output	logic	[ 1:0]	sdram_ba,		//SDRAM bank address
+    output	logic	[12:0]	sdram_addr,		//SDRAM row / colomn address
+    inout			[15:0]	sdram_data,		//SDRAM data
+    output	logic	[ 1:0]	sdram_dqm,		//SDRAM data mask
 
 	// user control interface
 	// a transaction is complete when valid && done
-	input	logic	[23:0]	addr,
-	input	logic			wr,
-	input	logic			rd,
-	input	logic			valid,
-	input	sdram_8_wd_t	data_line_in,
-	output	sdram_8_wd_t	data_line_out,
-	output	logic			done,
-	output	logic			sdram_init_done
+	input	logic	[23:0]	addr,			//16-bit word addr
+	input	logic			wr,				// user write enable
+	input	logic			rd,				// user read enable
+	input	logic			valid,			// user request valid
+	input	sdram_8_wd_t	data_line_in,	// 8 16-bit word
+	output	sdram_8_wd_t	data_line_out,	// 8 16-bit word
+	output	logic			done,			// access done
+	output	logic			sdram_init_done	// sdram init done
 );
     
 //logic define
-logic		clk_50m;                        //SDRAM 读写测试时钟
-logic		clk_100m;                       //SDRAM 控制器时钟
-logic		clk_100m_shift;                 //相位偏移时钟
-     
-logic		wr_en;                          //SDRAM 写端口:写使能
-logic[15:0]	wr_data;                        //SDRAM 写端口:写入的数据
-logic		rd_en;                          //SDRAM 读端口:读使能
-logic[15:0]	rd_data;                        //SDRAM 读端口:读出的数据
 
-logic		locked;                         //PLL输出有效标志
-logic		sys_rst_n;                      //系统复位信号
+     
+logic		wr_en;
+logic[15:0]	wr_data;
+logic		rd_en;
+logic[15:0]	rd_data;
 
 logic		idle;
 rd_index_t	rd_index;						//index of where rd_data is placed in data_line_out
@@ -57,64 +54,72 @@ logic		sdram_read;						// read sdram, not read fifo
 											// rd_en reads fifo
 logic		about_to_refresh;				// yield all operation, wait to finish
 logic 		busy;							// FSM not in idle state
-logic		load;
-logic		write_done_flag; // half cycle
+logic		load;							// clear fifo, upadte access address
+logic		write_done_flag; 				// half cycle
 logic		read_done_flag;
 logic		write_done_0, write_done_1, write_done_2;
 logic		read_done_0, read_done_1, read_done_2;
-logic		write_done;	// full cycle
+logic		write_done;						// full cycle
 logic		read_done;
 
+
 always_comb begin : r_w_flag_assign
-	write_done_flag = u_sdram_top.u_sdram_fifo_ctrl.write_done_flag;
-	read_done_flag = u_sdram_top.u_sdram_fifo_ctrl.read_done_flag;
-	write_done = write_done_0 || write_done_1 || write_done_2;
-	read_done = read_done_0 || read_done_1 || read_done_2;
+	write_done_flag	= u_sdram_top.u_sdram_fifo_ctrl.write_done_flag;
+	read_done_flag	= u_sdram_top.u_sdram_fifo_ctrl.read_done_flag;
+	write_done		= write_done_0 || write_done_1 || write_done_2;
+	read_done		= read_done_0 || read_done_1 || read_done_2;
 end
 
+
+// turn half 50mhz clk signal into 3-half cycle signal
 always_ff @(posedge clk_100m_shift or negedge rst_n)
 	if (!rst_n) begin
-		write_done_0 <= 1'b0;
-		write_done_1 <= 1'b0;
-		write_done_2 <= 1'b0;
-		read_done_0 <= 1'b0;
-		read_done_1 <= 1'b0;
-		read_done_2 <= 1'b0;
+		write_done_0	<= 1'b0;
+		write_done_1	<= 1'b0;
+		write_done_2	<= 1'b0;
+		read_done_0		<= 1'b0;
+		read_done_1		<= 1'b0;
+		read_done_2		<= 1'b0;
 	end else begin
-		write_done_0 <= write_done_flag;
-		write_done_1 <= write_done_0;
-		write_done_2 <= write_done_1;
-		read_done_0 <= read_done_flag;
-		read_done_1 <= read_done_0;
-		read_done_2 <= read_done_1;
+		write_done_0	<= write_done_flag;
+		write_done_1	<= write_done_0;
+		write_done_2	<= write_done_1;
+		read_done_0		<= read_done_flag;
+		read_done_1		<= read_done_0;
+		read_done_2		<= read_done_1;
 	end
 
+
+// sdram access state machine
 typedef enum logic[4:0] {
-	IDLE,
-	RFS,	// SDRAM refresh, cant do anything during refresh
-	WR_LOAD,
-	WR0, WR1, WR2, WR3, WR4, WR5, WR6, WR7,
-	WR_WAIT,
-	RD_LOAD,
-	RD0, RD1, RD2, RD3, RD4, RD5, RD6, RD7,
-	RD_WAIT,
-	DONE
+	IDLE,		// does nothing
+	RFS,		// SDRAM refresh, cant do anything during refresh
+	WR_LOAD,	// clear write fifo, load burst write start address
+	WR0, WR1, WR2, WR3, WR4, WR5, WR6, WR7,	// write 8 16bit words
+	WR_WAIT,	// wait write fifo spit all words out
+	RD_LOAD,	// clear read fifo, load burst read start address
+	RD0, RD1, RD2, RD3, RD4, RD5, RD6, RD7,	// read 8 16bit words
+	RD_WAIT,	// wait read fifo spit all words out
+	DONE		// one sdram access done
 } state_t;
 
 state_t state, nxt_state;
 
-//待PLL输出稳定之后，停止系统复位
-assign sys_rst_n = rst_n & locked;
-assign about_to_refresh = u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd775;
-assign idle = u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
-assign busy = (state != IDLE) && sdram_init_done;
 
-always_ff @(posedge clk_50m or negedge sys_rst_n)
-	if (!sys_rst_n)
+assign about_to_refresh	= u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd775;
+assign idle				= u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
+assign busy				= (state != IDLE) && sdram_init_done;
+
+
+// update sdram controller state
+always_ff @(posedge clk_50m or negedge rst_n)
+	if (!rst_n)
 		state <= IDLE;
 	else
 		state <= nxt_state;
 
+
+// sdram ctrl fsm
 always_comb begin : SDRAM_user_input_fsm
 	nxt_state = IDLE;
 	wr_en = 1'b0;
@@ -126,9 +131,9 @@ always_comb begin : SDRAM_user_input_fsm
 	done = 1'b0;
 	case (state)
 		IDLE: begin
-			// refresh instr gives out when counter reach 11'd780;
 			if (!sdram_init_done) begin
 				nxt_state = IDLE;
+			// refresh instr gives out when counter reach 11'd780;
 			end else if (about_to_refresh) begin
 				nxt_state = RFS;
 			end else if (valid && wr) begin
@@ -410,24 +415,13 @@ always_ff @( posedge clk_50m ) begin : load_data
 	end
 end
 
-//例化PLL, 产生各模块所需要的时钟
-pll_clk u_pll_clk(
-    .inclk0             (clk),
-    .areset             (~rst_n),
-    
-    .c0                 (clk_50m),
-    .c1                 (clk_100m),
-    .c2                 (clk_100m_shift),
-    .locked             (locked)
-);
 
-//SDRAM 控制器顶层模块,封装成FIFO接口
-//SDRAM 控制器地址组成: {bank_addr[1:0],row_addr[12:0],col_addr[8:0]}
-//TODO: wr_max_addr, rd_max_addr can be trival value
+// 3rd party sdram controller
+// reference: openedv.com
 sdram_top u_sdram_top(
-	.ref_clk			(clk_100m),			//sdram	控制器参考时钟
-	.out_clk			(clk_100m_shift),	//用于输出的相位偏移时钟
-	.rst_n				(sys_rst_n),		//系统复位
+	.ref_clk			(clk_100m),
+	.out_clk			(clk_100m_shift),
+	.rst_n				(rst_n),
     
     //用户写端口
 	.wr_clk 			(clk_50m),		    //写端口FIFO: 写时钟
@@ -436,7 +430,7 @@ sdram_top u_sdram_top(
 	.wr_min_addr		(addr),				//写SDRAM的起始地址
 	.wr_max_addr		(24'b1),		    //写SDRAM的结束地址
 	.wr_len			    (sdram_access_len),	//写SDRAM时的数据突发长度
-	.wr_load			(~sys_rst_n || load),//写端口复位: 复位写地址,清空写FIFO
+	.wr_load			(~rst_n || load),//写端口复位: 复位写地址,清空写FIFO
    
     //用户读端口
 	.rd_clk 			(clk_50m),			//读端口FIFO: 读时钟
@@ -445,7 +439,7 @@ sdram_top u_sdram_top(
 	.rd_min_addr		(addr),				//读SDRAM的起始地址
 	.rd_max_addr		(24'b1),	   		//读SDRAM的结束地址
 	.rd_len 			(sdram_access_len),	//从SDRAM中读数据时的突发长度
-	.rd_load			(~sys_rst_n || load),//读端口复位: 复位读地址,清空读FIFO
+	.rd_load			(~rst_n || load),//读端口复位: 复位读地址,清空读FIFO
 	   
      //用户控制端口  
 	.sdram_read_valid	(sdram_read),		//SDRAM 读使能
