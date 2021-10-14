@@ -28,11 +28,13 @@ import defines::*;
 			tag(19)            index(9)    word_off(2)   byte_off(2)
 */
 
-localparam tag_len		= 19;
-localparam index_len	= 9;
-localparam word_off		= 2;
-localparam byte_off		= 2;
-localparam sdram_word	= 16;
+localparam	tag_len			= 19;
+localparam	index_len		= 9;
+localparam	word_off		= 2;
+localparam	byte_off		= 2;
+localparam	sdram_addr_len	= 24; // 2^24 words
+localparam	sdram_word		= 16; // 16 bit word
+localparam	sdram_access_len = 8; // 8 16-bit word each access 
 
 typedef logic [index_len - 1 : 0]	index_t;
 typedef logic [tag_len - 1 : 0]		tag_t;
@@ -77,7 +79,8 @@ typedef enum logic [2:0] {
 	CACHE_ERR_3		= 3'b011
 } cache_access_t;
 
-typedef logic[sdram_word - 1:0] sdram_wd_t;
+typedef logic[sdram_addr_len - 1 : 0]	sdram_addr_t;
+typedef logic[sdram_word - 1:0]			sdram_wd_t;
 typedef struct packed {
 	sdram_wd_t	w0;
 	sdram_wd_t	w1;
@@ -87,7 +90,7 @@ typedef struct packed {
 	sdram_wd_t	w5;
 	sdram_wd_t	w6;
 	sdram_wd_t	w7;
-} SDRAM_8_wd_t;
+} sdram_8_wd_t;
 
 typedef enum logic[3:0] {
 	RD_DISABLE = 4'b0000,

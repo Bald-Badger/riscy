@@ -85,7 +85,9 @@ always @ (posedge clk or negedge rst_n) begin
                     sdram_cmd_r <= `CMD_A_REF;
                     sdram_ba    <= 2'b11;
                     sdram_addr  <= 13'h1fff;						
-                end 			 	
+                end 	
+			
+			// TODO: when writing length longer than 8, change burst length to 3'b111		 	
             `I_MRS: begin	            //模式寄存器设置指令
                     sdram_cmd_r <= `CMD_LMR;
                     sdram_ba    <= 2'b00;
@@ -95,7 +97,7 @@ always @ (posedge clk or negedge rst_n) begin
                         2'b00,		    //默认，{A8,A7}=00
                         3'b011,		    //CAS潜伏期设置，这里设置为3，{A6,A5,A4}=011
                         1'b0,		    //突发传输方式，这里设置为顺序，A3=0
-                        3'b111		    //突发长度，这里设置为页突发，{A2,A1,A0}=011
+                        3'b011		    //突发长度，这里设置为页突发，{A2,A1,A0}=111
 					};
                 end	
             `I_DONE:                    //SDRAM初始化完成

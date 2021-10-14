@@ -1,23 +1,3 @@
-//****************************************Copyright (c)***********************************//
-//?????www.openedv.com
-//?????http://openedv.taobao.com 
-//????????????"????"?????FPGA & STM32???
-//??????????
-//Copyright(C) ???? 2018-2028
-//All rights reserved                               
-//----------------------------------------------------------------------------------------
-// File name:           sdram_tb
-// Last modified Date:  2018/3/18 8:41:06
-// Last Version:        V1.0
-// Descriptions:        SDRAM????
-//----------------------------------------------------------------------------------------
-// Created by:          ????
-// Created date:        2018/3/18 8:41:06
-// Version:             V1.0
-// Descriptions:        The original version
-//
-//----------------------------------------------------------------------------------------
-//****************************************************************************************//
 `timescale 1ns/1ns
 import defines::*;
 import mem_defines::*;
@@ -40,13 +20,7 @@ logic [12:0] sdram_addr;                   //SDRAM ?/???
 wire [15:0] sdram_data;                   //SDRAM ??    
 logic [ 1:0] sdram_dqm;                    //SDRAM ????    
                                           
-logic        led;                          //led???
 
-//*****************************************************
-//**                    main code
-//***************************************************** 
-
-//??????????
 initial begin
   clock_50m = 0;
   rst_n     = 0;                      
@@ -57,9 +31,113 @@ end
 //??50Mhz??,????20ns
 always #10 clock_50m = ~clock_50m; 
 
-logic[23:0] addr;
+data_t			addr_int;
+sdram_addr_t	addr;
+data_t			w0, w1, w2, w3;
+sdram_8_wd_t	data;
+sdram_8_wd_t	data_line_in, data_line_out;
 logic wr, rd, valid, done, sdram_init_done;
-SDRAM_8_wd_t data_line_in, data_line_out;
+data_t	mem_data_32b;
+logic[15:0] mem_data_16b;
+reg [15:0] mem [0:16777216];
+integer err;
+
+integer i;
+
+initial begin
+	for (i = 0; i < 16777216; i++) begin
+		mem_data_32b = $urandom();
+		mem_data_16b = mem_data_32b[15:0];
+		mem[i] = mem_data_16b;
+	end
+end
+
+function sdram_8_wd_t rand_8_wd();
+	w0 = $urandom();
+	w1 = $urandom();
+	w2 = $urandom();
+	w3 = $urandom();
+	return sdram_8_wd_t'({w0, w1, w2, w3});
+endfunction
+
+
+function sdram_addr_t rand_addr();
+	addr_int = $urandom() & 32'h0000_07fe;
+	return sdram_addr_t'(addr_int[23:0]);
+endfunction
+
+
+task write_test(input sdram_addr_t address);
+	@(posedge clock_50m);
+	addr = address;
+	data_line_in = {{mem[addr]},
+					{mem[addr+1]},
+					{mem[addr+2]},
+					{mem[addr+3]},
+					{mem[addr+4]},
+					{mem[addr+5]},
+					{mem[addr+6]},
+					{mem[addr+7]}};
+	wr = 1;
+	valid = 1;
+	@(posedge done);
+	@(negedge clock_50m);
+	wr = 0;
+	valid = 0;
+endtask
+
+task read_test(input sdram_addr_t address);
+	@(posedge clock_50m);
+	addr = address;
+	rd = 1;
+	valid = 1;
+	@(posedge done);
+	@(negedge clock_50m);
+	rd = 0;
+	valid = 0;
+	assert (data_line_out == {{mem[addr]},
+					{mem[addr+1]},
+					{mem[addr+2]},
+					{mem[addr+3]},
+					{mem[addr+4]},
+					{mem[addr+5]},
+					{mem[addr+6]},
+					{mem[addr+7]}}
+			) 
+	else   $stop();
+endtask
+
+
+task init ();
+	wr = 0;
+	rd = 0;
+	valid = 0;
+	data_line_in = 0;
+	err = 0;	
+	@(posedge sdram_init_done);
+	@(negedge clock_50m);
+endtask
+
+
+sdram_addr_t addr_gen;
+integer num = 10000;
+initial begin
+	init();
+	for (i = 0; i < num; i++) begin
+		addr_gen = rand_addr();
+		write_test(addr_gen);
+		read_test(addr_gen);
+	end
+
+	repeat(100) @(negedge clock_50m);
+	if (err) begin
+		$display("test failed");
+	end else begin
+		$display("test passed");
+	end
+	$stop();
+end
+
 
 //??SDRAM??????
 sdram sdram_ctrl_inst(
@@ -88,44 +166,6 @@ sdram sdram_ctrl_inst(
 	.done			(done),
 	.sdram_init_done(sdram_init_done)
 );  
-
-task write_test();
-	@(posedge clock_50m);
-	addr = 20;
-	data_line_in = 128'hfedc_ba98_7654_3210_0123_4567_89ab_cdef;
-	wr = 1;
-	valid = 1;
-	@(posedge done);
-	@(negedge clock_50m);
-	wr = 0;
-	valid = 0;
-endtask
-
-task read_test();
-	@(posedge clock_50m);
-	addr = 20;
-	rd = 1;
-	valid = 1;
-	@(posedge done);
-	@(negedge clock_50m);
-	rd = 0;
-	valid = 0;
-endtask
-
-
-initial begin
-	addr = 0;
-	wr = 0;
-	rd = 0;
-	valid = 0;
-	data_line_in = 0;
-	@(posedge sdram_init_done);
-	write_test();
-	$stop();
-	read_test();
-	repeat(100) @(negedge clock_50m);
-	$stop();
-end
 
 
 //??SDRAM????    

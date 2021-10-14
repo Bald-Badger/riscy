@@ -1,6 +1,16 @@
 import defines::*;
 import mem_defines::*;
 
+/*
+	top module of sdram controll module,
+	uses valid-ready handshake method,
+	each read/write only load/read 8 16-bit word !!!
+	if want to store more than 8 word, 
+	change sdram_cmd.v parameter into whole page burst mode
+	and change wr_len
+	if want to store less than 8 word, change wr_len only
+	and it sould be just fine
+*/
 module sdram(
     input					clk,			//FPGA外部时钟，50M
     input					rst_n,			//按键复位，低电平有效
@@ -22,8 +32,8 @@ module sdram(
 	input	logic			wr,
 	input	logic			rd,
 	input	logic			valid,
-	input	SDRAM_8_wd_t	data_line_in,
-	output	SDRAM_8_wd_t	data_line_out,
+	input	sdram_8_wd_t	data_line_in,
+	output	sdram_8_wd_t	data_line_out,
 	output	logic			done,
 	output	logic			sdram_init_done
 );
@@ -50,29 +60,33 @@ logic 		busy;							// FSM not in idle state
 logic		load;
 logic		write_done_flag; // half cycle
 logic		read_done_flag;
-logic		write_done_0, write_done_1;
-logic		read_done_0, read_done_1;
+logic		write_done_0, write_done_1, write_done_2;
+logic		read_done_0, read_done_1, read_done_2;
 logic		write_done;	// full cycle
 logic		read_done;
 
 always_comb begin : r_w_flag_assign
 	write_done_flag = u_sdram_top.u_sdram_fifo_ctrl.write_done_flag;
 	read_done_flag = u_sdram_top.u_sdram_fifo_ctrl.read_done_flag;
-	write_done = write_done_0 || write_done_1;
-	read_done = read_done_0 || read_done_1;
+	write_done = write_done_0 || write_done_1 || write_done_2;
+	read_done = read_done_0 || read_done_1 || read_done_2;
 end
 
 always_ff @(posedge clk_100m_shift or negedge rst_n)
 	if (!rst_n) begin
 		write_done_0 <= 1'b0;
 		write_done_1 <= 1'b0;
+		write_done_2 <= 1'b0;
 		read_done_0 <= 1'b0;
-		read_done_1 <= 1'b1;
+		read_done_1 <= 1'b0;
+		read_done_2 <= 1'b0;
 	end else begin
 		write_done_0 <= write_done_flag;
 		write_done_1 <= write_done_0;
+		write_done_2 <= write_done_1;
 		read_done_0 <= read_done_flag;
 		read_done_1 <= read_done_0;
+		read_done_2 <= read_done_1;
 	end
 
 typedef enum logic[4:0] {
@@ -271,7 +285,6 @@ always_comb begin : SDRAM_user_input_fsm
 end
 
 
-integer i;
 always_ff @( posedge clk_50m ) begin : load_data
 	if (~rst_n) begin
 		data_line_out.w0 <= 16'b0;
@@ -422,7 +435,7 @@ sdram_top u_sdram_top(
 	.wr_data		    (wr_data),		    //写端口FIFO: 写数据
 	.wr_min_addr		(addr),				//写SDRAM的起始地址
 	.wr_max_addr		(24'b1),		    //写SDRAM的结束地址
-	.wr_len			    (10'd8),			//写SDRAM时的数据突发长度
+	.wr_len			    (sdram_access_len),	//写SDRAM时的数据突发长度
 	.wr_load			(~sys_rst_n || load),//写端口复位: 复位写地址,清空写FIFO
    
     //用户读端口
@@ -431,7 +444,7 @@ sdram_top u_sdram_top(
 	.rd_data	    	(rd_data),		    //读端口FIFO: 读数据
 	.rd_min_addr		(addr),				//读SDRAM的起始地址
 	.rd_max_addr		(24'b1),	   		//读SDRAM的结束地址
-	.rd_len 			(10'd8),			//从SDRAM中读数据时的突发长度
+	.rd_len 			(sdram_access_len),	//从SDRAM中读数据时的突发长度
 	.rd_load			(~sys_rst_n || load),//读端口复位: 复位读地址,清空读FIFO
 	   
      //用户控制端口  
