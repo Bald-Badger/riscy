@@ -34,7 +34,7 @@ localparam	word_off		= 2;
 localparam	byte_off		= 2;
 localparam	sdram_addr_len	= 24; // 2^24 words
 localparam	sdram_word		= 16; // 16 bit word
-localparam	sdram_access_len = 8; // 8 16-bit word each access 
+logic[9:0]	sdram_access_len = 8; // 8 16-bit word each access 
 
 typedef logic [index_len - 1 : 0]	index_t;
 typedef logic [tag_len - 1 : 0]		tag_t;

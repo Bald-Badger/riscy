@@ -29,7 +29,7 @@
 
     // Timing parameters based on Speed Grade and part type (Y37M)
 `define sg6a
-`define den128Mb
+`define den256Mb
 `define x16
                                           // SYMBOL UNITS DESCRIPTION
                                           // ------ ----- -----------

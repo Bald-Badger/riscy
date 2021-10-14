@@ -75,8 +75,8 @@ wire       write_done_flag;              //sdram_wr_ack 下降沿标志位
 wire       read_done_flag;               //sdram_rd_ack 下降沿标志位      
 wire       wr_load_flag;                 //wr_load      上升沿标志位      
 wire       rd_load_flag;                 //rd_load      上升沿标志位      
-wire [9:0] wrf_use;                      //写端口FIFO中的数据量
-wire [9:0] rdf_use;                      //读端口FIFO中的数据量
+wire [4:0] wrf_use;                      //写端口FIFO中的数据量
+wire [4:0] rdf_use;                      //读端口FIFO中的数据量
 
 //*****************************************************
 //**                    main code
