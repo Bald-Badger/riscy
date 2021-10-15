@@ -1,12 +1,15 @@
 `timescale 1 ps / 1 ps
 
+import defines::*;
+import mem_defines::*;
+
 module mem_sys (
 	input logic			clk_50m,
 	input logic			clk_100m,
 	input logic			clk_100m_shift,
 	input logic			rst_n,
 
-	input data_t		addr,
+	input cache_addr_t	addr,
 	input data_t		data_in,
 	input logic			wr,
 	input logic			rd,
@@ -23,24 +26,55 @@ data_t		data_in_dcache,
 data_t		data_in_sram,
 			data_out_sram;
 
-logic		en_dcache;
-index_t		index_dacahe;
-logic		comp_dcache;
-logic		write_dcache;
-tag_t		tag_in_dcache,
-			tag_out_dcache;
-logic		valid_dcache,
-			ready_dcahce;
 
 
+logic		rd_dcache, wr_dache, en_dcache;
 logic		hit0_dcache, hit1_dache;
 logic		dirty0_dcache, dirty1_dcache;
 logic		valid0_dache, valid1_dcache;
+flag_line_t	flag_line_in_dcache, flag_line_out_dcache;
+data_line_t	data_line_in_dcache, data_line_out_dcache;
 
-// icache wires
-// TODO: 
+index_t index;
+always_comb begin
+	index = addr.index;
+end
 
-// SRAM net
+
+cache dcache(
+	// input nets
+	.clk			(clk_50m),
+	.en				(en_dcache),
+	.index			(index),
+	.rd				(rd_dcache),
+	.wr				(wr_dache),
+	.flag_line_in	(flag_line_in_dcache),
+	.data_line_in	(data_line_in_dcache),
+
+	// output nets
+	.flag_line_out	(flag_line_out_dcache),
+	.data_line_out	(data_line_out_dcache)
+);
+
+
+// dummy load for icache, used to estimate area
+cache icache(
+	// input nets
+	.clk			(clk_50m),
+	.en				(en_dcache),
+	.index			(index),
+	.rd				(rd_dcache),
+	.wr				(wr_dache),
+	.flag_line_in	(flag_line_in_dcache),
+	.data_line_in	(data_line_in_dcache),
+
+	// output nets
+	.flag_line_out	(flag_line_out_dcache),
+	.data_line_out	(data_line_out_dcache)
+);
+
+
+// SDRAM net
 logic			sdram_clk;   
 logic			sdram_cke;
 logic			sdram_cs_n;   
@@ -52,34 +86,10 @@ logic	[12:0]	sdram_addr;
 wire	[15:0]	sdram_data;
 logic	[ 1:0]	sdram_dqm;
 
-
-// TODO: implement instruction cache
-// cache icache();
-
-
-cache dcache(
-	// input nets
-	.clk		(clk_50m),
-	.index		(0),
-	.valid		(valid_dcache),
-	.rd			(0),
-	.wr			(0),
-	.tag_in		(tag_in_dcache),
-	.data_in	(0),
-	.way_sel	(WAY_SEL_NONE),
-
-	// output nets
-	.hit0		(hit0_dcache),
-	.hit1		(hit1_dache),
-	.dirty0		(dirty0_dcache),
-	.dirty1		(dirty1_dcache),
-	.valid0		(valid0_dache),
-	.valid1		(valid1_dache),
-	.tag_out	(tag_out_dcache),
-	.data_out	(data_out_dcache),
-	.ready		(ready_dcahce)
-);
-
+logic			sdram_wr;
+logic			sdram_rd;
+logic			sdram_valid;
+logic			sdram_done;
 
 // top level of a sdram controller
 sdram sdram_ctrl_inst(
@@ -100,12 +110,12 @@ sdram sdram_ctrl_inst(
 	// user control interface
 	// a transaction is complete when valid && done
 	.addr			(addr),
-	.wr				(wr),
-	.rd				(rd),
-	.valid			(valid),
+	.wr				(sdram_wr),
+	.rd				(sdram_rd),
+	.valid			(sdram_valid),
 	.data_line_in	(data_line_in),
 	.data_line_out	(data_line_out),
-	.done			(done),
+	.done			(sdram_done),
 	.sdram_init_done(sdram_init_done)
 ); 
 

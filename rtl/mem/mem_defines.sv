@@ -36,9 +36,16 @@ localparam	sdram_addr_len		= 24;		// 2^24 words
 localparam	sdram_word			= 16;		// 16 bit word
 localparam  sdram_access_len	= 10'd8;	// 8 16-bit word each access 
 
-typedef logic [index_len - 1 : 0]	index_t;
 typedef logic [tag_len - 1 : 0]		tag_t;
+typedef logic [index_len - 1 : 0]	index_t;
 typedef logic [4 : 0]				x5_t;
+
+typedef struct packed {
+	tag_t		tag;
+	index_t		index;
+	logic[1:0]	word_off;
+	logic[1:0]	byte_off;
+} cache_addr_t;
 
 typedef struct packed{
 	logic		valid0;

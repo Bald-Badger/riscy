@@ -116,7 +116,7 @@ module memory (
 		.clk_50m		(clk),
 		.clk_100m		(clk_100m),
 		.clk_100m_shift	(clk_100m_shift),
-		.rst_n				(rst_n),
+		.rst_n			(rst_n),
 
 		.addr			(addr),
 		.data_in		(data_in_final),
