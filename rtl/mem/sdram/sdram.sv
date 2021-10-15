@@ -105,12 +105,6 @@ typedef enum logic[4:0] {
 
 state_t state, nxt_state;
 
-
-assign about_to_refresh	= u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd775;
-assign idle				= u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
-assign busy				= (state != IDLE) && sdram_init_done;
-
-
 // update sdram controller state
 always_ff @(posedge clk_50m or negedge rst_n)
 	if (!rst_n)
@@ -118,6 +112,9 @@ always_ff @(posedge clk_50m or negedge rst_n)
 	else
 		state <= nxt_state;
 
+assign about_to_refresh	= u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd775;
+assign idle				= u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
+assign busy				= (state != IDLE) && sdram_init_done;
 
 // sdram ctrl fsm
 always_comb begin : SDRAM_user_input_fsm
@@ -129,7 +126,7 @@ always_comb begin : SDRAM_user_input_fsm
 	rd_index = RD_DISABLE;
 	sdram_read = 1'b0;
 	done = 1'b0;
-	case (state)
+	unique case (state)
 		IDLE: begin
 			if (!sdram_init_done) begin
 				nxt_state = IDLE;

@@ -30,8 +30,8 @@ logic		comp_dcache;
 logic		write_dcache;
 tag_t		tag_in_dcache,
 			tag_out_dcache;
-logic		valid_in_dcache,
-			valid_out_dcahce;
+logic		ready_in_dcache,
+			ready_out_dcahce;
 
 logic		hit_dcache;
 logic		dirty_dcache;
@@ -39,17 +39,17 @@ logic		dirty_dcache;
 // icache wires
 // TODO: 
 
-// SRAM wires
-logic        sdram_clk;   
-logic        sdram_cke;
-logic        sdram_cs_n;   
-logic        sdram_ras_n;
-logic        sdram_cas_n;
-logic        sdram_we_n;
-logic [ 1:0] sdram_ba;
-logic [12:0] sdram_addr;
-wire [15:0] sdram_data;
-logic [ 1:0] sdram_dqm;
+// SRAM net
+logic			sdram_clk;   
+logic			sdram_cke;
+logic			sdram_cs_n;   
+logic			sdram_ras_n;
+logic			sdram_cas_n;
+logic        	sdram_we_n;
+logic	[ 1:0]	sdram_ba;
+logic	[12:0]	sdram_addr;
+wire	[15:0]	sdram_data;
+logic	[ 1:0]	sdram_dqm;
 
 
 // TODO: implement instruction cache
@@ -73,7 +73,7 @@ cache dcache(
 	.dirty			(dirty_dcache),
 	.tag_out		(tag_out_dcache),
 	.data_out		(data_out_dcache),
-	.valid_out		(valid_out_dcahce)
+	.ready			(valid_out_dcahce)
 );
 
 
@@ -107,6 +107,7 @@ sdram sdram_ctrl_inst(
 
 
 // functional model of a physical sdram module
+// synthesis translate_off
 sdr u_sdram(    
     .Clk            (sdram_clk),
     .Cke            (sdram_cke),
@@ -119,5 +120,6 @@ sdr u_sdram(
     .Dq             (sdram_data),
     .Dqm            (sdram_dqm)
 );
-	
+// synthesis translate_on
+
 endmodule: mem_sys
