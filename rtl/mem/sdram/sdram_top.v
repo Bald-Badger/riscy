@@ -56,7 +56,12 @@ module	sdram_top(
 	output [ 1:0] sdram_ba,                 //SDRAM Bank地址
 	output [12:0] sdram_addr,               //SDRAM 行/列地址
 	inout  [15:0] sdram_data,               //SDRAM 数据
-	output [ 1:0] sdram_dqm                 //SDRAM 数据掩码
+	output [ 1:0] sdram_dqm,                 //SDRAM 数据掩码
+
+	output		write_done_flag,
+	output		read_done_flag,
+	output		about_to_refresh,
+	output		idle
     );
 
 //wire define
@@ -113,7 +118,9 @@ sdram_fifo_ctrl u_sdram_fifo_ctrl(
 	.sdram_rd_req		(sdram_rd_req),		//sdram 读请求
 	.sdram_rd_ack		(sdram_rd_ack),	    //sdram 读响应
 	.sdram_rd_addr		(sdram_rd_addr),    //sdram 读地址
-	.sdram_dout			(sdram_dout)		//从sdram中读出的数据
+	.sdram_dout			(sdram_dout),		//从sdram中读出的数据
+	.write_done_flag	(write_done_flag),
+	.read_done_flag		(read_done_flag)
     );
 
 //SDRAM控制器
@@ -145,7 +152,9 @@ sdram_controller u_sdram_controller(
 	.sdram_we_n			(sdram_we_n),		//SDRAM 写有效
 	.sdram_ba			(sdram_ba),			//SDRAM Bank地址
 	.sdram_addr			(sdram_addr),		//SDRAM 行/列地址
-	.sdram_data			(sdram_data)		//SDRAM 数据	
+	.sdram_data			(sdram_data),		//SDRAM 数据	
+	.about_to_refresh	(about_to_refresh),
+	.idle				(idle)
     );
     
 endmodule 

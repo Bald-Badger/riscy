@@ -55,7 +55,10 @@ module sdram_fifo_ctrl(
 	output reg        sdram_rd_req,	     //sdram 读请求
 	input             sdram_rd_ack,	     //sdram 读响应
 	output reg [23:0] sdram_rd_addr,	     //sdram 读地址 
-	input      [15:0] sdram_dout 		 //从SDRAM中读出的数据 
+	input      [15:0] sdram_dout, 		 //从SDRAM中读出的数据 
+
+	output			write_done_flag,
+	output			read_done_flag
     );
 
 //reg define
@@ -70,9 +73,7 @@ reg        rd_load_r2;
 reg        read_valid_r1;                //sdram读使能寄存器      
 reg        read_valid_r2;                
                                          
-//wire define                            
-wire       write_done_flag;              //sdram_wr_ack 下降沿标志位      
-wire       read_done_flag;               //sdram_rd_ack 下降沿标志位      
+//wire define                                  
 wire       wr_load_flag;                 //wr_load      上升沿标志位      
 wire       rd_load_flag;                 //rd_load      上升沿标志位      
 wire [4:0] wrf_use;                      //写端口FIFO中的数据量

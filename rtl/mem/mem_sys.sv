@@ -24,17 +24,18 @@ data_t		data_in_sram,
 			data_out_sram;
 
 logic		en_dcache;
-inedx_t		index_dacahe;
-logic		en_dcache;
+index_t		index_dacahe;
 logic		comp_dcache;
 logic		write_dcache;
 tag_t		tag_in_dcache,
 			tag_out_dcache;
-logic		ready_in_dcache,
-			ready_out_dcahce;
+logic		valid_dcache,
+			ready_dcahce;
 
-logic		hit_dcache;
-logic		dirty_dcache;
+
+logic		hit0_dcache, hit1_dache;
+logic		dirty0_dcache, dirty1_dcache;
+logic		valid0_dache, valid1_dcache;
 
 // icache wires
 // TODO: 
@@ -58,40 +59,43 @@ logic	[ 1:0]	sdram_dqm;
 
 cache dcache(
 	// input nets
-	.clk			(clk),
-	.rst_n			(rst_n),
-	.en				(en_dcache),
-	.index			(index_dacahe),
-	.comp			(comp_dcache),
-	.write			(write_dcache),
-	.tag_in			(tag_in_dcache),
-	.data_in		(data_in_dcache),
-	.valid_in		(valid_in_dcache),
+	.clk		(clk_50m),
+	.index		(0),
+	.valid		(valid_dcache),
+	.rd			(0),
+	.wr			(0),
+	.tag_in		(tag_in_dcache),
+	.data_in	(0),
+	.way_sel	(WAY_SEL_NONE),
 
 	// output nets
-	.hit			(hit_dcache),
-	.dirty			(dirty_dcache),
-	.tag_out		(tag_out_dcache),
-	.data_out		(data_out_dcache),
-	.ready			(valid_out_dcahce)
+	.hit0		(hit0_dcache),
+	.hit1		(hit1_dache),
+	.dirty0		(dirty0_dcache),
+	.dirty1		(dirty1_dcache),
+	.valid0		(valid0_dache),
+	.valid1		(valid1_dache),
+	.tag_out	(tag_out_dcache),
+	.data_out	(data_out_dcache),
+	.ready		(ready_dcahce)
 );
 
 
 // top level of a sdram controller
 sdram sdram_ctrl_inst(
-    .clk            (clock_50m),
-    .rst_n          (rst_n),
+    .clk_50m		(clk_50m),
+    .rst_n			(rst_n),
         
-    .sdram_clk      (sdram_clk),
-    .sdram_cke      (sdram_cke),
-    .sdram_cs_n     (sdram_cs_n),
-    .sdram_ras_n    (sdram_ras_n),
-    .sdram_cas_n    (sdram_cas_n),
-    .sdram_we_n     (sdram_we_n),
-    .sdram_ba       (sdram_ba),
-    .sdram_addr     (sdram_addr),
-    .sdram_data     (sdram_data),
-    .sdram_dqm      (sdram_dqm),
+    .sdram_clk		(sdram_clk),
+    .sdram_cke		(sdram_cke),
+    .sdram_cs_n		(sdram_cs_n),
+    .sdram_ras_n	(sdram_ras_n),
+    .sdram_cas_n	(sdram_cas_n),
+    .sdram_we_n		(sdram_we_n),
+    .sdram_ba		(sdram_ba),
+    .sdram_addr		(sdram_addr),
+    .sdram_data		(sdram_data),
+    .sdram_dqm		(sdram_dqm),
     
 	// user control interface
 	// a transaction is complete when valid && done
@@ -109,16 +113,16 @@ sdram sdram_ctrl_inst(
 // functional model of a physical sdram module
 // synthesis translate_off
 sdr u_sdram(    
-    .Clk            (sdram_clk),
-    .Cke            (sdram_cke),
-    .Cs_n           (sdram_cs_n),
-    .Ras_n          (sdram_ras_n),
-    .Cas_n          (sdram_cas_n),
-    .We_n           (sdram_we_n),
-    .Ba             (sdram_ba),
-    .Addr           (sdram_addr),
-    .Dq             (sdram_data),
-    .Dqm            (sdram_dqm)
+    .Clk			(sdram_clk),
+    .Cke			(sdram_cke),
+    .Cs_n			(sdram_cs_n),
+    .Ras_n			(sdram_ras_n),
+    .Cas_n			(sdram_cas_n),
+    .We_n			(sdram_we_n),
+    .Ba				(sdram_ba),
+    .Addr			(sdram_addr),
+    .Dq				(sdram_data),
+    .Dqm			(sdram_dqm)
 );
 // synthesis translate_on
 

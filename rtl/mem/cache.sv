@@ -20,6 +20,8 @@ module cache (
 	output logic		hit1,
 	output logic		dirty0,
 	output logic		dirty1,
+	output logic		valid0,
+	output logic		valid1,
 	output tag_t		tag_out,
 	output data_t		data_out,
 	output logic		ready
@@ -33,8 +35,10 @@ flag_line_t flag_line_in, flag_line_out;
 cache_line_t cache_line_in, cache_line_out;
 
 always_comb begin : cache_line_assemble
-	cache_line_out = {{flag_line_out},{data_line_out}};
-	cache_line_in = {{flag_line_in}, {data_line_in}};
+	cache_line_out.data = data_line_out;
+	cache_line_out.flag = flag_line_out;
+	cache_line_in.data = data_line_in;
+	cache_line_in.flag = flag_line_in;
 end
 
 ram_48b_512wd cache_flag_block (
@@ -52,7 +56,7 @@ ram_256b_512wd cache_data_block (
 		(way_sel == WAY_SEL_W0)		? be_w0 :
 		(way_sel == WAY_SEL_W1)		? be_w1 :
 		(way_sel == WAY_SEL_ALL)	? be_all :
-									  be_none;
+									  be_none
 	),
 	.clock			(clk),
 	.data			(data_line_in),

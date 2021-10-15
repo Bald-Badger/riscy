@@ -47,7 +47,9 @@ module sdram_controller(
     output        sdram_we_n,		// SDRAM 写允许位
     output [ 1:0] sdram_ba,		    // SDRAM L-Bank地址线
     output [12:0] sdram_addr,	    // SDRAM 地址总线
-    inout  [15:0] sdram_data		// SDRAM 数据总线
+    inout  [15:0] sdram_data,		// SDRAM 数据总线
+	output			about_to_refresh,
+	output			idle
     );
 
 //wire define
@@ -76,7 +78,9 @@ sdram_ctrl u_sdram_ctrl(
     .init_state         (init_state),
     .work_state         (work_state),
     .cnt_clk            (cnt_clk),
-    .sdram_rd_wr        (sdram_rd_wr)
+    .sdram_rd_wr        (sdram_rd_wr),
+	.about_to_refresh	(about_to_refresh),
+	.idle				(idle)
     );
 
 // SDRAM 命令控制模块

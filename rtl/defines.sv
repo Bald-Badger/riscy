@@ -6,18 +6,17 @@ package defines;
 `define _defines_sv_
 
 //	ISA define
-	localparam 	XLEN 		= 	32;			// RV32
-	localparam	N 			= 	XLEN;	 	// in case I forget should be XLEN instead of N
-	localparam 	FREQ 		= 	5e7;		// bus clock, 50Mhz crystal oscillator on FPGA board
-	localparam	MEM_SPACE	=	256 - 1;	// memory space in words
+	localparam 	XLEN 			= 	32;			// RV32
+	localparam	N 				= 	XLEN;	 	// in case I forget should be XLEN instead of N
+	localparam 	FREQ 			= 	5e7;		// bus clock, 50Mhz crystal oscillator on FPGA board
 
 //	constant define
-	localparam	BYTES 	= XLEN / 8; 		// num of byte in a word
-	localparam	TRUE 	= 1;
-	localparam	FALSE 	= 0;
-	localparam 	NULL 	= 32'b0;
-	localparam	ENABLE 	= 1'b1;
-	localparam	DISABLE	= 1'b0;
+	localparam	BYTES 			= XLEN / 8; 	// num of byte in a word
+	localparam	TRUE 			= 1;
+	localparam	FALSE 			= 0;
+	localparam 	NULL 			= 32'b0;
+	localparam	ENABLE 			= 1'b1;
+	localparam	DISABLE			= 1'b0;
 
 	// sopported extension
 	// this part is and only accessed by verilog generate function. 
@@ -46,7 +45,7 @@ package defines;
 		BIG_ENDIAN = 1'b1
 	} ENDIANESS_t;
 
-	localparam ENDIANESS = BIG_ENDIAN;
+	ENDIANESS_t ENDIANESS = BIG_ENDIAN;
 
 
 	// Opcode define
@@ -80,7 +79,7 @@ package defines;
 		X8, X9, X10, X11, X12, X13, X14, X15,
 		X16, X17, X18, X19, X20, X21, X22, X23,
 		X24, X25, X26, X27, X28, X29, X30, X31
-	} r_t;
+	} r_t;	// systemverilog will assign 5'd0 - 5'd31 in order
 
 
 // instruction type define
@@ -99,7 +98,7 @@ package defines;
 		funct3_t	funct3;
 		r_t			rd;
 		opcode_t	opcode;
-	} instr_I_t;		// I type
+	} instr_I_t;	// I type
 
 	localparam	[XLEN-1:0]	NOP		= 32'h0000_0013;	// ADDI x0, x0, 0
 	localparam	[XLEN-1:0]	HALT	= 32'h0000_0063;	// BEQ x0, x0, 0
@@ -109,24 +108,24 @@ package defines;
 
 // Funt3 define
     // R type funct3
-    localparam	[2:0]	ADD	=	3'b000;		// rd <= rs1 + rs2, no overflow exception
-    localparam	[2:0]	SUB	=	3'b000;		// rd <= rs1 - rs2, no overflow exception
-    localparam	[2:0]	AND	=	3'b111;
+    localparam	[2:0]	ADD		=	3'b000;		// rd <= rs1 + rs2, no overflow exception
+    localparam	[2:0]	SUB		=	3'b000;		// rd <= rs1 - rs2, no overflow exception
+    localparam	[2:0]	AND		=	3'b111;
     localparam	[2:0]	OR		=	3'b110;
-    localparam	[2:0]	XOR	=	3'b100;
-    localparam	[2:0]	SLT	=	3'b010;		// set less than, rd <= 1 if rs1 < rs2
+    localparam	[2:0]	XOR		=	3'b100;
+    localparam	[2:0]	SLT		=	3'b010;		// set less than, rd <= 1 if rs1 < rs2
     localparam	[2:0]	SLTU	=	3'b011;		// set less than unsigned, rd <= 1 if rs1 < rs2
-    localparam	[2:0]	SLL	=	3'b001;		// logical shift left, rd <= rs1 << rs2[4:0]
-    localparam	[2:0]	SRL	=	3'b101;		// logical shift right rd <= rs1 >> rs2[4:0]
-    localparam	[2:0]	SRA	=	3'b101;		// arithmetic shift right
+    localparam	[2:0]	SLL		=	3'b001;		// logical shift left, rd <= rs1 << rs2[4:0]
+    localparam	[2:0]	SRL		=	3'b101;		// logical shift right rd <= rs1 >> rs2[4:0]
+    localparam	[2:0]	SRA		=	3'b101;		// arithmetic shift right
 	// MUL (same opcode as R) funct3
 	localparam	[2:0]	MUL 	=	3'b000;		// (sign rs1*sign rs2)[XLEN-1:0] => rd
 	localparam	[2:0]	MULH	=	3'b001;		// (sign rs1*sign rs2)[2*XLEN-1:XLEN] => rd
 	localparam	[2:0]	MULHSU	=	3'b010;		// (sign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
 	localparam	[2:0]	MULHU	=	3'b011;		// (unsign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
-	localparam	[2:0]	DIV	=	3'b100;		// sign rs1 / sign rs2
+	localparam	[2:0]	DIV		=	3'b100;		// sign rs1 / sign rs2
 	localparam	[2:0]	DIVU	=	3'b101;		// unsign rs1 / unsign rs2
-	localparam	[2:0]	REM	=	3'b110;		// sign rs1 % sign rs2
+	localparam	[2:0]	REM		=	3'b110;		// sign rs1 % sign rs2
 	localparam	[2:0]	REMU	=	3'b111;		// unsign rs1 % unsign rs2
 
     // I type funct3
@@ -176,15 +175,12 @@ package defines;
 	localparam	[2:0]	FENCEI	=	3'b001;	
 
 	// SYS (ECALL, EBREAK, and CSR) funct3
-	localparam	[2:0]	CSRRW =	3'b001;	// Atomic read/write CSR
-	localparam	[2:0]	CSRRS =	3'b010;	// Atomic Read and Clear Bits
-	localparam	[2:0]	CSRRC =	3'b011;
-	localparam	[2:0]	CSRRWI =	3'b101;
-	localparam	[2:0]	CSRRSsI =	3'b110;
-	localparam	[2:0]	CSRRCI =	3'b111;
-
-	// ATMO (atomic instruction) funct3
-	// TODO: implement
+	localparam	[2:0]	CSRRW	=	3'b001;	// Atomic read/write CSR
+	localparam	[2:0]	CSRRS	=	3'b010;	// Atomic Read and Clear Bits
+	localparam	[2:0]	CSRRC	=	3'b011;
+	localparam	[2:0]	CSRRWI	=	3'b101;
+	localparam	[2:0]	CSRRSsI	=	3'b110;
+	localparam	[2:0]	CSRRCI	=	3'b111;
 
 
 // funct7 define (R only)
@@ -260,38 +256,38 @@ typedef enum logic[1:0] {
 
 
 // register names
-localparam	[2:0]	ZERO	= X0;
-localparam	[2:0]	RA		= X1;
-localparam	[2:0]	SP		= X2;
-localparam	[2:0]	GP		= X3; 
-localparam	[2:0]	TP		= X4; 
-localparam	[2:0]	T0		= X5; 
-localparam	[2:0]	T1		= X6; 
-localparam	[2:0]	T2		= X7;
-localparam	[2:0]	S0		= X8; 
-localparam	[2:0]	S1		= X9; 
-localparam	[2:0]	A0		= X10; 
-localparam	[2:0]	A1		= X11; 
-localparam	[2:0]	A2		= X12; 
-localparam	[2:0]	A3		= X13; 
-localparam	[2:0]	A4		= X14; 
-localparam	[2:0]	A5		= X15;
-localparam	[2:0]	A6		= X16;
-localparam	[2:0]	A7		= X17;
-localparam	[2:0]	S2		= X18;
-localparam	[2:0]	S3		= X19; 
-localparam	[2:0]	S4		= X20; 
-localparam	[2:0]	S5		= X21; 
-localparam	[2:0]	S6		= X22;
-localparam	[2:0]	S7		= X23;
-localparam	[2:0]	S8		= X24;
-localparam	[2:0]	S9		= X25; 
-localparam	[2:0]	S10		= X26; 
-localparam	[2:0]	S11		= X27;
-localparam	[2:0]	T3		= X28;
-localparam	[2:0]	T4		= X29;
-localparam	[2:0]	T5		= X30;
-localparam	[2:0]	T6		= X31;
+localparam	[4:0]	ZERO	= X0;
+localparam	[4:0]	RA		= X1;
+localparam	[4:0]	SP		= X2;
+localparam	[4:0]	GP		= X3; 
+localparam	[4:0]	TP		= X4; 
+localparam	[4:0]	T0		= X5; 
+localparam	[4:0]	T1		= X6; 
+localparam	[4:0]	T2		= X7;
+localparam	[4:0]	S0		= X8; 
+localparam	[4:0]	S1		= X9; 
+localparam	[4:0]	A0		= X10; 
+localparam	[4:0]	A1		= X11; 
+localparam	[4:0]	A2		= X12; 
+localparam	[4:0]	A3		= X13; 
+localparam	[4:0]	A4		= X14; 
+localparam	[4:0]	A5		= X15;
+localparam	[4:0]	A6		= X16;
+localparam	[4:0]	A7		= X17;
+localparam	[4:0]	S2		= X18;
+localparam	[4:0]	S3		= X19; 
+localparam	[4:0]	S4		= X20; 
+localparam	[4:0]	S5		= X21; 
+localparam	[4:0]	S6		= X22;
+localparam	[4:0]	S7		= X23;
+localparam	[4:0]	S8		= X24;
+localparam	[4:0]	S9		= X25; 
+localparam	[4:0]	S10		= X26; 
+localparam	[4:0]	S11		= X27;
+localparam	[4:0]	T3		= X28;
+localparam	[4:0]	T4		= X29;
+localparam	[4:0]	T5		= X30;
+localparam	[4:0]	T6		= X31;
 
 `endif
 

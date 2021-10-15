@@ -111,7 +111,24 @@ module memory (
 		end
 	end
 
+	logic done;
+	mem_sys memory_system (
+		.clk_50m		(clk),
+		.clk_100m		(clk_100m),
+		.clk_100m_shift	(clk_100m_shift),
+		.rst_n				(rst_n),
 
+		.addr			(addr),
+		.data_in		(data_in_final),
+		.wr				(wren),
+		.rd				(rden),
+		.valid			(0),
+		
+		.d_out			(data_out_mem),
+		.done			(done)
+	);
+
+/*
 	ram_32b_1024wd	data_mem_inst (
 	.address ( addr[11:2] ),
 	//.byteena ( be ),
@@ -121,6 +138,6 @@ module memory (
 	.wren ( wren ),
 	.q ( data_out_mem )
 	);
-
+*/
 
 endmodule : memory

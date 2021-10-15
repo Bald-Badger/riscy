@@ -64,15 +64,13 @@ logic		read_done;
 
 
 always_comb begin : r_w_flag_assign
-	write_done_flag	= u_sdram_top.u_sdram_fifo_ctrl.write_done_flag;
-	read_done_flag	= u_sdram_top.u_sdram_fifo_ctrl.read_done_flag;
 	write_done		= write_done_0 || write_done_1 || write_done_2;
 	read_done		= read_done_0 || read_done_1 || read_done_2;
 end
 
 
 // turn half 50mhz clk signal into 3-half cycle signal
-always_ff @(posedge clk_100m_shift or negedge rst_n)
+always_ff @(posedge clk_100m_shift or negedge rst_n) begin
 	if (!rst_n) begin
 		write_done_0	<= 1'b0;
 		write_done_1	<= 1'b0;
@@ -88,7 +86,7 @@ always_ff @(posedge clk_100m_shift or negedge rst_n)
 		read_done_1		<= read_done_0;
 		read_done_2		<= read_done_1;
 	end
-
+end
 
 // sdram access state machine
 typedef enum logic[4:0] {
@@ -112,8 +110,6 @@ always_ff @(posedge clk_50m or negedge rst_n)
 	else
 		state <= nxt_state;
 
-assign about_to_refresh	= u_sdram_top.u_sdram_controller.u_sdram_ctrl.cnt_refresh >= 11'd775;
-assign idle				= u_sdram_top.u_sdram_controller.u_sdram_ctrl.work_state == 0;
 assign busy				= (state != IDLE) && sdram_init_done;
 
 // sdram ctrl fsm
@@ -427,7 +423,7 @@ sdram_top u_sdram_top(
 	.wr_min_addr		(addr),				//写SDRAM的起始地址
 	.wr_max_addr		(24'b1),		    //写SDRAM的结束地址
 	.wr_len			    (sdram_access_len),	//写SDRAM时的数据突发长度
-	.wr_load			(~rst_n || load),//写端口复位: 复位写地址,清空写FIFO
+	.wr_load			(~rst_n || load),	//写端口复位: 复位写地址,清空写FIFO
    
     //用户读端口
 	.rd_clk 			(clk_50m),			//读端口FIFO: 读时钟
@@ -436,7 +432,7 @@ sdram_top u_sdram_top(
 	.rd_min_addr		(addr),				//读SDRAM的起始地址
 	.rd_max_addr		(24'b1),	   		//读SDRAM的结束地址
 	.rd_len 			(sdram_access_len),	//从SDRAM中读数据时的突发长度
-	.rd_load			(~rst_n || load),//读端口复位: 复位读地址,清空读FIFO
+	.rd_load			(~rst_n || load),	//读端口复位: 复位读地址,清空读FIFO
 	   
      //用户控制端口  
 	.sdram_read_valid	(sdram_read),		//SDRAM 读使能
@@ -452,7 +448,11 @@ sdram_top u_sdram_top(
 	.sdram_ba			(sdram_ba),         //SDRAM Bank地址
 	.sdram_addr			(sdram_addr),       //SDRAM 行/列地址
 	.sdram_data			(sdram_data),       //SDRAM 数据
-	.sdram_dqm			(sdram_dqm)         //SDRAM 数据掩码
+	.sdram_dqm			(sdram_dqm),        //SDRAM 数据掩码
+	.write_done_flag	(write_done_flag),
+	.read_done_flag		(read_done_flag),
+	.about_to_refresh	(about_to_refresh),
+	.idle				(idle)
     );
 
 endmodule : sdram

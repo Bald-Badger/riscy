@@ -34,8 +34,10 @@ module sdram_ctrl(
     output reg [4:0] init_state,	    //SDRAM初始化状态
     output reg [3:0] work_state,	    //SDRAM工作状态
     output reg [9:0] cnt_clk,	        //时钟计数器
-    output reg       sdram_rd_wr 		//SDRAM读/写控制信号，低电平为写，高电平为读
-    );
+    output reg       sdram_rd_wr, 		//SDRAM读/写控制信号，低电平为写，高电平为读
+    output			about_to_refresh,
+	output			idle
+	);
 
 `include "sdram_para.v"		            //包含SDRAM参数定义模块
                                         
@@ -79,6 +81,9 @@ assign sdram_wr_ack = ((work_state == `W_TRCD) & ~sdram_rd_wr) |
 //读SDRAM响应信号
 assign sdram_rd_ack = (work_state == `W_RD) & 
 					  (cnt_clk >= 10'd1) & (cnt_clk < sdram_rd_burst + 2'd1);
+
+assign about_to_refresh = (cnt_refresh >= 11'd775);
+assign idle = (work_state == `W_IDLE);
                       
 //上电后计时200us,等待SDRAM状态稳定
 always @ (posedge clk or negedge rst_n) begin

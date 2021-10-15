@@ -13,7 +13,7 @@ module proc_hier (
 );
 	logic	rst_n, locked;
 	logic	clk_50m;			//main clock
-	logic	clk_100m			//sdram controller clk
+	logic	clk_100m;			//sdram controller clk
 	logic	clk_100m_shift;		//shifted clk for sdram output
 
 	assign rst_n = (but_rst_n & locked);
@@ -24,7 +24,7 @@ module proc_hier (
 		.locked		(locked),
 		.c0			(clk_50m),
 		.c1			(clk_100m),
-		.c2			(clk_100m_shift),
+		.c2			(clk_100m_shift)
 	);
 
 	proc processor_inst (

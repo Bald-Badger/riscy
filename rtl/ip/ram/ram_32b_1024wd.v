@@ -175,6 +175,6 @@ endmodule
 // Retrieval info: GEN_FILE: TYPE_NORMAL ram_32b_1024wd.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ram_32b_1024wd.cmp FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL ram_32b_1024wd.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ram_32b_1024wd_inst.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL ram_32b_1024wd_bb.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ram_32b_1024wd_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL ram_32b_1024wd_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf
