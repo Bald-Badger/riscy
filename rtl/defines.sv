@@ -17,6 +17,8 @@ package defines;
 	localparam 	NULL 			= 32'b0;
 	localparam	ENABLE 			= 1'b1;
 	localparam	DISABLE			= 1'b0;
+	localparam	VALID			= 1'b1;
+	localparam	INVALID			= 1'b0;
 
 	// sopported extension
 	// this part is and only accessed by verilog generate function. 

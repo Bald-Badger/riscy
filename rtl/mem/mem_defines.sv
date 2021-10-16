@@ -32,9 +32,15 @@ localparam	tag_len				= 19;
 localparam	index_len			= 9;
 localparam	word_off			= 2;
 localparam	byte_off			= 2;
+localparam	data_line_len		= 256;
+localparam	flag_line_len		= 48;
+localparam	empty_data_line		= 256'b0;
+localparam	empty_flag_line		= 48'b0;
 localparam	sdram_addr_len		= 24;		// 2^24 words
 localparam	sdram_word			= 16;		// 16 bit word
-localparam  sdram_access_len	= 10'd8;	// 8 16-bit word each access 
+localparam  sdram_access_len	= 10'd8;	// 8 16-bit word each access
+localparam	DIRTY				= 1'b1;
+localparam	CLEAN				= 1'b0;
 
 typedef logic [tag_len - 1 : 0]		tag_t;
 typedef logic [index_len - 1 : 0]	index_t;

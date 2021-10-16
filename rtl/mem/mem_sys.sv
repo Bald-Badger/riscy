@@ -19,27 +19,64 @@ module mem_sys (
 	output logic		done
 );
 
+// sdram nets
+logic			sdram_wr;
+logic			sdram_rd;
+logic			sdram_valid;
+logic			sdram_done;
+
 // dcache nets
-data_t		data_in_dcache,
-			data_out_dcache;
+logic			rd_dcache, wr_data_dcache, wr_flag_dcache, en_dcache;
+logic			hit0_dcache, hit1_dcache;
+logic			valid0_dcache, valid1_dcache;
+logic			dirty0_dcache, dirty1_dcache;
+tag_t			tag0_dcache, tag1_dcache;
+logic			lru_dcache;
+flag_line_t		flag_line_in_dcache, flag_line_out_dcache;
+data_line_t		data_line_in_dcache, data_line_out_dcache;
+data_line_t		data_line_dcache;
+flag_line_t		flag_line_dcache;
+logic			load_dcache_line;
+logic			clr_dcache_line;
+index_t			index;
+tag_t			tag;
+logic[1:0]		word_off;
+logic			one_dcache;
+data_t			data_out_dcache;
+logic			done_dcache;
 
-data_t		data_in_sram,
-			data_out_sram;
-
-
-
-logic		rd_dcache, wr_dache, en_dcache;
-logic		hit0_dcache, hit1_dache;
-logic		dirty0_dcache, dirty1_dcache;
-logic		valid0_dache, valid1_dcache;
-flag_line_t	flag_line_in_dcache, flag_line_out_dcache;
-data_line_t	data_line_in_dcache, data_line_out_dcache;
-
-index_t index;
-always_comb begin
-	index = addr.index;
+always_comb begin : dcache_flag_assign
+	valid0_dcache	= flag_line_dcache.valid0;
+	valid1_dcache	= flag_line_dcache.valid1;
+	dirty0_dcache	= flag_line_dcache.dirty0;
+	dirty1_dcache	= flag_line_dcache.dirty1;
+	tag0_dcache		= flag_line_dcache.tag0;
+	tag1_dcache		= flag_line_dcache.tag1;
+	lru_dcache		= flag_line_dcache.lru;
+	hit0_dcache		= (tag == tag0_dcache);
+	hit1_dcache		= (tag == tag1_dcache);
 end
 
+
+always_comb begin : cache_addr_assign
+	index			= addr.index;
+	tag				= addr.tag;
+	word_off		= addr.word_off;
+end
+
+
+always_ff @(posedge clk_50m, negedge rst_n) begin
+	if (~rst_n || clr_dcache_line) begin
+		data_line_dcache <= empty_data_line;
+		flag_line_dcache <= empty_flag_line;
+	end else if (load_dcache_line) begin
+		data_line_dcache <= data_line_out_dcache;
+		flag_line_dcache <= flag_line_out_dcache;
+	end else begin
+		data_line_dcache <= data_line_dcache;
+		flag_line_dcache <= flag_line_dcache;
+	end
+end
 
 cache dcache(
 	// input nets
@@ -47,7 +84,8 @@ cache dcache(
 	.en				(en_dcache),
 	.index			(index),
 	.rd				(rd_dcache),
-	.wr				(wr_dache),
+	.wr_data		(wr_data_dcache),
+	.wr_flag		(wr_flag_dcache),
 	.flag_line_in	(flag_line_in_dcache),
 	.data_line_in	(data_line_in_dcache),
 
@@ -55,7 +93,6 @@ cache dcache(
 	.flag_line_out	(flag_line_out_dcache),
 	.data_line_out	(data_line_out_dcache)
 );
-
 
 // dummy load for icache, used to estimate area
 cache icache(
@@ -64,7 +101,8 @@ cache icache(
 	.en				(en_dcache),
 	.index			(index),
 	.rd				(rd_dcache),
-	.wr				(wr_dache),
+	.wr_data		(wr_data_dcache),
+	.wr_flag		(wr_flag_dcache),
 	.flag_line_in	(flag_line_in_dcache),
 	.data_line_in	(data_line_in_dcache),
 
@@ -73,6 +111,366 @@ cache icache(
 	.data_line_out	(data_line_out_dcache)
 );
 
+
+typedef enum logic[3:0] {
+	IDLE,
+	GET,
+	CHECK,
+	WR_CHECK,
+	RD_CHECK,
+	DONE,
+	EVICT,
+	LOAD
+} cache_ctrl_state_t;
+
+cache_ctrl_state_t dcache_state, next_dcache_state;
+always_ff @( posedge clk_50m, negedge rst_n ) begin
+	if (~rst_n)
+		dcache_state <= IDLE;
+	else 
+		dcache_state <= next_dcache_state;
+end
+
+always_comb begin : dcache_ctrl_fsm
+	next_dcache_state = IDLE;
+	clr_dcache_line		= DISABLE;
+	load_dcache_line	= DISABLE;
+	en_dcache			= DISABLE;
+	rd_dcache			= DISABLE;
+	wr_data_dcache		= DISABLE;
+	wr_flag_dcache		= DISABLE;
+	done_dcache			= 1'b0;
+	data_out_dcache		= NULL;
+	flag_line_in_dcache	= empty_flag_line;
+	data_line_in_dcache	= empty_data_line;
+
+	unique case (dcache_state)
+		IDLE : begin
+			if ((wr || rd) && valid) begin
+				next_dcache_state <= CHECK;
+				en_dcache = ENABLE;
+				wr_data_dcache = wr;
+				wr_flag_dcache = wr;
+				rd_dcache = rd;
+				load_dcache_line <= ENABLE;
+			end else begin
+				next_dcache_state <= IDLE;
+				clr_dcache_line <= ENABLE;
+			end
+		end
+
+		CHECK : begin
+			if ((hit0_dcache && valid0_dcache) || (hit1_dcache && valid1_dcache)) begin
+				next_dcache_state = DONE;
+			end else if (
+				(~hit0_dcache && ~hit1_dcache) &&
+				(valid0_dcache && valid1_dcache) &&
+				(
+					(lru_dcache && dirty1_dcache) ||
+					(~lru_dcache && dirty0_dcache)
+				)
+			) begin
+				next_dcache_state = EVICT;
+			end else begin
+				next_dcache_state = LOAD;
+			end
+		end
+
+		DONE : begin
+			next_dcache_state	= IDLE;
+			done_dcache			= 1'b1;
+			en_dcache			= ENABLE;
+			wr_data_dcache		= wr;
+			wr_flag_dcache		= wr || rd;
+			rd_dcache			= rd;
+			if (wr) begin	// store instr as if hit
+				data_out_dcache		= NULL;
+				if (hit0_dcache && valid0_dcache) begin
+					unique case (word_off)
+						2'b00: begin
+							data_line_in_dcache.data0w0	= data_in;
+							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= VALID;
+							flag_line_in_dcache.dirty0	= DIRTY;
+							flag_line_in_dcache.tag0	= tag;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= 1'b1;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+						2'b01: begin
+							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_in;
+							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= VALID;
+							flag_line_in_dcache.dirty0	= DIRTY;
+							flag_line_in_dcache.tag0	= tag;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= 1'b1;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+						2'b10: begin
+							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_in;
+							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= VALID;
+							flag_line_in_dcache.dirty0	= DIRTY;
+							flag_line_in_dcache.tag0	= tag;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= 1'b1;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+						2'b11: begin
+							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_in;
+							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= VALID;
+							flag_line_in_dcache.dirty0	= DIRTY;
+							flag_line_in_dcache.tag0	= tag;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= 1'b1;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+					endcase
+				end else if (hit1_dcache && valid1_dcache) begin
+					unique case (word_off)
+						2'b00: begin
+							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_in;
+							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= VALID;
+							flag_line_in_dcache.dirty1	= DIRTY;
+							flag_line_in_dcache.tag1	= tag;
+							flag_line_in_dcache.lru		= 1'b0;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+						2'b01: begin
+							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_in;
+							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= VALID;
+							flag_line_in_dcache.dirty1	= DIRTY;
+							flag_line_in_dcache.tag1	= tag;
+							flag_line_in_dcache.lru		= 1'b0;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+						2'b10: begin
+							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_in;
+							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= VALID;
+							flag_line_in_dcache.dirty1	= DIRTY;
+							flag_line_in_dcache.tag1	= tag;
+							flag_line_in_dcache.lru		= 1'b0;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+						2'b11: begin
+							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_in;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= VALID;
+							flag_line_in_dcache.dirty1	= DIRTY;
+							flag_line_in_dcache.tag1	= tag;
+							flag_line_in_dcache.lru		= 1'b0;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+					endcase
+				end else begin
+					$error("cache access err: cant hit on write");
+					data_line_in_dcache = empty_data_line;
+					flag_line_in_dcache = empty_flag_line;
+				end
+			end else begin	// load instr as if hit
+				data_line_in_dcache = empty_data_line;
+				if (hit0_dcache && valid0_dcache) begin
+					unique case (word_off)
+						2'b00: begin
+							data_out_dcache				= data_line_dcache.data0w0;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end 
+
+						2'b01: begin
+							data_out_dcache				= data_line_dcache.data0w1;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+
+						2'b10: begin
+							data_out_dcache				= data_line_dcache.data0w2;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+
+						2'b11: begin
+							data_out_dcache				= data_line_dcache.data0w3;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+					endcase
+				end else if (hit1_dcache && valid1_dcache) begin
+					unique case (word_off)
+						2'b00: begin
+							data_out_dcache				= data_line_dcache.data1w0;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end 
+
+						2'b01: begin
+							data_out_dcache				= data_line_dcache.data1w1;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+
+						2'b10: begin
+							data_out_dcache				= data_line_dcache.data1w2;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+
+						2'b11: begin
+							data_out_dcache				= data_line_dcache.data1w3;
+							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.lru		= ~flag_line_dcache.lru;
+							flag_line_in_dcache.x5		= 5'b0;
+						end
+					endcase
+				end else begin
+					$error("cache access err: cant hit on read");
+					data_out_dcache = NULL;
+					flag_line_in_dcache = empty_flag_line;
+				end
+			end
+		end
+
+		EVICT : begin
+			if (sdram_done) begin
+				next_dcache_state = LOAD;
+			end else begin
+				next_dcache_state = EVICT;
+			end
+		end
+
+		LOAD : begin
+			if (sdram_done) begin
+				next_dcache_state = DONE;
+			end else begin
+				next_dcache_state = LOAD;
+			end
+		end
+
+		default: begin
+			next_dcache_state <= IDLE;
+		end
+	endcase
+end
 
 // SDRAM net
 logic			sdram_clk;   
@@ -85,11 +483,6 @@ logic	[ 1:0]	sdram_ba;
 logic	[12:0]	sdram_addr;
 wire	[15:0]	sdram_data;
 logic	[ 1:0]	sdram_dqm;
-
-logic			sdram_wr;
-logic			sdram_rd;
-logic			sdram_valid;
-logic			sdram_done;
 
 // top level of a sdram controller
 sdram sdram_ctrl_inst(
