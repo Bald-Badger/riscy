@@ -28,6 +28,7 @@ logic			sdram_done;
 sdram_8_wd_t	sdram_line_in;
 sdram_8_wd_t	sdram_line_out;
 sdram_8_wd_t	sdram_line_buffer;	// updates on sdram done
+logic			[sdram_addr_len-1 : 0] sdram_user_addr;
 
 // dcache nets
 logic			rd_dcache, wr_data_dcache, wr_flag_dcache, en_dcache;
@@ -111,7 +112,7 @@ end
 
 // loads sdram output whenever done,
 // no reset signal cuz afraids timing issue
-always_ff @( posedge clk_100m) begin : sdram_buffer_load
+always_ff @( posedge clk_50m) begin : sdram_buffer_load
 	if (sdram_done)
 		sdram_line_buffer <= sdram_line_out;
 	else
@@ -133,26 +134,6 @@ cache dcache(
 	.flag_line_out	(flag_line_out_dcache),
 	.data_line_out	(data_line_out_dcache)
 );
-
-
-/*
-// dummy load for icache, used to estimate area
-cache icache(
-	// input nets
-	.clk			(clk_50m),
-	.en				(en_dcache),
-	.index			(index),
-	.rd				(rd_dcache),
-	.wr_data		(wr_data_dcache),
-	.wr_flag		(wr_flag_dcache),
-	.flag_line_in	(flag_line_in_dcache),
-	.data_line_in	(data_line_in_dcache),
-
-	// output nets
-	.flag_line_out	(flag_line_out_icache),
-	.data_line_out	(data_line_out_icache)
-);
-*/
 
 
 typedef enum logic[2:0] {
@@ -188,16 +169,12 @@ always_comb begin : dcache_ctrl_fsm
 	sdram_wr			= DISABLE;		
 	sdram_rd			= DISABLE;
 	sdram_line_in		= 127'b0;
+	sdram_user_addr		= 24'b0;
 
 	unique case (dcache_state)
 		IDLE : begin
 			load_dcache_line = ENABLE;
-			if (rd && valid) begin
-				next_dcache_state = CHECK;
-				en_dcache = ENABLE;
-				rd_dcache = ENABLE;
-				clr_dcache_line = DISABLE;
-			end else if (wr && valid) begin
+			if ((rd || wr) && valid) begin
 				next_dcache_state = CHECK;
 				en_dcache = ENABLE;
 				rd_dcache = ENABLE;
@@ -237,7 +214,7 @@ always_comb begin : dcache_ctrl_fsm
 			rd_dcache			= rd;
 			if (wr) begin	// store as if hit
 				data_out_dcache		= NULL;
-				if (hit0_dcache) begin
+				if (hit0_check_dcache) begin
 					unique case (word_off)
 						2'b00: begin
 							data_line_in_dcache.data0w0	= data_in;
@@ -312,7 +289,7 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 					endcase
-				end else if (hit1_dcache) begin
+				end else if (hit1_check_dcache) begin
 					unique case (word_off)
 						2'b00: begin
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
@@ -501,17 +478,17 @@ always_comb begin : dcache_ctrl_fsm
 		end
 
 		EVICT : begin
+			sdram_valid			= ENABLE;
+			sdram_wr			= ENABLE;
+			sdram_user_addr		= (~lru_dcache) ?	{{flag_line_dcache.tag0[14:0]},index}:
+													{{flag_line_dcache.tag1[14:0]},index};
 			if (sdram_done) begin
 				// no need to update flags
 				// cuz flags will be updated in load stage
 				// right?... 
 				next_dcache_state	= LOAD;
-				sdram_valid			= DISABLE;
-				sdram_wr			= DISABLE;
 			end else begin
-				next_dcache_state	= EVICT;
-				sdram_valid			= ENABLE;
-				sdram_wr			= ENABLE;
+				next_dcache_state	= EVICT;			
 				sdram_line_in	= (~lru_dcache) ? {
 						{data_line_dcache.data0w0},
 						{data_line_dcache.data0w1},
@@ -527,10 +504,13 @@ always_comb begin : dcache_ctrl_fsm
 		end
 
 		LOAD : begin
+			sdram_valid			= ENABLE;
+			sdram_rd			= ENABLE;
+			sdram_user_addr		= addr[27:4];
+			en_dcache			= ENABLE;
+			rd_dcache			= ENABLE;
 			if (sdram_done) begin
 				next_dcache_state	= DONE;
-				sdram_valid			= DISABLE;
-				sdram_rd			= DISABLE;
 				en_dcache			= ENABLE;
 				wr_data_dcache		= ENABLE;
 				wr_flag_dcache		= ENABLE;
@@ -571,8 +551,6 @@ always_comb begin : dcache_ctrl_fsm
 				end
 			end else begin
 				next_dcache_state	= LOAD;
-				sdram_valid			= ENABLE;
-				sdram_rd			= ENABLE;
 				en_dcache			= DISABLE;
 				wr_data_dcache		= DISABLE;
 				wr_flag_dcache		= DISABLE;
@@ -617,7 +595,7 @@ sdram sdram_ctrl_inst(
     
 	// user control interface
 	// a transaction is complete when valid && done
-	.addr			(addr[27:4]),
+	.addr			(sdram_user_addr),
 	.wr				(sdram_wr),
 	.rd				(sdram_rd),
 	.valid			(sdram_valid),
@@ -645,7 +623,7 @@ sdr u_sdram(
 // synthesis translate_on
 
 always_ff @(negedge clk_50m) begin : checks
-	assert (~((dcache_state == DONE) && ~(hit0_dcache || hit1_dcache)))
+	assert (~((dcache_state == DONE) && ~(hit0_check_dcache || hit1_check_dcache)))
 	else begin
 		$error("Assertion hit_check failed! at time=%t", $realtime);
 		$strobe("hit0 = %b, hit1=%b", hit0_dcache, hit1_dcache);
