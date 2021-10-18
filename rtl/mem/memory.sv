@@ -95,8 +95,6 @@ module memory (
 	assign d = data_out_unmasked; // abbr for shorter code
 	
 	always_comb begin : output_mask_pharse
-		data_out = NULL;
-
 		if (wren) begin
 			unique case (funct3)
 				LB: 	 data_out = {{24{d[7]}}, d[7:0]};
@@ -124,7 +122,7 @@ module memory (
 		.rd				(rden),
 		.valid			(0),
 		
-		.d_out			(data_out_mem),
+		.data_out		(data_out_mem),
 		.done			(done)
 	);
 

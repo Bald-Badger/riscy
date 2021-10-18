@@ -9,14 +9,15 @@ module mem_sys (
 	input logic			clk_100m_shift,
 	input logic			rst_n,
 
-	input cache_addr_t	addr,
+	input cache_addr_t	addr,	// still 32 bits
 	input data_t		data_in,
 	input logic			wr,
 	input logic			rd,
 	input logic			valid,
 	
-	output data_t		d_out,
-	output logic		done
+	output data_t		data_out,
+	output logic		done,
+	output logic 		sdram_init_done
 );
 
 // sdram nets
@@ -24,10 +25,14 @@ logic			sdram_wr;
 logic			sdram_rd;
 logic			sdram_valid;
 logic			sdram_done;
+sdram_8_wd_t	sdram_line_in;
+sdram_8_wd_t	sdram_line_out;
+sdram_8_wd_t	sdram_line_buffer;	// updates on sdram done
 
 // dcache nets
 logic			rd_dcache, wr_data_dcache, wr_flag_dcache, en_dcache;
 logic			hit0_dcache, hit1_dcache;
+logic			hit0_check_dcache, hit1_check_dcache;	// from dacache wire, not data_line_dcache
 logic			valid0_dcache, valid1_dcache;
 logic			dirty0_dcache, dirty1_dcache;
 tag_t			tag0_dcache, tag1_dcache;
@@ -41,22 +46,44 @@ logic			clr_dcache_line;
 index_t			index;
 tag_t			tag;
 logic[1:0]		word_off;
-logic			one_dcache;
 data_t			data_out_dcache;
 logic			done_dcache;
 
-always_comb begin : dcache_flag_assign
-	valid0_dcache	= flag_line_dcache.valid0;
-	valid1_dcache	= flag_line_dcache.valid1;
-	dirty0_dcache	= flag_line_dcache.dirty0;
-	dirty1_dcache	= flag_line_dcache.dirty1;
-	tag0_dcache		= flag_line_dcache.tag0;
-	tag1_dcache		= flag_line_dcache.tag1;
-	lru_dcache		= flag_line_dcache.lru;
-	hit0_dcache		= (tag == tag0_dcache);
-	hit1_dcache		= (tag == tag1_dcache);
+
+always_comb begin : data_out_mux
+	data_out = data_out_dcache;
+	done = done_dcache;
 end
 
+
+always_comb begin : dcache_flag_assign
+	valid0_dcache	=	flag_line_dcache.valid0;
+	valid1_dcache	=	flag_line_dcache.valid1;
+	dirty0_dcache	=	flag_line_dcache.dirty0;
+	dirty1_dcache	=	flag_line_dcache.dirty1;
+	tag0_dcache		=	flag_line_dcache.tag0;
+	tag1_dcache		=	flag_line_dcache.tag1;
+	lru_dcache		=	flag_line_dcache.lru;
+end
+
+always_comb begin : dcache_hit_assign
+	if (valid && rd) begin
+		hit0_dcache = ((tag == tag0_dcache) && valid0_dcache) ? 1'b1 : 1'b0;
+		hit1_dcache = ((tag == tag1_dcache) && valid1_dcache) ? 1'b1 : 1'b0;
+		hit0_check_dcache = ((tag == flag_line_out_dcache.tag0) && flag_line_out_dcache.valid0) ? 1'b1 : 1'b0;
+		hit1_check_dcache = ((tag == flag_line_out_dcache.tag1) && flag_line_out_dcache.valid1) ? 1'b1 : 1'b0;
+	end else if (valid && wr) begin
+		hit0_dcache = ((tag == tag0_dcache) || ~valid0_dcache) ? 1'b1 : 1'b0;
+		hit1_dcache = ((tag == tag1_dcache) || ~valid1_dcache) ? 1'b1 : 1'b0;
+		hit0_check_dcache = ((tag == flag_line_out_dcache.tag0) || ~flag_line_out_dcache.valid0) ? 1'b1 : 1'b0;
+		hit1_check_dcache = ((tag == flag_line_out_dcache.tag1) || ~flag_line_out_dcache.valid1) ? 1'b1 : 1'b0;
+	end else begin
+		hit0_dcache = 1'b0;
+		hit1_dcache = 1'b0;
+		hit0_check_dcache = 1'b0;
+		hit1_check_dcache =1'b0;
+	end
+end
 
 always_comb begin : cache_addr_assign
 	index			= addr.index;
@@ -66,7 +93,10 @@ end
 
 
 always_ff @(posedge clk_50m, negedge rst_n) begin
-	if (~rst_n || clr_dcache_line) begin
+	if (~rst_n) begin
+		data_line_dcache <= empty_data_line;
+		flag_line_dcache <= empty_flag_line;
+	end else if (clr_dcache_line) begin
 		data_line_dcache <= empty_data_line;
 		flag_line_dcache <= empty_flag_line;
 	end else if (load_dcache_line) begin
@@ -76,6 +106,16 @@ always_ff @(posedge clk_50m, negedge rst_n) begin
 		data_line_dcache <= data_line_dcache;
 		flag_line_dcache <= flag_line_dcache;
 	end
+end
+
+
+// loads sdram output whenever done,
+// no reset signal cuz afraids timing issue
+always_ff @( posedge clk_100m) begin : sdram_buffer_load
+	if (sdram_done)
+		sdram_line_buffer <= sdram_line_out;
+	else
+		sdram_line_buffer <= sdram_line_buffer;
 end
 
 cache dcache(
@@ -94,6 +134,8 @@ cache dcache(
 	.data_line_out	(data_line_out_dcache)
 );
 
+
+/*
 // dummy load for icache, used to estimate area
 cache icache(
 	// input nets
@@ -107,17 +149,15 @@ cache icache(
 	.data_line_in	(data_line_in_dcache),
 
 	// output nets
-	.flag_line_out	(flag_line_out_dcache),
-	.data_line_out	(data_line_out_dcache)
+	.flag_line_out	(flag_line_out_icache),
+	.data_line_out	(data_line_out_icache)
 );
+*/
 
 
-typedef enum logic[3:0] {
+typedef enum logic[2:0] {
 	IDLE,
-	GET,
 	CHECK,
-	WR_CHECK,
-	RD_CHECK,
 	DONE,
 	EVICT,
 	LOAD
@@ -144,30 +184,42 @@ always_comb begin : dcache_ctrl_fsm
 	flag_line_in_dcache	= empty_flag_line;
 	data_line_in_dcache	= empty_data_line;
 
+	sdram_valid			= DISABLE;
+	sdram_wr			= DISABLE;		
+	sdram_rd			= DISABLE;
+	sdram_line_in		= 127'b0;
+
 	unique case (dcache_state)
 		IDLE : begin
-			if ((wr || rd) && valid) begin
-				next_dcache_state <= CHECK;
+			load_dcache_line = ENABLE;
+			if (rd && valid) begin
+				next_dcache_state = CHECK;
 				en_dcache = ENABLE;
-				wr_data_dcache = wr;
-				wr_flag_dcache = wr;
-				rd_dcache = rd;
-				load_dcache_line <= ENABLE;
+				rd_dcache = ENABLE;
+				clr_dcache_line = DISABLE;
+			end else if (wr && valid) begin
+				next_dcache_state = CHECK;
+				en_dcache = ENABLE;
+				rd_dcache = ENABLE;
+				clr_dcache_line = DISABLE;
 			end else begin
-				next_dcache_state <= IDLE;
-				clr_dcache_line <= ENABLE;
+				next_dcache_state = IDLE;
+				en_dcache = DISABLE;
+				rd_dcache = DISABLE;
+				clr_dcache_line = ENABLE;
 			end
 		end
 
 		CHECK : begin
-			if ((hit0_dcache && valid0_dcache) || (hit1_dcache && valid1_dcache)) begin
+			load_dcache_line = ENABLE;
+			if (hit0_check_dcache || hit1_check_dcache) begin
 				next_dcache_state = DONE;
 			end else if (
-				(~hit0_dcache && ~hit1_dcache) &&
-				(valid0_dcache && valid1_dcache) &&
+				(~hit0_check_dcache && ~hit1_check_dcache) &&
+				(flag_line_out_dcache.valid0 && flag_line_out_dcache.valid1) &&
 				(
-					(lru_dcache && dirty1_dcache) ||
-					(~lru_dcache && dirty0_dcache)
+					(flag_line_out_dcache.lru && flag_line_out_dcache.dirty1) ||
+					(~flag_line_out_dcache.lru && flag_line_out_dcache.dirty0)
 				)
 			) begin
 				next_dcache_state = EVICT;
@@ -183,9 +235,9 @@ always_comb begin : dcache_ctrl_fsm
 			wr_data_dcache		= wr;
 			wr_flag_dcache		= wr || rd;
 			rd_dcache			= rd;
-			if (wr) begin	// store instr as if hit
+			if (wr) begin	// store as if hit
 				data_out_dcache		= NULL;
-				if (hit0_dcache && valid0_dcache) begin
+				if (hit0_dcache) begin
 					unique case (word_off)
 						2'b00: begin
 							data_line_in_dcache.data0w0	= data_in;
@@ -260,7 +312,7 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 					endcase
-				end else if (hit1_dcache && valid1_dcache) begin
+				end else if (hit1_dcache) begin
 					unique case (word_off)
 						2'b00: begin
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
@@ -336,13 +388,12 @@ always_comb begin : dcache_ctrl_fsm
 						end
 					endcase
 				end else begin
-					$error("cache access err: cant hit on write");
 					data_line_in_dcache = empty_data_line;
 					flag_line_in_dcache = empty_flag_line;
 				end
-			end else begin	// load instr as if hit
+			end else begin	// load as if hit
 				data_line_in_dcache = empty_data_line;
-				if (hit0_dcache && valid0_dcache) begin
+				if (hit0_dcache) begin
 					unique case (word_off)
 						2'b00: begin
 							data_out_dcache				= data_line_dcache.data0w0;
@@ -392,7 +443,7 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 					endcase
-				end else if (hit1_dcache && valid1_dcache) begin
+				end else if (hit1_dcache) begin
 					unique case (word_off)
 						2'b00: begin
 							data_out_dcache				= data_line_dcache.data1w0;
@@ -443,7 +494,6 @@ always_comb begin : dcache_ctrl_fsm
 						end
 					endcase
 				end else begin
-					$error("cache access err: cant hit on read");
 					data_out_dcache = NULL;
 					flag_line_in_dcache = empty_flag_line;
 				end
@@ -452,17 +502,80 @@ always_comb begin : dcache_ctrl_fsm
 
 		EVICT : begin
 			if (sdram_done) begin
-				next_dcache_state = LOAD;
+				// no need to update flags
+				// cuz flags will be updated in load stage
+				// right?... 
+				next_dcache_state	= LOAD;
+				sdram_valid			= DISABLE;
+				sdram_wr			= DISABLE;
 			end else begin
-				next_dcache_state = EVICT;
+				next_dcache_state	= EVICT;
+				sdram_valid			= ENABLE;
+				sdram_wr			= ENABLE;
+				sdram_line_in	= (~lru_dcache) ? {
+						{data_line_dcache.data0w0},
+						{data_line_dcache.data0w1},
+						{data_line_dcache.data0w2},
+						{data_line_dcache.data0w3}
+					} : {
+						{data_line_dcache.data1w0},
+						{data_line_dcache.data1w1},
+						{data_line_dcache.data1w2},
+						{data_line_dcache.data1w3}
+					};
 			end
 		end
 
 		LOAD : begin
 			if (sdram_done) begin
-				next_dcache_state = DONE;
+				next_dcache_state	= DONE;
+				sdram_valid			= DISABLE;
+				sdram_rd			= DISABLE;
+				en_dcache			= ENABLE;
+				wr_data_dcache		= ENABLE;
+				wr_flag_dcache		= ENABLE;
+				if (~lru_dcache) begin	// overwrite way 0
+					data_line_in_dcache.data0w0	= {{sdram_line_buffer.w0},{sdram_line_buffer.w1}};
+					data_line_in_dcache.data0w1	= {{sdram_line_buffer.w2},{sdram_line_buffer.w3}};
+					data_line_in_dcache.data0w2	= {{sdram_line_buffer.w4},{sdram_line_buffer.w5}};
+					data_line_in_dcache.data0w3	= {{sdram_line_buffer.w6},{sdram_line_buffer.w7}};
+					data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+					data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+					data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+					data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+					flag_line_in_dcache.valid0	= VALID;
+					flag_line_in_dcache.dirty0	= CLEAN;
+					flag_line_in_dcache.tag0	= tag;
+					flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
+					flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
+					flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+					flag_line_in_dcache.lru		= flag_line_dcache.lru;	// only filp in DONE state
+					flag_line_in_dcache.x5		= 5'b0;
+				end else begin			// overwrite way 1
+					data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+					data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+					data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+					data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+					data_line_in_dcache.data1w0	= {{sdram_line_buffer.w0},{sdram_line_buffer.w1}};
+					data_line_in_dcache.data1w1	= {{sdram_line_buffer.w2},{sdram_line_buffer.w3}};
+					data_line_in_dcache.data1w2	= {{sdram_line_buffer.w4},{sdram_line_buffer.w5}};
+					data_line_in_dcache.data1w3	= {{sdram_line_buffer.w6},{sdram_line_buffer.w7}};
+					flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
+					flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
+					flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+					flag_line_in_dcache.valid1	= VALID;
+					flag_line_in_dcache.dirty1	= CLEAN;
+					flag_line_in_dcache.tag1	= tag;
+					flag_line_in_dcache.lru		= flag_line_dcache.lru;	// only filp in DONE state
+					flag_line_in_dcache.x5		= 5'b0;	
+				end
 			end else begin
-				next_dcache_state = LOAD;
+				next_dcache_state	= LOAD;
+				sdram_valid			= ENABLE;
+				sdram_rd			= ENABLE;
+				en_dcache			= DISABLE;
+				wr_data_dcache		= DISABLE;
+				wr_flag_dcache		= DISABLE;
 			end
 		end
 
@@ -487,6 +600,8 @@ logic	[ 1:0]	sdram_dqm;
 // top level of a sdram controller
 sdram sdram_ctrl_inst(
     .clk_50m		(clk_50m),
+	.clk_100m		(clk_100m),
+	.clk_100m_shift	(clk_100m_shift),
     .rst_n			(rst_n),
         
     .sdram_clk		(sdram_clk),
@@ -502,12 +617,12 @@ sdram sdram_ctrl_inst(
     
 	// user control interface
 	// a transaction is complete when valid && done
-	.addr			(addr),
+	.addr			(addr[27:4]),
 	.wr				(sdram_wr),
 	.rd				(sdram_rd),
 	.valid			(sdram_valid),
-	.data_line_in	(data_line_in),
-	.data_line_out	(data_line_out),
+	.data_line_in	(sdram_line_in),
+	.data_line_out	(sdram_line_out),
 	.done			(sdram_done),
 	.sdram_init_done(sdram_init_done)
 ); 
@@ -528,5 +643,13 @@ sdr u_sdram(
     .Dqm			(sdram_dqm)
 );
 // synthesis translate_on
+
+always_ff @(negedge clk_50m) begin : checks
+	assert (~((dcache_state == DONE) && ~(hit0_dcache || hit1_dcache)))
+	else begin
+		$error("Assertion hit_check failed! at time=%t", $realtime);
+		$strobe("hit0 = %b, hit1=%b", hit0_dcache, hit1_dcache);
+	end
+end
 
 endmodule: mem_sys

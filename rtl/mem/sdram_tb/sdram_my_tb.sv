@@ -5,7 +5,7 @@ import mem_defines::*;
 module sdram_my_tb;
 
 //logic define
-logic		clk;
+logic		clk, clk_50m, clk_100m, clk_100m_shift;
 logic		rst_n, but_rst_n;
 logic		locked;
                                           
@@ -24,7 +24,7 @@ logic[1:0]	sdram_dqm;
 
 initial begin
   clk = 0;
-  but_rst_n     = 0;                      
+  but_rst_n     = 0;
   #100000
   but_rst_n     = 1;
 end
