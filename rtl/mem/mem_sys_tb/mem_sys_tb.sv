@@ -44,7 +44,6 @@ task init();
 	rd = 0;
 	valid = 0;
 	@(posedge sdram_init_done);
-	//$stop();
 endtask 
 
 
@@ -72,7 +71,6 @@ task  single_w_r_test_1();
 		$display("single_w_r_1 test passed");
 	end
 endtask
-
 
 // test write at index1, tag1, off0
 task  single_w_r_test_2();
@@ -117,6 +115,7 @@ task  single_w_r_test_3();
 	data2 = 0;
 endtask
 
+// write 2 time to same index, new data should go to way 2
 task write_2_way_test();
 	err = 0;
 	data1 = $urandom();
@@ -141,8 +140,8 @@ task write_2_way_test();
 	end	
 endtask
 
-
-task evict_test();
+// write 3 time to the same index, oldest data should evict
+task evict_test_1();
 	err = 0;
 	data1 = $urandom();
 	data2 = $urandom();
@@ -163,10 +162,42 @@ task evict_test();
 	assert (data3 == data4) 
 	else   err = 1;
 	if (err) begin
-		$display("evict_test failed");
+		$display("evict_test_1 failed");
 		err = 0;
 	end else begin
-		$display("evict_test passed");
+		$display("evict_test_1 passed");
+	end	
+
+endtask
+
+// write 3 time to the same index, then read oldest data from memory
+task evict_test_2();
+	err = 0;
+	data1 = $urandom();
+	data2 = $urandom();
+	data3 = $urandom();
+	addr = cache_addr_t'(0);
+
+	addr.tag = 0;
+	write_cache(addr, data1);	// install on way 0
+
+	addr.tag = 1;
+	write_cache(addr, data2);	// install on way 1
+
+	addr.tag = 2;
+	write_cache(addr, data3);	// should evict way 0
+
+	addr.tag = 0;
+
+	read_cache(addr, data4);	// should evict way 1
+
+	assert (data1 == data4) 
+	else   err = 1;
+	if (err) begin
+		$display("evict_test_2 failed");
+		err = 0;
+	end else begin
+		$display("evict_test_2 passed");
 	end	
 
 endtask
@@ -200,7 +231,11 @@ initial begin : main
 	single_w_r_test_2();
 	single_w_r_test_3();
 	write_2_way_test();
-	evict_test();
+	evict_test_1();
+	evict_test_2();
+	@(posedge clk_50m);
+	@(posedge clk_50m);
+	@(posedge clk_50m);
 	$stop();
 end
 

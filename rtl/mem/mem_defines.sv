@@ -28,6 +28,9 @@ import defines::*;
 			tag(19)            index(9)    word_off(2)   byte_off(2)
 */
 
+localparam	DEBUG_MEM_SYS		= DISABLE;
+localparam	DEBUG_SDRAM			= DISABLE;
+
 localparam	tag_len				= 19;
 localparam	index_len			= 9;
 localparam	word_off			= 2;
