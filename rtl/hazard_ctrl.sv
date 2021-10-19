@@ -107,6 +107,7 @@ module hazard_ctrl (
 	
 		hazard_3 =	(mem_store) &&
 					(ex_mem_rd != X0) && 
+					(mem_wb_wr_rd) &&
 					(mem_wb_rd == ex_mem_rs2);
 	end
 
@@ -150,11 +151,13 @@ module hazard_ctrl (
 		hazard_4a =	(instr_x.opcode == LOAD) &&
 					(instr_d.opcode == B) &&
 					(instr_x.rd != X0) &&
+					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs1);
 		
 		hazard_4b =	(instr_x.opcode == LOAD) &&
 					(instr_d.opcode == B) &&
 					(instr_x.rd != X0) &&
+					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs2);
 		
 		hazard_4 = hazard_4a || hazard_4b;
@@ -163,48 +166,54 @@ module hazard_ctrl (
 					(instr_d.opcode == B) &&
 					(!hazard_4a) &&
 					(instr_m.rd != X0) &&
+					(ex_mem_wr_rd) &&
 					(instr_m.rd == instr_d.rs1);
 
 		hazard_5b =	(instr_m.opcode == LOAD) &&
 					(instr_d.opcode == B) &&
 					(!hazard_4a) &&
 					(instr_m.rd != X0) &&
+					(ex_mem_wr_rd) &&
 					(instr_m.rd == instr_d.rs2);
 		
 		hazard_5 = hazard_5a || hazard_5b;
 		
-		// TODO: make sure rd write before trigger
-		// FATAL
 		hazard_6a =	(instr_d.opcode == B) &&
 					(!hazard_4a) &&
 					(instr_x.rd != X0) &&
+					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs1);
 		
 		hazard_6b =	(instr_d.opcode == B) &&
 					(!hazard_4b) &&
 					(instr_x.rd != X0) &&
+					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs2);
 		
 		hazard_7a =	(instr_d.opcode == B) &&
 					(!hazard_5a) &&
 					(!hazard_6a) &&
 					(instr_m.rd != X0) &&
+					(ex_mem_wr_rd) &&
 					(instr_m.rd == instr_d.rs1);
 		
 		hazard_7b =	(instr_d.opcode == B) &&
 					(!hazard_5b) &&
 					(!hazard_6b) &&
 					(instr_m.rd != X0) &&
+					(ex_mem_wr_rd) &&
 					(instr_m.rd == instr_d.rs2);
 
 		hazard_8a =	(instr_d.opcode == B) &&
 					(!hazard_7a) &&
 					(instr_w.rd != X0) &&
+					(mem_wb_wr_rd) &&
 					(instr_w.rd == instr_d.rs1);
 
 		hazard_8b =	(instr_d.opcode == B) &&
 					(!hazard_7b) &&
 					(instr_w.rd != X0) &&
+					(mem_wb_wr_rd) &&
 					(instr_w.rd == instr_d.rs2);
 
 	end

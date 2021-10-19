@@ -1,5 +1,5 @@
 import defines::*;
-import alu_define::*;
+import alu_defines::*;
 
 module alu (
 	input instr_t	instr,

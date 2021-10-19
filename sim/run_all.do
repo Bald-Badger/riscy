@@ -47,7 +47,7 @@ vlog -work work -vopt -sv -stats=none  ../rtl/decode/reg_bypass.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/decode/reg_ctrl.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/decode/registers.sv
 
-vlog -work work -vopt -sv -stats=none  ../rtl/execute/alu_define.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/execute/alu_defines.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/alu.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/ex_mux.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/execute.sv

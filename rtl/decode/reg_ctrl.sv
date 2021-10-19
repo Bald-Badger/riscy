@@ -29,8 +29,8 @@ module reg_ctrl (
 					(opcode == R) 		? ENABLE :
 					DISABLE;
 
-		rs1_addr = 	(rs1_rden) ? instr.rs1 : ZERO;
-		rs2_addr = 	(rs2_rden) ? instr.rs2 : ZERO;
+		rs1_addr = 	(rs1_rden) ? instr.rs1 : r_t'(ZERO);
+		rs2_addr = 	(rs2_rden) ? instr.rs2 : r_t'(ZERO);
 	end
 						
 endmodule

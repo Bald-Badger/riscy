@@ -7,9 +7,11 @@
 import defines::*;
 
 module proc(
-	input logic clk,
-	input logic rst_n,
-	output logic ebreak_start	// actually 3 cycles after ebreak, pipeline cleared
+	input	logic clk,
+	input	logic clk_100m,
+	input	logic clk_100m_shift,
+	input	logic rst_n,
+	output	logic ebreak_start	// actually 3 cycles after ebreak, pipeline cleared
 );
 
 	// stage-specific common data wires
@@ -33,7 +35,7 @@ module proc(
 	// for branching forward
 	branch_fwd_t fwd_rs1, fwd_rs2;	
 	// for memory forwad from latter stage to ID to read rs2
-	store_fwd_t fwd_store;
+	store_fwd_t	fwd_store;
 
 	// stall and flush
 	logic		stall_if_id, stall_id_ex,
@@ -41,25 +43,26 @@ module proc(
 	logic		flush_if_id, flush_id_ex,
 				flush_ex_mem, flush_mem_wb;
 	// ebreak
-	logic ebreak;
-	logic ebreak_stall;	// stall from ebreak, waiting pipeline clear
+	logic		ebreak;
+	logic		ebreak_stall;	// stall from ebreak, waiting pipeline clear
+	// external signal
+	logic		ebreak_return;
+	assign		ebreak_return = 1'b0;
+
+	// sdram init done signal;
+	logic		sdram_init_done;
 
 	// global data wire
-	data_t wb_data;
-	data_t pc_bj;
-	data_t ex_ex_fwd_data;
-	data_t mem_ex_fwd_data;
-	data_t mem_mem_fwd_data;
+	data_t		wb_data;
+	data_t		pc_bj;
+	data_t		ex_ex_fwd_data;
+	data_t		mem_ex_fwd_data;
+	data_t		mem_mem_fwd_data;
 	always_comb begin : fwd_data_assign
 		ex_ex_fwd_data = alu_result_m;
 		mem_ex_fwd_data = wb_data;
 		mem_mem_fwd_data = wb_data;
 	end
-
-
-	// external signal
-	logic ebreak_return;
-	assign ebreak_return = 1'b0;
 
 	// fetch stage	
 	fetch fetch_inst (
@@ -223,6 +226,8 @@ module proc(
 	memory memory_inst (
 		// input
 		.clk				(clk),
+		.clk_100m			(clk_100m),
+		.clk_100m_shift		(clk_100m_shift),
 		.rst_n				(rst_n),
 		.addr				(alu_result_m),
 		.data_in_raw		(rs2_m),
