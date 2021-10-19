@@ -20,7 +20,8 @@ module memory (
 	input fwd_sel_t fwd_m2m, // mem to mem forwarding
 	input instr_t	instr,
 
-	output data_t	data_out
+	output data_t	data_out,
+	output logic	sdram_init_done
 );
 
 	opcode_t		opcode;
@@ -28,6 +29,7 @@ module memory (
 	logic 			wren, rden;
 	logic			addr_misalign;
 	logic  			misalign_trap;
+	logic			mem_sys_done;
 
 	always_comb begin
 		opcode = instr.opcode;
@@ -35,25 +37,6 @@ module memory (
 		rden = (opcode == LOAD);
 		wren = (opcode == STORE);
 	end
-
-	assign misalign_trap = addr_misalign && (rden || wren);
-	always_comb begin : misalign_detection
-		unique case (funct3)
-			LB:		addr_misalign = 1'b0;
-			LH:		addr_misalign = addr[0];
-			LW:		addr_misalign = &addr[1:0];
-			LBU:	addr_misalign = 1'b0;
-			LHU:	addr_misalign = addr[0];
-			default:addr_misalign = 1'b0; 
-		endcase
-	end
-	
-	// synthesis translate_off   
-	always @(posedge misalign_trap) begin
-		$display("address misalign detected");
-		$timeformat(-12, 0, "ps");
-	end
-	// synthesis translate_on 
 
 
 	logic[BYTES-1:0] be;
@@ -109,7 +92,7 @@ module memory (
 		end
 	end
 
-	logic done;
+	
 	mem_sys memory_system (
 		.clk_50m		(clk),
 		.clk_100m		(clk_100m),
@@ -123,19 +106,28 @@ module memory (
 		.valid			(0),
 		
 		.data_out		(data_out_mem),
-		.done			(done)
+		.done			(mem_sys_done),
+		.sdram_init_done(sdram_init_done)
 	);
 
-/*
-	ram_32b_1024wd	data_mem_inst (
-	.address ( addr[11:2] ),
-	//.byteena ( be ),
-	.clock ( clk ),
-	.data ( data_in_final ),	
-	.rden ( rden ),
-	.wren ( wren ),
-	.q ( data_out_mem )
-	);
-*/
+	// synthesis translate_off 
+	assign misalign_trap = addr_misalign && (rden || wren);
+	always_comb begin : misalign_detection
+		unique case (funct3)
+			LB:		addr_misalign = 1'b0;
+			LH:		addr_misalign = addr[0];
+			LW:		addr_misalign = &addr[1:0];
+			LBU:	addr_misalign = 1'b0;
+			LHU:	addr_misalign = addr[0];
+			default:addr_misalign = 1'b0; 
+		endcase
+	end
+	
+	always @(posedge misalign_trap) begin
+		$display("address misalign detected");
+		$timeformat(-12, 0, "ps");
+	end
+	// synthesis translate_on 
+
 
 endmodule : memory
