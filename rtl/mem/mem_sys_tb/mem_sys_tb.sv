@@ -10,16 +10,20 @@ module mem_sys_tb ();
 	integer 	err;
 	integer		break_mark;
 	integer		i, iter;	// test length for random test
-	localparam 	mem_space = 8192;	// memory space in words(to limit simulation size)
+	// memory space in words(to limit simulation size)
+	localparam 	mem_space = 8192;	
+	// limit test mem size for coverage
+	localparam	rand_test_mem_space = mem_space; // in 32bit word
+	localparam	rand_test_addr_mask = 32'h0000_0000_0000_7FFC;
 	reg [XLEN-1:0] ref_mem [0:mem_space-1];
 
 	pll_clk	pll_inst (
-	.areset		(~but_rst_n),
-	.inclk0		(clk),
-	.locked		(locked),
-	.c0			(clk_50m),
-	.c1			(clk_100m),
-	.c2			(clk_100m_shift)
+		.areset		(~but_rst_n),
+		.inclk0		(clk),
+		.locked		(locked),
+		.c0			(clk_50m),
+		.c1			(clk_100m),
+		.c2			(clk_100m_shift)
 	);
 
 	initial begin
@@ -235,28 +239,6 @@ task long_r_w_test();	// a full flush of cache
 	end
 endtask
 
-task  write_cache(input cache_addr_t a, input data_t d);
-	wr = 1;
-	valid = 1;
-	addr_in = a;
-	data_in = d;
-	@(posedge done);
-	@(posedge clk_50m);
-	valid = 0;
-	wr = 0;
-endtask
-
-task read_cache(input cache_addr_t a, output data_t d);
-	rd = 1;
-	valid = 1;
-	addr_in = a;
-	@(posedge done);
-	@(posedge clk_50m);
-	valid = 0;
-	rd = 0;
-	d = data_out;
-endtask
-
 task smoke_test();
 	single_w_r_test_1();
 	single_w_r_test_2();
@@ -267,16 +249,92 @@ task smoke_test();
 	long_r_w_test();
 endtask
 
+task  write_cache(input cache_addr_t a, input data_t d);
+	fork
+		begin
+			repeat(100) @(posedge clk_50m);
+			$display("write timeout!");
+			$stop();
+		end
+
+		begin
+		wr		= 1;
+		valid	= 1;
+		addr_in	= a;
+		data_in	= d;
+		@(posedge done);
+		@(posedge clk_50m);
+		valid = 0;
+		wr = 0;
+		end
+	join_any
+	disable fork;
+endtask
+
+task read_cache(input cache_addr_t a, output data_t d);
+	fork
+		begin
+			repeat(100) @(posedge clk_50m);
+			$display("read timeout!");
+			$stop();
+		end
+
+		begin
+			rd		= 1;
+			valid	= 1;
+			addr_in	= a;
+			@(posedge done);
+			@(posedge clk_50m);
+			valid = 0;
+			rd = 0;
+			d = data_out;
+		end
+	join_any
+	disable fork;
+endtask
+
 task rand_test();
-	// TODO: implement
+	iter = 233333;
+	err = 0;
+	// init to random
+	for (i = 0; i < mem_space; i++) begin
+		addr = 0;
+		addr = (i << 2);
+		data1 = $urandom();
+		write_cache(addr, data1);
+		ref_mem[i] = data1;
+	end
+
+	for (i = 0; i < iter; i++) begin
+		data2 = $urandom();
+		data3 = $urandom();
+		addr = $urandom() && rand_test_addr_mask;
+		if (data2[0] == 1) begin	// write
+			write_cache(addr, data3);
+			ref_mem[addr>>2] = data3;
+		end else begin	// read
+			read_cache(addr, data4);
+			data3 = ref_mem[addr >> 2];
+			assert (data4 == data3) 
+			else begin
+				err = 1;
+				break_mark = i;
+				$display("rand_test failed at iter=%d, expected:%h get:%h", break_mark, data3, data4);
+			end
+		end
+	end
+	if (err) begin
+		$display("rand_test failed");
+		err = 0;
+	end else begin
+		$display("rand_test passed");
+	end	
 endtask
 
 initial begin : main
 	init();
 	smoke_test();
-	@(posedge clk_50m);
-	@(posedge clk_50m);
-	@(posedge clk_50m);
+	rand_test();
 	$stop();
 end
 

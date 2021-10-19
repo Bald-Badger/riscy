@@ -67,6 +67,7 @@ always_comb begin : dcache_flag_assign
 	lru_dcache		=	flag_line_dcache.lru;
 end
 
+
 always_comb begin : dcache_hit_assign
 	if (valid && rd) begin
 		hit0_dcache = ((tag == tag0_dcache) && valid0_dcache) ? 1'b1 : 1'b0;
@@ -85,6 +86,7 @@ always_comb begin : dcache_hit_assign
 		hit1_check_dcache =1'b0;
 	end
 end
+
 
 always_comb begin : cache_addr_assign
 	index			= addr.index;
@@ -119,6 +121,7 @@ always_ff @( posedge clk_100m) begin : sdram_buffer_load
 		sdram_line_buffer <= sdram_line_buffer;
 end
 
+
 cache dcache(
 	// input nets
 	.clk			(clk_50m),
@@ -145,6 +148,7 @@ typedef enum logic[2:0] {
 	LOAD2
 } cache_ctrl_state_t;
 
+
 cache_ctrl_state_t dcache_state, next_dcache_state;
 always_ff @( posedge clk_50m, negedge rst_n ) begin
 	if (~rst_n)
@@ -152,6 +156,7 @@ always_ff @( posedge clk_50m, negedge rst_n ) begin
 	else 
 		dcache_state <= next_dcache_state;
 end
+
 
 always_comb begin : dcache_ctrl_fsm
 	next_dcache_state = IDLE;
@@ -176,15 +181,15 @@ always_comb begin : dcache_ctrl_fsm
 		IDLE : begin
 			load_dcache_line = ENABLE;
 			if ((rd || wr) && valid) begin
-				next_dcache_state = CHECK;
-				en_dcache = ENABLE;
-				rd_dcache = ENABLE;
-				clr_dcache_line = DISABLE;
+				next_dcache_state	= CHECK;
+				en_dcache			= ENABLE;
+				rd_dcache			= ENABLE;
+				clr_dcache_line		= DISABLE;
 			end else begin
-				next_dcache_state = IDLE;
-				en_dcache = DISABLE;
-				rd_dcache = DISABLE;
-				clr_dcache_line = ENABLE;
+				next_dcache_state	= IDLE;
+				en_dcache			= DISABLE;
+				rd_dcache			= DISABLE;
+				clr_dcache_line		= ENABLE;
 			end
 		end
 
@@ -513,14 +518,15 @@ always_comb begin : dcache_ctrl_fsm
 		end
 
 		LOAD : begin
-			sdram_valid			= ENABLE;
-			sdram_rd			= ENABLE;
-			sdram_user_addr		= {{addr[24:4]},{3'b0}}; // not 4'b0 because this addr is in 16bit word, not 8 bit word
+			sdram_valid							= ENABLE;
+			sdram_rd							= ENABLE;
+			// not {{addr[24:4]},{4'b0}} because this addr is in 16bit word, not 8 bit word
+			sdram_user_addr						= {{addr[24:4]},{3'b0}};
 			if (sdram_done) begin
-				next_dcache_state	= LOAD2;
-				en_dcache			= ENABLE;
-				wr_data_dcache		= ENABLE;
-				wr_flag_dcache		= ENABLE;
+				next_dcache_state				= LOAD2;
+				en_dcache						= ENABLE;
+				wr_data_dcache					= ENABLE;
+				wr_flag_dcache					= ENABLE;
 				if (~lru_dcache) begin	// overwrite way 0
 					data_line_in_dcache.data0w0	= {{sdram_line_buffer.w0},{sdram_line_buffer.w1}};
 					data_line_in_dcache.data0w1	= {{sdram_line_buffer.w2},{sdram_line_buffer.w3}};
@@ -557,21 +563,21 @@ always_comb begin : dcache_ctrl_fsm
 					flag_line_in_dcache.x5		= 5'b0;	
 				end
 			end else begin
-				next_dcache_state	= LOAD;
-				en_dcache			= DISABLE;
-				wr_data_dcache		= DISABLE;
-				wr_flag_dcache		= DISABLE;
+				next_dcache_state			= LOAD;
+				en_dcache					= DISABLE;
+				wr_data_dcache				= DISABLE;
+				wr_flag_dcache				= DISABLE;
 			end
 		end
 
 		LOAD2: begin
-			next_dcache_state	= DONE;
-			en_dcache			= ENABLE;
-			rd_dcache			= ENABLE;
+			next_dcache_state			= DONE;
+			en_dcache					= ENABLE;
+			rd_dcache					= ENABLE;
 		end
 
 		default: begin
-			next_dcache_state <= IDLE;
+			next_dcache_state 			= IDLE;
 		end
 	endcase
 end
@@ -619,9 +625,9 @@ sdram sdram_ctrl_inst(
 ); 
 
 
-// functional model of a physical sdram module
+// start function modules and asseraions
 // synthesis translate_off
-sdr u_sdram(    
+sdr sdram_functional_model(    
     .Clk			(sdram_clk),
     .Cke			(sdram_cke),
     .Cs_n			(sdram_cs_n),
@@ -633,14 +639,15 @@ sdr u_sdram(
     .Dq				(sdram_data),
     .Dqm			(sdram_dqm)
 );
-// synthesis translate_on
+
 
 always_ff @(negedge clk_50m) begin : checks
 	assert (~((dcache_state == DONE) && ~(hit0_check_dcache || hit1_check_dcache)))
 	else begin
 		$error("Assertion hit_check failed! at time=%t", $realtime);
-		$strobe("hit0 = %b, hit1=%b", hit0_dcache, hit1_dcache);
+		$strobe("hit0 = %b, hit1=%b", hit0_check_dcache, hit1_check_dcache);
 	end
 end
+// synthesis translate_on
 
 endmodule: mem_sys
