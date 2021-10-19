@@ -30,7 +30,7 @@ module sdram(
 
 	// user control interface
 	// a transaction is complete when valid && done
-	input	logic	[23:0]	addr,			//16-bit word addr
+	input	logic	[23:0]	addr,			// 16-bit word addr
 	input	logic			wr,				// user write enable
 	input	logic			rd,				// user read enable
 	input	logic			valid,			// user request valid

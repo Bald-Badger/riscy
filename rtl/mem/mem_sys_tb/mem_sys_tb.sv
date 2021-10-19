@@ -8,6 +8,10 @@ module mem_sys_tb ();
 	logic		rst_n, but_rst_n;
 	logic		locked;
 	integer 	err;
+	integer		break_mark;
+	integer		i, iter;	// test length for random test
+	localparam 	mem_space = 8192;	// memory space in words(to limit simulation size)
+	reg [XLEN-1:0] ref_mem [0:mem_space-1];
 
 	pll_clk	pll_inst (
 	.areset		(~but_rst_n),
@@ -37,15 +41,15 @@ logic	wr, rd, valid, done;
 logic	sdram_init_done;
 
 task init();
-	err = 0;
-	addr = 0;
-	data_in = 0;
-	wr = 0;
-	rd = 0;
-	valid = 0;
+	err		= 0;
+	addr	= 0;
+	data_in	= 0;
+	wr		= 0;
+	rd		= 0;
+	valid	= 0;
+	iter	= 0;
 	@(posedge sdram_init_done);
 endtask 
-
 
 // test that write then read at inedx0 tag0 way0;
 task  single_w_r_test_1();
@@ -202,6 +206,34 @@ task evict_test_2();
 
 endtask
 
+task long_r_w_test();	// a full flush of cache
+	err = 0;
+	for (i = 0; i < mem_space; i++) begin
+		addr = 0;
+		addr = (i << 2);
+		write_cache(addr, i);
+		ref_mem[i] = i;
+	end
+
+	for (i = 0; i < mem_space; i++) begin
+		addr = 0;
+		addr = (i << 2);
+		read_cache(addr, data1);
+		assert (ref_mem[i] == data1) 
+		else begin
+			err = 1;
+			break_mark = i;
+			$display("long_r_w_test failed at iter=%d, expected:%h get:%h", break_mark, ref_mem[i], data1);
+		end
+	end
+
+	if (err) begin
+		$display("long_r_w_test failed at iter=%d", break_mark);
+		err = 0;
+	end else begin
+		$display("long_r_w_test passed");
+	end
+endtask
 
 task  write_cache(input cache_addr_t a, input data_t d);
 	wr = 1;
@@ -225,14 +257,23 @@ task read_cache(input cache_addr_t a, output data_t d);
 	d = data_out;
 endtask
 
-initial begin : main
-	init();
+task smoke_test();
 	single_w_r_test_1();
 	single_w_r_test_2();
 	single_w_r_test_3();
 	write_2_way_test();
 	evict_test_1();
 	evict_test_2();
+	long_r_w_test();
+endtask
+
+task rand_test();
+	// TODO: implement
+endtask
+
+initial begin : main
+	init();
+	smoke_test();
 	@(posedge clk_50m);
 	@(posedge clk_50m);
 	@(posedge clk_50m);
