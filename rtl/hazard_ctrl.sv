@@ -12,6 +12,8 @@ module hazard_ctrl (
 	input logic ex_mem_wr_rd,
 	input logic mem_wb_wr_rd,
 
+	input logic mem_access_done,
+
 	input logic branch_predict,
 	input logic branch_actual,
 
@@ -39,14 +41,20 @@ module hazard_ctrl (
 );
 	
 	r_t id_ex_rs1, id_ex_rs2, ex_mem_rs2, ex_mem_rd, mem_wb_rd;
-	logic mem_store;
+	logic mem_store, mem_load;
 	always_comb begin : input_sig
-		id_ex_rs1 = instr_x.rs1;
-		id_ex_rs2 = instr_x.rs2;
-		ex_mem_rs2 = instr_m.rs2;
-		ex_mem_rd = instr_m.rd;
-		mem_wb_rd = instr_w.rd;
-		mem_store = (instr_m.opcode == STORE);
+		id_ex_rs1	= instr_x.rs1;
+		id_ex_rs2	= instr_x.rs2;
+		ex_mem_rs2	= instr_m.rs2;
+		ex_mem_rd	= instr_m.rd;
+		mem_wb_rd	= instr_w.rd;
+		mem_store	= (instr_m.opcode == STORE);
+		mem_load	= (instr_m.opcode == LOAD);
+	end
+
+	logic data_mem_stall;	// pipeline stall from data memory access
+	always_comb begin : data_mem_stall_assign
+		data_mem_stall = (mem_store || mem_load) && ~mem_access_done;
 	end
 
 
@@ -234,10 +242,10 @@ module hazard_ctrl (
 
 
 	always_comb begin : stall_assign
-		stall_if_id = hazard_4 || hazard_5;
-		stall_id_ex = stall_if_id;
-		stall_ex_mem = DISABLE;
-		stall_mem_wb = DISABLE;
+		stall_if_id		= hazard_4 || hazard_5 || data_mem_stall;
+		stall_id_ex		= stall_if_id || data_mem_stall;
+		stall_ex_mem	= data_mem_stall;
+		stall_mem_wb	= DISABLE;
 	end
 
 

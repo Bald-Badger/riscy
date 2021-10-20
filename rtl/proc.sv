@@ -52,6 +52,9 @@ module proc(
 	// sdram init done signal;
 	logic		sdram_init_done;
 
+	// memory access done flag
+	logic		mem_access_done;
+
 	// global data wire
 	data_t		wb_data;
 	data_t		pc_bj;
@@ -236,7 +239,9 @@ module proc(
 		.instr				(instr_m),
 		
 		// output
-		.data_out			(mem_data_m)
+		.data_out			(mem_data_m),
+		.sdram_init_done	(sdram_init_done),
+		.mem_access_done	(mem_access_done)
 	);
 
 
@@ -276,6 +281,7 @@ module proc(
 		.wb_data	(wb_data)
 	);
 
+
 	hazard_ctrl hazard_ctrl_inst (
 		// input signal
 		.instr_f		(instr_f),
@@ -287,6 +293,8 @@ module proc(
 		.id_ex_wr_rd	(rd_wren_x),
 		.ex_mem_wr_rd	(rd_wren_m),
 		.mem_wb_wr_rd	(rd_wren_w),
+
+		.mem_access_done(mem_access_done),
 
 		.branch_predict	(branch_take_d),
 		.branch_actual	(branch_taken_actual),

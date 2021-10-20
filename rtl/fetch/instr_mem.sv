@@ -42,23 +42,4 @@ module instr_mem (
 		.q			( instr_raw )
 	);
 
-
-/*
-	mem #(
-		.ADDR_WIDTH	(XLEN),
-		.BYTES		(BYTES),
-		.TYPE		(INSTR_MEM)
-	) instr_mem_inst (
-		.waddr		(NULL),
-		.raddr		(addr),
-		.be			(W_EN_BIG | W_EN_LITTLE),	// 4'hF
-		.wdata		(NULL),
-		.we			(DISABLE),
-		.re			(rden),
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.q			(instr_raw)
-	); 
-*/
-
 endmodule : instr_mem

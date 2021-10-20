@@ -21,7 +21,8 @@ module memory (
 	input instr_t	instr,
 
 	output data_t	data_out,
-	output logic	sdram_init_done
+	output logic	sdram_init_done,
+	output logic	mem_access_done
 );
 
 	opcode_t		opcode;
@@ -29,7 +30,7 @@ module memory (
 	logic 			wren, rden;
 	logic			addr_misalign;
 	logic  			misalign_trap;
-	logic			mem_sys_done;
+
 
 	always_comb begin
 		opcode = instr.opcode;
@@ -103,10 +104,10 @@ module memory (
 		.data_in		(data_in_final),
 		.wr				(wren),
 		.rd				(rden),
-		.valid			(0),
+		.valid			(wren || rden),
 		
 		.data_out		(data_out_mem),
-		.done			(mem_sys_done),
+		.done			(mem_access_done),
 		.sdram_init_done(sdram_init_done)
 	);
 
