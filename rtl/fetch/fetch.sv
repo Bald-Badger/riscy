@@ -2,8 +2,8 @@ import defines::*;
 
 module fetch(
 	// general input
-	input clk, 
-	input rst_n,
+	input	logic	clk, 
+	input	logic	rst_n,
 
 	// input
 	input	data_t	pc_bj,
@@ -35,6 +35,7 @@ module fetch(
 		.clk	(clk),
 		.rst_n	(rst_n),
 		.rden	(en_instr_mem),
+		.stall	(stall),
 		.addr	(pc),
 		.instr	(instr)
 	);

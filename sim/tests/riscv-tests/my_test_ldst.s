@@ -1,7 +1,7 @@
 .text
 main:
 
-li a1, 0x10040004 # base mem address
+li a1, 0x00002004 # base mem address
 li a2, 0x12345678 # base data
 sw a2, 4(a1) # 0x12345678
 sh a2, 8(a1) # 0x5678

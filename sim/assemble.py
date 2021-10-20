@@ -74,14 +74,14 @@ def assemble(filename='', out_name=''):
     if out_name == '':
         out_name = 'instr.mc'
 
-    example = "java -jar rars.jar dump 0x00400000-0x00401000 " \
+    example = "java -jar rars.jar mc CompactTextAtZero dump 0x00002000-0x00002fff " \
               "HexText instr.asm instr.s"
-    addr = "0x00400000-0x00401000"
+    addr = "0x00000000-0x00000ffc"
     in_name = find(filename, '.\\tests')
     if in_name is None:
         print("file: " + filename + "not found")
         return
-    cmd = "java -jar rars.jar dump " + addr + " HexText " + out_name + " " + in_name
+    cmd = "java -jar rars.jar mc CompactTextAtZero dump " + addr + " HexText " + out_name + " " + in_name
     print("assembling file: " + in_name)
     os.system(cmd)
     append_zeros(out_name)

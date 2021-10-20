@@ -12,6 +12,8 @@ module hazard_ctrl (
 	input logic ex_mem_wr_rd,
 	input logic mem_wb_wr_rd,
 
+	input logic sdram_init_done,
+
 	input logic mem_access_done,
 
 	input logic branch_predict,
@@ -242,10 +244,10 @@ module hazard_ctrl (
 
 
 	always_comb begin : stall_assign
-		stall_if_id		= hazard_4 || hazard_5 || data_mem_stall;
+		stall_if_id		= hazard_4 || hazard_5 || data_mem_stall || ~sdram_init_done;
 		stall_id_ex		= stall_if_id || data_mem_stall;
 		stall_ex_mem	= data_mem_stall;
-		stall_mem_wb	= DISABLE;
+		stall_mem_wb	= data_mem_stall;	// stall for mem-mem fwd
 	end
 
 

@@ -33,10 +33,10 @@ module memory (
 
 
 	always_comb begin
-		opcode = instr.opcode;
-		funct3 = instr.funct3;
-		rden = (opcode == LOAD);
-		wren = (opcode == STORE);
+		opcode	= instr.opcode;
+		funct3	= instr.funct3;
+		rden	= (opcode == LOAD);
+		wren	= (opcode == STORE);
 	end
 
 
@@ -79,7 +79,7 @@ module memory (
 	assign d = data_out_unmasked; // abbr for shorter code
 	
 	always_comb begin : output_mask_pharse
-		if (wren) begin
+		if (rden) begin
 			unique case (funct3)
 				LB: 	 data_out = {{24{d[7]}}, d[7:0]};
 				LH: 	 data_out = {{16{d[15]}}, d[15:0]};

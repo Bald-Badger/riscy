@@ -15,15 +15,22 @@ module clkrst #(
 	localparam half_period = period/2;
 
 	initial begin
-		clk = 1'b0;
-		rst_n = 1'b1;
-		repeat(10) @(negedge clk);
-		rst_n = 1'b0;
-		repeat(10) @(negedge clk);
-		#5;
-		rst_n = 1'b1;
-		repeat(1000) @(negedge clk);
-		$stop();
+		fork
+			begin
+				clk = 1'b0;
+				rst_n = 1'b1;
+				repeat(10) @(negedge clk);
+				rst_n = 1'b0;
+				repeat(10) @(negedge clk);
+				#5;
+				rst_n = 1'b1;
+			end
+			begin
+				repeat(100000) @(negedge clk);
+				$stop();
+			end
+		join_any
+		disable fork;
 	end
 
 	always #half_period begin

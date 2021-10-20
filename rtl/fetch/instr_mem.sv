@@ -14,7 +14,8 @@ module instr_mem (
 	input data_t	addr,
 	input logic		clk,
 	input logic 	rst_n,
-	input 			rden,
+	input logic		rden,
+	input logic		stall,
 
 	output instr_t	instr
 );
@@ -36,6 +37,7 @@ module instr_mem (
 	ram_32b_1024wd	instr_mem_inst (
 		.address	( addr[11:2] ),
 		.clock		( clk ),
+		.clken		( ~stall ),
 		.data		( NULL ),
 		.rden		( ENABLE ),
 		.wren		( DISABLE ),

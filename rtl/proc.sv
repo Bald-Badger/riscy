@@ -77,7 +77,7 @@ module proc(
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
 		.en_instr_mem	(ENABLE),
-		.stall			(stall_if_id | ebreak_stall),
+		.stall			(stall_if_id || stall_id_ex || stall_ex_mem || stall_mem_wb || ebreak_stall),
 
 		// output
 		.pc_p4			(pcp4_f),
@@ -98,7 +98,7 @@ module proc(
 		// input
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
-		.instr_in		(instr_f),
+		.instr_in		((stall_if_id && ~stall_id_ex) ? NOP : instr_f),
 		.branch_take_in	(branch_take_f),
 		
 		// output
@@ -162,7 +162,7 @@ module proc(
 		.en			(!stall_id_ex),
 
 		// input
-		.instr_in	(instr_d),
+		.instr_in	((stall_id_ex && ~stall_ex_mem) ? NOP : instr_d),
 		.rs1_in		(rs1_d),
 		.rs2_in		(rs2_d_after_fwd),
 		.pc_in		(pc_d),
@@ -210,7 +210,7 @@ module proc(
 		.en				(!stall_ex_mem),
 
 		// input
-		.instr_in		(instr_x),
+		.instr_in		((stall_ex_mem && ~stall_mem_wb) ? NOP : instr_x),
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
 		.pc_p4_in		(pcp4_x),
@@ -254,7 +254,7 @@ module proc(
 		.en				(!stall_mem_wb),
 
 		// input
-		.instr_in		(instr_m),
+		.instr_in		(stall_mem_wb ? NOP : instr_m),
 		.alu_result_in	(alu_result_m),
 		.mem_data_in	(mem_data_m),
 		.pc_p4_in		(pcp4_m),
@@ -293,6 +293,8 @@ module proc(
 		.id_ex_wr_rd	(rd_wren_x),
 		.ex_mem_wr_rd	(rd_wren_m),
 		.mem_wb_wr_rd	(rd_wren_w),
+
+		.sdram_init_done(sdram_init_done),
 
 		.mem_access_done(mem_access_done),
 
