@@ -14,7 +14,7 @@ module mem_sys_tb ();
 	localparam 	mem_space = 8192;	
 	// limit test mem size for coverage
 	localparam	rand_test_mem_space = mem_space; // in 32bit word
-	localparam	rand_test_addr_mask = 32'h0000_0000_0000_7FFC;
+	localparam	rand_test_addr_mask = 32'h0000_7FFC;
 	reg [XLEN-1:0] ref_mem [0:mem_space-1];
 
 	pll_clk	pll_inst (

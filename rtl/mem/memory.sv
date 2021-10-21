@@ -125,8 +125,7 @@ module memory (
 	end
 	
 	always @(posedge misalign_trap) begin
-		$display("address misalign detected");
-		$timeformat(-12, 0, "ps");
+		$strobe("address misalign detected");
 	end
 	// synthesis translate_on 
 

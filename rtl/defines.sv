@@ -70,11 +70,18 @@ package defines;
 
 // basic data type define
 	typedef logic [XLEN-1:0]	data_t;
-	typedef logic [XLEN-1:0]	word_t;
-	typedef logic [2*XLEN-1:0]	double_word_t;
+	typedef logic [7:0]			byte_t;
+	typedef logic [15:0]		half_word_t;
 	typedef logic [2:0] 		funct3_t;
 	typedef logic [6:0] 		funct7_t;
 	typedef logic [11:0]		imm_t; // only for I type operation
+
+	typedef struct packed {
+		byte_t b0;
+		byte_t b1;
+		byte_t b2;
+		byte_t b3;
+	} word_t;
 
 	typedef enum logic[4:0] {
 		X0, X1, X2, X3, X4, X5, X6, X7,
@@ -100,7 +107,16 @@ package defines;
 		funct3_t	funct3;
 		r_t			rd;
 		opcode_t	opcode;
-	} instr_I_t;	// I type
+	} instr_i_t;	// I type
+
+	typedef struct packed{
+		logic[11:5]	imm_h;
+		r_t			rs2;
+		r_t			rs1;
+		funct3_t	funct3;
+		logic[4:0]	imm_l;
+		opcode_t	opcode;
+	} instr_s_t;	// I type
 
 	localparam	[XLEN-1:0]	NOP		= 32'h0000_0013;	// ADDI x0, x0, 0
 	localparam	[XLEN-1:0]	HALT	= 32'h0000_0063;	// BEQ x0, x0, 0
@@ -204,9 +220,34 @@ package defines;
 	localparam	[BYTES-1:0]	H_EN_BIG = 4'b0011;
 	localparam	[BYTES-1:0]	W_EN_BIG = 4'b1111;
 
-function data_t sign_extend;
+function data_t sign_extend;	// sign extend 12bit imm
 	input imm_t imm;
-	return data_t'({imm[11]*20, imm[11:0]});
+	return data_t'({{imm[11]*20}, {imm[11:0]}});
+endfunction
+
+function data_t sign_extend_h;	// sign extend 16-bit half word
+	input half_word_t imm;
+	return data_t'({{imm[15]*16}, {imm[15:0]}});
+endfunction
+
+function data_t sign_extend_b;	// sign extend 8 bit byte
+	input byte_t imm;
+	return data_t'({{imm[7]*24}, {imm[7:0]}});
+endfunction
+
+function data_t zero_extend;	// sign extend 12bit imm
+	input imm_t imm;
+	return data_t'({{20'b0}, {imm[11:0]}});
+endfunction
+
+function data_t zero_extend_h;	// sign extend 16-bit half word
+	input half_word_t imm;
+	return data_t'({{16'b0}, {imm[15:0]}});
+endfunction
+
+function data_t zero_extend_b;	// sign extend 8 bit byte
+	input byte_t imm;
+	return data_t'({{24'b0}, {imm[7:0]}});
 endfunction
 
 
