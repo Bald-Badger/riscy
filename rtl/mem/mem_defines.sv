@@ -135,6 +135,25 @@ typedef enum logic[1:0] {
 	WAY_SEL_ALL		= 2'b11
 } way_sel_t;
 
+typedef struct packed {
+	logic en0;
+	logic en1;
+	logic en2;
+	logic en3;
+} word_en_t;
+
+typedef struct packed {
+	word_en_t w0en;
+	word_en_t w1en;
+	word_en_t w2en;
+	word_en_t w3en;
+} word_4_en_t;
+
+typedef struct packed {
+	word_4_en_t l0en;
+	word_4_en_t l1en;
+} data_line_en_t;
+
 `endif
 
 endpackage : mem_defines

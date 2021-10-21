@@ -9,11 +9,12 @@ module mem_sys (
 	input logic			clk_100m_shift,
 	input logic			rst_n,
 
-	input cache_addr_t	addr,	// still 32 bits
+	input cache_addr_t	addr,			// still 32 bits
 	input data_t		data_in,
 	input logic			wr,
 	input logic			rd,
 	input logic			valid,
+	input logic			[BYTES-1:0] be,	// for write only
 	
 	output data_t		data_out,
 	output logic		done,
@@ -49,6 +50,7 @@ tag_t			tag;
 logic[1:0]		word_off;
 data_t			data_out_dcache;
 logic			done_dcache;
+data_line_en_t	data_line_en_dcache;
 
 
 always_comb begin : data_out_mux
@@ -132,6 +134,7 @@ cache dcache(
 	.wr_flag		(wr_flag_dcache),
 	.flag_line_in	(flag_line_in_dcache),
 	.data_line_in	(data_line_in_dcache),
+	.data_line_en	(data_line_en_dcache),
 
 	// output nets
 	.flag_line_out	(flag_line_out_dcache),
@@ -159,7 +162,7 @@ end
 
 
 always_comb begin : dcache_ctrl_fsm
-	next_dcache_state = IDLE;
+	next_dcache_state	= IDLE;
 	clr_dcache_line		= DISABLE;
 	load_dcache_line	= DISABLE;
 	en_dcache			= DISABLE;
@@ -170,6 +173,7 @@ always_comb begin : dcache_ctrl_fsm
 	data_out_dcache		= NULL;
 	flag_line_in_dcache	= empty_flag_line;
 	data_line_in_dcache	= empty_data_line;
+	data_line_en_dcache = 32'hffff_ffff;	// defalut enable all
 
 	sdram_valid			= DISABLE;
 	sdram_wr			= DISABLE;		
@@ -225,6 +229,8 @@ always_comb begin : dcache_ctrl_fsm
 					end
 					unique case (word_off)
 						2'b00: begin
+							data_line_en_dcache			=	{{be},{4'b1111},{4'b1111},{4'b1111},
+															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_in;
 							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
@@ -243,6 +249,8 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b01: begin
+							data_line_en_dcache			=	{{4'b1111},{be},{4'b1111},{4'b1111},
+															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_in;
 							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
@@ -261,6 +269,8 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b10: begin
+							data_line_en_dcache			=	{{4'b1111},{4'b1111},{be},{4'b1111},
+															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_in;
@@ -279,6 +289,8 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b11: begin
+							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{be},
+															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
@@ -303,6 +315,8 @@ always_comb begin : dcache_ctrl_fsm
 					end
 					unique case (word_off)
 						2'b00: begin
+							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
+															{be},{4'b1111},{4'b1111},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
@@ -321,6 +335,8 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b01: begin
+							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
+															{4'b1111},{be},{4'b1111},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
@@ -339,6 +355,8 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b10: begin
+							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
+															{4'b1111},{4'b1111},{be},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
@@ -357,6 +375,8 @@ always_comb begin : dcache_ctrl_fsm
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b11: begin
+							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
+															{4'b1111},{4'b1111},{4'b1111},{be}};
 							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;

@@ -17,7 +17,7 @@ module mem_tb ();
 	localparam		addr_mask_w = 32'h0000_00FC;
 	localparam		addr_mask_h = 32'h0000_00FE;
 	localparam		addr_mask_b = 32'h0000_00FF;
-	logic			[XLEN-1:0]	ref_mem [0:mem_space-1];
+	word_t			ref_mem [0:mem_space-1];
 
 	cache_addr_t	addr, addr_in;
 	instr_s_t		instr;
@@ -76,66 +76,52 @@ task write_mem (
 			if (mode == SB) begin
 				case (addr[1:0])	// in little endian
 					2'b00: begin
-						w = ref_mem[a>>2];
-						w.b0 = d[7:0];
-						ref_mem[a>>2] = w;
+						ref_mem[a >> 2].b0 = d[7:0];
 					end
 					2'b01: begin
-						w = ref_mem[a>>2];
-						w.b1 = d[7:0];
-						ref_mem[a>>2] = w;
+						ref_mem[a >> 2].b1 = d[7:0];
 					end
 					2'b10: begin
-						w = ref_mem[a>>2];
-						w.b2 = d[7:0];
-						ref_mem[a>>2] = w;
+						ref_mem[a >> 2].b2 = d[7:0];
 					end
 					2'b11: begin
-						w = ref_mem[a>>2];
-						w.b3 = d[7:0];
-						ref_mem[a>>2] = w;
+						ref_mem[a >> 2].b3 = d[7:0];
 					end
 				endcase
 			end else if (mode == SH) begin
 				case (addr[1])
 					1'b0: begin
-						w = ref_mem[a>>2];
 						if (ENDIANESS == LITTLE_ENDIAN) begin
-							w.b0 = d[7:0];
-							w.b1 = d[15:8];
+							ref_mem[a>>2].b0 = d[7:0];
+							ref_mem[a>>2].b1 = d[15:8];
 						end else begin
-							w.b0 = d[15:8];
-							w.b1 = d[7:0];
+							ref_mem[a>>2].b0 = d[15:8];
+							ref_mem[a>>2].b1 = d[7:0];
 						end
-						ref_mem[a>>2] = w;
 					end
 
 					1'b1: begin
-						w = ref_mem[a>>2];
 						if (ENDIANESS == LITTLE_ENDIAN) begin
-							w.b2 = d[7:0];
-							w.b3 = d[15:8];
+							ref_mem[a>>2].b2 = d[7:0];
+							ref_mem[a>>2].b3 = d[15:8];
 						end else begin
-							w.b2 = d[15:8];
-							w.b3 = d[7:0];
+							ref_mem[a>>2].b2 = d[15:8];
+							ref_mem[a>>2].b3 = d[7:0];
 						end
-						ref_mem[a>>2] = w;
 					end
 				endcase
 			end else if (mode == SW) begin
-				w = ref_mem[a>>2];
 				if (ENDIANESS == LITTLE_ENDIAN) begin
-					w.b0 = d[7:0];
-					w.b1 = d[15:8];
-					w.b2 = d[23:16];
-					w.b3 = d[31:24];
+					ref_mem[a>>2].b0 = d[7:0];
+					ref_mem[a>>2].b1 = d[15:8];
+					ref_mem[a>>2].b2 = d[23:16];
+					ref_mem[a>>2].b3 = d[31:24];
 				end else begin
-					w.b0 = d[31:24];
-					w.b1 = d[23:16];
-					w.b2 = d[15:8];
-					w.b3 = d[7:0];	
+					ref_mem[a>>2].b0 = d[31:24];
+					ref_mem[a>>2].b1 = d[23:16];
+					ref_mem[a>>2].b2 = d[15:8];
+					ref_mem[a>>2].b3 = d[7:0];	
 				end
-				ref_mem[a>>2] = w;
 			end else begin
 				$display("bad store funct3");
 			end
@@ -252,7 +238,7 @@ task read_mem (
 endtask
 
 task word_r_w_test();
-	addr = $urandom() & addr_mask_w;
+	addr = 0;
 	data1 = $urandom();
 	write_mem(addr, data1, SH);
 	read_mem(addr, LBU);
@@ -271,8 +257,6 @@ task rand_test();
 		write_mem((i<<2 & addr_mask_w), i, SW);
 	end
 	
-	$stop();
-	word_r_w_test();
 	$stop();
 
 	for (i = 0; i < iter; i++) begin
@@ -340,7 +324,9 @@ endtask
 
 initial begin : main
 	init();
-	rand_test();
+	$stop();
+	word_r_w_test();
+	//rand_test();
 	$stop();
 end
 

@@ -204,7 +204,7 @@ package defines;
 // funct7 define (R only)
 	localparam	[6:0]	M_INSTR = 7'b000_0001;
 
-	// little endian mask (and-mask, not or-mask)
+	// little endian mask
 	localparam	[XLEN-1:0]	B_MASK_LITTLE = 32'hFF_00_00_00;
 	localparam	[XLEN-1:0]	H_MASK_LITTLE = 32'hFF_FF_00_00;
 	localparam	[XLEN-1:0]	W_MASK_LITTLE = 32'hFF_FF_FF_FF;
@@ -212,7 +212,7 @@ package defines;
 	localparam	[BYTES-1:0] H_EN_LITTLE = 4'b1100;
 	localparam	[BYTES-1:0] W_EN_LITTLE = 4'b1111;
 
-	// big endian mask (and-mask, not or-mask)
+	// big endian mask
 	localparam	[XLEN-1:0]	B_MASK_BIG = 32'h00_00_00_FF;
 	localparam	[XLEN-1:0]	H_MASK_BIG = 32'h00_00_FF_FF;
 	localparam	[XLEN-1:0]	W_MASK_BIG = 32'hFF_FF_FF_FF;

@@ -42,16 +42,29 @@ module memory (
 
 	logic[BYTES-1:0] be;
 	always_comb begin : byte_enable_pharse
-		be = 4'b0;
-		if (wren || rden) begin
+		if (wren) begin
 			unique case (funct3)
-				SB: be = (BIG_ENDIAN) ? B_EN_BIG : B_EN_LITTLE;
-				SH: be = (BIG_ENDIAN) ? H_EN_BIG : H_EN_LITTLE;
-				SW: be = (BIG_ENDIAN) ? W_EN_BIG : W_EN_LITTLE;
+				SB: begin
+					unique case (addr[1:0])
+						2'b00: be = 4'b1000;
+						2'b01: be = 4'b0100;
+						2'b10: be = 4'b0010;
+						2'b11: be = 4'b0001;
+					endcase
+				end
+				SH: begin
+					unique case (addr[1])
+						2'b0: be = 4'b1100;
+						2'b1: be = 4'b0011;
+					endcase
+				end
+				SW: begin
+					be = 4'b1111;
+				end
 				default: be = 4'b0;
 			endcase
 		end else begin
-			be = 4'b0;
+			be = 4'b1111;
 		end
 	end
 
@@ -59,7 +72,6 @@ module memory (
 	data_t data_in;				// after fwd
 	data_t data_in_final; 		// after possible endian switch
 	data_t data_out_mem; 		// data just out of mem, blue raw
-	data_t data_out_unmasked;	// data unmasked yet
 
 	always_comb begin : sel_fwd_data
 		data_in = (fwd_m2m == MEM_MEM_FWD_SEL) ? mem_mem_fwd_data : data_in_raw;
@@ -67,26 +79,121 @@ module memory (
 
 	// switch data endianess to little when storing if necessary
 	always_comb begin : switch_endian_in
-		data_in_final = (ENDIANESS == BIG_ENDIAN) ? data_in : swap_endian(data_in);
+		if (wren) begin
+			case (funct3)
+				SB: begin
+					case (addr[1:0])
+						2'b00: data_in_final = {{data_in[7:0]},{8'b0},{8'b0},{8'b0}};
+						2'b01: data_in_final = {{8'b0},{data_in[7:0]},{8'b0},{8'b0}};
+						2'b10: data_in_final = {{8'b0},{8'b0},{data_in[7:0]},{8'b0}};
+						2'b11: data_in_final = {{8'b0},{8'b0},{8'b0},{data_in[7:0]}};
+					endcase
+				end
+
+				SH: begin
+					case (addr[1])
+						1'b0: begin
+							if (ENDIANESS == BIG_ENDIAN)
+								data_in_final = {{data_in[15:8]},{data_in[7:0]},{16'b0}};
+							else 
+								data_in_final = {{data_in[7:0]},{data_in[15:8]},{16'b0}};
+						end
+						1'b1: begin
+							if (ENDIANESS == BIG_ENDIAN)
+								data_in_final = {{16'b0},{data_in[15:8]},{data_in[7:0]}};
+							else 
+								data_in_final = {{16'b0},{data_in[7:0]},{data_in[15:8]}};
+						end
+					endcase
+				end
+
+				SW: begin
+					if (ENDIANESS == BIG_ENDIAN)
+						data_in_final = data_in;
+					else 
+						data_in_final = swap_endian(data_in);
+				end
+
+				default: begin
+					data_in_final = NULL;
+				end
+			endcase
+		end else begin
+			data_in_final = NULL;
+		end
 	end
 
-	// switch data endianess to big when loading if necessary
-	always_comb begin : switch_endian_out
-		data_out_unmasked = (ENDIANESS == BIG_ENDIAN) ? data_out_mem : swap_endian(data_out_mem);
+	word_t d;
+	always_comb begin // abbr for shorter code
+		assign d = word_t'(data_out_mem); 
 	end
-
-	data_t d;
-	assign d = data_out_unmasked; // abbr for shorter code
 	
+	// bug!
 	always_comb begin : output_mask_pharse
 		if (rden) begin
 			unique case (funct3)
-				LB: 	 data_out = {{24{d[7]}}, d[7:0]};
-				LH: 	 data_out = {{16{d[15]}}, d[15:0]};
-				LW: 	 data_out = d;
-				LBU: 	 data_out = {24'b0, d[7:0]};
-				LHU: 	 data_out = {16'b0, d[15:0]};
-				default: data_out = NULL;
+				LB:		begin
+					case (addr[1:0])
+						2'b00:	data_out = sign_extend_b(d.b0);
+						2'b01:	data_out = sign_extend_b(d.b1);
+						2'b10:	data_out = sign_extend_b(d.b2);
+						2'b11:	data_out = sign_extend_b(d.b3);
+					endcase
+				end
+
+				LH:		begin
+					case (addr[1])
+						1'b0: begin
+							if (ENDIANESS == BIG_ENDIAN)
+								data_out = sign_extend_h({{d.b0},{d.b1}});
+							else 
+								data_out = sign_extend_h({{d.b1},{d.b0}});
+						end
+						1'b1: begin
+							if (ENDIANESS == BIG_ENDIAN)
+								data_out = sign_extend_h({{d.b2},{d.b3}});
+							else 
+								data_out = sign_extend_h({{d.b3},{d.b2}});
+						end
+					endcase
+				end
+
+				LW:		begin
+					if (ENDIANESS == BIG_ENDIAN)
+						data_out = {{d.b0},{d.b1},{d.b2},{d.b3}};
+					else
+						data_out = {{d.b3},{d.b3},{d.b1},{d.b0}};
+				end
+
+				LBU:	begin
+					case (addr[1:0])
+						2'b00:	data_out = zero_extend_b(d.b0);
+						2'b01:	data_out = zero_extend_b(d.b1);
+						2'b10:	data_out = zero_extend_b(d.b2);
+						2'b11:	data_out = zero_extend_b(d.b3);
+					endcase
+				end
+
+				LHU:	begin
+					case (addr[1])
+						1'b0: begin
+							if (ENDIANESS == BIG_ENDIAN)
+								data_out = zero_extend_h({{d.b0},{d.b1}});
+							else 
+								data_out = zero_extend_h({{d.b1},{d.b0}});
+						end
+						1'b1: begin
+							if (ENDIANESS == BIG_ENDIAN)
+								data_out = zero_extend_h({{d.b2},{d.b3}});
+							else 
+								data_out = zero_extend_h({{d.b3},{d.b2}});
+						end
+					endcase
+				end
+
+				default:begin
+					data_out = NULL;
+				end
 			endcase
 		end else begin
 			data_out = NULL;
@@ -105,6 +212,7 @@ module memory (
 		.wr				(wren),
 		.rd				(rden),
 		.valid			(wren || rden),
+		.be				(be),
 		
 		.data_out		(data_out_mem),
 		.done			(mem_access_done),
