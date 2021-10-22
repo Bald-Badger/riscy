@@ -86,3 +86,4 @@ sim/result.txt
 sim/instr.ver
 sim/instr.mif
 *.vstf
+workspace.code-workspace

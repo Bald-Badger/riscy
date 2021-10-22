@@ -10,3 +10,6 @@
 [submodule "sim/rars"]
 	path = sim/rars
 	url = https://github.com/TheThirdOne/rars.git
+[submodule "sim/riscv-tests"]
+	path = sim/riscv-tests
+	url = https://github.com/riscv-software-src/riscv-tests.git
