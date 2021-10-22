@@ -10,13 +10,19 @@ module fetch(
 	input 	logic	pc_sel,
 	input	logic	en_instr_mem,
 	input 	logic	stall,
+	input	logic	flush,
 
 	// output
-	output	data_t	pc_p4,
-	output	data_t	pc,
+	output	data_t	pc_p4_out,
+	output	data_t	pc_out,
 	output	data_t	instr,
 	output	logic	taken
 );
+	data_t instr_raw;
+	assign instr = (flush) ? NOP : instr_raw;	// mask the output as if masked
+	data_t pc, pc_p4;
+	assign pc_p4_out = pc_p4 - 4;
+	assign pc_out = pc - 4;
 
 	pc pc_inst (
 		// input
@@ -37,7 +43,7 @@ module fetch(
 		.rden	(en_instr_mem),
 		.stall	(stall),
 		.addr	(pc),
-		.instr	(instr)
+		.instr	(instr_raw)
 	);
 
 	branch_predict branch_predictor (

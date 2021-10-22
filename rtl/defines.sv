@@ -172,7 +172,7 @@ package defines;
     // J type have no funct3
     //localparam	[2:0]	JAL     =	3'b000;	// jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm << 1)
     //localparam	[2:0]	JALR    =	3'b000;	// jump and link registor, rd <= (pc_of_jalr + 4),  
-									// pc <= (rs1 + imm) && 0xfffe (set the last bit is always 0)
+												// pc <= (rs1 + imm) && 0xfffe (set the last bit is always 0)
 
     // S type funct3 - Load
     localparam	[2:0]	LB      =	3'b000;		// load 8 bits and sign extend to 32 bits

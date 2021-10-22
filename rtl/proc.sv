@@ -29,7 +29,7 @@ module proc(
 
 	// global control wire
 
-	logic 		pc_sel;
+	logic 		pc_sel;	// 1 for bj, 0 for p4
 	// for exe forward
 	fwd_sel_t	fwd_a, fwd_b, fwd_m2m;
 	// for branching forward
@@ -38,9 +38,11 @@ module proc(
 	store_fwd_t	fwd_store;
 
 	// stall and flush
-	logic		stall_if_id, stall_id_ex,
+	logic		stall_pc,
+				stall_if_id, stall_id_ex,
 				stall_ex_mem, stall_mem_wb;
-	logic		flush_if_id, flush_id_ex,
+	logic		flush_pc,
+				flush_if_id, flush_id_ex,
 				flush_ex_mem, flush_mem_wb;
 	// ebreak
 	logic		ebreak;
@@ -77,11 +79,12 @@ module proc(
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
 		.en_instr_mem	(ENABLE),
-		.stall			(stall_if_id || stall_id_ex || stall_ex_mem || stall_mem_wb || ebreak_stall),
+		.stall			(stall_pc || stall_if_id || stall_id_ex || stall_ex_mem || stall_mem_wb || ebreak_stall),
+		.flush			(flush_pc),
 
 		// output
-		.pc_p4			(pcp4_f),
-		.pc				(pc_f),
+		.pc_p4_out		(pcp4_f),
+		.pc_out			(pc_f),
 		.instr			(instr_f),
 		.taken			(branch_take_f)
 	);
@@ -137,7 +140,7 @@ module proc(
 
 		// output
 		.pc_bj		(pc_bj),
-		.pc_sel		(pc_sel),
+		.pc_sel		(pc_sel),	// 1 for bj, 0 for p4
 		.rs1		(rs1_d),
 		.rs2		(rs2_d),
 		.imm		(imm_d),
@@ -313,12 +316,14 @@ module proc(
 		.fwd_store		(fwd_store),
 
 		// stall signal
+		.stall_pc		(stall_pc),
 		.stall_if_id	(stall_if_id),
 		.stall_id_ex	(stall_id_ex),
 		.stall_ex_mem	(stall_ex_mem),
 		.stall_mem_wb	(stall_mem_wb),
 
 		// flush signal
+		.flush_pc		(flush_pc),
 		.flush_if_id	(flush_if_id),
 		.flush_id_ex	(flush_id_ex),
 		.flush_ex_mem	(flush_ex_mem),
@@ -326,6 +331,7 @@ module proc(
 	);
 
 
+// TODO: wait for mem access finish, not just stall 3 cycles
 typedef enum reg[2:0] {
 	EBREAK_IDLE,
 	EBREAK_CNT_1,

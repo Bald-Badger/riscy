@@ -30,12 +30,14 @@ module hazard_ctrl (
 	output store_fwd_t fwd_store,
 
 	// stall signal
+	output logic stall_pc,
 	output logic stall_if_id,
 	output logic stall_id_ex,
 	output logic stall_ex_mem,
 	output logic stall_mem_wb,
 
 	// flush signal
+	output logic flush_pc,
 	output logic flush_if_id,
 	output logic flush_id_ex,
 	output logic flush_ex_mem,
@@ -70,15 +72,13 @@ module hazard_ctrl (
 	// TODO: add forward logic for instr out of base instruction
 	// e.g. fence, csr, mult, div. etc
 	logic ex_mem_rs1_rd, mem_wb_rs1_rd;
-	assign ex_mem_rs1_rd =	(instr_x.opcode == JALR) ? 1'b1 :
-							(instr_x.opcode == B) ? 1'b1 :
+	assign ex_mem_rs1_rd =	(instr_x.opcode == B) ? 1'b1 :
 							(instr_x.opcode == LOAD) ? 1'b1 :
 							(instr_x.opcode == I) ? 1'b1 :
 							(instr_x.opcode == R) ? 1'b1 :
 							(instr_x.opcode == MEM) ? 1'b1 : 1'b0;
 
-	assign mem_wb_rs1_rd =	(instr_m.opcode == JALR) ? 1'b1 :
-							(instr_m.opcode == B) ? 1'b1 :
+	assign mem_wb_rs1_rd =	(instr_m.opcode == B) ? 1'b1 :
 							(instr_m.opcode == LOAD) ? 1'b1 :
 							(instr_m.opcode == I) ? 1'b1 :
 							(instr_m.opcode == R) ? 1'b1 :
@@ -92,7 +92,7 @@ module hazard_ctrl (
 
 
 	always_comb begin : data_hazard_detect
-
+		// the name for the signals are f*k up I know
 		hazard_1a =	(ex_mem_wr_rd) &&
 					(ex_mem_rd != X0) &&
 					(ex_mem_rd == id_ex_rs1) &&
@@ -107,13 +107,13 @@ module hazard_ctrl (
 					(mem_wb_rd != X0) &&
 					(!(hazard_1a)) &&
 					(mem_wb_rd == id_ex_rs1) &&
-					mem_wb_rs1_rd;
+					ex_mem_rs1_rd;
 
 		hazard_2b =	(mem_wb_wr_rd) &&
 					(mem_wb_rd != X0) &&
 					(!(hazard_2a)) &&
 					(mem_wb_rd == id_ex_rs2) &&
-					mem_wb_rs2_rd;
+					ex_mem_rs2_rd;
 	
 		hazard_3 =	(mem_store) &&
 					(ex_mem_rd != X0) && 
@@ -136,7 +136,7 @@ module hazard_ctrl (
 
 	end
 
-	// hazard when load follows a branch
+	// hazard when load/jump follows a branch
 	// a true hazard and does not be resolven by forwarding
 	// both hazard 4 and harrard 5 requires to stall pipeline on F and D stages
 	logic hazard_4a, hazard_4b;	// load - branch
@@ -154,18 +154,19 @@ module hazard_ctrl (
 	// hazard when branch can use data from wb stage
 	logic hazard_8a;	// can fwd to rs1
 	logic hazard_8b;	// can fwd to rs2
-
+	logic pc_change;	// branch/jump in decode stage
 
 	always_comb begin : control_hazard_detect
+		pc_change = (instr_d.opcode == B) || (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
 
 		hazard_4a =	(instr_x.opcode == LOAD) &&
-					(instr_d.opcode == B) &&
+					(pc_change) &&
 					(instr_x.rd != X0) &&
 					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs1);
 		
 		hazard_4b =	(instr_x.opcode == LOAD) &&
-					(instr_d.opcode == B) &&
+					(pc_change) &&
 					(instr_x.rd != X0) &&
 					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs2);
@@ -173,14 +174,14 @@ module hazard_ctrl (
 		hazard_4 = hazard_4a || hazard_4b;
 		
 		hazard_5a =	(instr_m.opcode == LOAD) &&
-					(instr_d.opcode == B) &&
+					(pc_change) &&
 					(!hazard_4a) &&
 					(instr_m.rd != X0) &&
 					(ex_mem_wr_rd) &&
 					(instr_m.rd == instr_d.rs1);
 
 		hazard_5b =	(instr_m.opcode == LOAD) &&
-					(instr_d.opcode == B) &&
+					(pc_change) &&
 					(!hazard_4a) &&
 					(instr_m.rd != X0) &&
 					(ex_mem_wr_rd) &&
@@ -188,39 +189,39 @@ module hazard_ctrl (
 		
 		hazard_5 = hazard_5a || hazard_5b;
 		
-		hazard_6a =	(instr_d.opcode == B) &&
+		hazard_6a =	(pc_change) &&
 					(!hazard_4a) &&
 					(instr_x.rd != X0) &&
 					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs1);
 		
-		hazard_6b =	(instr_d.opcode == B) &&
+		hazard_6b =	(pc_change) &&
 					(!hazard_4b) &&
 					(instr_x.rd != X0) &&
 					(id_ex_wr_rd) &&
 					(instr_x.rd == instr_d.rs2);
 		
-		hazard_7a =	(instr_d.opcode == B) &&
+		hazard_7a =	(pc_change) &&
 					(!hazard_5a) &&
 					(!hazard_6a) &&
 					(instr_m.rd != X0) &&
 					(ex_mem_wr_rd) &&
 					(instr_m.rd == instr_d.rs1);
 		
-		hazard_7b =	(instr_d.opcode == B) &&
+		hazard_7b =	(pc_change) &&
 					(!hazard_5b) &&
 					(!hazard_6b) &&
 					(instr_m.rd != X0) &&
 					(ex_mem_wr_rd) &&
 					(instr_m.rd == instr_d.rs2);
 
-		hazard_8a =	(instr_d.opcode == B) &&
+		hazard_8a =	(pc_change) &&
 					(!hazard_7a) &&
 					(instr_w.rd != X0) &&
 					(mem_wb_wr_rd) &&
 					(instr_w.rd == instr_d.rs1);
 
-		hazard_8b =	(instr_d.opcode == B) &&
+		hazard_8b =	(pc_change) &&
 					(!hazard_7b) &&
 					(instr_w.rd != X0) &&
 					(mem_wb_wr_rd) &&
@@ -243,9 +244,23 @@ module hazard_ctrl (
 	end
 
 
+	logic jump;
+	always_comb begin : flush_crtl_signal_assign
+		jump = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
+	end
+	always_comb begin : flush_assign
+		flush_pc		= jump || branch_actual;
+		flush_if_id		= jump || branch_actual;
+		flush_id_ex		= DISABLE;
+		flush_ex_mem	= DISABLE;
+		flush_mem_wb	= DISABLE;
+	end
+
+
 	always_comb begin : stall_assign
+		stall_pc		= DISABLE; //jump || branch_actual;
 		stall_if_id		= hazard_4 || hazard_5 || data_mem_stall || ~sdram_init_done;
-		stall_id_ex		= stall_if_id || data_mem_stall;
+		stall_id_ex		= hazard_4 || hazard_5 || data_mem_stall || ~sdram_init_done || data_mem_stall;
 		stall_ex_mem	= data_mem_stall;
 		stall_mem_wb	= data_mem_stall;	// stall for mem-mem fwd
 	end
@@ -283,17 +298,4 @@ module hazard_ctrl (
 					RS_STORE_SEL;
 	end
 
-
-	logic jump;
-	always_comb begin : flush_crtl_signal_assign
-		jump = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
-	end
-	always_comb begin : flush_assign
-		flush_if_id = jump || branch_actual;
-		flush_id_ex = DISABLE;
-		flush_ex_mem = DISABLE;
-		flush_mem_wb = DISABLE;
-	end
-	
-	
 endmodule : hazard_ctrl
