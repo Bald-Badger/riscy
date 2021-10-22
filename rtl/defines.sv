@@ -297,6 +297,10 @@ typedef enum logic[1:0] {
 	WB_ID_STORE_SEL	= 2'b11
 } store_fwd_t;
 
+function stop;
+	$stop();
+endfunction
+
 
 // register names
 localparam	[4:0]	ZERO	= X0;

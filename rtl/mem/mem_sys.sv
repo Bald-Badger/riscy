@@ -232,79 +232,79 @@ always_comb begin : dcache_ctrl_fsm
 							data_line_en_dcache			=	{{be},{4'b1111},{4'b1111},{4'b1111},
 															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
 							data_line_in_dcache.data0w0	= data_in;
-							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
-							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
-							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
-							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
-							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
-							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
-							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							data_line_in_dcache.data0w1	= data_line_out_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_out_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_out_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_out_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_out_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_out_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_out_dcache.data1w3;
 							flag_line_in_dcache.valid0	= VALID;
 							flag_line_in_dcache.dirty0	= DIRTY;
 							flag_line_in_dcache.tag0	= tag;
-							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
-							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
-							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.valid1	= flag_line_out_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_out_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_out_dcache.tag1;
 							flag_line_in_dcache.lru		= 1'b1;
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b01: begin
 							data_line_en_dcache			=	{{4'b1111},{be},{4'b1111},{4'b1111},
 															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
-							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
+							data_line_in_dcache.data0w0	= data_line_out_dcache.data0w0;
 							data_line_in_dcache.data0w1	= data_in;
-							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
-							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
-							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
-							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
-							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
-							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							data_line_in_dcache.data0w2	= data_line_out_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_out_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_out_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_out_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_out_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_out_dcache.data1w3;
 							flag_line_in_dcache.valid0	= VALID;
 							flag_line_in_dcache.dirty0	= DIRTY;
 							flag_line_in_dcache.tag0	= tag;
-							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
-							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
-							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.valid1	= flag_line_out_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_out_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_out_dcache.tag1;
 							flag_line_in_dcache.lru		= 1'b1;
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b10: begin
 							data_line_en_dcache			=	{{4'b1111},{4'b1111},{be},{4'b1111},
 															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
-							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
-							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
+							data_line_in_dcache.data0w0	= data_line_out_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_out_dcache.data0w1;
 							data_line_in_dcache.data0w2	= data_in;
-							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
-							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
-							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
-							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
-							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							data_line_in_dcache.data0w3	= data_line_out_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_out_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_out_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_out_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_out_dcache.data1w3;
 							flag_line_in_dcache.valid0	= VALID;
 							flag_line_in_dcache.dirty0	= DIRTY;
 							flag_line_in_dcache.tag0	= tag;
-							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
-							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
-							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.valid1	= flag_line_out_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_out_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_out_dcache.tag1;
 							flag_line_in_dcache.lru		= 1'b1;
 							flag_line_in_dcache.x5		= 5'b0;
 						end
 						2'b11: begin
 							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{be},
 															{4'b1111},{4'b1111},{4'b1111},{4'b1111}};
-							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
-							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
-							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
+							data_line_in_dcache.data0w0	= data_line_out_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_out_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_out_dcache.data0w2;
 							data_line_in_dcache.data0w3	= data_in;
-							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
-							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
-							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
-							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
+							data_line_in_dcache.data1w0	= data_line_out_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_out_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_out_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_out_dcache.data1w3;
 							flag_line_in_dcache.valid0	= VALID;
 							flag_line_in_dcache.dirty0	= DIRTY;
 							flag_line_in_dcache.tag0	= tag;
-							flag_line_in_dcache.valid1	= flag_line_dcache.valid1;
-							flag_line_in_dcache.dirty1	= flag_line_dcache.dirty1;
-							flag_line_in_dcache.tag1	= flag_line_dcache.tag1;
+							flag_line_in_dcache.valid1	= flag_line_out_dcache.valid1;
+							flag_line_in_dcache.dirty1	= flag_line_out_dcache.dirty1;
+							flag_line_in_dcache.tag1	= flag_line_out_dcache.tag1;
 							flag_line_in_dcache.lru		= 1'b1;
 							flag_line_in_dcache.x5		= 5'b0;
 						end
@@ -317,17 +317,17 @@ always_comb begin : dcache_ctrl_fsm
 						2'b00: begin
 							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
 															{be},{4'b1111},{4'b1111},{4'b1111}};
-							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
-							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
-							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
-							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
+							data_line_in_dcache.data0w0	= data_line_out_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_out_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_out_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_out_dcache.data0w3;
 							data_line_in_dcache.data1w0	= data_in;
-							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
-							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
-							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
-							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
-							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
-							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							data_line_in_dcache.data1w1	= data_line_out_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_out_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_out_dcache.data1w3;
+							flag_line_in_dcache.valid0	= flag_line_out_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_out_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_out_dcache.tag0;
 							flag_line_in_dcache.valid1	= VALID;
 							flag_line_in_dcache.dirty1	= DIRTY;
 							flag_line_in_dcache.tag1	= tag;
@@ -337,17 +337,17 @@ always_comb begin : dcache_ctrl_fsm
 						2'b01: begin
 							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
 															{4'b1111},{be},{4'b1111},{4'b1111}};
-							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
-							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
-							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
-							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
-							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
+							data_line_in_dcache.data0w0	= data_line_out_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_out_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_out_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_out_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_out_dcache.data1w0;
 							data_line_in_dcache.data1w1	= data_in;
-							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
-							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
-							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
-							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;;
-							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							data_line_in_dcache.data1w2	= data_line_out_dcache.data1w2;
+							data_line_in_dcache.data1w3	= data_line_out_dcache.data1w3;
+							flag_line_in_dcache.valid0	= flag_line_out_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_out_dcache.dirty0;;
+							flag_line_in_dcache.tag0	= flag_line_out_dcache.tag0;
 							flag_line_in_dcache.valid1	= VALID;
 							flag_line_in_dcache.dirty1	= DIRTY;
 							flag_line_in_dcache.tag1	= tag;
@@ -357,17 +357,17 @@ always_comb begin : dcache_ctrl_fsm
 						2'b10: begin
 							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
 															{4'b1111},{4'b1111},{be},{4'b1111}};
-							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
-							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
-							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
-							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
-							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
-							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
+							data_line_in_dcache.data0w0	= data_line_out_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_out_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_out_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_out_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_out_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_out_dcache.data1w1;
 							data_line_in_dcache.data1w2	= data_in;
-							data_line_in_dcache.data1w3	= data_line_dcache.data1w3;
-							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
-							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
-							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							data_line_in_dcache.data1w3	= data_line_out_dcache.data1w3;
+							flag_line_in_dcache.valid0	= flag_line_out_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_out_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_out_dcache.tag0;
 							flag_line_in_dcache.valid1	= VALID;
 							flag_line_in_dcache.dirty1	= DIRTY;
 							flag_line_in_dcache.tag1	= tag;
@@ -377,17 +377,17 @@ always_comb begin : dcache_ctrl_fsm
 						2'b11: begin
 							data_line_en_dcache			=	{{4'b1111},{4'b1111},{4'b1111},{4'b1111},
 															{4'b1111},{4'b1111},{4'b1111},{be}};
-							data_line_in_dcache.data0w0	= data_line_dcache.data0w0;
-							data_line_in_dcache.data0w1	= data_line_dcache.data0w1;
-							data_line_in_dcache.data0w2	= data_line_dcache.data0w2;
-							data_line_in_dcache.data0w3	= data_line_dcache.data0w3;
-							data_line_in_dcache.data1w0	= data_line_dcache.data1w0;
-							data_line_in_dcache.data1w1	= data_line_dcache.data1w1;
-							data_line_in_dcache.data1w2	= data_line_dcache.data1w2;
+							data_line_in_dcache.data0w0	= data_line_out_dcache.data0w0;
+							data_line_in_dcache.data0w1	= data_line_out_dcache.data0w1;
+							data_line_in_dcache.data0w2	= data_line_out_dcache.data0w2;
+							data_line_in_dcache.data0w3	= data_line_out_dcache.data0w3;
+							data_line_in_dcache.data1w0	= data_line_out_dcache.data1w0;
+							data_line_in_dcache.data1w1	= data_line_out_dcache.data1w1;
+							data_line_in_dcache.data1w2	= data_line_out_dcache.data1w2;
 							data_line_in_dcache.data1w3	= data_in;
-							flag_line_in_dcache.valid0	= flag_line_dcache.valid0;
-							flag_line_in_dcache.dirty0	= flag_line_dcache.dirty0;
-							flag_line_in_dcache.tag0	= flag_line_dcache.tag0;
+							flag_line_in_dcache.valid0	= flag_line_out_dcache.valid0;
+							flag_line_in_dcache.dirty0	= flag_line_out_dcache.dirty0;
+							flag_line_in_dcache.tag0	= flag_line_out_dcache.tag0;
 							flag_line_in_dcache.valid1	= VALID;
 							flag_line_in_dcache.dirty1	= DIRTY;
 							flag_line_in_dcache.tag1	= tag;

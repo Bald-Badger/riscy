@@ -225,15 +225,17 @@ module memory (
 		unique case (funct3)
 			LB:		addr_misalign = 1'b0;
 			LH:		addr_misalign = addr[0];
-			LW:		addr_misalign = &addr[1:0];
+			LW:		addr_misalign = |addr[1:0];
 			LBU:	addr_misalign = 1'b0;
 			LHU:	addr_misalign = addr[0];
 			default:addr_misalign = 1'b0; 
 		endcase
 	end
 	
-	always @(posedge misalign_trap) begin
-		$strobe("address misalign detected");
+	always @(negedge clk) begin
+		if (misalign_trap) begin
+			$strobe("address misalign detected, funct3 is %b, addr is: %h", funct3, addr);
+		end
 	end
 	// synthesis translate_on 
 

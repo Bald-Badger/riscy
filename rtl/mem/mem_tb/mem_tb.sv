@@ -3,39 +3,42 @@ import defines::*;
 import mem_defines::*;
 
 module mem_tb ();
-	//logic define
-	logic			clk, clk_50m, clk_100m, clk_100m_shift;
-	logic			rst_n, but_rst_n;
-	logic			locked;
-	integer 		err;
-	integer			break_mark;
-	integer			i, iter;	// test length for random test
-	// memory space in words(to limit simulation size)
-	localparam 		mem_space = 8192;	
-	// limit test mem size for coverage
-	localparam		rand_test_mem_space = mem_space; // in 32bit word
-	localparam		addr_mask_w = 32'h0000_00FC;
-	localparam		addr_mask_h = 32'h0000_00FE;
-	localparam		addr_mask_b = 32'h0000_00FF;
-	word_t			ref_mem [0:mem_space-1];
 
-	cache_addr_t	addr, addr_in;
-	instr_s_t		instr;
-	data_t			data_in, data_out;
-	word_t			w, d_dut, d_ref, d_ref_raw;
-	data_t			data1, data2, data3, data4;
-	logic			valid, done;
-	logic			sdram_init_done;
-	logic [2:0]		m;
+//logic define
+logic			clk, clk_50m, clk_100m, clk_100m_shift;
+logic			rst_n, but_rst_n;
+logic			locked;
+integer 		err;
+integer			break_mark;
+integer			i, iter;	// test length for random test
+// memory space in 32 bit words(to limit simulation size)
+localparam 		mem_space = 16384;	
+// limit test mem size for coverage
+localparam		rand_test_mem_space = mem_space; // in 32bit word
+localparam		addr_mask_w = 32'h0000_FFFC;
+localparam		addr_mask_h = 32'h0000_FFFE;
+localparam		addr_mask_b = 32'h0000_FFFF;
+word_t			ref_mem [0:mem_space-1];
 
-	pll_clk	pll_inst (
-		.areset		(~but_rst_n),
-		.inclk0		(clk),
-		.locked		(locked),
-		.c0			(clk_50m),
-		.c1			(clk_100m),
-		.c2			(clk_100m_shift)
-	);
+cache_addr_t	addr, addr_in;
+instr_s_t		instr;
+data_t			data_in, data_out;
+word_t			w, d_dut, d_ref, d_ref_raw;
+data_t			data1, data2, data3, data4;
+logic			valid, done;
+logic			sdram_init_done;
+logic [2:0]		m;
+
+
+pll_clk	pll_inst (
+	.areset		(~but_rst_n),
+	.inclk0		(clk),
+	.locked		(locked),
+	.c0			(clk_50m),
+	.c1			(clk_100m),
+	.c2			(clk_100m_shift)
+);
+
 
 	initial begin
 		clk = 0;
@@ -44,10 +47,13 @@ module mem_tb ();
 		but_rst_n = 1;
 	end
 
+
 assign rst_n = (but_rst_n & locked);
+
 
 // 50MHz
 always #10000 clk = ~clk; 
+
 
 memory memory_inst (
 	.clk				(clk_50m),
@@ -145,6 +151,7 @@ task write_mem (
 	disable fork;
 endtask
 
+
 task read_mem (
 	input data_t a,
 	input funct3_t mode
@@ -237,6 +244,7 @@ task read_mem (
 	disable fork;
 endtask
 
+
 task word_r_w_test();
 	addr = 0;
 	data1 = $urandom();
@@ -250,14 +258,15 @@ task word_r_w_test();
 		$display("word_r_w_test passed");
 endtask
 
+
 task rand_test();
-	iter = 16;
+	iter = 233333;
 
 	for (i = 0; i < rand_test_mem_space; i++) begin
-		write_mem((i<<2 & addr_mask_w), i, SW);
+		write_mem(((i<<2) & addr_mask_w), i, SW);
 	end
-	
-	$stop();
+
+	$display("rand_test: mem init finish");
 
 	for (i = 0; i < iter; i++) begin
 		data1 = $urandom();
@@ -274,7 +283,7 @@ task rand_test();
 				m = SB;
 				addr = addr & addr_mask_b;
 			end
-			write_mem(addr, data2, SB);
+			write_mem(addr, data2, m);
 		end else begin		// LOAD
 			if ((data1[3:1] != LB) && 
 				(data1[3:1] != LH) && 
@@ -293,14 +302,14 @@ task rand_test();
 				LHU:	addr = addr & addr_mask_h;
 				default:$display("WTF");
 			endcase
-			read_mem(addr, LB);
+			read_mem(addr, m);
+			#1; 
 			assert (d_dut == d_ref) 
 			else   begin
 				err = 1;
 				break_mark = i;
-			end
-			if (err) begin
 				$display("rand test failed at iter %d", break_mark);
+				$stop();
 			end
 		end
 	end
@@ -308,9 +317,8 @@ task rand_test();
 		$display("rand_test failed");
 	else
 		$display("rand_test passed");
-
-
 endtask
+
 
 task init();
 	err		= 0;
@@ -324,11 +332,8 @@ endtask
 
 initial begin : main
 	init();
-	$stop();
-	word_r_w_test();
-	//rand_test();
+	rand_test();
 	$stop();
 end
-
 
 endmodule : mem_tb
