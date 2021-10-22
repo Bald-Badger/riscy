@@ -258,7 +258,7 @@ module hazard_ctrl (
 
 
 	always_comb begin : stall_assign
-		stall_pc		= DISABLE; //jump || branch_actual;
+		stall_pc		= ~sdram_init_done; //jump || branch_actual;
 		stall_if_id		= hazard_4 || hazard_5 || data_mem_stall || ~sdram_init_done;
 		stall_id_ex		= hazard_4 || hazard_5 || data_mem_stall || ~sdram_init_done || data_mem_stall;
 		stall_ex_mem	= data_mem_stall;
