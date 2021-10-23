@@ -46,7 +46,7 @@ module proc_hier (
 		.ebreak_start	(ebreak_start),
 
 		// SDRAM hardware pins
-		.sdram_clk		(sdram_clk), 
+		.sdram_clk		(sdram_clk),
 		.sdram_cke		(sdram_cke),
 		.sdram_cs_n		(sdram_cs_n),
 		.sdram_ras_n	(sdram_ras_n),

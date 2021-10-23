@@ -107,13 +107,14 @@ module alu (
 					1'b0;
 	end
 
-
+// synthesis translate_off
 	mult_div mul_div_remer(
 		.instr(instr),
 		.a_in(a_in),
 		.b_in(b_in),
 		.c_out(mult_div_rem_result)
 	);
+// synthesis translate_on
 	
 	always_comb begin : output_sel
 		c_out = NULL;

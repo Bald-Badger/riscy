@@ -43,7 +43,7 @@ module hazard_ctrl (
 	output logic flush_ex_mem,
 	output logic flush_mem_wb
 );
-	
+
 	r_t id_ex_rs1, id_ex_rs2, ex_mem_rs2, ex_mem_rd, mem_wb_rd;
 	logic mem_store, mem_load;
 	always_comb begin : input_sig
@@ -72,23 +72,31 @@ module hazard_ctrl (
 	// TODO: add forward logic for instr out of base instruction
 	// e.g. fence, csr, mult, div. etc
 	logic ex_mem_rs1_rd, mem_wb_rs1_rd;
-	assign ex_mem_rs1_rd =	(instr_x.opcode == B) ? 1'b1 :
-							(instr_x.opcode == LOAD) ? 1'b1 :
-							(instr_x.opcode == I) ? 1'b1 :
-							(instr_x.opcode == R) ? 1'b1 :
-							(instr_x.opcode == MEM) ? 1'b1 : 1'b0;
+	
+	always_comb begin : ex_mem_rs1_rd_assign
+		unique case (instr_x.opcode)
+			B:		ex_mem_rs1_rd = 1'b1;
+			LOAD:	ex_mem_rs1_rd = 1'b1;
+			I:		ex_mem_rs1_rd = 1'b1;
+			R:		ex_mem_rs1_rd = 1'b1;
+			default:ex_mem_rs1_rd = 1'b0;
+		endcase
+	end
 
-	assign mem_wb_rs1_rd =	(instr_m.opcode == B) ? 1'b1 :
-							(instr_m.opcode == LOAD) ? 1'b1 :
-							(instr_m.opcode == I) ? 1'b1 :
-							(instr_m.opcode == R) ? 1'b1 :
-							(instr_m.opcode == MEM) ? 1'b1 : 1'b0;
+	always_comb begin : mem_wb_rs1_rd_assign
+		unique case (instr_x.opcode)
+			B:		mem_wb_rs1_rd = 1'b1;
+			LOAD:	mem_wb_rs1_rd = 1'b1;
+			I:		mem_wb_rs1_rd = 1'b1;
+			R:		mem_wb_rs1_rd = 1'b1;
+			MEM:	mem_wb_rs1_rd = 1'b1;
+			default:mem_wb_rs1_rd = 1'b0;
+		endcase
+	end
 
 	logic ex_mem_rs2_rd, mem_wb_rs2_rd;
-	assign ex_mem_rs2_rd =	(instr_x.opcode == R) ? 1'b1 :
-							(instr_x.opcode == B) ? 1'b1 : 1'b0;
-	assign mem_wb_rs2_rd =	(instr_m.opcode == R) ? 1'b1 :
-							(instr_m.opcode == B) ? 1'b1 : 1'b0;
+	assign ex_mem_rs2_rd =	(instr_x.opcode == R) || (instr_x.opcode == B);
+	assign mem_wb_rs2_rd =	(instr_m.opcode == R) || (instr_m.opcode == B);
 
 
 	always_comb begin : data_hazard_detect
