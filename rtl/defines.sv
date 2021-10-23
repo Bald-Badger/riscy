@@ -20,6 +20,11 @@ package defines;
 	localparam	VALID			= 1'b1;
 	localparam	INVALID			= 1'b0;
 
+//	Synthesis define
+//	if synthesis enabled, then connect sdram instance to hardware pin
+//	if not, then connect to functional model
+	localparam	SYNTHESIS		= DISABLE;
+
 	// sopported extension
 	// this part is and only accessed by verilog generate function. 
 	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
@@ -41,13 +46,10 @@ package defines;
 	} MEM_TYPE_t;
 
 
-	// Endianess define
-	typedef enum logic { 
-		LITTLE_ENDIAN = 1'b0,
-		BIG_ENDIAN = 1'b1
-	} ENDIANESS_t;
+	localparam LITTLE_ENDIAN = 1'b0;
+	localparam BIG_ENDIAN = 1'b1;
 
-	ENDIANESS_t ENDIANESS = BIG_ENDIAN;
+	localparam ENDIANESS = BIG_ENDIAN;
 
 
 	// Opcode define

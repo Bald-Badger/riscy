@@ -3,22 +3,36 @@
 import defines::*;
 import mem_defines::*;
 
-module mem_sys (
-	input logic			clk_50m,
-	input logic			clk_100m,
-	input logic			clk_100m_shift,
-	input logic			rst_n,
 
-	input cache_addr_t	addr,			// still 32 bits
-	input data_t		data_in,
-	input logic			wr,
-	input logic			rd,
-	input logic			valid,
-	input logic			[BYTES-1:0] be,	// for write only
+
+module mem_sys (
+	input	logic			clk_50m,
+	input	logic			clk_100m,
+	input	logic			clk_100m_shift,
+	input	logic			rst_n,
+
+	input	cache_addr_t	addr,			// still 32 bits
+	input	data_t			data_in,
+	input	logic			wr,
+	input	logic			rd,
+	input	logic			valid,
+	input	logic			[BYTES-1:0] be,	// for write only
 	
-	output data_t		data_out,
-	output logic		done,
-	output logic 		sdram_init_done
+	output	data_t			data_out,
+	output	logic			done,
+	output	logic 			sdram_init_done,
+
+	// SDRAM hardware pins
+	output	logic			sdram_clk, 
+	output	logic			sdram_cke,
+	output	logic			sdram_cs_n,
+	output	logic			sdram_ras_n,
+	output	logic			sdram_cas_n,
+	output	logic        	sdram_we_n,
+	output	logic	[ 1:0]	sdram_ba,
+	output	logic	[12:0]	sdram_addr,
+	inout	wire	[15:0]	sdram_data,
+	output	logic	[ 1:0]	sdram_dqm
 );
 
 // sdram nets
@@ -602,7 +616,8 @@ always_comb begin : dcache_ctrl_fsm
 	endcase
 end
 
-// SDRAM net
+/*
+// SDRAM net, for function model and for hardware SDRAM pin
 logic			sdram_clk;   
 logic			sdram_cke;
 logic			sdram_cs_n;   
@@ -613,6 +628,7 @@ logic	[ 1:0]	sdram_ba;
 logic	[12:0]	sdram_addr;
 wire	[15:0]	sdram_data;
 logic	[ 1:0]	sdram_dqm;
+*/
 
 // top level of a sdram controller
 sdram sdram_ctrl_inst(

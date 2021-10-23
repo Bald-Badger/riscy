@@ -22,7 +22,19 @@ module memory (
 
 	output data_t	data_out,
 	output logic	sdram_init_done,
-	output logic	mem_access_done
+	output logic	mem_access_done,
+
+	// SDRAM hardware pins
+	output	logic			sdram_clk, 
+	output	logic			sdram_cke,
+	output	logic			sdram_cs_n,   
+	output	logic			sdram_ras_n,
+	output	logic			sdram_cas_n,
+	output	logic        	sdram_we_n,
+	output	logic	[ 1:0]	sdram_ba,
+	output	logic	[12:0]	sdram_addr,
+	inout	wire	[15:0]	sdram_data,
+	output	logic	[ 1:0]	sdram_dqm
 );
 
 	opcode_t		opcode;
@@ -125,7 +137,7 @@ module memory (
 
 	word_t d;
 	always_comb begin // abbr for shorter code
-		assign d = word_t'(data_out_mem); 
+		d = word_t'(data_out_mem); 
 	end
 	
 	// bug!
@@ -216,7 +228,19 @@ module memory (
 		
 		.data_out		(data_out_mem),
 		.done			(mem_access_done),
-		.sdram_init_done(sdram_init_done)
+		.sdram_init_done(sdram_init_done),
+
+		// SDRAM hardware pins
+		.sdram_clk		(sdram_clk), 
+		.sdram_cke		(sdram_cke),
+		.sdram_cs_n		(sdram_cs_n),
+		.sdram_ras_n	(sdram_ras_n),
+		.sdram_cas_n	(sdram_cas_n),
+		.sdram_we_n		(sdram_we_n),
+		.sdram_ba		(sdram_ba),
+		.sdram_addr		(sdram_addr),
+		.sdram_data		(sdram_data),
+		.sdram_dqm		(sdram_dqm)
 	);
 
 	// synthesis translate_off 
@@ -231,13 +255,14 @@ module memory (
 			default:addr_misalign = 1'b0; 
 		endcase
 	end
-	
+	// synthesis translate_on
+
+	// synthesis translate_off 
 	always @(negedge clk) begin
 		if (misalign_trap) begin
 			$strobe("address misalign detected, funct3 is %b, addr is: %h", funct3, addr);
 		end
 	end
 	// synthesis translate_on 
-
 
 endmodule : memory

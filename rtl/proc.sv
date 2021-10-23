@@ -11,7 +11,19 @@ module proc(
 	input	logic clk_100m,
 	input	logic clk_100m_shift,
 	input	logic rst_n,
-	output	logic ebreak_start	// actually 3 cycles after ebreak, pipeline cleared
+	output	logic ebreak_start,	// actually 3 cycles after ebreak, pipeline cleared
+	
+	// SDRAM hardware pins
+	output	logic			sdram_clk, 
+	output	logic			sdram_cke,
+	output	logic			sdram_cs_n,   
+	output	logic			sdram_ras_n,
+	output	logic			sdram_cas_n,
+	output	logic        	sdram_we_n,
+	output	logic	[ 1:0]	sdram_ba,
+	output	logic	[12:0]	sdram_addr,
+	inout	wire	[15:0]	sdram_data,
+	output	logic	[ 1:0]	sdram_dqm
 );
 
 	// stage-specific common data wires
@@ -244,7 +256,19 @@ module proc(
 		// output
 		.data_out			(mem_data_m),
 		.sdram_init_done	(sdram_init_done),
-		.mem_access_done	(mem_access_done)
+		.mem_access_done	(mem_access_done),
+
+		// SDRAM hardware pins
+		.sdram_clk			(sdram_clk), 
+		.sdram_cke			(sdram_cke),
+		.sdram_cs_n			(sdram_cs_n),
+		.sdram_ras_n		(sdram_ras_n),
+		.sdram_cas_n		(sdram_cas_n),
+		.sdram_we_n			(sdram_we_n),
+		.sdram_ba			(sdram_ba),
+		.sdram_addr			(sdram_addr),
+		.sdram_data			(sdram_data),
+		.sdram_dqm			(sdram_dqm)
 	);
 
 
