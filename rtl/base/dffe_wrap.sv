@@ -16,8 +16,8 @@ module dffe_wrap #(
 
 genvar i;	// number of dffe
 
-generate;
-	for (i = 0; i < WIDTH;i++) begin
+generate
+	for (i = 0; i < WIDTH;i++) begin : dffe_generate_loop
 		dffe dffe_gen(
 			.d		(d[i]),
 			.clk	(clk),
