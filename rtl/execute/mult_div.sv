@@ -1,6 +1,7 @@
 import defines::*;
 
 module mult_div (
+	input logic		clk,
 	input instr_t	instr,
 	input data_t 	a_in,
 	input data_t	b_in,
@@ -68,15 +69,16 @@ mult mult_signed_inst (
 		.dataa ( mult_a_in ),
 		.datab ( mult_b_in ),
 		.result ( mult_result )
-	);
+);
 
 
 div divide_signed_inst (
+		.clock	( clk ),
 		.denom ( div_b_in ),
 		.numer ( div_a_in ),
 		.quotient ( divide_result ),
 		.remain ( remainder )
-	);
+);
 
 
 always_comb begin : mult_div_sel

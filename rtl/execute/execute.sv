@@ -1,6 +1,9 @@
 import defines::*;
 
 module execute (
+	// clk for multi-cycle computation
+	input logic		clk,
+
 	// ctrl 
 	input fwd_sel_t fwd_a,
 	input fwd_sel_t fwd_b,
@@ -41,6 +44,9 @@ module execute (
 	);
 
 	alu alu_inst (
+		// clk for multi-cycle computation
+		.clk	(clk),
+		
 		// input
 		.instr	(instr),
 		.a_in	(a),

@@ -38,11 +38,13 @@
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module div (
+	clock,
 	denom,
 	numer,
 	quotient,
 	remain);
 
+	input	  clock;
 	input	[39:0]  denom;
 	input	[39:0]  numer;
 	output	[39:0]  quotient;
@@ -54,17 +56,18 @@ module div (
 	wire [39:0] remain = sub_wire1[39:0];
 
 	lpm_divide	LPM_DIVIDE_component (
+				.clock (clock),
 				.denom (denom),
 				.numer (numer),
 				.quotient (sub_wire0),
 				.remain (sub_wire1),
 				.aclr (1'b0),
-				.clken (1'b1),
-				.clock (1'b0));
+				.clken (1'b1));
 	defparam
 		LPM_DIVIDE_component.lpm_drepresentation = "SIGNED",
-		LPM_DIVIDE_component.lpm_hint = "MAXIMIZE_SPEED=5,LPM_REMAINDERPOSITIVE=FALSE",
+		LPM_DIVIDE_component.lpm_hint = "MAXIMIZE_SPEED=6,LPM_REMAINDERPOSITIVE=FALSE",
 		LPM_DIVIDE_component.lpm_nrepresentation = "SIGNED",
+		LPM_DIVIDE_component.lpm_pipeline = 12,
 		LPM_DIVIDE_component.lpm_type = "LPM_DIVIDE",
 		LPM_DIVIDE_component.lpm_widthd = 40,
 		LPM_DIVIDE_component.lpm_widthn = 40;
@@ -77,22 +80,25 @@ endmodule
 // ============================================================
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
 // Retrieval info: PRIVATE: PRIVATE_LPM_REMAINDERPOSITIVE STRING "FALSE"
-// Retrieval info: PRIVATE: PRIVATE_MAXIMIZE_SPEED NUMERIC "5"
+// Retrieval info: PRIVATE: PRIVATE_MAXIMIZE_SPEED NUMERIC "6"
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
-// Retrieval info: PRIVATE: USING_PIPELINE NUMERIC "0"
+// Retrieval info: PRIVATE: USING_PIPELINE NUMERIC "1"
 // Retrieval info: PRIVATE: VERSION_NUMBER NUMERIC "2"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
 // Retrieval info: LIBRARY: lpm lpm.lpm_components.all
 // Retrieval info: CONSTANT: LPM_DREPRESENTATION STRING "SIGNED"
-// Retrieval info: CONSTANT: LPM_HINT STRING "MAXIMIZE_SPEED=5,LPM_REMAINDERPOSITIVE=FALSE"
+// Retrieval info: CONSTANT: LPM_HINT STRING "MAXIMIZE_SPEED=6,LPM_REMAINDERPOSITIVE=FALSE"
 // Retrieval info: CONSTANT: LPM_NREPRESENTATION STRING "SIGNED"
+// Retrieval info: CONSTANT: LPM_PIPELINE NUMERIC "12"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_DIVIDE"
 // Retrieval info: CONSTANT: LPM_WIDTHD NUMERIC "40"
 // Retrieval info: CONSTANT: LPM_WIDTHN NUMERIC "40"
+// Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: denom 0 0 40 0 INPUT NODEFVAL "denom[39..0]"
 // Retrieval info: USED_PORT: numer 0 0 40 0 INPUT NODEFVAL "numer[39..0]"
 // Retrieval info: USED_PORT: quotient 0 0 40 0 OUTPUT NODEFVAL "quotient[39..0]"
 // Retrieval info: USED_PORT: remain 0 0 40 0 OUTPUT NODEFVAL "remain[39..0]"
+// Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @denom 0 0 40 0 denom 0 0 40 0
 // Retrieval info: CONNECT: @numer 0 0 40 0 numer 0 0 40 0
 // Retrieval info: CONNECT: quotient 0 0 40 0 @quotient 0 0 40 0
@@ -101,6 +107,6 @@ endmodule
 // Retrieval info: GEN_FILE: TYPE_NORMAL div.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL div.cmp FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL div.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL div_inst.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL div_bb.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL div_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL div_bb.v FALSE
 // Retrieval info: LIB_FILE: lpm

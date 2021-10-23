@@ -196,6 +196,9 @@ module proc(
 
 	// execute stage
 	execute execute_inst (
+		// clk for multi-cycle computation
+		.clk				(clk),
+
 		// ctrl
 		.fwd_a				(fwd_a),
 		.fwd_b				(fwd_b),
