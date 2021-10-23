@@ -616,19 +616,6 @@ always_comb begin : dcache_ctrl_fsm
 	endcase
 end
 
-/*
-// SDRAM net, for function model and for hardware SDRAM pin
-logic			sdram_clk;   
-logic			sdram_cke;
-logic			sdram_cs_n;   
-logic			sdram_ras_n;
-logic			sdram_cas_n;
-logic        	sdram_we_n;
-logic	[ 1:0]	sdram_ba;
-logic	[12:0]	sdram_addr;
-wire	[15:0]	sdram_data;
-logic	[ 1:0]	sdram_dqm;
-*/
 
 // top level of a sdram controller
 sdram sdram_ctrl_inst(
@@ -661,22 +648,7 @@ sdram sdram_ctrl_inst(
 ); 
 
 
-// start function modules and asseraions
 // synthesis translate_off
-sdr sdram_functional_model(    
-    .Clk			(sdram_clk),
-    .Cke			(sdram_cke),
-    .Cs_n			(sdram_cs_n),
-    .Ras_n			(sdram_ras_n),
-    .Cas_n			(sdram_cas_n),
-    .We_n			(sdram_we_n),
-    .Ba				(sdram_ba),
-    .Addr			(sdram_addr),
-    .Dq				(sdram_data),
-    .Dqm			(sdram_dqm)
-);
-
-
 always_ff @(negedge clk_50m) begin : checks
 	assert (~((dcache_state == DONE) && ~(hit0_check_dcache || hit1_check_dcache)))
 	else begin

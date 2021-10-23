@@ -4,8 +4,6 @@ import defines::*;
 // `timescale 1 ps / 1 ps
 // synopsys translate_on
 
-// quartus have dffe primitive but not parameterizable, i dont like it
-
 module dffe_wrap #(
 	WIDTH = XLEN
 ) (
@@ -15,14 +13,20 @@ module dffe_wrap #(
 	input logic[WIDTH-1:0] d,
 	output logic[WIDTH-1:0] q
 );
- 
- dff_wrap #(.WIDTH(WIDTH)) dff_inst (
-	 // Output
-	.q(q),
-	// Input
-	.d(({WIDTH{en}}&d) | (q&~{WIDTH{en}})),
-	.clk(clk),
-	.rst_n(rst_n)
-);
 
-endmodule
+genvar i;	// number of dffe
+
+generate;
+	for (i = 0; i < WIDTH;i++) begin
+		dffe dffe_gen(
+			.d		(d[i]),
+			.clk	(clk),
+			.clrn	(rst_n),
+			.prn	(1'b1),
+			.ena	(en),
+			.q		(q[i])
+		);
+	end
+endgenerate
+
+endmodule : dffe_wrap

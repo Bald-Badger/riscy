@@ -10,16 +10,42 @@ module smoke_test_single ();
 	int fd;
 
 	logic clk, rst_n, ebreak_start;
+
+	logic			sdram_clk;
+	logic			sdram_cke;
+	logic			sdram_cs_n;
+	logic			sdram_ras_n;
+	logic			sdram_cas_n;
+	logic        	sdram_we_n;
+	logic	[ 1:0]	sdram_ba;
+	logic	[12:0]	sdram_addr;
+	wire	[15:0]	sdram_data;
+	logic	[ 1:0]	sdram_dqm;
+
 	clkrst clkrst_inst(
 		.clk	(clk),
 		.rst_n	(rst_n)
 	);
 
+
 	proc_hier top_inst (
 		.osc_clk		(clk),
 		.but_rst_n		(rst_n),
-		.ebreak_start	(ebreak_start)
+		.ebreak_start	(ebreak_start),
+
+		// SDRAM hardware pins
+		.sdram_clk			(sdram_clk), 
+		.sdram_cke			(sdram_cke),
+		.sdram_cs_n			(sdram_cs_n),
+		.sdram_ras_n		(sdram_ras_n),
+		.sdram_cas_n		(sdram_cas_n),
+		.sdram_we_n			(sdram_we_n),
+		.sdram_ba			(sdram_ba),
+		.sdram_addr			(sdram_addr),
+		.sdram_data			(sdram_data),
+		.sdram_dqm			(sdram_dqm)
 	);
+
 
 	initial begin
 		@(posedge ebreak_start);
@@ -45,8 +71,24 @@ module smoke_test_single ();
 		end
 		$fclose(fd);
 		$stop();
-	end	
-endmodule
+	end
+
+
+	sdr sdram_functional_model(    
+		.Clk			(sdram_clk),
+		.Cke			(sdram_cke),
+		.Cs_n			(sdram_cs_n),
+		.Ras_n			(sdram_ras_n),
+		.Cas_n			(sdram_cas_n),
+		.We_n			(sdram_we_n),
+		.Ba				(sdram_ba),
+		.Addr			(sdram_addr),
+		.Dq				(sdram_data),
+		.Dqm			(sdram_dqm)
+	);
+
+endmodule : smoke_test_single
+
 
 module clkrst #(
 	FREQ = FREQ
@@ -64,8 +106,6 @@ module clkrst #(
 		repeat(5) @(negedge clk);
 		#100;
 		rst_n = 1'b1;
-		repeat(1000) @(negedge clk);
-		$stop();
 	end
 
 	always #half_period begin
