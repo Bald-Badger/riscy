@@ -650,10 +650,11 @@ sdram sdram_ctrl_inst(
 
 // synthesis translate_off
 always_ff @(negedge clk_50m) begin : checks
-	assert (~((dcache_state == DONE) && ~(hit0_check_dcache || hit1_check_dcache)))
+	assert ( ~( (dcache_state == DONE) && ~(hit0_check_dcache || hit1_check_dcache) && sdram_init_done ) )
 	else begin
 		$error("Assertion hit_check failed! at time=%t", $realtime);
 		$strobe("hit0 = %b, hit1=%b", hit0_check_dcache, hit1_check_dcache);
+		$stop();
 	end
 end
 // synthesis translate_on

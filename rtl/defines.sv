@@ -222,30 +222,36 @@ package defines;
 	localparam	[BYTES-1:0]	H_EN_BIG = 4'b0011;
 	localparam	[BYTES-1:0]	W_EN_BIG = 4'b1111;
 
+
 function data_t sign_extend;	// sign extend 12bit imm
 	input imm_t imm;
 	return data_t'({{imm[11]*20}, {imm[11:0]}});
 endfunction
+
 
 function data_t sign_extend_h;	// sign extend 16-bit half word
 	input half_word_t imm;
 	return data_t'({{imm[15]*16}, {imm[15:0]}});
 endfunction
 
+
 function data_t sign_extend_b;	// sign extend 8 bit byte
 	input byte_t imm;
 	return data_t'({{imm[7]*24}, {imm[7:0]}});
 endfunction
+
 
 function data_t zero_extend;	// sign extend 12bit imm
 	input imm_t imm;
 	return data_t'({{20'b0}, {imm[11:0]}});
 endfunction
 
+
 function data_t zero_extend_h;	// sign extend 16-bit half word
 	input half_word_t imm;
 	return data_t'({{16'b0}, {imm[15:0]}});
 endfunction
+
 
 function data_t zero_extend_b;	// sign extend 8 bit byte
 	input byte_t imm;
@@ -268,6 +274,7 @@ function data_t get_imm;
 	endcase
 endfunction
 
+
 function data_t swap_endian;
 	input data_t data;
 	return	data_t'	({{data[07:00]},
@@ -276,28 +283,28 @@ function data_t swap_endian;
             		{data[31:24]}});
 endfunction
 
+
 // fwd mux ctrl signal types
 typedef enum logic[1:0] {
-	RS_SEL 			= 2'b00,
-	MEM_MEM_FWD_SEL = 2'b01,
-	EX_EX_FWD_SEL 	= 2'b10,
-	MEM_EX_FWD_SEL	= 2'b11
-} fwd_sel_t;
-
-typedef enum logic[1:0] {
-	B_RS_SEL	= 2'b00,
-	B_EX_SEL	= 2'b01,
-	B_MEM_SEL	= 2'b10,
-	B_WB_SEL	= 2'b11
-} branch_fwd_t;
+	RS_ID_SEL	= 2'b00,
+	EX_ID_SEL	= 2'b01,
+	MEM_ID_SEL	= 2'b10,
+	WB_ID_SEL	= 2'b11
+} id_fwd_sel_t;
 
 
 typedef enum logic[1:0] {
-	RS_STORE_SEL	= 2'b00,
-	EX_ID_STORE_SEL	= 2'b01,
-	MEM_ID_STORE_SEL= 2'b10,
-	WB_ID_STORE_SEL	= 2'b11
-} store_fwd_t;
+	RS_EX_SEL	= 2'b00,
+	MEM_EX_SEL	= 2'b01,
+	WB_EX_SEL	= 2'b10
+} ex_fwd_sel_t;
+
+
+typedef enum logic[1:0] {
+	RS_MEM_SEL	= 2'b00,
+	WB_MEM_SEL	= 2'b01
+} mem_fwd_sel_t;
+
 
 function stop;
 	$stop();

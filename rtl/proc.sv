@@ -25,6 +25,8 @@ module proc(
 	inout	wire	[15:0]	sdram_data,
 	output	logic	[ 1:0]	sdram_dqm
 );
+	// sdram init done signal;
+	logic		sdram_init_done;
 
 	// stage-specific common data wires
 	data_t 	pc_f, pc_d, pc_x; // pc_m, pc_w;
@@ -42,12 +44,10 @@ module proc(
 	// global control wire
 
 	logic 		pc_sel;	// 1 for bj, 0 for p4
-	// for exe forward
-	fwd_sel_t	fwd_a, fwd_b, fwd_m2m;
-	// for branching forward
-	branch_fwd_t fwd_rs1, fwd_rs2;	
-	// for memory forwad from latter stage to ID to read rs2
-	store_fwd_t	fwd_store;
+
+	id_fwd_sel_t	fwd_id_rs1, fwd_id_rs2, fwd_store;
+	ex_fwd_sel_t	fwd_ex_rs1, fwd_ex_rs2;	
+	mem_fwd_sel_t	fwd_mem_rs1, fwd_mem_rs2;
 
 	// stall and flush
 	logic		stall_pc,
@@ -63,9 +63,6 @@ module proc(
 	logic		ebreak_return;
 	assign		ebreak_return = 1'b0;
 
-	// sdram init done signal;
-	logic		sdram_init_done;
-
 	// memory access done flag
 	logic		mem_access_done;
 
@@ -76,7 +73,7 @@ module proc(
 	data_t		mem_ex_fwd_data;
 	data_t		mem_mem_fwd_data;
 	always_comb begin : fwd_data_assign
-		ex_ex_fwd_data = alu_result_m;
+		ex_ex_fwd_data = (instr_m.opcode == LOAD) ? mem_data_m : alu_result_m;
 		mem_ex_fwd_data = wb_data;
 		mem_mem_fwd_data = wb_data;
 	end
@@ -91,7 +88,7 @@ module proc(
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
 		.en_instr_mem	(ENABLE),
-		.stall			(stall_pc || stall_if_id || stall_id_ex || stall_ex_mem || stall_mem_wb || ebreak_stall),
+		.stall			(stall_pc),
 		.flush			(flush_pc),
 
 		// output
@@ -133,40 +130,44 @@ module proc(
 
 	decode decode_inst (
 		// general
-		.clk		(clk),
-		.rst_n		(rst_n),
+		.clk			(clk),
+		.rst_n			(rst_n),
 
 		// input
-		.pc			(pc_d),
-		.instr		(instr_d),
-		.wd			(wb_data),
-		.waddr		(rd_addr),
-		.wren		(rd_wren_w),
+		.pc				(pc_d),
+		.instr			(instr_d),
+		.wd				(wb_data),
+		.waddr			(rd_addr),
+		.wren			(rd_wren_w),
 		
 		// for branch forwarding
-		.ex_data	(alu_result_x),
-		.mem_data	(alu_result_m),
-		.wb_data	(wb_data),
-		.fwd_rs1	(fwd_rs1),
-		.fwd_rs2	(fwd_rs2),
+		.ex_data		(alu_result_x),
+		.mem_data		((instr_m.opcode == LOAD) ? mem_data_m : alu_result_m),
+		.wb_data		((instr_w.opcode == LOAD) ? mem_data_w : alu_result_w),
+		.fwd_rs1		(fwd_id_rs1),
+		.fwd_rs2		(fwd_id_rs2),
 
 		// output
-		.pc_bj		(pc_bj),
-		.pc_sel		(pc_sel),	// 1 for bj, 0 for p4
-		.rs1		(rs1_d),
-		.rs2		(rs2_d),
-		.imm		(imm_d),
-		.branch_taken(branch_taken_actual)
+		.pc_bj			(pc_bj),
+		.pc_sel			(pc_sel),	// 1 for bj, 0 for p4
+		.rs1			(rs1_d),
+		.rs2			(rs2_d),
+		.imm			(imm_d),
+		.branch_taken	(branch_taken_actual)
 	);
+
 
 	data_t rs2_d_after_fwd;
 	always_comb begin : rs2_d_after_fwd_assign
-		rs2_d_after_fwd =	(fwd_store == RS_STORE_SEL) ? rs2_d :
-							(fwd_store == EX_ID_STORE_SEL) ? alu_result_x :
-							(fwd_store == MEM_ID_STORE_SEL) ? alu_result_m :
-							(fwd_store == WB_ID_STORE_SEL) ? alu_result_w :
-							NULL;
+		unique case (fwd_id_rs2)
+			RS_ID_SEL: 	rs2_d_after_fwd = rs2_d;
+			EX_ID_SEL:	rs2_d_after_fwd = alu_result_x;
+			MEM_ID_SEL:	rs2_d_after_fwd = alu_result_m;
+			WB_ID_SEL:	rs2_d_after_fwd = alu_result_w;
+			default:	rs2_d_after_fwd = NULL;
+		endcase
 	end
+
 
 	// decode-execute stage reg
 	id_ex_reg id_ex_reg_inst (
@@ -200,8 +201,8 @@ module proc(
 		.clk				(clk),
 
 		// ctrl
-		.fwd_a				(fwd_a),
-		.fwd_b				(fwd_b),
+		.fwd_a				(fwd_ex_rs1),
+		.fwd_b				(fwd_ex_rs2),
 
 		// input
 		.rs1				(rs1_x),
@@ -253,7 +254,7 @@ module proc(
 		.addr				(alu_result_m),
 		.data_in_raw		(rs2_m),
 		.mem_mem_fwd_data	(mem_mem_fwd_data),
-		.fwd_m2m			(fwd_m2m),
+		.fwd_m2m			(fwd_mem_rs2),
 		.instr				(instr_m),
 		
 		// output
@@ -320,27 +321,24 @@ module proc(
 		.instr_m		(instr_m),
 		.instr_w		(instr_w),
 
-		.id_ex_wr_rd	(rd_wren_x),
-		.ex_mem_wr_rd	(rd_wren_m),
-		.mem_wb_wr_rd	(rd_wren_w),
+		.ex_rd_write	(rd_wren_x),
+		.mem_rd_write	(rd_wren_m),
+		.wb_rd_write	(rd_wren_w),
 
 		.sdram_init_done(sdram_init_done),
 
 		.mem_access_done(mem_access_done),
-
-		.branch_predict	(branch_take_d),
-		.branch_actual	(branch_taken_actual),
 		
 		// output
 		// forwarding signal
-		.fwd_a			(fwd_a),
-		.fwd_b			(fwd_b),
-		.fwd_m2m		(fwd_m2m),
+		.fwd_id_rs1		(fwd_id_rs1),
+		.fwd_id_rs2		(fwd_id_rs2),
 
-		.fwd_rs1		(fwd_rs1),
-		.fwd_rs2		(fwd_rs2),
+		.fwd_ex_rs1		(fwd_ex_rs1),
+		.fwd_ex_rs2		(fwd_ex_rs2),
 
-		.fwd_store		(fwd_store),
+		.fwd_mem_rs1	(fwd_mem_rs1),
+		.fwd_mem_rs2	(fwd_mem_rs2),
 
 		// stall signal
 		.stall_pc		(stall_pc),

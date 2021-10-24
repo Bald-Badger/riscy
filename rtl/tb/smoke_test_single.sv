@@ -108,6 +108,12 @@ module clkrst #(
 		rst_n = 1'b1;
 	end
 
+	initial begin
+		repeat(15000) @(negedge clk);
+		$display("timeout");
+		$stop();
+	end
+
 	always #half_period begin
       clk = ~clk;
     end

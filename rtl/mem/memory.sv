@@ -10,19 +10,19 @@ import mem_defines::*;
 // addi x1, x1, 4; sb x1, 0(x1)
 
 module memory (
-	input logic 	clk,
-	input logic		clk_100m,
-	input logic		clk_100m_shift,
-	input logic		rst_n,
-	input data_t	addr,
-	input data_t	data_in_raw,
-	input data_t	mem_mem_fwd_data,
-	input fwd_sel_t fwd_m2m, // mem to mem forwarding
-	input instr_t	instr,
+	input logic				clk,
+	input logic				clk_100m,
+	input logic				clk_100m_shift,
+	input logic				rst_n,
+	input data_t			addr,
+	input data_t			data_in_raw,
+	input data_t			mem_mem_fwd_data,
+	input mem_fwd_sel_t 	fwd_m2m, 	// mem to mem forwarding
+	input instr_t			instr,
 
-	output data_t	data_out,
-	output logic	sdram_init_done,
-	output logic	mem_access_done,
+	output data_t			data_out,
+	output logic			sdram_init_done,
+	output logic			mem_access_done,
 
 	// SDRAM hardware pins
 	output	logic			sdram_clk, 
@@ -86,7 +86,7 @@ module memory (
 	data_t data_out_mem; 		// data just out of mem, blue raw
 
 	always_comb begin : sel_fwd_data
-		data_in = (fwd_m2m == MEM_MEM_FWD_SEL) ? mem_mem_fwd_data : data_in_raw;
+		data_in = (fwd_m2m == WB_MEM_SEL) ? mem_mem_fwd_data : data_in_raw;
 	end
 
 	// switch data endianess to little when storing if necessary

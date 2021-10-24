@@ -2,26 +2,26 @@ import defines::*;
 
 module execute (
 	// clk for multi-cycle computation
-	input logic		clk,
+	input logic			clk,
 
 	// ctrl 
-	input fwd_sel_t fwd_a,
-	input fwd_sel_t fwd_b,
+	input ex_fwd_sel_t	fwd_a,
+	input ex_fwd_sel_t	fwd_b,
 
 	// input
-	input data_t rs1,
-	input data_t pc,
-	input data_t rs2,
-	input data_t imm,
-	input instr_t instr,
+	input data_t		rs1,
+	input data_t		pc,
+	input data_t		rs2,
+	input data_t		imm,
+	input instr_t		instr,
 
 	// fwd data
-	input data_t ex_ex_fwd_data,
-	input data_t mem_ex_fwd_data,
+	input data_t		ex_ex_fwd_data,
+	input data_t		mem_ex_fwd_data,
 
 	// output
-	output data_t alu_result,
-	output logic rd_wren
+	output data_t		alu_result,
+	output logic		rd_wren
 );
 
 	data_t a, b;

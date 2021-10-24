@@ -40,12 +40,12 @@ pll_clk	pll_inst (
 );
 
 
-	initial begin
-		clk = 0;
-		but_rst_n = 0;                      
-		#100000;
-		but_rst_n = 1;
-	end
+initial begin
+	clk = 0;
+	but_rst_n = 0;                      
+	#100000;
+	but_rst_n = 1;
+end
 
 
 assign rst_n = (but_rst_n & locked);
@@ -55,20 +55,57 @@ assign rst_n = (but_rst_n & locked);
 always #10000 clk = ~clk; 
 
 
+logic			sdram_clk;
+logic			sdram_cke;
+logic			sdram_cs_n;
+logic			sdram_ras_n;
+logic			sdram_cas_n;
+logic        	sdram_we_n;
+logic	[ 1:0]	sdram_ba;
+logic	[12:0]	sdram_addr;
+wire	[15:0]	sdram_data;
+logic	[ 1:0]	sdram_dqm;
 memory memory_inst (
-	.clk				(clk_50m),
+	// input
+	.clk				(clk),
 	.clk_100m			(clk_100m),
 	.clk_100m_shift		(clk_100m_shift),
 	.rst_n				(rst_n),
 	.addr				(addr_in),
 	.data_in_raw		(data_in),
 	.mem_mem_fwd_data	(NULL),
-	.fwd_m2m			(RS_SEL),
+	.fwd_m2m			(RS_MEM_SEL),
 	.instr				(instr),
-
+	
+	// output
 	.data_out			(data_out),
 	.sdram_init_done	(sdram_init_done),
-	.mem_access_done	(done)
+	.mem_access_done	(done),
+
+	// SDRAM hardware pins
+	.sdram_clk			(sdram_clk), 
+	.sdram_cke			(sdram_cke),
+	.sdram_cs_n			(sdram_cs_n),
+	.sdram_ras_n		(sdram_ras_n),
+	.sdram_cas_n		(sdram_cas_n),
+	.sdram_we_n			(sdram_we_n),
+	.sdram_ba			(sdram_ba),
+	.sdram_addr			(sdram_addr),
+	.sdram_data			(sdram_data),
+	.sdram_dqm			(sdram_dqm)
+);
+
+sdr sdram_functional_model(    
+		.Clk			(sdram_clk),
+		.Cke			(sdram_cke),
+		.Cs_n			(sdram_cs_n),
+		.Ras_n			(sdram_ras_n),
+		.Cas_n			(sdram_cas_n),
+		.We_n			(sdram_we_n),
+		.Ba				(sdram_ba),
+		.Addr			(sdram_addr),
+		.Dq				(sdram_data),
+		.Dqm			(sdram_dqm)
 );
 
 
@@ -137,7 +174,7 @@ task write_mem (
 			instr.funct3 = mode;
 			valid = 1;
 			@(posedge done);
-			@(posedge clk_50m);
+			@(negedge done);
 			valid = 0;
 			instr = NOP;
 		end
@@ -230,7 +267,7 @@ task read_mem (
 			@(posedge done);
 			#1;
 			d_dut = data_out;
-			@(posedge clk_50m);
+			@(negedge done);
 			valid = 0;
 			instr = NOP;
 		end
@@ -260,7 +297,7 @@ endtask
 
 
 task rand_test();
-	iter = 233333;
+	iter = 23333;
 
 	for (i = 0; i < rand_test_mem_space; i++) begin
 		write_mem(((i<<2) & addr_mask_w), i, SW);

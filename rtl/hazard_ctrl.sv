@@ -8,26 +8,25 @@ module hazard_ctrl (
 	input instr_t instr_m,
 	input instr_t instr_w,
 
-	input logic id_ex_wr_rd,
-	input logic ex_mem_wr_rd,
-	input logic mem_wb_wr_rd,
+	input logic ex_rd_write,
+	input logic mem_rd_write,
+	input logic wb_rd_write,
 
 	input logic sdram_init_done,
 
 	input logic mem_access_done,
 
-	input logic branch_predict,
-	input logic branch_actual,
+	// forwarding signal to id stage
+	output id_fwd_sel_t fwd_id_rs1,
+	output id_fwd_sel_t fwd_id_rs2,
 
-	// forwarding signal
-	output fwd_sel_t fwd_a,
-	output fwd_sel_t fwd_b,
-	output fwd_sel_t fwd_m2m,
+	// forwarding signal to ex stage
+	output ex_fwd_sel_t fwd_ex_rs1,
+	output ex_fwd_sel_t fwd_ex_rs2,
 
-	output branch_fwd_t fwd_rs1,
-	output branch_fwd_t fwd_rs2,
-
-	output store_fwd_t fwd_store,
+	// forwarding signal to mem stage
+	output mem_fwd_sel_t fwd_mem_rs1,
+	output mem_fwd_sel_t fwd_mem_rs2,
 
 	// stall signal
 	output logic stall_pc,
@@ -44,211 +43,150 @@ module hazard_ctrl (
 	output logic flush_mem_wb
 );
 
-	r_t id_ex_rs1, id_ex_rs2, ex_mem_rs2, ex_mem_rd, mem_wb_rd;
-	logic mem_store, mem_load;
-	always_comb begin : input_sig
-		id_ex_rs1	= instr_x.rs1;
-		id_ex_rs2	= instr_x.rs2;
-		ex_mem_rs2	= instr_m.rs2;
-		ex_mem_rd	= instr_m.rd;
-		mem_wb_rd	= instr_w.rd;
-		mem_store	= (instr_m.opcode == STORE);
-		mem_load	= (instr_m.opcode == LOAD);
-	end
 
-	logic data_mem_stall;	// pipeline stall from data memory access
-	always_comb begin : data_mem_stall_assign
-		data_mem_stall = (mem_store || mem_load) && ~mem_access_done;
+	r_t id_rs1, id_rs2, ex_rs1, ex_rs2, mem_rs1, mem_rs2, wb_rs1, wb_rs2;
+	always_comb begin : rs_assign
+		id_rs1	= instr_d.rs1;
+		id_rs2	= instr_d.rs2;
+		ex_rs1	= instr_x.rs1;
+		ex_rs2	= instr_x.rs2;
+		mem_rs1	= instr_m.rs1;
+		mem_rs2	= instr_m.rs2;
+		wb_rs1	= instr_w.rs1;
+		wb_rs2	= instr_w.rs2;
 	end
 
 
-	// reference: book p579
-	// we can see that hazard_1's forwarding have
-	// higher proority than that of hazard_2's
-	logic hazard_1a, hazard_1b;	// ex - ex data hazard
-	logic hazard_2a, hazard_2b;	// mem - ex data hazard
-	logic hazard_3;				// mem - mem data hazard
-
-	// TODO: add forward logic for instr out of base instruction
-	// e.g. fence, csr, mult, div. etc
-	logic ex_mem_rs1_rd, mem_wb_rs1_rd;
-	
-	always_comb begin : ex_mem_rs1_rd_assign
-		unique case (instr_x.opcode)
-			B:		ex_mem_rs1_rd = 1'b1;
-			LOAD:	ex_mem_rs1_rd = 1'b1;
-			I:		ex_mem_rs1_rd = 1'b1;
-			R:		ex_mem_rs1_rd = 1'b1;
-			default:ex_mem_rs1_rd = 1'b0;
-		endcase
+	r_t ex_rd, mem_rd, wb_rd;
+	always_comb begin : rd_assign
+		ex_rd	= instr_x.rd;
+		mem_rd	= instr_m.rd;
+		wb_rd	= instr_w.rd;
 	end
 
-	always_comb begin : mem_wb_rs1_rd_assign
-		unique case (instr_x.opcode)
-			B:		mem_wb_rs1_rd = 1'b1;
-			LOAD:	mem_wb_rs1_rd = 1'b1;
-			I:		mem_wb_rs1_rd = 1'b1;
-			R:		mem_wb_rs1_rd = 1'b1;
-			MEM:	mem_wb_rs1_rd = 1'b1;
-			default:mem_wb_rs1_rd = 1'b0;
-		endcase
+
+	logic id_rs1_read, id_rs2_read, ex_rs1_read, ex_rs2_read, mem_rs1_read, mem_rs2_read;
+	always_comb begin : rs_read_assign
+		id_rs1_read		=	((instr_d.opcode == B) || 
+							 (instr_d.opcode == JALR));
+
+		id_rs2_read		= 	 (instr_d.opcode == B) ||
+							 (instr_d.opcode == STORE);
+
+		ex_rs1_read		=	((instr_x.opcode == R) ||
+							 (instr_x.opcode == I) ||
+							 (instr_x.opcode == STORE) ||
+							 (instr_x.opcode == LOAD) ||
+							 (instr_x.opcode == JALR));
+
+		ex_rs2_read		=	((instr_x.opcode == R));
+
+		mem_rs1_read	=	((instr_m.opcode == LOAD) ||
+							 (instr_m.opcode == STORE));
+
+		mem_rs2_read	=	 (DISABLE);
 	end
 
-	logic ex_mem_rs2_rd, mem_wb_rs2_rd;
-	assign ex_mem_rs2_rd =	(instr_x.opcode == R) || (instr_x.opcode == B);
-	assign mem_wb_rs2_rd =	(instr_m.opcode == R) || (instr_m.opcode == B);
+
+	logic hazard_ex2id_1, hazard_ex2id_2;
+	logic hazard_mem2id_1, hazard_mem2id_2;
+	logic hazard_wb2id_1, hazard_wb2id_2;
+	always_comb begin : id_hazard_detect
+		hazard_ex2id_1 =	(id_rs1_read) &&
+							(id_rs1 != X0) &&
+							(ex_rd_write) &&
+							(ex_rd == id_rs1);
+
+		hazard_ex2id_2 =	(id_rs2_read) &&
+							(id_rs2 != X0) &&
+							(ex_rd_write) &&
+							(ex_rd == id_rs2);
+
+		hazard_mem2id_1 =	(id_rs1_read) &&
+							(id_rs1 != X0) &&
+							(mem_rd_write) &&
+							(mem_rd == id_rs1);
+
+		hazard_mem2id_2 =	(id_rs2_read) &&
+							(id_rs2 != X0) &&
+							(mem_rd_write) &&
+							(mem_rd == id_rs2);
+
+		hazard_wb2id_1 =	(id_rs1_read) &&
+							(id_rs1 != X0) &&
+							(wb_rd_write) &&
+							(wb_rd == id_rs1);
+
+		hazard_wb2id_2 =	(id_rs2_read) &&
+							(id_rs2 != X0) &&
+							(wb_rd_write) &&
+							(wb_rd == id_rs2);
+	end
 
 
-	always_comb begin : data_hazard_detect
-		// the name for the signals are f*k up I know
-		hazard_1a =	(ex_mem_wr_rd) &&
-					(ex_mem_rd != X0) &&
-					(ex_mem_rd == id_ex_rs1) &&
-					ex_mem_rs1_rd;
+	logic hazard_mem2ex_1, hazard_mem2ex_2;
+	logic hazard_wb2ex_1, hazard_wb2ex_2;
+	always_comb begin : ex_hazard_detect
+		hazard_mem2ex_1 =	(ex_rs1_read) &&
+							(ex_rs1 != X0) &&
+							(mem_rd_write) &&
+							(mem_rd == ex_rs1);
 
-		hazard_1b =	(ex_mem_wr_rd) &&
-					(ex_mem_rd != X0) &&
-					(ex_mem_rd == id_ex_rs2) &&
-					ex_mem_rs2_rd;
+		hazard_mem2ex_2 =	(ex_rs2_read) &&
+							(ex_rs2 != X0) &&
+							(mem_rd_write) &&
+							(mem_rd == ex_rs2);
 
-		hazard_2a =	(mem_wb_wr_rd) &&
-					(mem_wb_rd != X0) &&
-					(!(hazard_1a)) &&
-					(mem_wb_rd == id_ex_rs1) &&
-					ex_mem_rs1_rd;
+		hazard_wb2ex_1 =	(ex_rs1_read) &&
+							(ex_rs1 != X0) &&
+							(wb_rd_write) &&
+							(wb_rd == ex_rs1);
 
-		hazard_2b =	(mem_wb_wr_rd) &&
-					(mem_wb_rd != X0) &&
-					(!(hazard_2a)) &&
-					(mem_wb_rd == id_ex_rs2) &&
-					ex_mem_rs2_rd;
-	
-		hazard_3 =	(mem_store) &&
-					(ex_mem_rd != X0) && 
-					(mem_wb_wr_rd) &&
-					(mem_wb_rd == ex_mem_rs2);
+		hazard_wb2ex_2 =	(ex_rs2_read) &&
+							(ex_rs2 != X0) &&
+							(wb_rd_write) &&
+							(wb_rd == ex_rs2);
+	end
+
+
+	logic hazard_wb2mem_1, hazard_wb2mem_2;
+	always_comb begin : mem_hazard_detect
+		hazard_wb2mem_1 =	(mem_rs1_read) &&
+							(mem_rs1 != X0) &&
+							(wb_rd_write) &&
+							(wb_rd == mem_rs1);
+
+		hazard_wb2mem_2 =	(mem_rs2_read) &&
+							(mem_rs2 != X0) &&
+							(wb_rd_write) &&
+							(wb_rd == mem_rs2);
 	end
 
 
 	always_comb begin : forward_sig_assign
+		// forwarding signal to id stage
+		fwd_id_rs1	=	hazard_ex2id_1	? EX_ID_SEL :
+						hazard_mem2id_1	? MEM_ID_SEL :
+						hazard_wb2id_1	? WB_ID_SEL :
+						RS_ID_SEL;
+		fwd_id_rs2	=	hazard_ex2id_2	? EX_ID_SEL :
+						hazard_mem2id_2	? MEM_ID_SEL :
+						hazard_wb2id_2	? WB_ID_SEL :
+						RS_ID_SEL;
 
-		fwd_a =	hazard_1a ? EX_EX_FWD_SEL :
-				hazard_2a ? MEM_EX_FWD_SEL :
-				RS_SEL;
+		// forwarding signal to ex stage
+		fwd_ex_rs1	=	hazard_mem2ex_1	? MEM_EX_SEL :
+						hazard_wb2ex_1	? WB_EX_SEL :
+						RS_EX_SEL;
+		fwd_ex_rs2	=	hazard_mem2ex_2	? MEM_EX_SEL :
+						hazard_wb2ex_2	? WB_EX_SEL :
+						RS_EX_SEL;
 
-		fwd_b = hazard_1b ? EX_EX_FWD_SEL :
-				hazard_2b ? MEM_EX_FWD_SEL :
-				RS_SEL;
-		
-		fwd_m2m = hazard_3 ? MEM_MEM_FWD_SEL : RS_SEL;
-
-	end
-
-	// hazard when load/jump follows a branch
-	// a true hazard and does not be resolven by forwarding
-	// both hazard 4 and harrard 5 requires to stall pipeline on F and D stages
-	logic hazard_4a, hazard_4b;	// load - branch
-	logic hazard_5a, hazard_5b;	// load - whatever - branch
-	logic hazard_4, hazard_5;
-
-	// hazard when branch can use data from exe stage
-	logic hazard_6a;	// can fwd to rs1
-	logic hazard_6b;	// can fwd to rs2
-
-	// hazard when branch can use data from mem stage
-	logic hazard_7a;	// can fwd to rs1
-	logic hazard_7b;	// can fwd to rs2
-
-	// hazard when branch can use data from wb stage
-	logic hazard_8a;	// can fwd to rs1
-	logic hazard_8b;	// can fwd to rs2
-	logic pc_change;	// branch/jump in decode stage
-
-	always_comb begin : control_hazard_detect
-		pc_change = (instr_d.opcode == B) || (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
-
-		hazard_4a =	(instr_x.opcode == LOAD) &&
-					(pc_change) &&
-					(instr_x.rd != X0) &&
-					(id_ex_wr_rd) &&
-					(instr_x.rd == instr_d.rs1);
-		
-		hazard_4b =	(instr_x.opcode == LOAD) &&
-					(pc_change) &&
-					(instr_x.rd != X0) &&
-					(id_ex_wr_rd) &&
-					(instr_x.rd == instr_d.rs2);
-		
-		hazard_4 = hazard_4a || hazard_4b;
-		
-		hazard_5a =	(instr_m.opcode == LOAD) &&
-					(pc_change) &&
-					(!hazard_4a) &&
-					(instr_m.rd != X0) &&
-					(ex_mem_wr_rd) &&
-					(instr_m.rd == instr_d.rs1);
-
-		hazard_5b =	(instr_m.opcode == LOAD) &&
-					(pc_change) &&
-					(!hazard_4a) &&
-					(instr_m.rd != X0) &&
-					(ex_mem_wr_rd) &&
-					(instr_m.rd == instr_d.rs2);
-		
-		hazard_5 = hazard_5a || hazard_5b;
-		
-		hazard_6a =	(pc_change) &&
-					(!hazard_4a) &&
-					(instr_x.rd != X0) &&
-					(id_ex_wr_rd) &&
-					(instr_x.rd == instr_d.rs1);
-		
-		hazard_6b =	(pc_change) &&
-					(!hazard_4b) &&
-					(instr_x.rd != X0) &&
-					(id_ex_wr_rd) &&
-					(instr_x.rd == instr_d.rs2);
-		
-		hazard_7a =	(pc_change) &&
-					(!hazard_5a) &&
-					(!hazard_6a) &&
-					(instr_m.rd != X0) &&
-					(ex_mem_wr_rd) &&
-					(instr_m.rd == instr_d.rs1);
-		
-		hazard_7b =	(pc_change) &&
-					(!hazard_5b) &&
-					(!hazard_6b) &&
-					(instr_m.rd != X0) &&
-					(ex_mem_wr_rd) &&
-					(instr_m.rd == instr_d.rs2);
-
-		hazard_8a =	(pc_change) &&
-					(!hazard_7a) &&
-					(instr_w.rd != X0) &&
-					(mem_wb_wr_rd) &&
-					(instr_w.rd == instr_d.rs1);
-
-		hazard_8b =	(pc_change) &&
-					(!hazard_7b) &&
-					(instr_w.rd != X0) &&
-					(mem_wb_wr_rd) &&
-					(instr_w.rd == instr_d.rs2);
-
-	end
-
-	always_comb begin : branch_fwd_assign
-
-		fwd_rs1 =	hazard_6a ? B_EX_SEL :
-					hazard_7a ? B_MEM_SEL :
-					hazard_8a ? B_WB_SEL :
-					B_RS_SEL;
-
-		fwd_rs2 =	hazard_6b ? B_EX_SEL :
-					hazard_7b ? B_MEM_SEL :
-					hazard_8b ? B_WB_SEL :
-					B_RS_SEL;
-
+		// forwarding signal to mem stage
+		fwd_mem_rs1 =	hazard_wb2mem_1	? WB_MEM_SEL :
+						RS_MEM_SEL;
+		fwd_mem_rs2 =	hazard_wb2mem_2	? WB_MEM_SEL :
+						RS_MEM_SEL;
 	end
 
 
@@ -257,53 +195,63 @@ module hazard_ctrl (
 		jump = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
 	end
 	always_comb begin : flush_assign
-		flush_pc		= jump || branch_actual;
-		flush_if_id		= jump || branch_actual;
+		flush_pc		= jump;		// actuallt masks output
+		flush_if_id		= jump;
 		flush_id_ex		= DISABLE;
 		flush_ex_mem	= DISABLE;
 		flush_mem_wb	= DISABLE;
 	end
 
 
-	always_comb begin : stall_assign
-		stall_pc		= ~sdram_init_done; //jump || branch_actual;
-		stall_if_id		= hazard_4 || hazard_5 || data_mem_stall || ~sdram_init_done;
-		stall_id_ex		= hazard_4 || hazard_5 || data_mem_stall || ~sdram_init_done || data_mem_stall;
-		stall_ex_mem	= data_mem_stall;
-		stall_mem_wb	= data_mem_stall;	// stall for mem-mem fwd
+	logic data_mem_stall;	// pipeline stall from data memory access
+	always_comb begin : data_mem_stall_assign
+		data_mem_stall = ((instr_m.opcode == STORE) || (instr_m.opcode == LOAD)) && ~mem_access_done;
 	end
 
 
-	// hazard when a store can use its value from later pipeline
-	// instead of reading it from register files
-	logic hazard_9a;	// ex - decode fwd to rs2
-	logic hazard_9b;	// mem - decode fwd to rs2
-	logic hazard_9c;	// wb - decode fwd to rs2
+	// hazard when load/jump follows a branch
+	// a true hazard and does not be resolven by forwarding
+	// both hazard 4 and harrard 5 requires to stall pipeline on F and D stages
+	logic load_hazard_1a, load_hazard_1b; // load - branch
+	logic load_hazard_2a, load_hazard_2b; // load - whatever - branch
+	logic load_hazard_1 , load_hazard_2;
+	logic decode_use_rs1, decode_use_rs2; // JALR and Branch
+	always_comb begin : load_branch_stall	// a true hazzard that must stall
+		decode_use_rs1	=	((instr_d.opcode == JALR) || (instr_d.opcode == B));
 
-	always_comb begin : store_hazzard_detect
-		hazard_9a =	(instr_d.opcode == STORE) &&
-					(instr_x.rd != X0) &&
-					(id_ex_wr_rd) &&
-					(instr_x.rd == instr_d.rs2);
+		decode_use_rs2	=	(instr_d.opcode == B);
+
+		load_hazard_1a	=	(instr_x.opcode == LOAD) &&
+							(decode_use_rs1) &&
+							(instr_x.rd != X0) &&
+							(instr_x.rd == instr_d.rs1);
 		
-		hazard_9b =	(instr_d.opcode == STORE) &&
-					(instr_m.rd != X0) &&
-					(ex_mem_wr_rd) &&
-					(!hazard_9a) &&
-					(instr_m.rd == instr_d.rs2);
+		load_hazard_1b	=	(instr_x.opcode == LOAD) &&
+							(decode_use_rs2) &&
+							(instr_x.rd != X0) &&
+							(instr_x.rd == instr_d.rs2);
+		
+		load_hazard_1		=	load_hazard_1a || load_hazard_1b;
+		
+		load_hazard_2a	=	(instr_m.opcode == LOAD) &&
+							(decode_use_rs1) &&
+							(instr_m.rd != X0) &&
+							(instr_m.rd == instr_d.rs1);
 
-		hazard_9c =	(instr_d.opcode == STORE) &&
-					(instr_m.rd != X0) &&
-					(mem_wb_wr_rd) &&
-					(!hazard_9b) &&
-					(instr_w.rd == instr_d.rs2);
+		load_hazard_2b	=	(instr_m.opcode == LOAD) &&
+							(decode_use_rs2) &&
+							(instr_m.rd != X0) &&
+							(instr_m.rd == instr_d.rs2);
+		
+		load_hazard_2	=	load_hazard_2a || load_hazard_2b;
 	end
 
-	always_comb begin : store_fwd_assign
-		fwd_store =	(hazard_9a)	? EX_ID_STORE_SEL:
-					(hazard_9b)	? MEM_ID_STORE_SEL:
-					(hazard_9c)	? WB_ID_STORE_SEL:
-					RS_STORE_SEL;
+	always_comb begin : stall_assign
+		stall_pc		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2;
+		stall_if_id		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2;
+		stall_id_ex		= data_mem_stall || ~sdram_init_done;
+		stall_ex_mem	= data_mem_stall || ~sdram_init_done;
+		stall_mem_wb	= data_mem_stall || ~sdram_init_done;	// stall for mem-mem fwd
 	end
 
 endmodule : hazard_ctrl

@@ -14,8 +14,8 @@ module decode(
 	input data_t	ex_data,
 	input data_t	mem_data,
 	input data_t	wb_data,
-	input branch_fwd_t fwd_rs1,
-	input branch_fwd_t fwd_rs2,
+	input id_fwd_sel_t fwd_rs1,
+	input id_fwd_sel_t fwd_rs2,
 
 	// output
 	output data_t 	pc_bj,

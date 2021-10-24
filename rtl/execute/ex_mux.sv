@@ -1,19 +1,19 @@
 import defines::*;
 
 module ex_mux (
-	input instr_t	instr,
-	input data_t 	pc,
-	input data_t 	rs1,
-	input data_t 	rs2,
-	input data_t 	imm,
-	input data_t 	ex_ex_fwd_data,
-	input data_t 	mem_ex_fwd_data,
+	input instr_t		instr,
+	input data_t		pc,
+	input data_t		rs1,
+	input data_t		rs2,
+	input data_t		imm,
+	input data_t		ex_ex_fwd_data,
+	input data_t		mem_ex_fwd_data,
 
-	input fwd_sel_t	fwd_a,
-	input fwd_sel_t	fwd_b,
+	input ex_fwd_sel_t	fwd_a,
+	input ex_fwd_sel_t	fwd_b,
 
-	output data_t 	a_out,
-	output data_t 	b_out
+	output data_t		a_out,
+	output data_t		b_out
 );
 	
 	// rs1_mux, rs2_mux ctrl signal types
@@ -28,10 +28,8 @@ module ex_mux (
 	data_t rs1_mux_out, rs2_mux_out;
 
 	always_comb begin : rs1_mux
-		rs1_mux_out = NULL;
 		unique case (rs1_mux_sel)
 			null_sel:	rs1_mux_out = NULL;
-			2'b01:		rs1_mux_out = NULL;
 			rs1_sel:	rs1_mux_out = rs1;
 			pc_sel:		rs1_mux_out = pc;	
 			default:	rs1_mux_out = NULL;
@@ -39,10 +37,8 @@ module ex_mux (
 	end
 
 	always_comb begin : rs2_mux
-		rs2_mux_out = NULL;
 		unique case (rs2_mux_sel)
 			null_sel:	rs2_mux_out = NULL;
-			2'b01:		rs2_mux_out = NULL;
 			rs2_sel:	rs2_mux_out = rs2;
 			imm_sel:	rs2_mux_out = imm;	
 			default:	rs2_mux_out = NULL;
@@ -50,24 +46,20 @@ module ex_mux (
 	end
 
 	always_comb begin : fwd_a_mux
-		a_out = NULL;
 		unique case (fwd_a)
-			RS_SEL:				a_out = rs1_mux_out;
-			MEM_MEM_FWD_SEL:	a_out = rs1_mux_out;
-			EX_EX_FWD_SEL:		a_out = ex_ex_fwd_data;
-			MEM_EX_FWD_SEL:		a_out = mem_ex_fwd_data;	
-			default:			a_out = NULL;
+			RS_EX_SEL:		a_out = rs1_mux_out;
+			MEM_EX_SEL:		a_out = ex_ex_fwd_data;
+			WB_EX_SEL:		a_out = mem_ex_fwd_data;	
+			default:		a_out = NULL;
 		endcase
 	end
 
 	always_comb begin : fwd_b_mux
-		b_out = NULL;
 		unique case (fwd_b)
-			RS_SEL:				b_out = rs2_mux_out;
-			MEM_MEM_FWD_SEL:	b_out = rs2_mux_out;
-			EX_EX_FWD_SEL:		b_out = ex_ex_fwd_data;
-			MEM_EX_FWD_SEL:		b_out = mem_ex_fwd_data;	
-			default:			b_out = NULL;
+			RS_EX_SEL:		b_out = rs2_mux_out;
+			MEM_EX_SEL:		b_out = ex_ex_fwd_data;
+			WB_EX_SEL:		b_out = mem_ex_fwd_data;	
+			default:		b_out = NULL;
 		endcase
 	end
 	

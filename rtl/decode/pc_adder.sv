@@ -8,8 +8,8 @@ module pc_adder (
 	input data_t ex_data,
 	input data_t mem_data,
 	input data_t wb_data,
-	input branch_fwd_t fwd_rs1,
-	input branch_fwd_t fwd_rs2,
+	input id_fwd_sel_t fwd_rs1,
+	input id_fwd_sel_t fwd_rs2,
 
 	output data_t pc_bj,	// no one likes bj
 							// bj makes it hard
@@ -30,17 +30,17 @@ module pc_adder (
 
 	data_t op1, op2;
 	always_comb begin : branch_forward_mux
-		op1 =	(fwd_rs1 == B_RS_SEL) 	? rs1 :
-				(fwd_rs1 == B_EX_SEL) 	? ex_data :
-				(fwd_rs1 == B_MEM_SEL)	? mem_data :
-				(fwd_rs1 == B_WB_SEL) 	? wb_data :
-				rs1;
+		op1 =	(fwd_rs1 == RS_ID_SEL) 	? rs1 :
+				(fwd_rs1 == EX_ID_SEL) 	? ex_data :
+				(fwd_rs1 == MEM_ID_SEL)	? mem_data :
+				(fwd_rs1 == WB_ID_SEL) 	? wb_data :
+				NULL;
 
-		op2 =	(fwd_rs2 == B_RS_SEL) 	? rs2 :
-				(fwd_rs2 == B_EX_SEL) 	? ex_data :
-				(fwd_rs2 == B_MEM_SEL)	? mem_data :
-				(fwd_rs2 == B_WB_SEL) 	? wb_data :
-				rs2;
+		op2 =	(fwd_rs2 == RS_ID_SEL) 	? rs2 :
+				(fwd_rs2 == EX_ID_SEL) 	? ex_data :
+				(fwd_rs2 == MEM_ID_SEL)	? mem_data :
+				(fwd_rs2 == WB_ID_SEL) 	? wb_data :
+				NULL;
 	end
 
 	wire [XLEN+1:0] rs_diff_unsign = ({1'b0, op2} - {1'b0, op1}); // 34 bits

@@ -1,6 +1,6 @@
 import os
 import shutil
-
+import time
 
 if __name__ == '__main__':
     test_list = os.listdir('./tests/mif')
@@ -19,8 +19,12 @@ if __name__ == '__main__':
         result = f.readline()
         f.close()
         print("test: " + test + " " + result)
+        time.sleep(0.5)
         try:
             os.remove(transcript)
+            os.remove("./result.txt")
         except FileNotFoundError:
+            pass
+        except PermissionError:
             pass
 
