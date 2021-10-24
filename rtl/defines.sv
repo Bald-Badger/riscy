@@ -25,6 +25,13 @@ package defines;
 //	if not, then connect to functional model
 	localparam	SYNTHESIS		= DISABLE;
 
+
+	localparam LITTLE_ENDIAN = 1'b0;
+	localparam BIG_ENDIAN = 1'b1;
+
+	localparam ENDIANESS = LITTLE_ENDIAN;
+
+
 	// sopported extension
 	// this part is and only accessed by verilog generate function. 
 	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
@@ -44,12 +51,6 @@ package defines;
 		INSTR_MEM = 2'd2,	// instrution memory
 		DATA_MEM  = 2'd3	// data memory
 	} MEM_TYPE_t;
-
-
-	localparam LITTLE_ENDIAN = 1'b0;
-	localparam BIG_ENDIAN = 1'b1;
-
-	localparam ENDIANESS = BIG_ENDIAN;
 
 
 	// Opcode define
@@ -277,8 +278,8 @@ endfunction
 
 function data_t swap_endian;
 	input data_t data;
-	return	data_t'	({{data[07:00]},
-            		{data[15:08]},
+	return	data_t'	({{data[7:0]},
+            		{data[15:8]},
             		{data[23:16]},
             		{data[31:24]}});
 endfunction

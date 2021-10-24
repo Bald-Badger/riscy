@@ -174,7 +174,7 @@ module memory (
 					if (ENDIANESS == BIG_ENDIAN)
 						data_out = {{d.b0},{d.b1},{d.b2},{d.b3}};
 					else
-						data_out = {{d.b3},{d.b3},{d.b1},{d.b0}};
+						data_out = {{d.b3},{d.b2},{d.b1},{d.b0}};
 				end
 
 				LBU:	begin
