@@ -8,17 +8,16 @@ module fetch(
 	// input
 	input	data_t	pc_bj,
 	input 	logic	pc_sel,
-	input	logic	en_instr_mem,
 	input 	logic	stall,
 	input	logic	flush,
 
 	// output
 	output	data_t	pc_p4_out,
 	output	data_t	pc_out,
-	output	data_t	instr,
+	output	instr_t	instr,
 	output	logic	taken
 );
-	data_t instr_raw;
+	instr_t instr_raw;
 	assign instr = (flush) ? NOP : instr_raw;	// mask the output as if masked
 	data_t pc, pc_p4;
 	assign pc_p4_out = pc_p4 - 4;
@@ -40,7 +39,7 @@ module fetch(
 	instr_mem instr_mem_inst (
 		.clk	(clk),
 		.rst_n	(rst_n),
-		.rden	(en_instr_mem),
+		.rden	(~flush),
 		.stall	(stall),
 		.addr	(pc),
 		.instr	(instr_raw)

@@ -9,7 +9,8 @@ module alu (
 
 	output data_t 	c_out,
 	output logic	rd_wr,
-	output logic	div_result_valid
+	output logic	div_result_valid,
+	output logic	mul_result_valid
 );
 
 	data_t	and_result,
@@ -111,9 +112,11 @@ module alu (
 
 
 	multiplier multiplierer (
+		.clk	(clk),
 		.instr	(instr),
 		.a_in	(a_in),
 		.b_in	(b_in),
+		.valid	(mul_result_valid),
 		.c_out	(mult_result)
 	);
 

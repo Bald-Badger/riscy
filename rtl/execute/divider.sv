@@ -2,13 +2,13 @@ import defines::*;
 import alu_defines::*;
 
 module divider (
-	input			clk,
-	input instr_t	instr,
-	input data_t 	a_in,
-	input data_t	b_in,
+	input	logic	clk,
+	input	instr_t	instr,
+	input	data_t 	a_in,
+	input	data_t	b_in,
 
-	output logic	valid,
-	output data_t 	c_out
+	output	logic	valid,
+	output	data_t 	c_out
 );
 
 logic[39:0]	divide_result;
@@ -21,7 +21,7 @@ data_t div_by_0_out;
 
 reg[3:0] div_counter;
 logic div_instr;
-always_comb begin : div_instr_flavg_assign
+always_comb begin : div_instr_flag_assign
 	div_instr = instr.funct3[2];
 end
 

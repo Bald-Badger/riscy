@@ -190,13 +190,14 @@ module hazard_ctrl (
 	end
 
 
-	logic jump;
+	logic jump_d, jump_x;	// jump instruction in decode/exe stage
 	always_comb begin : flush_crtl_signal_assign
-		jump = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
+		jump_d = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
+		jump_x = (instr_x.opcode == JAL) || (instr_x.opcode == JALR);
 	end
 	always_comb begin : flush_assign
-		flush_pc		= jump;		// actuallt masks output
-		flush_if_id		= jump;
+		flush_pc		= jump_d;		// actually masks output
+		flush_if_id		= jump_x;
 		flush_id_ex		= DISABLE;
 		flush_ex_mem	= DISABLE;
 		flush_mem_wb	= DISABLE;

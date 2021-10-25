@@ -1,15 +1,37 @@
 import defines::*;
+import alu_defines::*;
 
 module multiplier (
-	input instr_t	instr,
-	input data_t 	a_in,
-	input data_t	b_in,
+	input	logic	clk,
+	input	instr_t	instr,
+	input	data_t 	a_in,
+	input	data_t	b_in,
 
-	output data_t 	c_out
+	output	logic	valid,
+	output	data_t 	c_out
 );
 
 logic[79:0]	mult_result;
 logic [39:0] mult_a_in, mult_b_in;
+
+
+reg[3:0] mul_counter;
+logic mul_instr;
+always_comb begin : mul_instr_flag_assign
+	mul_instr = ~instr.funct3[2];
+end
+
+assign valid = (mul_counter == MUL_LATENCY);
+
+always_ff @(posedge clk) begin : mul_counter_update
+	if (valid) begin
+		mul_counter <= 4'b0;	// reset counter
+	end else if ( (instr.funct7 == M_INSTR) && mul_instr ) begin
+		mul_counter <= (mul_counter + 1);
+	end else begin
+		mul_counter <= 4'b0;	// reset counter
+	end
+end
 
 
 always_comb begin : mult_a_in_assign
@@ -36,6 +58,7 @@ end
 
 // MULHSU: signed rs1 x unsign rs2
 mult mult_signed_inst (
+		.clock	( clk ),
 		.dataa	( mult_a_in ),
 		.datab	( mult_b_in ),
 		.result	( mult_result )

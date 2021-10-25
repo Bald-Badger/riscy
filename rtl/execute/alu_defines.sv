@@ -6,6 +6,7 @@ package alu_defines;
 `define PY_PATH string'("../../python")
 
 localparam DIV_LATENCY = 12;
+localparam MUL_LATENCY = 6;
 
 typedef enum logic[1:0] { 
 	a_add_b,

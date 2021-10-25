@@ -26,13 +26,21 @@ module execute (
 );
 
 	data_t a, b;
-	logic div_result_valid;
-	logic div_instr;
+	logic div_result_valid, mul_result_valid;
+	logic div_busy, mul_busy;
+	logic div_instr, mul_instr;
 	always_comb begin : execute_busy_assign
 		div_instr		=	(instr.funct3[2]);
-		execute_busy	=	(instr.funct7 == M_INSTR) &&
+		div_busy		=	(instr.funct7 == M_INSTR) &&
 							(div_instr) &&
-							(~div_result_valid);
+							(~div_result_valid) &&
+							(instr.opcode == R);
+		mul_instr		=	~div_instr;
+		mul_busy		=	(instr.funct7 == M_INSTR) &&
+							(mul_instr) &&
+							(~mul_result_valid) &&
+							(instr.opcode == R);
+		execute_busy	=	mul_busy || div_busy;
 	end
 
 	ex_mux ex_mux_inst (
@@ -64,7 +72,8 @@ module execute (
 		// output
 		.c_out				(alu_result),
 		.rd_wr				(rd_wren),
-		.div_result_valid	(div_result_valid)
+		.div_result_valid	(div_result_valid),
+		.mul_result_valid	(mul_result_valid)
 	);
 	
 endmodule

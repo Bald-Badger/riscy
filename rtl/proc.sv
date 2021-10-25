@@ -90,7 +90,6 @@ module proc(
 		// input
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
-		.en_instr_mem	(ENABLE),
 		.stall			(stall_pc),
 		.flush			(flush_pc),
 
@@ -113,7 +112,10 @@ module proc(
 		// input
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
-		.instr_in		((stall_pc && ~stall_if_id) ? NOP : instr_f),
+		.instr_in		(
+			(stall_pc && ~stall_if_id) ? NOP : 
+			(flush_pc) ? NOP : instr_f
+		),
 		.branch_take_in	(branch_take_f),
 		
 		// output
@@ -181,7 +183,10 @@ module proc(
 		.en			(!stall_id_ex),
 
 		// input
-		.instr_in	((stall_if_id && ~stall_id_ex) ? NOP : instr_d),
+		.instr_in	(
+			(stall_if_id && ~stall_id_ex) ? NOP : 
+			(flush_if_id) ? NOP : instr_d
+		),
 		.rs1_in		(rs1_d),
 		.rs2_in		(rs2_d_after_fwd),
 		.pc_in		(pc_d),
@@ -233,7 +238,10 @@ module proc(
 		.en				(!stall_ex_mem),
 
 		// input
-		.instr_in		((stall_id_ex && ~stall_ex_mem) ? NOP : instr_x),
+		.instr_in		(
+			(stall_id_ex && ~stall_ex_mem) ? NOP :
+			(flush_id_ex) ? NOP : instr_x
+		),
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
 		.pc_p4_in		(pcp4_x),
@@ -289,7 +297,10 @@ module proc(
 		.en				(!stall_mem_wb),
 
 		// input
-		.instr_in		(stall_ex_mem ? NOP : instr_m),
+		.instr_in		(
+			stall_ex_mem ? NOP :
+			flush_ex_mem ? NOP : instr_m 
+		),
 		.alu_result_in	(alu_result_m),
 		.mem_data_in	(mem_data_m),
 		.pc_p4_in		(pcp4_m),

@@ -3,6 +3,8 @@ import shutil
 import time
 
 if __name__ == '__main__':
+    f = open('result.txt', 'w')
+    f.close()
     test_list = os.listdir('./tests/mif')
     transcript = "./transcript.txt"
     visiable = False

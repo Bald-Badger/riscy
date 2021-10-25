@@ -15,7 +15,7 @@ module pc (
 
 	assign pc_p4 = pc + 32'd4; // 32 bits in byte-addressable, so 32/8 = 4
 
-	always_ff @(negedge clk or negedge rst_n) begin
+	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)
 			pc <= -4;	// funking sketchy, but can get around bug
 		else if (stall)

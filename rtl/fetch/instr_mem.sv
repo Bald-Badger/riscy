@@ -40,7 +40,7 @@ module instr_mem (
 		.address	( addr[11:2] ),
 		.clock		( clk ),
 		.clken		( ~stall ),
-		.rden		( ENABLE ),
+		.rden		( rden ),
 		.q			( instr )	// TODO:
 	);
 
