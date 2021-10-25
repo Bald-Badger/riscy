@@ -217,6 +217,7 @@ module hazard_ctrl (
 	logic load_hazard_2a, load_hazard_2b; // load - whatever - branch
 	logic load_hazard_1 , load_hazard_2;
 	logic decode_use_rs1, decode_use_rs2; // JALR and Branch
+	
 	always_comb begin : load_branch_stall	// a true hazzard that must stall
 		decode_use_rs1	=	((instr_d.opcode == JALR) || (instr_d.opcode == B));
 
