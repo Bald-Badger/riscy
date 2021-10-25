@@ -48,7 +48,7 @@ create_clock -name {osc_clk} -period 20.000 -waveform { 0.000 10.000 } [get_port
 
 create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 2 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[1]}] 
 create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 2 -phase -75.000 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[2]}] 
-create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 1 -divide_by 2 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[3]}] 
+create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 2 -divide_by 5 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[3]}] 
 
 
 #**************************************************************

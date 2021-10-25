@@ -8,7 +8,7 @@ package defines;
 //	ISA define
 	localparam 	XLEN 			= 	32;			// RV32
 	localparam	N 				= 	XLEN;	 	// in case I forget should be XLEN instead of N
-	localparam 	FREQ 			= 	2.5e7;		// core clock, 50Mhz crystal oscillator on FPGA board
+	localparam 	FREQ 			= 	2e7;		// core clock, 50Mhz crystal oscillator on FPGA board
 
 //	constant define
 	localparam	BYTES 			= XLEN / 8; 	// num of byte in a word

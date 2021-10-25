@@ -23,7 +23,7 @@ module proc_hier (
 	output	logic	[ 1:0]	sdram_dqm
 );
 	logic	rst_n, locked;
-	logic	clk_25m;			//slower main clock
+	logic	clk_25m;			//slower main clock, actually 20MHz
 	logic	clk_50m;			//main clock
 	logic	clk_100m;			//sdram controller clk
 	logic	clk_100m_shift;		//shifted clk for sdram output
