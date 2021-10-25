@@ -61,7 +61,8 @@ vlog -work work -vopt -sv -stats=none  ../rtl/execute/alu_defines.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/alu.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/ex_mux.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/execute/execute.sv
-vlog -work work -vopt -sv -stats=none  ../rtl/execute/mult_div.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/execute/divider.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/execute/multiplier.sv
 
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/memory.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/cache.sv

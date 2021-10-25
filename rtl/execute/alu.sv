@@ -8,7 +8,8 @@ module alu (
 	input data_t 	b_in,
 
 	output data_t 	c_out,
-	output logic	rd_wr
+	output logic	rd_wr,
+	output logic	div_result_valid
 );
 
 	data_t	and_result,
@@ -17,8 +18,8 @@ module alu (
 			set_result,
 			shift_result,
 			add_sub_result,
-			mult_div_rem_result;
-
+			mult_result,
+			div_rem_result;
 
 	logic[4:0]	shamt;
 	shift_type_t shift_type;
@@ -109,25 +110,38 @@ module alu (
 	end
 
 
-	mult_div mul_div_remer(
+	multiplier multiplierer (
+		.instr	(instr),
+		.a_in	(a_in),
+		.b_in	(b_in),
+		.c_out	(mult_result)
+	);
+
+	divider dividerer (
 		.clk	(clk),
 		.instr	(instr),
 		.a_in	(a_in),
 		.b_in	(b_in),
-		.c_out	(mult_div_rem_result)
+		.valid	(div_result_valid),
+		.c_out	(div_rem_result)
 	);
 
-	
+
+	logic div_instr;
 	always_comb begin : output_sel
 		c_out = NULL;
 		rd_wr = 1'b0;
+		div_instr = funct3[2];
 		unique case (opcode)
-
 			R: begin
 				rd_wr = 1'b1;
 				unique case (instr.funct7)
 					M_INSTR: begin
-						c_out = mult_div_rem_result;
+						if (div_instr) begin	// div instruction
+							c_out = div_rem_result;
+						end else begin
+							c_out = mult_result;
+						end
 					end
 
 					default: begin

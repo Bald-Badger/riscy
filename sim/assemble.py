@@ -98,6 +98,8 @@ def compile_smoke_test():
     smoke_list.append('jalr.s')
     smoke_list.append('loop.s')
     smoke_list.append('memory.s')
+    smoke_list.append('my_test_ldst.s')
+    smoke_list.append('my_test_div.s')
     for f in smoke_list:
         assemble(f, f[:-2]+'.mc')
 

@@ -13,7 +13,7 @@ module hazard_ctrl (
 	input logic wb_rd_write,
 
 	input logic sdram_init_done,
-
+	input logic execute_busy,
 	input logic mem_access_done,
 
 	// forwarding signal to id stage
@@ -247,9 +247,9 @@ module hazard_ctrl (
 	end
 
 	always_comb begin : stall_assign
-		stall_pc		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2;
-		stall_if_id		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2;
-		stall_id_ex		= data_mem_stall || ~sdram_init_done;
+		stall_pc		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy;
+		stall_if_id		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy;
+		stall_id_ex		= data_mem_stall || ~sdram_init_done || execute_busy;
 		stall_ex_mem	= data_mem_stall || ~sdram_init_done;
 		stall_mem_wb	= data_mem_stall || ~sdram_init_done;	// stall for mem-mem fwd
 	end

@@ -29,22 +29,23 @@ module proc(
 	logic		sdram_init_done;
 
 	// stage-specific common data wires
-	data_t 	pc_f, pc_d, pc_x; // pc_m, pc_w;
-	data_t 	pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;
-	data_t	instr_raw;	// for debug
-	instr_t	instr_f, instr_d, instr_x, instr_m, instr_w;
-	data_t 	rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;
-	data_t 	imm_d, imm_x;
-	data_t 	alu_result_x, alu_result_m, alu_result_w;
-	logic 	rd_wren_x, rd_wren_m, rd_wren_w;
-	data_t 	mem_data_m, mem_data_w;
-	logic	branch_take_f, branch_take_d;
-	logic	branch_taken_actual;
+	data_t 		pc_f, pc_d, pc_x; // pc_m, pc_w;
+	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;
+	data_t		instr_raw;	// for debug
+	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;
+	data_t 		rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;
+	data_t 		imm_d, imm_x;
+	data_t 		alu_result_x, alu_result_m, alu_result_w;
+	logic 		rd_wren_x, rd_wren_m, rd_wren_w;
+	data_t 		mem_data_m, mem_data_w;
+	logic		branch_take_f, branch_take_d;
+	logic		branch_taken_actual;
 
 
 	// global control wire
 
-	logic 		pc_sel;	// 1 for bj, 0 for p4
+	logic 			pc_sel;	// 1 for bj, 0 for p4
+	logic			execute_busy;	// execute stage computing, must stall pipeline
 
 	id_fwd_sel_t	fwd_id_rs1, fwd_id_rs2, fwd_store;
 	ex_fwd_sel_t	fwd_ex_rs1, fwd_ex_rs2;	
@@ -112,7 +113,7 @@ module proc(
 		// input
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
-		.instr_in		((stall_if_id && ~stall_id_ex) ? NOP : instr_f),
+		.instr_in		((stall_pc && ~stall_if_id) ? NOP : instr_f),
 		.branch_take_in	(branch_take_f),
 		
 		// output
@@ -180,7 +181,7 @@ module proc(
 		.en			(!stall_id_ex),
 
 		// input
-		.instr_in	((stall_id_ex && ~stall_ex_mem) ? NOP : instr_d),
+		.instr_in	((stall_if_id && ~stall_id_ex) ? NOP : instr_d),
 		.rs1_in		(rs1_d),
 		.rs2_in		(rs2_d_after_fwd),
 		.pc_in		(pc_d),
@@ -218,7 +219,8 @@ module proc(
 
 		// output
 		.alu_result			(alu_result_x),
-		.rd_wren			(rd_wren_x)
+		.rd_wren			(rd_wren_x),
+		.execute_busy		(execute_busy)
 	);
 
 
@@ -231,7 +233,7 @@ module proc(
 		.en				(!stall_ex_mem),
 
 		// input
-		.instr_in		((stall_ex_mem && ~stall_mem_wb) ? NOP : instr_x),
+		.instr_in		((stall_id_ex && ~stall_ex_mem) ? NOP : instr_x),
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
 		.pc_p4_in		(pcp4_x),
@@ -287,7 +289,7 @@ module proc(
 		.en				(!stall_mem_wb),
 
 		// input
-		.instr_in		(stall_mem_wb ? NOP : instr_m),
+		.instr_in		(stall_ex_mem ? NOP : instr_m),
 		.alu_result_in	(alu_result_m),
 		.mem_data_in	(mem_data_m),
 		.pc_p4_in		(pcp4_m),
@@ -317,44 +319,44 @@ module proc(
 
 	hazard_ctrl hazard_ctrl_inst (
 		// input signal
-		.instr_f		(instr_f),
-		.instr_d		(instr_d),
-		.instr_x		(instr_x),
-		.instr_m		(instr_m),
-		.instr_w		(instr_w),
+		.instr_f			(instr_f),
+		.instr_d			(instr_d),
+		.instr_x			(instr_x),
+		.instr_m			(instr_m),
+		.instr_w			(instr_w),
 
-		.ex_rd_write	(rd_wren_x),
-		.mem_rd_write	(rd_wren_m),
-		.wb_rd_write	(rd_wren_w),
+		.ex_rd_write		(rd_wren_x),
+		.mem_rd_write		(rd_wren_m),
+		.wb_rd_write		(rd_wren_w),
 
-		.sdram_init_done(sdram_init_done),
-
-		.mem_access_done(mem_access_done),
+		.sdram_init_done	(sdram_init_done),
+		.execute_busy		(execute_busy),
+		.mem_access_done	(mem_access_done),
 		
 		// output
 		// forwarding signal
-		.fwd_id_rs1		(fwd_id_rs1),
-		.fwd_id_rs2		(fwd_id_rs2),
+		.fwd_id_rs1			(fwd_id_rs1),
+		.fwd_id_rs2			(fwd_id_rs2),
 
-		.fwd_ex_rs1		(fwd_ex_rs1),
-		.fwd_ex_rs2		(fwd_ex_rs2),
+		.fwd_ex_rs1			(fwd_ex_rs1),
+		.fwd_ex_rs2			(fwd_ex_rs2),
 
-		.fwd_mem_rs1	(fwd_mem_rs1),
-		.fwd_mem_rs2	(fwd_mem_rs2),
+		.fwd_mem_rs1		(fwd_mem_rs1),
+		.fwd_mem_rs2		(fwd_mem_rs2),
 
 		// stall signal
-		.stall_pc		(stall_pc),
-		.stall_if_id	(stall_if_id),
-		.stall_id_ex	(stall_id_ex),
-		.stall_ex_mem	(stall_ex_mem),
-		.stall_mem_wb	(stall_mem_wb),
+		.stall_pc			(stall_pc),
+		.stall_if_id		(stall_if_id),
+		.stall_id_ex		(stall_id_ex),
+		.stall_ex_mem		(stall_ex_mem),
+		.stall_mem_wb		(stall_mem_wb),
 
 		// flush signal
-		.flush_pc		(flush_pc),
-		.flush_if_id	(flush_if_id),
-		.flush_id_ex	(flush_id_ex),
-		.flush_ex_mem	(flush_ex_mem),
-		.flush_mem_wb	(flush_mem_wb)
+		.flush_pc			(flush_pc),
+		.flush_if_id		(flush_if_id),
+		.flush_id_ex		(flush_id_ex),
+		.flush_ex_mem		(flush_ex_mem),
+		.flush_mem_wb		(flush_mem_wb)
 	);
 
 

@@ -33,6 +33,13 @@ typedef enum logic[2:0] {
 	add_sub_result_sel
 } result_sel_t;
 
+typedef enum logic[2:0] {
+	normal_div,
+	normal_rem,
+	overflow_div,
+	div_by_0_div
+} div_out_case_t;
+
 
 `endif
 
