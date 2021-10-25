@@ -21,9 +21,11 @@ module instr_mem (
 );
 
 	// may need to switch endianess for data in and out of memory
-	instr_t instr_raw; 
-
+	
+	// TODO: switch instr endian after merge instr mem to main mem
 	// switch data endianess to big when reading if necessary
+	/*
+	instr_t instr_raw; 
 	always_comb begin : switch_endian
 		instr = (ENDIANESS == BIG_ENDIAN) ? instr_raw : 
 			instr_t'(
@@ -32,14 +34,14 @@ module instr_mem (
 							)
 					);
 	end
-
+	*/
 
 	rom_32b_1024wd	instr_mem_inst (
 		.address	( addr[11:2] ),
 		.clock		( clk ),
 		.clken		( ~stall ),
 		.rden		( ENABLE ),
-		.q			( instr_raw )
+		.q			( instr )	// TODO:
 	);
 
 endmodule : instr_mem

@@ -8,7 +8,7 @@ package defines;
 //	ISA define
 	localparam 	XLEN 			= 	32;			// RV32
 	localparam	N 				= 	XLEN;	 	// in case I forget should be XLEN instead of N
-	localparam 	FREQ 			= 	5e7;		// bus clock, 50Mhz crystal oscillator on FPGA board
+	localparam 	FREQ 			= 	5e7;		// core clock, 50Mhz crystal oscillator on FPGA board
 
 //	constant define
 	localparam	BYTES 			= XLEN / 8; 	// num of byte in a word
@@ -19,11 +19,6 @@ package defines;
 	localparam	DISABLE			= 1'b0;
 	localparam	VALID			= 1'b1;
 	localparam	INVALID			= 1'b0;
-
-//	Synthesis define
-//	if synthesis enabled, then connect sdram instance to hardware pin
-//	if not, then connect to functional model
-	localparam	SYNTHESIS		= DISABLE;
 
 
 	localparam LITTLE_ENDIAN = 1'b0;
@@ -43,14 +38,6 @@ package defines;
 	localparam	C_SUPPORT		= FALSE;	// Compressed Instructions, should not implement (unless embedded or VLIW)
 	localparam	CSR_SUPPORT		= FALSE;	// Control and status register, required for xv6
 	localparam	FENCE_SUPPORT	= FALSE;	// Instruction-Fetch fence, required for xv6
-
-
-	typedef enum logic[1:0] {
-		BLANK_MEM = 2'd0,	// all 0s
-		UNINT_MEM = 2'd1,	// all Xs
-		INSTR_MEM = 2'd2,	// instrution memory
-		DATA_MEM  = 2'd3	// data memory
-	} MEM_TYPE_t;
 
 
 	// Opcode define
@@ -104,6 +91,7 @@ package defines;
 		opcode_t	opcode;
 	} instr_t;		// R (base) type	
 
+
 	typedef struct packed{
 		imm_t		imm;
 		r_t			rs1;
@@ -111,6 +99,7 @@ package defines;
 		r_t			rd;
 		opcode_t	opcode;
 	} instr_i_t;	// I type
+
 
 	typedef struct packed{
 		logic[11:5]	imm_h;
@@ -121,8 +110,9 @@ package defines;
 		opcode_t	opcode;
 	} instr_s_t;	// I type
 
+
 	localparam	[XLEN-1:0]	NOP		= 32'h0000_0013;	// ADDI x0, x0, 0
-	localparam	[XLEN-1:0]	HALT	= 32'h0000_0063;	// BEQ x0, x0, 0
+	// localparam	[XLEN-1:0]	HALT	= 32'h0000_0063;	// BEQ x0, x0, 0
 	localparam	[XLEN-1:0]	EBREAK	= 32'h0000_0073;
 	localparam	[XLEN-1:0]	ECALL	= 32'h0010_0073;
 	
@@ -226,37 +216,37 @@ package defines;
 
 function data_t sign_extend;	// sign extend 12bit imm
 	input imm_t imm;
-	return data_t'({{imm[11]*20}, {imm[11:0]}});
+	return data_t'({ {20{imm[11]}}, {imm[11:0]} });
 endfunction
 
 
 function data_t sign_extend_h;	// sign extend 16-bit half word
 	input half_word_t imm;
-	return data_t'({{imm[15]*16}, {imm[15:0]}});
+	return data_t'({ {16{imm[15]}}, {imm[15:0]} });
 endfunction
 
 
 function data_t sign_extend_b;	// sign extend 8 bit byte
 	input byte_t imm;
-	return data_t'({{imm[7]*24}, {imm[7:0]}});
+	return data_t'({ {24{imm[7]}}, {imm[7:0]} });
 endfunction
 
 
 function data_t zero_extend;	// sign extend 12bit imm
 	input imm_t imm;
-	return data_t'({{20'b0}, {imm[11:0]}});
+	return data_t'({ {20'b0}, {imm[11:0]} });
 endfunction
 
 
 function data_t zero_extend_h;	// sign extend 16-bit half word
 	input half_word_t imm;
-	return data_t'({{16'b0}, {imm[15:0]}});
+	return data_t'({ {16'b0}, {imm[15:0]} });
 endfunction
 
 
 function data_t zero_extend_b;	// sign extend 8 bit byte
 	input byte_t imm;
-	return data_t'({{24'b0}, {imm[7:0]}});
+	return data_t'({ {24'b0}, {imm[7:0]} });
 endfunction
 
 

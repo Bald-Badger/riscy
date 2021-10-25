@@ -117,5 +117,9 @@ module clkrst #(
 	always #half_period begin
       clk = ~clk;
     end
+
+	always @(posedge top_inst.processor_inst.sdram_init_done) begin
+		$display("sdram init done");
+	end
 	
 endmodule : clkrst

@@ -1,7 +1,7 @@
 import defines::*;
 
 module mult_div (
-	input logic		clk,
+	input			clk,
 	input instr_t	instr,
 	input data_t 	a_in,
 	input data_t	b_in,
