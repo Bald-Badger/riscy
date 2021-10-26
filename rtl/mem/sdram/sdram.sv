@@ -53,7 +53,7 @@ rd_index_t	rd_index;						//index of where rd_data is placed in data_line_out
 logic		sdram_read;						// read sdram, not read fifo
 											// rd_en reads fifo
 logic		about_to_refresh;				// yield all operation, wait to finish
-logic 		busy;							// FSM not in idle state
+// logic 		busy;							// FSM not in idle state
 logic		load;							// clear fifo, upadte access address
 logic		write_done_flag; 				// half cycle
 logic		read_done_flag;
@@ -109,8 +109,6 @@ always_ff @(posedge clk_50m or negedge rst_n)
 		state <= IDLE;
 	else
 		state <= nxt_state;
-
-assign busy				= (state != IDLE) && sdram_init_done;
 
 // sdram ctrl fsm
 always_comb begin : SDRAM_user_input_fsm

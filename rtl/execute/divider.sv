@@ -31,7 +31,7 @@ always_ff @(posedge clk) begin : div_counter_update
 	if (valid) begin
 		div_counter <= 4'b0;	// reset counter
 	end else if ( (instr.funct7 == M_INSTR) && div_instr ) begin
-		div_counter <= (div_counter + 1);
+		div_counter <= (div_counter + 4'b1);
 	end else begin
 		div_counter <= 4'b0;	// reset counter
 	end

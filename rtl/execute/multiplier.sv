@@ -27,7 +27,7 @@ always_ff @(posedge clk) begin : mul_counter_update
 	if (valid) begin
 		mul_counter <= 4'b0;	// reset counter
 	end else if ( (instr.funct7 == M_INSTR) && mul_instr ) begin
-		mul_counter <= (mul_counter + 1);
+		mul_counter <= (mul_counter + 4'b1);
 	end else begin
 		mul_counter <= 4'b0;	// reset counter
 	end

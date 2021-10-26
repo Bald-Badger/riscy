@@ -23,8 +23,7 @@ module proc_hier (
 	output	logic	[ 1:0]	sdram_dqm
 );
 	logic	rst_n, locked;
-	logic	clk_25m;			//slower main clock, actually 20MHz
-	logic	clk_50m;			//main clock
+	logic	clk;				//main clock, freq = defines::FREQ
 	logic	clk_100m;			//sdram controller clk
 	logic	clk_100m_shift;		//shifted clk for sdram output
 
@@ -34,14 +33,13 @@ module proc_hier (
 		.areset			(~but_rst_n),
 		.inclk0			(osc_clk),
 		.locked			(locked),
-		.c0				(clk_50m),
+		.c0				(clk),
 		.c1				(clk_100m),
-		.c2				(clk_100m_shift),
-		.c3				(clk_25m)
+		.c2				(clk_100m_shift)
 	);
 
 	proc processor_inst (
-		.clk			(clk_25m),
+		.clk			(clk),
 		.clk_100m		(clk_100m),
 		.clk_100m_shift	(clk_100m_shift),
 		.rst_n			(rst_n),

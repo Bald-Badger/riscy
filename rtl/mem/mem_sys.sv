@@ -47,11 +47,11 @@ logic			[sdram_addr_len-1 : 0] sdram_user_addr;
 
 // dcache nets
 logic			rd_dcache, wr_data_dcache, wr_flag_dcache, en_dcache;
-logic			hit0_dcache, hit1_dcache;
+//logic			hit0_dcache, hit1_dcache;
 logic			hit0_check_dcache, hit1_check_dcache;	// from dacache wire, not data_line_dcache
-logic			valid0_dcache, valid1_dcache;
-logic			dirty0_dcache, dirty1_dcache;
-tag_t			tag0_dcache, tag1_dcache;
+//logic			valid0_dcache, valid1_dcache;
+//logic			dirty0_dcache, dirty1_dcache;
+//tag_t			tag0_dcache, tag1_dcache;
 logic			lru_dcache;
 flag_line_t		flag_line_in_dcache, flag_line_out_dcache;
 data_line_t		data_line_in_dcache, data_line_out_dcache;
@@ -74,30 +74,30 @@ end
 
 
 always_comb begin : dcache_flag_assign
-	valid0_dcache	=	flag_line_dcache.valid0;
-	valid1_dcache	=	flag_line_dcache.valid1;
-	dirty0_dcache	=	flag_line_dcache.dirty0;
-	dirty1_dcache	=	flag_line_dcache.dirty1;
-	tag0_dcache		=	flag_line_dcache.tag0;
-	tag1_dcache		=	flag_line_dcache.tag1;
+	//valid0_dcache	=	flag_line_dcache.valid0;
+	//valid1_dcache	=	flag_line_dcache.valid1;
+	//dirty0_dcache	=	flag_line_dcache.dirty0;
+	//dirty1_dcache	=	flag_line_dcache.dirty1;
+	//tag0_dcache		=	flag_line_dcache.tag0;
+	//tag1_dcache		=	flag_line_dcache.tag1;
 	lru_dcache		=	flag_line_dcache.lru;
 end
 
 
 always_comb begin : dcache_hit_assign
 	if (valid && rd) begin
-		hit0_dcache = ((tag == tag0_dcache) && valid0_dcache) ? 1'b1 : 1'b0;
-		hit1_dcache = ((tag == tag1_dcache) && valid1_dcache) ? 1'b1 : 1'b0;
+		//hit0_dcache = ((tag == tag0_dcache) && valid0_dcache) ? 1'b1 : 1'b0;
+		//hit1_dcache = ((tag == tag1_dcache) && valid1_dcache) ? 1'b1 : 1'b0;
 		hit0_check_dcache = ((tag == flag_line_out_dcache.tag0) && flag_line_out_dcache.valid0) ? 1'b1 : 1'b0;
 		hit1_check_dcache = ((tag == flag_line_out_dcache.tag1) && flag_line_out_dcache.valid1) ? 1'b1 : 1'b0;
 	end else if (valid && wr) begin
-		hit0_dcache = ((tag == tag0_dcache) || ~valid0_dcache) ? 1'b1 : 1'b0;
-		hit1_dcache = ((tag == tag1_dcache) || ~valid1_dcache) ? 1'b1 : 1'b0;
+		//hit0_dcache = ((tag == tag0_dcache) || ~valid0_dcache) ? 1'b1 : 1'b0;
+		//hit1_dcache = ((tag == tag1_dcache) || ~valid1_dcache) ? 1'b1 : 1'b0;
 		hit0_check_dcache = ((tag == flag_line_out_dcache.tag0) || ~flag_line_out_dcache.valid0) ? 1'b1 : 1'b0;
 		hit1_check_dcache = ((tag == flag_line_out_dcache.tag1) || ~flag_line_out_dcache.valid1) ? 1'b1 : 1'b0;
 	end else begin
-		hit0_dcache = 1'b0;
-		hit1_dcache = 1'b0;
+		//hit0_dcache = 1'b0;
+		//hit1_dcache = 1'b0;
 		hit0_check_dcache = 1'b0;
 		hit1_check_dcache =1'b0;
 	end

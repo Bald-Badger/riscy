@@ -44,7 +44,7 @@ module hazard_ctrl (
 );
 
 
-	r_t id_rs1, id_rs2, ex_rs1, ex_rs2, mem_rs1, mem_rs2, wb_rs1, wb_rs2;
+	r_t id_rs1, id_rs2, ex_rs1, ex_rs2, mem_rs1, mem_rs2;
 	always_comb begin : rs_assign
 		id_rs1	= instr_d.rs1;
 		id_rs2	= instr_d.rs2;
@@ -52,8 +52,6 @@ module hazard_ctrl (
 		ex_rs2	= instr_x.rs2;
 		mem_rs1	= instr_m.rs1;
 		mem_rs2	= instr_m.rs2;
-		wb_rs1	= instr_w.rs1;
-		wb_rs2	= instr_w.rs2;
 	end
 
 

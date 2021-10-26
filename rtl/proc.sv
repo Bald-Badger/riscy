@@ -31,7 +31,6 @@ module proc(
 	// stage-specific common data wires
 	data_t 		pc_f, pc_d, pc_x; // pc_m, pc_w;
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;
-	data_t		instr_raw;	// for debug
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;
 	data_t 		rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;
 	data_t 		imm_d, imm_x;
@@ -40,10 +39,12 @@ module proc(
 	data_t 		mem_data_m, mem_data_w;
 	logic		branch_take_f, branch_take_d;
 	logic		branch_taken_actual;
-
+	// synthesis translate_off
+	data_t		instr_raw;	// for debug
+	assign instr_raw = data_t'(instr_f);
+	// synthesis translate_on
 
 	// global control wire
-
 	logic 			pc_sel;	// 1 for bj, 0 for p4
 	logic			execute_busy;	// execute stage computing, must stall pipeline
 
@@ -81,7 +82,6 @@ module proc(
 	end
 
 	// fetch stage	
-	assign instr_raw = data_t'(instr_f);
 	fetch fetch_inst (
 		// general
 		.clk			(clk),

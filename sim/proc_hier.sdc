@@ -20,7 +20,7 @@
 ## PROGRAM "Quartus Prime"
 ## VERSION "Version 20.1.1 Build 720 11/11/2020 SJ Lite Edition"
 
-## DATE    "Mon Oct 25 04:13:07 2021"
+## DATE    "Tue Oct 26 02:28:08 2021"
 
 ##
 ## DEVICE  "EP4CE10F17C8"
@@ -46,9 +46,9 @@ create_clock -name {osc_clk} -period 20.000 -waveform { 0.000 10.000 } [get_port
 # Create Generated Clock
 #**************************************************************
 
+create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 2 -divide_by 5 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[0]}] 
 create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 2 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[1]}] 
 create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 2 -phase -75.000 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[2]}] 
-create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]} -source [get_pins {pll_inst|altpll_component|auto_generated|pll1|inclk[0]}] -duty_cycle 50/1 -multiply_by 2 -divide_by 5 -master_clock {osc_clk} [get_pins {pll_inst|altpll_component|auto_generated|pll1|clk[3]}] 
 
 
 #**************************************************************
@@ -61,38 +61,38 @@ create_generated_clock -name {pll_clk:pll_inst|altpll:altpll_component|pll_clk_a
 # Set Clock Uncertainty
 #**************************************************************
 
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
 set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
+set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
 set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -rise_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -rise_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
-set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}] -fall_to [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  0.020  
 
 
 #**************************************************************
@@ -117,11 +117,11 @@ set_clock_uncertainty -fall_from [get_clocks {pll_clk:pll_inst|altpll:altpll_com
 # Set False Path
 #**************************************************************
 
+set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]
+set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]
+set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[0]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]
 set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]
-set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]
 set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]
-set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[1]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]
-set_false_path  -from  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[2]}]  -to  [get_clocks {pll_clk:pll_inst|altpll:altpll_component|pll_clk_altpll:auto_generated|wire_pll1_clk[3]}]
 
 
 #**************************************************************
