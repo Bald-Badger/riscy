@@ -29,14 +29,17 @@ module proc(
 	logic		sdram_init_done;
 
 	// stage-specific common data wires
-	data_t 		pc_f, pc_d, pc_x; // pc_m, pc_w;
-	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;
-	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;
-	data_t 		rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;
-	data_t 		imm_d, imm_x;
-	data_t 		alu_result_x, alu_result_m, alu_result_w;
-	logic 		rd_wren_x, rd_wren_m, rd_wren_w;
-	data_t 		mem_data_m, mem_data_w;
+	// signal naming shceme:
+	// e.g.		xxx_f => xxx signal in fetch stage
+	// e.g.		xxx_d => xxx signal in decode stafe
+	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
+	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
+	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction
+	data_t 		rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;	// data in register file #1
+	data_t 		imm_d, imm_x;	// immidiate value
+	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
+	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
+	data_t 		mem_data_m, mem_data_w;	// data load from memory
 	logic		branch_take_f, branch_take_d;
 	logic		branch_taken_actual;
 	// synthesis translate_off
@@ -48,9 +51,9 @@ module proc(
 	logic 			pc_sel;	// 1 for bj, 0 for p4
 	logic			execute_busy;	// execute stage computing, must stall pipeline
 
-	id_fwd_sel_t	fwd_id_rs1, fwd_id_rs2, fwd_store;
-	ex_fwd_sel_t	fwd_ex_rs1, fwd_ex_rs2;	
-	mem_fwd_sel_t	fwd_mem_rs1, fwd_mem_rs2;
+	id_fwd_sel_t	fwd_id_rs1, fwd_id_rs2;	// control signal for data forwarding to decode stage
+	ex_fwd_sel_t	fwd_ex_rs1, fwd_ex_rs2;	// control signal for data forwarding to exe stage
+	mem_fwd_sel_t	fwd_mem_rs1, fwd_mem_rs2; // control signal for data forwarding to mem stage
 
 	// stall and flush
 	logic		stall_pc,
@@ -62,7 +65,6 @@ module proc(
 	// ebreak
 	logic		ebreak;
 	logic		ebreak_stall;	// stall from ebreak, waiting pipeline clear
-	// external signal
 	logic		ebreak_return;
 	assign		ebreak_return = 1'b0;
 
@@ -72,14 +74,17 @@ module proc(
 	// global data wire
 	data_t		wb_data;
 	data_t		pc_bj;
-	data_t		ex_ex_fwd_data;
-	data_t		mem_ex_fwd_data;
-	data_t		mem_mem_fwd_data;
+	
+	// signal naming is kind of f*ked up
+	data_t		ex_ex_fwd_data;		// fwd data from mem stage to exe stage
+	data_t		mem_ex_fwd_data;	// fwd data from wb stage to exe stage
+	data_t		mem_mem_fwd_data;	// fwd data from wb stage to mem stage
 	always_comb begin : fwd_data_assign
 		ex_ex_fwd_data = (instr_m.opcode == LOAD) ? mem_data_m : alu_result_m;
 		mem_ex_fwd_data = wb_data;
 		mem_mem_fwd_data = wb_data;
 	end
+
 
 	// fetch stage	
 	fetch fetch_inst (

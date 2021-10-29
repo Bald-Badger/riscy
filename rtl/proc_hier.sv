@@ -22,7 +22,7 @@ module proc_hier (
 	inout	wire	[15:0]	sdram_data,
 	output	logic	[ 1:0]	sdram_dqm
 );
-	logic	rst_n, locked;
+	logic	rst_n, locked;		//high on locked meand system clock is now stable
 	logic	clk;				//main clock, freq = defines::FREQ
 	logic	clk_100m;			//sdram controller clk
 	logic	clk_100m_shift;		//shifted clk for sdram output
@@ -33,9 +33,9 @@ module proc_hier (
 		.areset			(~but_rst_n),
 		.inclk0			(osc_clk),
 		.locked			(locked),
-		.c0				(clk),
-		.c1				(clk_100m),
-		.c2				(clk_100m_shift)
+		.c0				(clk),				// main system clock
+		.c1				(clk_100m),			// SDRAM IO FIFO clock
+		.c2				(clk_100m_shift)	// SDRAM clock
 	);
 
 	proc processor_inst (
