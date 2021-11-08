@@ -1,6 +1,6 @@
 import defines::*;
 
-module fetch(
+module fetch (
 	// general input
 	input	logic	clk, 
 	input	logic	rst_n,
@@ -18,10 +18,11 @@ module fetch(
 	output	logic	taken
 );
 	instr_t instr_raw;
-	assign instr = (flush) ? NOP : instr_raw;	// mask the output as if masked
+	assign instr = (flush) ? NOP : instr_raw;	// mask the output as if flushed
 	data_t pc, pc_p4;
 	assign pc_p4_out = pc_p4 - 4;
 	assign pc_out = pc - 4;
+
 
 	pc pc_inst (
 		// input
@@ -36,6 +37,7 @@ module fetch(
 		.pc_p4	(pc_p4)
 	);
 
+
 	instr_mem instr_mem_inst (
 		.clk	(clk),
 		.rst_n	(rst_n),
@@ -45,9 +47,11 @@ module fetch(
 		.instr	(instr_raw)
 	);
 
+
+	// not implemented yet
 	branch_predict branch_predictor (
 		.instr	(instr),
 		.taken	(taken)
 	);
 	
-endmodule
+endmodule : fetch

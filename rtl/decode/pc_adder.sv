@@ -1,25 +1,25 @@
+// computes the branch / jump target PC
+
 import defines::*;
 
 module pc_adder (
-	input instr_t instr,
-	input data_t pc,
-	input data_t rs1,
-	input data_t rs2,
-	input data_t ex_data,
-	input data_t mem_data,
-	input data_t wb_data,
-	input id_fwd_sel_t fwd_rs1,
-	input id_fwd_sel_t fwd_rs2,
+	input	instr_t			instr,
+	input	data_t			pc,
+	input	data_t			rs1,
+	input	data_t			rs2,
+	input	data_t			ex_data,
+	input	data_t			mem_data,
+	input	data_t			wb_data,
+	input	id_fwd_sel_t	fwd_rs1,
+	input	id_fwd_sel_t	fwd_rs2,
 
-	output data_t pc_bj,	// no one likes bj
-							// bj makes it hard
-							// to predict
-	output logic pc_sel,
-	output logic branch_taken
+	output	data_t			pc_bj,
+	output	logic			pc_sel,
+	output	logic			branch_taken
 );
 
-	localparam taken = 1'b1;
-	localparam not_taken = 1'b0;
+	localparam taken		= 1'b1;
+	localparam not_taken	= 1'b0;
 
 	opcode_t opcode;
 	funct3_t funct3;
@@ -80,10 +80,10 @@ module pc_adder (
 	always_comb begin
 		imm = NULL;
 		unique case (opcode)
-			B: imm = {{20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0};
-			JAL: imm = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
-			JALR: imm = {{20{instr[31]}}, instr[31:20]};
-			default: imm = NULL;
+			B:			imm = {{20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0};
+			JAL:		imm = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
+			JALR:		imm = {{20{instr[31]}}, instr[31:20]};
+			default:	imm	= NULL;
 		endcase
 	end
 	
@@ -101,4 +101,4 @@ module pc_adder (
 					(opcode == JALR)	? 1'b1 :
 					1'b0;
 
-endmodule
+endmodule : pc_adder

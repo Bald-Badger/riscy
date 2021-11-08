@@ -1,7 +1,6 @@
 import defines::*;
 
 module execute (
-	// clk for multi-cycle computation
 	input	logic			clk,
 
 	// ctrl 
@@ -25,10 +24,11 @@ module execute (
 	output	logic			execute_busy
 );
 
-	data_t a, b;
-	logic div_result_valid, mul_result_valid;
-	logic div_busy, mul_busy;
-	logic div_instr, mul_instr;
+	data_t	a, b;
+	logic	div_result_valid, mul_result_valid;
+	logic	div_busy, mul_busy;
+	logic	div_instr, mul_instr;
+
 	always_comb begin : execute_busy_assign
 		div_instr		=	(instr.funct3[2]);
 		div_busy		=	(instr.funct7 == M_INSTR) &&
@@ -42,6 +42,7 @@ module execute (
 							(instr.opcode == R);
 		execute_busy	=	mul_busy || div_busy;
 	end
+
 
 	ex_mux ex_mux_inst (
 		// input
@@ -60,6 +61,7 @@ module execute (
 		.b_out				(b)
 	);
 
+
 	alu alu_inst (
 		// clk for multi-cycle computation
 		.clk				(clk),
@@ -76,4 +78,4 @@ module execute (
 		.mul_result_valid	(mul_result_valid)
 	);
 	
-endmodule
+endmodule : execute

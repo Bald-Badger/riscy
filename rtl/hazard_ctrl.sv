@@ -2,45 +2,45 @@ import defines::*;
 
 module hazard_ctrl (
 	// input signal
-	input instr_t instr_f,
-	input instr_t instr_d,
-	input instr_t instr_x,
-	input instr_t instr_m,
-	input instr_t instr_w,
+	input	instr_t			instr_f,
+	input	instr_t			instr_d,
+	input	instr_t			instr_x,
+	input	instr_t			instr_m,
+	input	instr_t			instr_w,
 
-	input logic ex_rd_write,
-	input logic mem_rd_write,
-	input logic wb_rd_write,
+	input	logic			ex_rd_write,
+	input	logic			mem_rd_write,
+	input	logic			wb_rd_write,
 
-	input logic sdram_init_done,
-	input logic execute_busy,
-	input logic mem_access_done,
+	input	logic			sdram_init_done,
+	input	logic			execute_busy,
+	input	logic			mem_access_done,
 
 	// forwarding signal to id stage
-	output id_fwd_sel_t fwd_id_rs1,
-	output id_fwd_sel_t fwd_id_rs2,
+	output	id_fwd_sel_t	fwd_id_rs1,
+	output	id_fwd_sel_t	fwd_id_rs2,
 
 	// forwarding signal to ex stage
-	output ex_fwd_sel_t fwd_ex_rs1,
-	output ex_fwd_sel_t fwd_ex_rs2,
+	output	ex_fwd_sel_t	fwd_ex_rs1,
+	output	ex_fwd_sel_t	fwd_ex_rs2,
 
 	// forwarding signal to mem stage
-	output mem_fwd_sel_t fwd_mem_rs1,
-	output mem_fwd_sel_t fwd_mem_rs2,
+	output	mem_fwd_sel_t	fwd_mem_rs1,
+	output	mem_fwd_sel_t	fwd_mem_rs2,
 
 	// stall signal
-	output logic stall_pc,
-	output logic stall_if_id,
-	output logic stall_id_ex,
-	output logic stall_ex_mem,
-	output logic stall_mem_wb,
+	output	logic			stall_pc,
+	output	logic			stall_if_id,
+	output	logic			stall_id_ex,
+	output	logic			stall_ex_mem,
+	output	logic			stall_mem_wb,
 
 	// flush signal
-	output logic flush_pc,
-	output logic flush_if_id,
-	output logic flush_id_ex,
-	output logic flush_ex_mem,
-	output logic flush_mem_wb
+	output	logic			flush_pc,
+	output	logic			flush_if_id,
+	output	logic			flush_id_ex,
+	output	logic			flush_ex_mem,
+	output	logic			flush_mem_wb
 );
 
 
@@ -231,7 +231,7 @@ module hazard_ctrl (
 							(instr_x.rd != X0) &&
 							(instr_x.rd == instr_d.rs2);
 		
-		load_hazard_1		=	load_hazard_1a || load_hazard_1b;
+		load_hazard_1	=	load_hazard_1a || load_hazard_1b;
 		
 		load_hazard_2a	=	(instr_m.opcode == LOAD) &&
 							(decode_use_rs1) &&

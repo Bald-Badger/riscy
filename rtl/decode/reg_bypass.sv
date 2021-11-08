@@ -1,26 +1,23 @@
 import defines::*;
 
 module reg_bypass (
-	input logic clk,
-	input logic rst_n,
+	input	logic	clk,
+	input	logic	rst_n,
 
-	input data_t rd_data,
-	input logic rd_wren,
-	input r_t rd_addr,
+	input	data_t	rd_data,
+	input	logic	rd_wren,
+	input	r_t		rd_addr,
 
-	input r_t 	rs1_addr,
-	input r_t 	rs2_addr,
-	input logic	rs1_rden,
-	input logic	rs2_rden,
+	input	r_t		rs1_addr,
+	input	r_t		rs2_addr,
+	input	logic	rs1_rden,
+	input	logic	rs2_rden,
 
-	output data_t rs1_data,
-	output data_t rs2_data
+	output	data_t	rs1_data,
+	output	data_t	rs2_data
 );
 
-	// TODO: write on fall edge, read on raise rdge
-
 	reg [XLEN-1:0] registers [0:31]; 
-
 	integer i;
 
 	always_ff @(negedge clk or negedge rst_n) begin
@@ -53,4 +50,4 @@ module reg_bypass (
 						rs2_rden 			? registers[rs2_addr]: 
 						NULL;
 	
-endmodule
+endmodule : reg_bypass

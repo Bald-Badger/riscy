@@ -1,15 +1,13 @@
 import defines::*;
 
 module reg_ctrl (
-	input instr_t instr,
+	input	instr_t	instr,
 
-	output r_t rs1_addr,
-	output r_t rs2_addr,
-	output logic rs1_rden,
-	output logic rs2_rden
+	output	r_t		rs1_addr,
+	output	r_t		rs2_addr,
+	output	logic	rs1_rden,
+	output	logic	rs2_rden
 );
-	localparam ENABLE = 1'b1;
-	localparam DISABLE = 1'b0;
 
 	opcode_t opcode;
 	always_comb begin
@@ -29,8 +27,8 @@ module reg_ctrl (
 					(opcode == R) 		? ENABLE :
 					DISABLE;
 
-		rs1_addr = 	(rs1_rden) ? instr.rs1 : r_t'(ZERO);
+		rs1_addr = 	(rs1_rden) ? instr.rs1 : r_t'(ZERO); // read from X0 when no read operation
 		rs2_addr = 	(rs2_rden) ? instr.rs2 : r_t'(ZERO);
 	end
 						
-endmodule
+endmodule : reg_ctrl

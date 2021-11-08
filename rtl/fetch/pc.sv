@@ -2,18 +2,18 @@ import defines::*;
 
 module pc (
 	//input
-	input clk, 
-	input rst_n,
-	input data_t pc_bj,
-	input pc_sel,			// 1 for bj, 0 for p4
-	input stall, 
+	input logic		clk, 
+	input logic		rst_n,
+	input data_t	pc_bj,
+	input logic		pc_sel, // 1 for bj, 0 for p4
+	input logic		stall, 
 
 	//output
-	output data_t pc,
-	output data_t pc_p4
+	output data_t 	pc,
+	output data_t 	pc_p4
 );
 
-	assign pc_p4 = pc + 32'd4; // 32 bits in byte-addressable, so 32/8 = 4
+	assign pc_p4 = pc + 32'd4; // 32 bits in byte-addressable memory system, so 32/8 = 4
 
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)

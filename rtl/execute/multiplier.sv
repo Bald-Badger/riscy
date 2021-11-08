@@ -11,15 +11,17 @@ module multiplier (
 	output	data_t 	c_out
 );
 
-logic[79:0]	mult_result;
+logic [79:0] mult_result;
 logic [39:0] mult_a_in, mult_b_in;
 
 
-reg[3:0] mul_counter;
-logic mul_instr;
+reg [3:0]	mul_counter;
+logic		mul_instr;
+
 always_comb begin : mul_instr_flag_assign
 	mul_instr = ~instr.funct3[2];
 end
+
 
 assign valid = (mul_counter == MUL_LATENCY);
 
@@ -56,7 +58,6 @@ always_comb begin : mult_b_in_assign
 end
 
 
-// MULHSU: signed rs1 x unsign rs2
 mult mult_signed_inst (
 		.clock	( clk ),
 		.dataa	( mult_a_in ),

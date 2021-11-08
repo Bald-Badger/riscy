@@ -68,8 +68,8 @@ data_line_en_t	data_line_en_dcache;
 
 
 always_comb begin : data_out_mux
-	data_out = data_out_dcache;
-	done = done_dcache;
+	data_out =	data_out_dcache;
+	done =		done_dcache;
 end
 
 
@@ -619,36 +619,37 @@ end
 
 // top level of a sdram controller
 sdram sdram_ctrl_inst(
-    .clk_50m		(clk_50m),
-	.clk_100m		(clk_100m),
-	.clk_100m_shift	(clk_100m_shift),
-    .rst_n			(rst_n),
+    .clk_50m			(clk_50m),
+	.clk_100m			(clk_100m),
+	.clk_100m_shift		(clk_100m_shift),
+    .rst_n				(rst_n),
         
-    .sdram_clk		(sdram_clk),
-    .sdram_cke		(sdram_cke),
-    .sdram_cs_n		(sdram_cs_n),
-    .sdram_ras_n	(sdram_ras_n),
-    .sdram_cas_n	(sdram_cas_n),
-    .sdram_we_n		(sdram_we_n),
-    .sdram_ba		(sdram_ba),
-    .sdram_addr		(sdram_addr),
-    .sdram_data		(sdram_data),
-    .sdram_dqm		(sdram_dqm),
+    .sdram_clk			(sdram_clk),
+    .sdram_cke			(sdram_cke),
+    .sdram_cs_n			(sdram_cs_n),
+    .sdram_ras_n		(sdram_ras_n),
+    .sdram_cas_n		(sdram_cas_n),
+    .sdram_we_n			(sdram_we_n),
+    .sdram_ba			(sdram_ba),
+    .sdram_addr			(sdram_addr),
+    .sdram_data			(sdram_data),
+    .sdram_dqm			(sdram_dqm),
     
 	// user control interface
 	// a transaction is complete when valid && done
-	.addr			(sdram_user_addr),
-	.wr				(sdram_wr),
-	.rd				(sdram_rd),
-	.valid			(sdram_valid),
-	.data_line_in	(sdram_line_in),
-	.data_line_out	(sdram_line_out),
-	.done			(sdram_done),
-	.sdram_init_done(sdram_init_done)
+	.addr				(sdram_user_addr),
+	.wr					(sdram_wr),
+	.rd					(sdram_rd),
+	.valid				(sdram_valid),
+	.data_line_in		(sdram_line_in),
+	.data_line_out		(sdram_line_out),
+	.done				(sdram_done),
+	.sdram_init_done	(sdram_init_done)
 ); 
 
 
 // synthesis translate_off
+// TODO: change this to debug module
 always_ff @(negedge clk_50m) begin : checks
 	assert ( ~( (dcache_state == DONE) && ~(hit0_check_dcache || hit1_check_dcache) && sdram_init_done ) )
 	else begin

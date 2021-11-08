@@ -6,7 +6,7 @@ import mem_defines::*;
 // synopsys translate_on
 
 
-// TODO: add - save 这种情况如何forward
+// TODO: add - save how toforward
 // addi x1, x1, 4; sb x1, 0(x1)
 
 module memory (
@@ -258,6 +258,7 @@ module memory (
 	// synthesis translate_on
 
 	// synthesis translate_off 
+	// TODO: move this to verification module
 	always @(negedge clk) begin
 		if (misalign_trap) begin
 			$strobe("address misalign detected, funct3 is %b, addr is: %h", funct3, addr);

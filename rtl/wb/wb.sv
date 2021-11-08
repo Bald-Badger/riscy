@@ -1,11 +1,11 @@
 import defines::*;
 
 module wb (
-	input instr_t	instr,
-	input data_t	alu_result,
-	input data_t	mem_data,
-	input data_t	pc_p4,
-	output data_t	wb_data
+	input	instr_t	instr,
+	input	data_t	alu_result,
+	input	data_t	mem_data,
+	input	data_t	pc_p4,
+	output	data_t	wb_data
 );
 
 	opcode_t opcode;
@@ -66,4 +66,4 @@ module wb (
 		endcase
 	end
 	
-endmodule
+endmodule : wb

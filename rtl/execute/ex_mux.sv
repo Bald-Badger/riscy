@@ -36,6 +36,7 @@ module ex_mux (
 		endcase
 	end
 
+
 	always_comb begin : rs2_mux
 		unique case (rs2_mux_sel)
 			null_sel:	rs2_mux_out = NULL;
@@ -44,6 +45,7 @@ module ex_mux (
 			default:	rs2_mux_out = NULL;
 		endcase
 	end
+
 
 	always_comb begin : fwd_a_mux
 		unique case (fwd_a)
@@ -54,6 +56,7 @@ module ex_mux (
 		endcase
 	end
 
+
 	always_comb begin : fwd_b_mux
 		unique case (fwd_b)
 			RS_EX_SEL:		b_out = rs2_mux_out;
@@ -62,8 +65,8 @@ module ex_mux (
 			default:		b_out = NULL;
 		endcase
 	end
-	
 
+	
 	always_comb begin : rs_mux_sel_ctrl
 		rs1_mux_sel = 2'b00;
 		rs2_mux_sel = 2'b00;
@@ -130,4 +133,4 @@ module ex_mux (
 		endcase
 	end
 
-endmodule
+endmodule : ex_mux

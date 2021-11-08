@@ -11,22 +11,24 @@ import mem_defines::*;
 	if want to store less than 8 word, change wr_len only
 	and it sould be just fine (not verified)
 */
+
 module sdram(
     input	logic			clk_50m,
 	input	logic			clk_100m,
 	input	logic			clk_100m_shift,
     input	logic			rst_n,
-    //SDRAM 芯片接口
-    output	logic			sdram_clk,		//SDRAM clock
-    output	logic			sdram_cke,		//SDRAM clock enable
-    output	logic			sdram_cs_n,		//SDRAM chip select
-    output	logic			sdram_ras_n,	//SDRAM row enable
-    output	logic			sdram_cas_n,	//SDRAM colomn enable
-    output	logic 			sdram_we_n,		//SDRAM write enable
-    output	logic	[ 1:0]	sdram_ba,		//SDRAM bank address
-    output	logic	[12:0]	sdram_addr,		//SDRAM row / colomn address
-    inout			[15:0]	sdram_data,		//SDRAM data
-    output	logic	[ 1:0]	sdram_dqm,		//SDRAM data mask
+
+    // SDRAM chip interface
+    output	logic			sdram_clk,		// SDRAM clock
+    output	logic			sdram_cke,		// SDRAM clock enable
+    output	logic			sdram_cs_n,		// SDRAM chip select
+    output	logic			sdram_ras_n,	// SDRAM row enable
+    output	logic			sdram_cas_n,	// SDRAM colomn enable
+    output	logic 			sdram_we_n,		// SDRAM write enable
+    output	logic	[ 1:0]	sdram_ba,		// SDRAM bank address
+    output	logic	[12:0]	sdram_addr,		// SDRAM row / colomn address
+    inout			[15:0]	sdram_data,		// SDRAM data
+    output	logic	[ 1:0]	sdram_dqm,		// SDRAM data mask
 
 	// user control interface
 	// a transaction is complete when valid && done
@@ -34,8 +36,8 @@ module sdram(
 	input	logic			wr,				// user write enable
 	input	logic			rd,				// user read enable
 	input	logic			valid,			// user request valid
-	input	sdram_8_wd_t	data_line_in,	// 8 16-bit word
-	output	sdram_8_wd_t	data_line_out,	// 8 16-bit word
+	input	sdram_8_wd_t	data_line_in,	// 8 16-bit words
+	output	sdram_8_wd_t	data_line_out,	// 8 16-bit words
 	output	logic			done,			// access done
 	output	logic			sdram_init_done	// sdram init done
 );
@@ -43,29 +45,28 @@ module sdram(
 //logic define
 
      
-logic		wr_en;
-logic[15:0]	wr_data;
-logic		rd_en;
-logic[15:0]	rd_data;
+logic			wr_en;
+logic [15:0]	wr_data;
+logic			rd_en;
+logic [15:0]	rd_data;
 
-logic		idle;
-rd_index_t	rd_index;						//index of where rd_data is placed in data_line_out
-logic		sdram_read;						// read sdram, not read fifo
-											// rd_en reads fifo
-logic		about_to_refresh;				// yield all operation, wait to finish
-// logic 		busy;							// FSM not in idle state
-logic		load;							// clear fifo, upadte access address
-logic		write_done_flag; 				// half cycle
-logic		read_done_flag;
-logic		write_done_0, write_done_1, write_done_2;
-logic		read_done_0, read_done_1, read_done_2;
-logic		write_done;						// full cycle
-logic		read_done;
+logic			idle;
+rd_index_t		rd_index;						//index of where rd_data is placed in data_line_out
+logic			sdram_read;						// read sdram, not read fifo
+												// rd_en reads fifo
+logic			about_to_refresh;				// yield all operation, wait to finish
+logic			load;							// clear fifo, upadte access address
+logic			write_done_flag; 				// half cycle
+logic			read_done_flag;
+logic			write_done_0, write_done_1, write_done_2;
+logic			read_done_0, read_done_1, read_done_2;
+logic			write_done;						// full cycle
+logic			read_done;
 
 
 always_comb begin : r_w_flag_assign
 	write_done		= write_done_0 || write_done_1 || write_done_2;
-	read_done		= read_done_0 || read_done_1 || read_done_2;
+	read_done		= read_done_0  || read_done_1  || read_done_2;
 end
 
 
@@ -407,9 +408,10 @@ always_ff @( posedge clk_50m ) begin : load_data
 end
 
 
-// 3rd party sdram controller
+// 3rd party sdram controller, don't touch any module below sdram_top
+// had some minor modification
 // reference: openedv.com
-sdram_top u_sdram_top(
+sdram_top u_sdram_top (
 	.ref_clk			(clk_100m),
 	.out_clk			(clk_100m_shift),
 	.rst_n				(rst_n),

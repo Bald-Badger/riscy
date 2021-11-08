@@ -7,13 +7,13 @@
 import defines::*;
 
 module proc(
-	input	logic clk,
-	input	logic clk_100m,
-	input	logic clk_100m_shift,
-	input	logic rst_n,
-	output	logic ebreak_start,	// actually 3 cycles after ebreak, pipeline cleared
+	input	logic 			clk,			// clock from PLL, frequency is defines::FREQ
+	input	logic 			clk_100m,		// clock to SDRAM FIFO
+	input	logic 			clk_100m_shift,	// clock to SDRAM
+	input	logic 			rst_n,			// global reset
+	output	logic			ebreak_start,	// 3 cycles after ebreak instruction
 	
-	// SDRAM hardware pins
+	// SDRAM hardware pins, don't touch
 	output	logic			sdram_clk, 
 	output	logic			sdram_cke,
 	output	logic			sdram_cs_n,   
@@ -24,6 +24,7 @@ module proc(
 	output	logic	[12:0]	sdram_addr,
 	inout	wire	[15:0]	sdram_data,
 	output	logic	[ 1:0]	sdram_dqm
+	// end don't touch
 );
 	// sdram init done signal;
 	logic		sdram_init_done;
@@ -34,21 +35,22 @@ module proc(
 	// e.g.		xxx_d => xxx signal in decode stafe
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
-	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction
+	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
 	data_t 		rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
 	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
 	data_t 		mem_data_m, mem_data_w;	// data load from memory
-	logic		branch_take_f, branch_take_d;
-	logic		branch_taken_actual;
+	logic		branch_take_f, branch_take_d;	// branch perdictor output from fetch stage
+	logic		branch_taken_actual;			// actual branch result from decode stage
+
 	// synthesis translate_off
 	data_t		instr_raw;	// for debug
 	assign instr_raw = data_t'(instr_f);
 	// synthesis translate_on
 
 	// global control wire
-	logic 			pc_sel;	// 1 for bj, 0 for p4
+	logic 			pc_sel;			// should pc update to pc+4 or branch/jump result, 1 for bj, 0 for p4
 	logic			execute_busy;	// execute stage computing, must stall pipeline
 
 	id_fwd_sel_t	fwd_id_rs1, fwd_id_rs2;	// control signal for data forwarding to decode stage
@@ -56,24 +58,25 @@ module proc(
 	mem_fwd_sel_t	fwd_mem_rs1, fwd_mem_rs2; // control signal for data forwarding to mem stage
 
 	// stall and flush
-	logic		stall_pc,
-				stall_if_id, stall_id_ex,
+	logic		stall_pc,					// stall PC register
+				stall_if_id, stall_id_ex,	// stall pipeline stage register
 				stall_ex_mem, stall_mem_wb;
 	logic		flush_pc,
 				flush_if_id, flush_id_ex,
 				flush_ex_mem, flush_mem_wb;
+
 	// ebreak
-	logic		ebreak;
+	logic		ebreak;			// ebreak instruction appear in decode stage
 	logic		ebreak_stall;	// stall from ebreak, waiting pipeline clear
-	logic		ebreak_return;
-	assign		ebreak_return = 1'b0;
+	logic		ebreak_return;	// wait for debugger return executation to core
+	assign		ebreak_return = 1'b0;	// disable debugger return
 
 	// memory access done flag
 	logic		mem_access_done;
 
 	// global data wire
-	data_t		wb_data;
-	data_t		pc_bj;
+	data_t		wb_data;		// write-back data
+	data_t		pc_bj;			// pc branch / jump target
 	
 	// signal naming is kind of f*ked up
 	data_t		ex_ex_fwd_data;		// fwd data from mem stage to exe stage
@@ -118,8 +121,8 @@ module proc(
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
 		.instr_in		(
-			(stall_pc && ~stall_if_id) ? NOP : 
-			(flush_pc) ? NOP : instr_f
+			(stall_pc && ~stall_if_id)	? NOP : 
+			(flush_pc) 					? NOP : instr_f
 		),
 		.branch_take_in	(branch_take_f),
 		
@@ -189,8 +192,8 @@ module proc(
 
 		// input
 		.instr_in	(
-			(stall_if_id && ~stall_id_ex) ? NOP : 
-			(flush_if_id) ? NOP : instr_d
+			(stall_if_id && ~stall_id_ex)	? NOP : 
+			(flush_if_id)					? NOP : instr_d
 		),
 		.rs1_in		(rs1_d),
 		.rs2_in		(rs2_d_after_fwd),
@@ -244,8 +247,8 @@ module proc(
 
 		// input
 		.instr_in		(
-			(stall_id_ex && ~stall_ex_mem) ? NOP :
-			(flush_id_ex) ? NOP : instr_x
+			(stall_id_ex && ~stall_ex_mem)	? NOP :
+			(flush_id_ex)					? NOP : instr_x
 		),
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
@@ -376,7 +379,8 @@ module proc(
 	);
 
 
-// TODO: wait for mem access finish, not just stall 3 cycles
+// TODO: change ebreak status to "instr.w == ebreak"
+// TODO: stall pipeline for all instruction after ebreak until ebreak_returm
 typedef enum reg[2:0] {
 	EBREAK_IDLE,
 	EBREAK_CNT_1,

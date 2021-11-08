@@ -88,9 +88,6 @@ typedef struct {
 	data_line_t	data;
 } cache_line_t;
 
-// {en, comp, write}
-// for more info visit:
-// https://pages.cs.wisc.edu/~sinclair/courses/cs552/spring2020/includes/cacheDesign.html
 typedef enum logic [2:0] {
 	CACHE_IDLE		= 3'b000,	// does nothing
 	COMP_READ		= 3'b110,	// load instr

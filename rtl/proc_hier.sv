@@ -58,4 +58,4 @@ module proc_hier (
 		.sdram_dqm		(sdram_dqm)
 	);
 	
-endmodule
+endmodule : proc_hier

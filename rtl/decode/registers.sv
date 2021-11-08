@@ -1,17 +1,19 @@
+// register file
+
 import defines::*;
 
 module registers (
-	input clk,
-	input rst_n,
+	input	logic	clk,
+	input	logic	rst_n,
 
-	input data_t instr,
+	input	data_t	instr,
 
-	input data_t rd_data,
-	input logic rd_wren,
-	input r_t rd_addr,
+	input	data_t	rd_data,
+	input	logic	rd_wren,
+	input	r_t		rd_addr,
 
-	output data_t rs1_data,
-	output data_t rs2_data
+	output	data_t	rs1_data,
+	output	data_t	rs2_data
 );
 
 	r_t rs1_addr, rs2_addr;
@@ -32,11 +34,11 @@ module registers (
 	);
 
 	reg_ctrl reg_ctrl_inst (
-		.instr(instr),
-		.rs1_addr(rs1_addr),
-		.rs2_addr(rs2_addr),
-		.rs1_rden(rs1_rden),
-		.rs2_rden(rs2_rden)
+		.instr		(instr),
+		.rs1_addr	(rs1_addr),
+		.rs2_addr	(rs2_addr),
+		.rs1_rden	(rs1_rden),
+		.rs2_rden	(rs2_rden)
 	);
 	
-endmodule
+endmodule : registers

@@ -13,20 +13,20 @@ module alu (
 	output logic	mul_result_valid
 );
 
-	data_t	and_result,
-			or_result,
-			xor_result,
-			set_result,
-			shift_result,
-			add_sub_result,
-			mult_result,
-			div_rem_result;
+	data_t			and_result,
+					or_result,
+					xor_result,
+					set_result,
+					shift_result,
+					add_sub_result,
+					mult_result,
+					div_rem_result;
 
-	logic[4:0]	shamt;
-	shift_type_t shift_type;
-	logic 		sub_func;
-	opcode_t 	opcode;
-	funct3_t 	funct3;
+	logic [4:0]		shamt;
+	shift_type_t	shift_type;
+	logic 			sub_func;
+	opcode_t 		opcode;
+	funct3_t 		funct3;
 
 	always_comb begin
 		funct3 = 	instr.funct3;
@@ -74,18 +74,18 @@ module alu (
 	end
 
 	data_t adder_in1, adder_in2;
-	logic[XLEN: 0] adder_out;
+	logic [XLEN: 0]	adder_out;
 
 	logic set_signed_flag;  
 	logic set_unsigned_flag;
 	//logic adder_msb;
 	always_comb begin : add_suber
-		invA =	((funct3 == SLT) 	? 1'b1 :
-				(funct3 == SLTI) 	? 1'b1 :
-				(funct3 == SLTU) 	? 1'b1 :
-				(funct3 == SLTIU)	? 1'b1 :
-				1'b0) & (opcode == I); // only I type should need to invert A;
-		invB =	(funct3 == SUB & sub_func) ? 1'b1 : 1'b0;
+		invA =	((funct3 == SLT) 	? ENABLE :
+				(funct3 == SLTI) 	? ENABLE :
+				(funct3 == SLTU) 	? ENABLE :
+				(funct3 == SLTIU)	? ENABLE :
+				DISABLE) & (opcode == I); // only I type should need to invert A;
+		invB =	(funct3 == SUB & sub_func) ? ENABLE : DISABLE;
 
 		plus1 = invA | invB;	// A - B = A + ~B + 1
 		adder_in1 = invA ? ~a_in : a_in;
@@ -99,18 +99,19 @@ module alu (
 
 		// I could not use one single adder to achieve both add, sub, and set
 		/*
-		set_flag = 	(funct3 == SLT & $signed(adder_out[XLEN-1:0]) > 32'b0) ? 1'b1 :
-					(funct3 == SLTU & $signed(adder_out[XLEN-1:0]) > 33'b0) ? 1'b1 :
-					1'b0;
+		set_flag = 	(funct3 == SLT & $signed(adder_out[XLEN-1:0]) > 32'b0) ? ENABLE :
+					(funct3 == SLTU & $signed(adder_out[XLEN-1:0]) > 33'b0) ? ENABLE :
+					DISABLE;
 		*/
-		set_signed_flag = ($signed(a_in) < $signed(b_in)) ? 1'b1 : 1'b0;
-		set_unsigned_flag = ($unsigned(a_in) < $unsigned(b_in)) ? 1'b1 : 1'b0;
-		set_flag = 	(funct3 == SLT & set_signed_flag) ? 1'b1 :
-					(funct3 == SLTU & set_unsigned_flag) ? 1'b1 :
-					1'b0;
+		set_signed_flag = ($signed(a_in) < $signed(b_in)) ? ENABLE : DISABLE;
+		set_unsigned_flag = ($unsigned(a_in) < $unsigned(b_in)) ? ENABLE : DISABLE;
+		set_flag = 	(funct3 == SLT & set_signed_flag) ? ENABLE :
+					(funct3 == SLTU & set_unsigned_flag) ? ENABLE :
+					DISABLE;
 	end
 
 
+	// TODO: use generate on flag M_SUPPORT
 	multiplier multiplierer (
 		.clk	(clk),
 		.instr	(instr),
@@ -119,7 +120,8 @@ module alu (
 		.valid	(mul_result_valid),
 		.c_out	(mult_result)
 	);
-
+	
+	// TODO: use generate on flag M_SUPPORT
 	divider dividerer (
 		.clk	(clk),
 		.instr	(instr),
@@ -133,11 +135,11 @@ module alu (
 	logic div_instr;
 	always_comb begin : output_sel
 		c_out = NULL;
-		rd_wr = 1'b0;
+		rd_wr = DISABLE;
 		div_instr = funct3[2];
 		unique case (opcode)
 			R: begin
-				rd_wr = 1'b1;
+				rd_wr = ENABLE;
 				unique case (instr.funct7)
 					M_INSTR: begin
 						if (div_instr) begin	// div instruction
@@ -164,7 +166,7 @@ module alu (
 			end
 			
 			I: begin
-				rd_wr = 1'b1;
+				rd_wr = ENABLE;
 				unique case (funct3)
 					ADD:		c_out = add_sub_result;	// same as SUB
 					AND: 		c_out = and_result;
@@ -180,52 +182,52 @@ module alu (
 
 			B: begin
 				c_out = NULL;
-				rd_wr = 1'b0;
+				rd_wr = DISABLE;
 			end
 
 			LUI: begin
 				c_out = b_in; // should already be extended imm
-				rd_wr = 1'b1;
+				rd_wr = ENABLE;
 			end
 
 			AUIPC: begin
 				c_out = add_sub_result;
-				rd_wr = 1'b1;
+				rd_wr = ENABLE;
 			end
 
 			JAL: begin
 				c_out = add_sub_result;
-				rd_wr = 1'b1;
+				rd_wr = ENABLE;
 			end
 
 			JALR: begin
 				c_out = add_sub_result;
-				rd_wr = 1'b1;
+				rd_wr = ENABLE;
 			end
 
 			LOAD: begin
 				c_out = add_sub_result;
-				rd_wr = 1'b1;
+				rd_wr = ENABLE;
 			end
 
 			STORE: begin
 				c_out = add_sub_result;
-				rd_wr = 1'b0;
+				rd_wr = DISABLE;
 			end
 
 			MEM: begin
 				c_out = NULL;
-				rd_wr = 1'b0;
+				rd_wr = DISABLE;
 			end
 
 			SYS: begin
 				c_out = NULL;
-				rd_wr = 1'b0;
+				rd_wr = DISABLE;
 			end
 
 			default: begin
 				c_out = NULL;
-				rd_wr = 1'b0;
+				rd_wr = DISABLE;
 			end
 		endcase
 	end

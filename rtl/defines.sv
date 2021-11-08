@@ -1,5 +1,3 @@
-// all defines using in RISCV (except the ones used in alu)
-
 package defines;
 
 `ifndef _defines_sv_
@@ -8,27 +6,28 @@ package defines;
 //	ISA define
 	localparam 	XLEN 			= 	32;			// RV32
 	localparam	N 				= 	XLEN;	 	// in case I forget should be XLEN instead of N
-	localparam 	FREQ 			= 	2e7;		// core clock, 50Mhz crystal oscillator on FPGA board
+	localparam 	OSC_FREQ 		= 	2e7;		// 50Mhz crystal oscillator on FPGA board
+	localparam 	FREQ 			= 	2e7;		// targeted core clock from PLL
 
 //	constant define
-	localparam	BYTES 			= XLEN / 8; 	// num of byte in a word
+	localparam	BYTES 			= XLEN / 8; 	// number of bytes in a word
 	localparam	TRUE 			= 1;
 	localparam	FALSE 			= 0;
-	localparam 	NULL 			= 32'b0;
+	localparam 	NULL 			= 32'b0;		// used to repersent blank data
 	localparam	ENABLE 			= 1'b1;
 	localparam	DISABLE			= 1'b0;
 	localparam	VALID			= 1'b1;
 	localparam	INVALID			= 1'b0;
 
 
-	localparam LITTLE_ENDIAN = 1'b0;
-	localparam BIG_ENDIAN = 1'b1;
-
-	localparam ENDIANESS = LITTLE_ENDIAN;
+	// byte-varient endianess
+	localparam LITTLE_ENDIAN	= 1'b0;
+	localparam BIG_ENDIAN		= 1'b1;
+	localparam ENDIANESS		= LITTLE_ENDIAN;	// as commonly used in modern computer system
 
 
 	// sopported extension
-	// this part is and only accessed by verilog generate function. 
+	// this part shoule be only accessed by generate
 	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
 	localparam	M_SUPPORT		= TRUE;		// Integer Mult / Dvi, should implement
 	localparam	A_SUPPORT		= FALSE;	// Atomic instructions, required for xv6
@@ -175,8 +174,8 @@ package defines;
     localparam	[2:0]	LHU     =	3'b101;		// load 16 bits and zero extend to 32 bits
 
     // S type funct3 - Store
-    localparam	[2:0]	SB      =	3'b000;      
-    localparam	[2:0]	SH      =	3'b001;
+    localparam	[2:0]	SB      =	3'b000;     // mem[rs1 + imm] <= rs2.byte0
+    localparam	[2:0]	SH      =	3'b001;		// mem[rs1 + imm] <= rs2.word0
     localparam	[2:0]	SW      =	3'b010;		// mem[rs1 + imm] <= rs2
     //localparam	[2:0]	SBU     =	3'b100; not used
     //localparam	[2:0]	SHU     =	3'b101; not used
@@ -195,7 +194,7 @@ package defines;
 
 
 // funct7 define (R only)
-	localparam	[6:0]	M_INSTR = 7'b000_0001;
+	localparam	[6:0]	M_INSTR = 7'b000_0001;	// indicate this R type instruction is mult or div
 
 	// little endian mask
 	localparam	[XLEN-1:0]	B_MASK_LITTLE = 32'hFF_00_00_00;
@@ -232,25 +231,25 @@ function data_t sign_extend_b;	// sign extend 8 bit byte
 endfunction
 
 
-function data_t zero_extend;	// sign extend 12bit imm
+function data_t zero_extend;	// zero extend 12bit imm
 	input imm_t imm;
 	return data_t'({ {20'b0}, {imm[11:0]} });
 endfunction
 
 
-function data_t zero_extend_h;	// sign extend 16-bit half word
+function data_t zero_extend_h;	// zero extend 16-bit half word
 	input half_word_t imm;
 	return data_t'({ {16'b0}, {imm[15:0]} });
 endfunction
 
 
-function data_t zero_extend_b;	// sign extend 8 bit byte
+function data_t zero_extend_b;	// zero extend 8 bit byte
 	input byte_t imm;
 	return data_t'({ {24'b0}, {imm[7:0]} });
 endfunction
 
 
-function data_t get_imm;
+function data_t get_imm;		// extract immidiate value from instruction
 	input instr_t instr;
 	unique case (instr.opcode)
 		LUI:		return data_t'({instr[31:12], 12'b0});
@@ -297,7 +296,7 @@ typedef enum logic[1:0] {
 } mem_fwd_sel_t;
 
 
-function stop;
+function stop;	// sometimes i mistype "$stop()" ans "stop()"...
 	$stop();
 endfunction
 

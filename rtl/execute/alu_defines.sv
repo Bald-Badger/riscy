@@ -3,8 +3,6 @@ package alu_defines;
 `ifndef _alu_define_svh_
 `define _alu_define_svh_
 
-`define PY_PATH string'("../../python")
-
 localparam DIV_LATENCY = 12;
 localparam MUL_LATENCY = 6;
 
@@ -40,7 +38,6 @@ typedef enum logic[2:0] {
 	overflow_div,
 	div_by_0_div
 } div_out_case_t;
-
 
 `endif
 

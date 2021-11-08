@@ -11,16 +11,17 @@ module divider (
 	output	data_t 	c_out
 );
 
-logic[39:0]	divide_result;
-logic[39:0]	remainder;
+logic [39:0]	divide_result;
+logic [39:0]	remainder;
 
-logic [39:0] div_a_in, div_b_in;
+logic [39:0]	div_a_in, div_b_in;
 
-data_t overflow_out;
-data_t div_by_0_out;
+data_t			overflow_out;
+data_t			div_by_0_out;
 
-reg[3:0] div_counter;
-logic div_instr;
+reg [3:0]		div_counter;
+logic			div_instr;
+
 always_comb begin : div_instr_flag_assign
 	div_instr = instr.funct3[2];
 end
@@ -67,6 +68,7 @@ div divide_signed_inst (
 		.quotient	( divide_result ),
 		.remain		( remainder )
 );
+
 
 div_out_case_t div_out_case, div_out_case_reg;
 data_t overflow_result, div_by_0_result;
@@ -138,10 +140,8 @@ always_comb begin : div_sel
 	endcase
 end
 
-// todo: c_out assign
 
-
-// beahvour discription: riscv-spec p45
+// beahvour spec: riscv-spec p45
 always_comb begin : div_by_0_sel
 	unique case (instr.funct3)
 		DIVU:		div_by_0_out = {XLEN{1'b1}};
