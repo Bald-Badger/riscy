@@ -30,13 +30,15 @@ package defines;
 	// this part shoule be only accessed by generate
 	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
 	localparam	M_SUPPORT		= TRUE;		// Integer Mult / Dvi, should implement
+	localparam	Z_SUPPORT		= TRUE;		// Instruction-Fetch fence, required for xv6
+											// No explicit support for Z, because single core in-order system
+											// execute every instruction as if atomically 
 	localparam	A_SUPPORT		= FALSE;	// Atomic instructions, required for xv6
 	localparam	F_SUPPORT		= FALSE;	// Single-Precision FP, implement if enough FPGA space
 	localparam	D_SUPPORT		= FALSE;	// Double-Precision FP, should not implement
 	localparam	Q_SUPPORT		= FALSE;	// Quad-Precision FP, should not implement
-	localparam	C_SUPPORT		= FALSE;	// Compressed Instructions, should not implement (unless embedded or VLIW)
+	localparam	C_SUPPORT		= FALSE;	// Compressed Instructions, should not implement
 	localparam	CSR_SUPPORT		= FALSE;	// Control and status register, required for xv6
-	localparam	FENCE_SUPPORT	= FALSE;	// Instruction-Fetch fence, required for xv6
 
 
 	// Opcode define
