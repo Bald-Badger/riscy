@@ -36,7 +36,7 @@ module proc(
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
-	data_t 		rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;	// data in register file #1
+	data_t 		rs1_d, rs1_x, rs1_m, rs2_d, rs2_x, rs2_m;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
 	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
@@ -280,7 +280,7 @@ module proc(
 		// output
 		.data_out			(mem_data_m),
 		.sdram_init_done	(sdram_init_done),
-		.mem_access_done	(mem_access_done),
+		.done				(mem_access_done),
 
 		// SDRAM hardware pins
 		.sdram_clk			(sdram_clk), 

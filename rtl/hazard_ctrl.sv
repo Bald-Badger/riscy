@@ -246,6 +246,8 @@ module hazard_ctrl (
 		load_hazard_2	=	load_hazard_2a || load_hazard_2b;
 	end
 
+	// TODO: when seeing a FENSE instruction in decode stage, stall PC and IF untie see
+	// TODO: add fense bit in the pipeline stages to indicate instruction after finse done exe
 	always_comb begin : stall_assign
 		stall_pc		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy;
 		stall_if_id		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy;

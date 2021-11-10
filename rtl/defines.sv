@@ -9,6 +9,12 @@ package defines;
 	localparam 	OSC_FREQ 		= 	2e7;		// 50Mhz crystal oscillator on FPGA board
 	localparam 	FREQ 			= 	2e7;		// targeted core clock from PLL
 
+
+//	core config
+	localparam	MAX_NEST_LOCK	=	16;			// max nested lock aquire length, 
+												// cases that over 2 is very rare
+
+
 //	constant define
 	localparam	BYTES 			= XLEN / 8; 	// number of bytes in a word
 	localparam	TRUE 			= 1;
@@ -30,9 +36,7 @@ package defines;
 	// this part shoule be only accessed by generate
 	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
 	localparam	M_SUPPORT		= TRUE;		// Integer Mult / Dvi, should implement
-	localparam	Z_SUPPORT		= TRUE;		// Instruction-Fetch fence, required for xv6
-											// No explicit support for Z, because single core in-order system
-											// execute every instruction as if atomically 
+	localparam	Z_SUPPORT		= FALSE;	// Instruction-Fetch fence, required for xv6
 	localparam	A_SUPPORT		= FALSE;	// Atomic instructions, required for xv6
 	localparam	F_SUPPORT		= FALSE;	// Single-Precision FP, implement if enough FPGA space
 	localparam	D_SUPPORT		= FALSE;	// Double-Precision FP, should not implement
@@ -43,19 +47,19 @@ package defines;
 
 	// Opcode define
 	typedef enum logic[6:0] { 
-		R =			7'b0110011,
-		I =			7'b0010011,
-		B =			7'b1100011,
-		LUI =		7'b0110111,
-		AUIPC =		7'b0010111,
-		JAL =		7'b1101111,
-		JALR =		7'b1100111,
-		LOAD =		7'b0000011,
-		STORE =		7'b0100011,
-		MEM =		7'b0001111,	// for fence instruction
-		SYS =		7'b1110011,	// ECALL, EBREAK, and CSR
-		ATMO =		7'b0101111, // atomic instr	
-		NULL_OP =	7'b0000000
+		R		=	7'b0110011,
+		I		=	7'b0010011,
+		B		=	7'b1100011,
+		LUI		=	7'b0110111,
+		AUIPC	=	7'b0010111,
+		JAL		=	7'b1101111,
+		JALR	=	7'b1100111,
+		LOAD	=	7'b0000011,
+		STORE	=	7'b0100011,
+		MEM		=	7'b0001111,	// for fence instruction
+		SYS		=	7'b1110011,	// ECALL, EBREAK, and CSR
+		ATOMIC	=	7'b0101111, // atomic instr	
+		NULL_OP	=	7'b0000000
 	} opcode_t;
 
 
@@ -65,7 +69,8 @@ package defines;
 	typedef logic [15:0]		half_word_t;
 	typedef logic [2:0] 		funct3_t;
 	typedef logic [6:0] 		funct7_t;
-	typedef logic [11:0]		imm_t; // only for I type operation
+	typedef logic [11:0]		imm_t;		// only for I type instruction
+
 
 	typedef struct packed {
 		byte_t b0;
@@ -82,121 +87,110 @@ package defines;
 	} r_t;	// systemverilog will assign 5'd0 - 5'd31 in order
 
 
-// instruction type define
-	typedef struct packed{
-		funct7_t	funct7;
-		r_t			rs2;
-		r_t			rs1;
-		funct3_t	funct3;
-		r_t			rd;
-		opcode_t	opcode;
-	} instr_t;		// R (base) type	
-
-
-	typedef struct packed{
-		imm_t		imm;
-		r_t			rs1;
-		funct3_t	funct3;
-		r_t			rd;
-		opcode_t	opcode;
-	} instr_i_t;	// I type
-
-
-	typedef struct packed{
-		logic[11:5]	imm_h;
-		r_t			rs2;
-		r_t			rs1;
-		funct3_t	funct3;
-		logic[4:0]	imm_l;
-		opcode_t	opcode;
-	} instr_s_t;	// I type
-
-
 	localparam	[XLEN-1:0]	NOP		= 32'h0000_0013;	// ADDI x0, x0, 0
-	// localparam	[XLEN-1:0]	HALT	= 32'h0000_0063;	// BEQ x0, x0, 0
+	// localparam	[XLEN-1:0]	HALT	= 32'h0000_0063;// BEQ x0, x0, 0
 	localparam	[XLEN-1:0]	EBREAK	= 32'h0000_0073;
 	localparam	[XLEN-1:0]	ECALL	= 32'h0010_0073;
 	
 
 // Funt3 define
-    // R type funct3
-    localparam	[2:0]	ADD		=	3'b000;		// rd <= rs1 + rs2, no overflow exception
-    localparam	[2:0]	SUB		=	3'b000;		// rd <= rs1 - rs2, no overflow exception
-    localparam	[2:0]	AND		=	3'b111;
-    localparam	[2:0]	OR		=	3'b110;
-    localparam	[2:0]	XOR		=	3'b100;
-    localparam	[2:0]	SLT		=	3'b010;		// set less than, rd <= 1 if rs1 < rs2
-    localparam	[2:0]	SLTU	=	3'b011;		// set less than unsigned, rd <= 1 if rs1 < rs2
-    localparam	[2:0]	SLL		=	3'b001;		// logical shift left, rd <= rs1 << rs2[4:0]
-    localparam	[2:0]	SRL		=	3'b101;		// logical shift right rd <= rs1 >> rs2[4:0]
-    localparam	[2:0]	SRA		=	3'b101;		// arithmetic shift right
+	// R type funct3
+	localparam	[2:0]	ADD			=	3'b000;		// rd <= rs1 + rs2, no overflow exception
+	localparam	[2:0]	SUB			=	3'b000;		// rd <= rs1 - rs2, no overflow exception
+	localparam	[2:0]	AND			=	3'b111;
+	localparam	[2:0]	OR			=	3'b110;
+	localparam	[2:0]	XOR			=	3'b100;
+	localparam	[2:0]	SLT			=	3'b010;		// set less than, rd <= 1 if rs1 < rs2
+	localparam	[2:0]	SLTU		=	3'b011;		// set less than unsigned, rd <= 1 if rs1 < rs2
+	localparam	[2:0]	SLL			=	3'b001;		// logical shift left, rd <= rs1 << rs2[4:0]
+	localparam	[2:0]	SRL			=	3'b101;		// logical shift right rd <= rs1 >> rs2[4:0]
+	localparam	[2:0]	SRA			=	3'b101;		// arithmetic shift right
 	// MUL (same opcode as R) funct3
-	localparam	[2:0]	MUL 	=	3'b000;		// (sign rs1*sign rs2)[XLEN-1:0] => rd
-	localparam	[2:0]	MULH	=	3'b001;		// (sign rs1*sign rs2)[2*XLEN-1:XLEN] => rd
-	localparam	[2:0]	MULHSU	=	3'b010;		// (sign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
-	localparam	[2:0]	MULHU	=	3'b011;		// (unsign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
-	localparam	[2:0]	DIV		=	3'b100;		// sign rs1 / sign rs2
-	localparam	[2:0]	DIVU	=	3'b101;		// unsign rs1 / unsign rs2
-	localparam	[2:0]	REM		=	3'b110;		// sign rs1 % sign rs2
-	localparam	[2:0]	REMU	=	3'b111;		// unsign rs1 % unsign rs2
+	localparam	[2:0]	MUL			=	3'b000;		// (sign rs1*sign rs2)[XLEN-1:0] => rd
+	localparam	[2:0]	MULH		=	3'b001;		// (sign rs1*sign rs2)[2*XLEN-1:XLEN] => rd
+	localparam	[2:0]	MULHSU		=	3'b010;		// (sign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
+	localparam	[2:0]	MULHU		=	3'b011;		// (unsign rs1*unsign rs2)[2*XLEN-1:XLEN] => rd
+	localparam	[2:0]	DIV			=	3'b100;		// sign rs1 / sign rs2
+	localparam	[2:0]	DIVU		=	3'b101;		// unsign rs1 / unsign rs2
+	localparam	[2:0]	REM			=	3'b110;		// sign rs1 % sign rs2
+	localparam	[2:0]	REMU		=	3'b111;		// unsign rs1 % unsign rs2
 
-    // I type funct3
-    localparam	[2:0]	ADDI    =	3'b000;
-    localparam	[2:0]	ANDI    =	3'b111;
-    localparam	[2:0]	ORI     =	3'b110;
-    localparam	[2:0]	XORI    =	3'b100;
-    localparam	[2:0]	SLTI    =	3'b010;		// Set less than immediate, rd <= 1 if rs1 < imm
-    localparam	[2:0]	SLTIU   =	3'b011;		// Set less than immediate unsigned, rd <= 1 if rs1 < imm
-    localparam	[2:0]	SLLI    =	3'b001;		// logical shift left imm
-    localparam	[2:0]	SRLI    =	3'b101;		// logical shift right imm
-    localparam	[2:0]	SRAI    =	3'b101;		// arithmetic shift right imm
+	// I type funct3
+	localparam	[2:0]	ADDI		=	3'b000;
+	localparam	[2:0]	ANDI		=	3'b111;
+	localparam	[2:0]	ORI			=	3'b110;
+	localparam	[2:0]	XORI		=	3'b100;
+	localparam	[2:0]	SLTI		=	3'b010;		// Set less than immediate, rd <= 1 if rs1 < imm
+	localparam	[2:0]	SLTIU		=	3'b011;		// Set less than immediate unsigned, rd <= 1 if rs1 < imm
+	localparam	[2:0]	SLLI		=	3'b001;		// logical shift left imm
+	localparam	[2:0]	SRLI		=	3'b101;		// logical shift right imm
+	localparam	[2:0]	SRAI		=	3'b101;		// arithmetic shift right imm
 
-    // B type funct3                branch imm have to shift left for 1
-    localparam	[2:0]	BEQ     =	3'b000;		// branch if rs1 == rs2
-    localparam	[2:0]	BNE     =	3'b001;		// branch if rs1 != rs2
-    localparam	[2:0]	BLT     =	3'b100;		// branch if rs1 < rs2 signed
-    localparam	[2:0]	BLTU    =	3'b110;		// branch if rs1 < rs2 unsigned
-    localparam	[2:0]	BGE     =	3'b101;		// branch if rs1 >= rs2 signed
-    localparam	[2:0]	BGEU    =	3'b111;		// branch if rs1 >= rs2 unsigned
+	// B type funct3				branch imm have to shift left for 1
+	localparam	[2:0]	BEQ			=	3'b000;		// branch if rs1 == rs2
+	localparam	[2:0]	BNE			=	3'b001;		// branch if rs1 != rs2
+	localparam	[2:0]	BLT			=	3'b100;		// branch if rs1 < rs2 signed
+	localparam	[2:0]	BLTU		=	3'b110;		// branch if rs1 < rs2 unsigned
+	localparam	[2:0]	BGE			=	3'b101;		// branch if rs1 >= rs2 signed
+	localparam	[2:0]	BGEU		=	3'b111;		// branch if rs1 >= rs2 unsigned
 
-    // U type have no funct3 
-    //localparam	[2:0]	LUI     =	3'b000;	// rd <= {imm, 12'b0}
-    //localparam	[2:0]	AUIPC   =	3'b000;	// pc, rd <= (pc_of_auipc + {imm, 12'b0})
+	// U type have no funct3 
+	//localparam	[2:0]	LUI		=	3'b000;	// rd <= {imm, 12'b0}
+	//localparam	[2:0]	AUIPC	=	3'b000;	// pc, rd <= (pc_of_auipc + {imm, 12'b0})
 
-    // J type have no funct3
-    //localparam	[2:0]	JAL     =	3'b000;	// jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm << 1)
-    //localparam	[2:0]	JALR    =	3'b000;	// jump and link registor, rd <= (pc_of_jalr + 4),  
+	// J type have no funct3
+	//localparam	[2:0]	JAL		=	3'b000;	// jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm << 1)
+	//localparam	[2:0]	JALR	=	3'b000;	// jump and link registor, rd <= (pc_of_jalr + 4),  
 												// pc <= (rs1 + imm) && 0xfffe (set the last bit is always 0)
 
-    // S type funct3 - Load
-    localparam	[2:0]	LB      =	3'b000;		// load 8 bits and sign extend to 32 bits
-    localparam	[2:0]	LH      =	3'b001;		// load 16 bits and sign extend to 32 bits
-    localparam	[2:0]	LW      =	3'b010;		// rd <= mem[rs1 + imm]
-    localparam	[2:0]	LBU     =	3'b100;		// load 8 bits and zero extend to 32 bits
-    localparam	[2:0]	LHU     =	3'b101;		// load 16 bits and zero extend to 32 bits
+	// S type funct3 - Load
+	localparam	[2:0]	LB			=	3'b000;		// load 8 bits and sign extend to 32 bits
+	localparam	[2:0]	LH			=	3'b001;		// load 16 bits and sign extend to 32 bits
+	localparam	[2:0]	LW			=	3'b010;		// rd <= mem[rs1 + imm]
+	localparam	[2:0]	LBU			=	3'b100;		// load 8 bits and zero extend to 32 bits
+	localparam	[2:0]	LHU			=	3'b101;		// load 16 bits and zero extend to 32 bits
 
-    // S type funct3 - Store
-    localparam	[2:0]	SB      =	3'b000;     // mem[rs1 + imm] <= rs2.byte0
-    localparam	[2:0]	SH      =	3'b001;		// mem[rs1 + imm] <= rs2.word0
-    localparam	[2:0]	SW      =	3'b010;		// mem[rs1 + imm] <= rs2
-    //localparam	[2:0]	SBU     =	3'b100; not used
-    //localparam	[2:0]	SHU     =	3'b101; not used
+	// S type funct3 - Store
+	localparam	[2:0]	SB			=	3'b000;	// mem[rs1 + imm] <= rs2.byte0
+	localparam	[2:0]	SH			=	3'b001;	// mem[rs1 + imm] <= rs2.word0
+	localparam	[2:0]	SW			=	3'b010;	// mem[rs1 + imm] <= rs2
+	//localparam	[2:0]	SBU	 =	3'b100; not used
+	//localparam	[2:0]	SHU	 =	3'b101; not used
 
-    // Fence (Memory ordering) funct3
-    localparam	[2:0]	FENCE	=	3'b000;
-	localparam	[2:0]	FENCEI	=	3'b001;	
+	// Fence (Memory ordering) funct3
+	localparam	[2:0]	FENCE		=	3'b000;
+	localparam	[2:0]	FENCEI		=	3'b001;	
+
+	// Atomic funct3
+	localparam	[2:0]	A_32		=	3'b010;
+	localparam	[2:0]	A_64		=	3'b011;	// not supported
 
 	// SYS (ECALL, EBREAK, and CSR) funct3
-	localparam	[2:0]	CSRRW	=	3'b001;	// Atomic read/write CSR
-	localparam	[2:0]	CSRRS	=	3'b010;	// Atomic Read and Clear Bits
-	localparam	[2:0]	CSRRC	=	3'b011;
-	localparam	[2:0]	CSRRWI	=	3'b101;
-	localparam	[2:0]	CSRRSsI	=	3'b110;
-	localparam	[2:0]	CSRRCI	=	3'b111;
+	localparam	[2:0]	CSRRW		=	3'b001;	// Atomic read/write CSR
+	localparam	[2:0]	CSRRS		=	3'b010;	// Atomic Read and Clear Bits
+	localparam	[2:0]	CSRRC		=	3'b011;
+	localparam	[2:0]	CSRRWI		=	3'b101;
+	localparam	[2:0]	CSRRSSI		=	3'b110;
+	localparam	[2:0]	CSRRCI		=	3'b111;
+
+// funct5 define (Atomic only)
+	typedef enum logic[4:0] { 
+		LC			=	5'b00010,
+		SC			=	5'b00011,
+		AMOSWAP		=	5'b00001,	// rd <= mem[rs1], mem[rs1] <= rs2(old)
+		AMOADD		=	5'b00000,	// rd <= mem[rs1], mem[rs1] <= rs2(old) + rd
+		AMOXOR		=	5'b00100,
+		AMOAND		=	5'b01100,
+		AMOOR		=	5'b01000,
+		AMOMIN		=	5'b10000,
+		AMOMAX		=	5'b10100,
+		AMOMINU		=	5'b11000,
+		AMOMAXU		=	5'b11100
+	} funct5_t; // only for ATOMIC instruction
 
 
 // funct7 define (R only)
-	localparam	[6:0]	M_INSTR = 7'b000_0001;	// indicate this R type instruction is mult or div
+	localparam	[6:0]	M_INSTR		= 7'b000_0001;	// indicate this R type instruction is mult or div
 
 	// little endian mask
 	localparam	[XLEN-1:0]	B_MASK_LITTLE = 32'hFF_00_00_00;
@@ -213,6 +207,45 @@ package defines;
 	localparam	[BYTES-1:0]	B_EN_BIG = 4'b0001;
 	localparam	[BYTES-1:0]	H_EN_BIG = 4'b0011;
 	localparam	[BYTES-1:0]	W_EN_BIG = 4'b1111;
+
+
+	// instruction type define
+	typedef struct packed{
+		funct7_t	funct7;
+		r_t			rs2;
+		r_t			rs1;
+		funct3_t	funct3;
+		r_t			rd;
+		opcode_t	opcode;
+	} instr_t;		// R (base) type	
+
+	typedef struct packed{
+		imm_t		imm;
+		r_t			rs1;
+		funct3_t	funct3;
+		r_t			rd;
+		opcode_t	opcode;
+	} instr_i_t;	// I type
+
+	typedef struct packed{
+		logic[11:5]	imm_h;
+		r_t			rs2;
+		r_t			rs1;
+		funct3_t	funct3;
+		logic[4:0]	imm_l;
+		opcode_t	opcode;
+	} instr_s_t;	// S type
+
+	typedef struct packed {
+		funct5_t	funct5;
+		logic		aq;
+		logic		rl;
+		r_t			rs2;
+		r_t			rs1;
+		funct3_t	funct3;
+		r_t			rd;
+		opcode_t	opcode;
+	} instr_a_t;	// Atomic type
 
 
 function data_t sign_extend;	// sign extend 12bit imm
@@ -270,9 +303,9 @@ endfunction
 function data_t swap_endian;
 	input data_t data;
 	return	data_t'	({{data[7:0]},
-            		{data[15:8]},
-            		{data[23:16]},
-            		{data[31:24]}});
+					{data[15:8]},
+					{data[23:16]},
+					{data[31:24]}});
 endfunction
 
 

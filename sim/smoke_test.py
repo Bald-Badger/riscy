@@ -11,7 +11,7 @@ if __name__ == '__main__':
     if visiable:
         cmd = "vsim -c -do ./run_all.do"
     else:
-        cmd = "vsim -c -do ./run_all.do > ./transcript.txt"
+        cmd = "vsim -c -do ./run_all.do > NUL"
     for test in test_list:
         src = "./tests/mif/" + test
         dest = "./instr.mif"

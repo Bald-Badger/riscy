@@ -10,19 +10,19 @@ import mem_defines::*;
 // addi x1, x1, 4; sb x1, 0(x1)
 
 module memory (
-	input logic				clk,
-	input logic				clk_100m,
-	input logic				clk_100m_shift,
-	input logic				rst_n,
-	input data_t			addr,
-	input data_t			data_in_raw,
-	input data_t			mem_mem_fwd_data,
-	input mem_fwd_sel_t 	fwd_m2m, 	// mem to mem forwarding
-	input instr_t			instr,
+	input	logic			clk,
+	input	logic			clk_100m,
+	input	logic			clk_100m_shift,
+	input	logic			rst_n,
+	input	data_t			addr,
+	input	data_t			data_in_raw,
+	input	data_t			mem_mem_fwd_data,
+	input	mem_fwd_sel_t 	fwd_m2m, 	// mem to mem forwarding
+	input	instr_t			instr,
 
-	output data_t			data_out,
-	output logic			sdram_init_done,
-	output logic			mem_access_done,
+	output	data_t			data_out,
+	output	logic			sdram_init_done,
+	output	logic			done,
 
 	// SDRAM hardware pins
 	output	logic			sdram_clk, 
@@ -39,16 +39,127 @@ module memory (
 
 	opcode_t		opcode;
 	funct3_t		funct3;
+	funct5_t		funct5;
 	logic 			wren, rden;
 	logic			addr_misalign;
 	logic  			misalign_trap;
+	logic			is_st, is_ld;
+	logic			mem_access_done;
+
+	// atomc contril signals
+	instr_a_t		instr_a;
+	logic			is_atomic, is_lc, is_sc;
+	logic			update;		// enable exclusive monitor for a single cycle
+	logic			sc_success;
+
+	always_comb begin : signal_assign
+		instr_a		=	instr_a_t'(instr);
+		opcode		=	instr_a.opcode;
+		funct3		=	instr_a.funct3;
+		funct5		=	instr_a.funct5;
+		is_atomic	=	opcode == ATOMIC;
+		is_lc		=	is_atomic && funct5 == LC;
+		is_sc		=	is_atomic && funct5 == SC;
+		is_ld		=	opcode == LOAD;
+		is_st		=	opcode == STORE;
+	end
 
 
-	always_comb begin
-		opcode	= instr.opcode;
-		funct3	= instr.funct3;
-		rden	= (opcode == LOAD);
-		wren	= (opcode == STORE);
+	typedef enum logic[2:0] { 
+		IDLE,		// no memory access
+		REGULAR,	// actual memory access
+		LC, SC,		// LC / SC memory access
+		AMO1, AMO2	// other automic memory access
+	} memory_ctrl_state_t;
+
+
+	memory_ctrl_state_t state, nxt_state;
+	always_ff @( posedge clk, negedge rst_n ) begin
+		if (~rst_n)
+			state <= IDLE;
+		else 
+			state <= nxt_state;
+	end
+
+	always_comb begin : memory_fsm_ctrl
+		nxt_state	= IDLE;
+		rden		= DISABLE;
+		wren		= DISABLE;
+		update		= DISABLE;
+		done		= 1'b0;
+		unique case (state)
+			IDLE	: begin
+				if (is_ld) begin
+					nxt_state	= REGULAR;
+					rden		= ENABLE;
+					wren		= DISABLE;
+					update		= DISABLE;
+					done		= 1'b0;
+				end else if (is_st) begin
+					nxt_state	= REGULAR;
+					rden		= DISABLE;
+					wren		= ENABLE;
+					update		= DISABLE;
+					done		= 1'b0;
+				end else if (is_lc) begin
+					nxt_state	= REGULAR;
+					rden		= ENABLE;
+					wren		= DISABLE;
+					update		= ENABLE;
+					done		= 1'b0;
+				end else if (is_sc) begin
+					rden		= DISABLE;
+					update		= ENABLE;
+					if (sc_success) begin
+						nxt_state	= REGULAR;
+						wren		= ENABLE;
+						done		= 1'b0;
+					end else begin
+						nxt_state	= IDLE;
+						wren		= DISABLE;
+						done		= 1'b1;
+					end
+				end else begin
+					nxt_state	= IDLE;
+					rden		= DISABLE;
+					wren		= DISABLE;
+					update		= DISABLE;
+					done		= 1'b0;
+				end
+			end
+
+			REGULAR	: begin
+				if (mem_access_done) begin
+					nxt_state	= IDLE;
+					done		= 1'b1;
+					wren		= is_st || is_sc;
+					rden		= is_ld || is_lc;
+				end else begin
+					nxt_state	= REGULAR;
+					done		= 1'b0;
+					wren		= is_st || is_sc;
+					rden		= is_ld || is_lc;
+				end
+			end
+
+
+			AMO1	: begin
+				
+			end
+
+			AMO2	: begin
+				
+			end
+
+			default	: begin
+				nxt_state	= IDLE;
+				rden		= DISABLE;
+				wren		= DISABLE;
+				update		= DISABLE;
+				done		= 1'b0;
+			end
+
+		endcase
 	end
 
 
@@ -212,6 +323,20 @@ module memory (
 		end
 	end
 
+
+	// exclusive monitor, used to see if a conditional store will success
+	exclusive_monitor #(
+		.RES_ENTRY_CNT	(MAX_NEST_LOCK)
+	) exclusive_monitor_inst (
+		.clk			(clk),
+		.rst_n			(rst_n),
+		.instr			(instr_a_t'(instr)),
+		.addr			(addr),
+		.mem_wr			(wren),
+		.update			(update),
+		.success		(sc_success)
+	);
+
 	
 	mem_sys memory_system (
 		.clk_50m		(clk),
@@ -223,7 +348,7 @@ module memory (
 		.data_in		(data_in_final),
 		.wr				(wren),
 		.rd				(rden),
-		.valid			(wren || rden),
+		.valid			(wren || rden),	// TODO: add Atomic support
 		.be				(be),
 		
 		.data_out		(data_out_mem),
@@ -255,9 +380,7 @@ module memory (
 			default:addr_misalign = 1'b0; 
 		endcase
 	end
-	// synthesis translate_on
 
-	// synthesis translate_off 
 	// TODO: move this to verification module
 	always @(negedge clk) begin
 		if (misalign_trap) begin

@@ -68,6 +68,7 @@ vlog -work work -vopt -sv -stats=none  ../rtl/mem/memory.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/cache.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/mem_ctrl.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/mem_sys.sv
+vlog -work work -vopt -sv -stats=none  ../rtl/mem/exclusive_monitor.sv
 
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/sdram/sdr.sv
 vlog -work work -vopt -sv -stats=none  ../rtl/mem/sdram/sdram.sv
