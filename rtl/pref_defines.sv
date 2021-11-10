@@ -10,5 +10,5 @@ import mem_defines::*;
 // localparam	MAX_PHY_MEM			= 32'h01ff_ffff
 // localparam	MMIO_BASE			= 32'h0200_0000
 
-
+`endif
 endpackage : pref_defines

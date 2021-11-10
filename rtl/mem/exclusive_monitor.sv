@@ -30,25 +30,26 @@ module exclusive_monitor #(
 	opcode_t	opcode;
 	funct5_t	funct5;
 	logic		is_atomic, is_lc, is_sc;
-	always_comb begin
+	
+	
+	always_comb begin : ctrl_signal_assign
 		opcode		=	instr.opcode;
 		funct5		=	instr.funct5;
 		is_atomic	=	opcode == ATOMIC;
 		is_lc		=	is_atomic && funct5 == LC;
 		is_sc		=	is_atomic && funct5 == SC;
-	end
-
-	
-	always_comb begin
-		set_valid	=	is_lc && update;
+		set_valid	=	is_lc;
+		clear_valid	=	(
+							mem_wr && 
+							(addr == reservation_set[pointer].addr) && 
+							reservation_set[pointer].valid
+						) ||
+						is_sc;
+		push		=	is_lc;
+		pop			=	is_sc;
 		success		=	is_sc &&
 						(addr == reservation_set[pointer].addr) && 
 						reservation_set[pointer].valid;
-		clear_valid	=	mem_wr && 
-						(addr == reservation_set[pointer].addr) && 
-						reservation_set[pointer].valid;
-		push		=	is_lc;
-		pop			=	success;
 	end
 
 
@@ -72,7 +73,7 @@ module exclusive_monitor #(
 				reservation_set[i].addr			<= NULL;
 				reservation_set[i].valid		<= INVALID;
 			end
-		end else if (set_valid) begin
+		end else if (set_valid && update) begin
 			for (i = 0; i < MAX_NEST_LOCK; i++) begin
 				if (i == pointer) begin
 					reservation_set[i].addr		<= addr;
@@ -83,7 +84,7 @@ module exclusive_monitor #(
 				end
 			end
 		// an regular st/ld without 'update' bit set can also trigger clear valid
-		end else if (clear_valid) begin
+		end else if (clear_valid && update) begin
 			for (i = 0; i < MAX_NEST_LOCK; i++) begin
 				if (i == pointer) begin
 					reservation_set[i].addr		<= NULL;

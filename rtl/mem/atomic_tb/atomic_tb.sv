@@ -2,7 +2,7 @@
 import defines::*;
 import mem_defines::*;
 
-module mem_tb ();
+module atomic_tb ();
 
 //logic define
 logic			clk, clk_50m, clk_100m, clk_100m_shift;
@@ -65,6 +65,7 @@ logic	[ 1:0]	sdram_ba;
 logic	[12:0]	sdram_addr;
 wire	[15:0]	sdram_data;
 logic	[ 1:0]	sdram_dqm;
+
 memory memory_inst (
 	// input
 	.clk				(clk),
@@ -94,6 +95,7 @@ memory memory_inst (
 	.sdram_data			(sdram_data),
 	.sdram_dqm			(sdram_dqm)
 );
+
 
 sdr sdram_functional_model(    
 		.Clk			(sdram_clk),
@@ -282,78 +284,75 @@ task read_mem (
 endtask
 
 
-task word_r_w_test();
-	addr = 0;
-	data1 = $urandom();
-	write_mem(addr, data1, SH);
-	read_mem(addr, LBU);
-	assert (d_dut == d_ref) 
-	else   err = 1;
-	if (err)
-		$display("word_r_w_test failed");
-	else
-		$display("word_r_w_test passed");
+task load_conditional (
+	input data_t a,
+);
+	d_ref_raw = word_t'(ref_mem[addr >> 2]);
+	fork
+		begin
+			if (ENDIANESS == LITTLE_ENDIAN) begin
+				d_ref = {d_ref_raw.b3, d_ref_raw.b2, d_ref_raw.b1, d_ref_raw.b0};
+			end else begin
+				d_ref = {d_ref_raw.b0, d_ref_raw.b1, d_ref_raw.b2, d_ref_raw.b3};
+			end
+			addr_in	= a;
+			instr.opcode = LOAD;
+			instr.funct3 = mode;
+			valid = 1;
+			@(posedge done);
+			#1;
+			d_dut = data_out;
+			@(negedge done);
+			valid = 0;
+			instr = NOP;
+		end
+
+		begin
+			repeat(100) @(posedge clk_50m);
+			$display("read timeout!");
+			$stop();
+		end
+	join_any
+	disable fork;
 endtask
 
 
-task rand_test();
-	iter = 23333;
-
-	for (i = 0; i < rand_test_mem_space; i++) begin
-		write_mem(((i<<2) & addr_mask_w), i, SW);
-	end
-
-	$display("rand_test: mem init finish");
-
-	for (i = 0; i < iter; i++) begin
-		data1 = $urandom();
-		data2 = $urandom();
-		addr = $urandom();
-		if (data1[0]) begin	// store
-			if(data1[1]) begin
-				m = SW;
-				addr = addr & addr_mask_w;
-			end else if (data1[2]) begin
-				m = SH;
-				addr = addr & addr_mask_h;
+task store_conditional (
+	input data_t	a,
+	input data_t	d,
+	input funct3_t	mode	// SB: 000; SH: 001; SW: 010;
+);
+	fork
+		begin
+			if (ENDIANESS == LITTLE_ENDIAN) begin
+				ref_mem[a>>2].b0 = d[7:0];
+				ref_mem[a>>2].b1 = d[15:8];
+				ref_mem[a>>2].b2 = d[23:16];
+				ref_mem[a>>2].b3 = d[31:24];
 			end else begin
-				m = SB;
-				addr = addr & addr_mask_b;
+				ref_mem[a>>2].b0 = d[31:24];
+				ref_mem[a>>2].b1 = d[23:16];
+				ref_mem[a>>2].b2 = d[15:8];
+				ref_mem[a>>2].b3 = d[7:0];	
 			end
-			write_mem(addr, data2, m);
-		end else begin		// LOAD
-			if ((data1[3:1] != LB) && 
-				(data1[3:1] != LH) && 
-				(data1[3:1] != LW) && 
-				(data1[3:1] != LBU) && 
-				(data1[3:1] != LHU)) begin
-				m = LH;
-			end else begin
-				m = data1[3:1];
-			end
-			case (m)
-				LB:		addr = addr & addr_mask_b;
-				LH:		addr = addr & addr_mask_h;
-				LW:		addr = addr & addr_mask_w;
-				LBU:	addr = addr & addr_mask_b;
-				LHU:	addr = addr & addr_mask_h;
-				default:$display("WTF");
-			endcase
-			read_mem(addr, m);
-			#1; 
-			assert (d_dut == d_ref) 
-			else   begin
-				err = 1;
-				break_mark = i;
-				$display("rand test failed at iter %d", break_mark);
-				$stop();
-			end
+			addr_in	= a;
+			data_in	= d;
+			instr.opcode = STORE;
+			instr.funct3 = mode;
+			valid = 1;
+			@(posedge done);
+			@(negedge done);
+			valid = 0;
+			instr = NOP;
 		end
-	end
-	if (err)
-		$display("rand_test failed");
-	else
-		$display("rand_test passed");
+
+		begin
+			repeat(200) @(posedge clk_50m);
+			$display("write timeout!");
+			$stop();
+		end
+	join_any
+	disable fork;
 endtask
 
 
@@ -369,8 +368,7 @@ endtask
 
 initial begin : main
 	init();
-	rand_test();
 	$stop();
 end
 
-endmodule : mem_tb
+endmodule : atomic_tb

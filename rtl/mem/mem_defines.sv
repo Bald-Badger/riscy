@@ -50,9 +50,22 @@ localparam  sdram_access_len	= 10'd8;	// 8 16-bit word each access
 localparam	DIRTY				= 1'b1;
 localparam	CLEAN				= 1'b0;
 
+// atomic operation defines
+localparam	SC_FAIL_ECODE		= 32'b1;	// if sc fail, write this value to rd 
+localparam	SC_SUCCESS_CODE		= NULL;
+
 typedef logic [tag_len - 1 : 0]		tag_t;
 typedef logic [index_len - 1 : 0]	index_t;
 typedef logic [4 : 0]				x5_t;
+
+typedef enum logic[2:0] {
+	REGULAR_LD_OUT,
+	LOAD_CONDITIONAL_OUT,
+	STORE_CONDITIONAL_SUC_OUT,
+	STORE_CONDITIONAL_FAIL_OUT,
+	AMO_INSTR_OUT,
+	NULL_OUT
+} mem_out_sel_t;
 
 typedef struct packed {
 	tag_t		tag;

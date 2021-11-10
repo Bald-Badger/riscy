@@ -110,11 +110,11 @@ module memory (
 				end else if (is_sc) begin
 					rden		= DISABLE;
 					update		= ENABLE;
-					if (sc_success) begin
+					if (sc_success) begin // success, write 0 to rd
 						nxt_state	= REGULAR;
 						wren		= ENABLE;
 						done		= 1'b0;
-					end else begin
+					end else begin	// fail, write non-zero value to rd
 						nxt_state	= IDLE;
 						wren		= DISABLE;
 						done		= 1'b1;
@@ -250,77 +250,106 @@ module memory (
 	always_comb begin // abbr for shorter code
 		d = word_t'(data_out_mem); 
 	end
-	
-	// bug!
+
+	mem_out_sel_t mem_out_sel;
+	always_comb begin : mem_out_sel_assign
+		assign mem_out_sel =	(is_ld || is_st) ? REGULAR_LD_OUT :
+								(is_lc) ? LOAD_CONDITIONAL_OUT :
+								(is_sc && sc_success) ? STORE_CONDITIONAL_SUC_OUT :
+								(is_sc && ~sc_success) ? STORE_CONDITIONAL_FAIL_OUT:
+								(is_atomic) ? AMO_INSTR_OUT:
+								NULL_OUT;
+	end
+
 	always_comb begin : output_mask_pharse
-		if (rden) begin
-			unique case (funct3)
-				LB:		begin
-					case (addr[1:0])
-						2'b00:	data_out = sign_extend_b(d.b0);
-						2'b01:	data_out = sign_extend_b(d.b1);
-						2'b10:	data_out = sign_extend_b(d.b2);
-						2'b11:	data_out = sign_extend_b(d.b3);
-					endcase
-				end
+		unique case (mem_out_sel)
+			REGULAR_LD_OUT: begin
+				unique case (funct3)
+					LB:		begin
+						case (addr[1:0])
+							2'b00:	data_out = sign_extend_b(d.b0);
+							2'b01:	data_out = sign_extend_b(d.b1);
+							2'b10:	data_out = sign_extend_b(d.b2);
+							2'b11:	data_out = sign_extend_b(d.b3);
+						endcase
+					end
 
-				LH:		begin
-					case (addr[1])
-						1'b0: begin
-							if (ENDIANESS == BIG_ENDIAN)
-								data_out = sign_extend_h({{d.b0},{d.b1}});
-							else 
-								data_out = sign_extend_h({{d.b1},{d.b0}});
-						end
-						1'b1: begin
-							if (ENDIANESS == BIG_ENDIAN)
-								data_out = sign_extend_h({{d.b2},{d.b3}});
-							else 
-								data_out = sign_extend_h({{d.b3},{d.b2}});
-						end
-					endcase
-				end
+					LH:		begin
+						case (addr[1])
+							1'b0: begin
+								if (ENDIANESS == BIG_ENDIAN)
+									data_out = sign_extend_h({{d.b0},{d.b1}});
+								else 
+									data_out = sign_extend_h({{d.b1},{d.b0}});
+							end
+							1'b1: begin
+								if (ENDIANESS == BIG_ENDIAN)
+									data_out = sign_extend_h({{d.b2},{d.b3}});
+								else 
+									data_out = sign_extend_h({{d.b3},{d.b2}});
+							end
+						endcase
+					end
 
-				LW:		begin
-					if (ENDIANESS == BIG_ENDIAN)
-						data_out = {{d.b0},{d.b1},{d.b2},{d.b3}};
-					else
-						data_out = {{d.b3},{d.b2},{d.b1},{d.b0}};
-				end
+					LW:		begin
+						if (ENDIANESS == BIG_ENDIAN)
+							data_out = {{d.b0},{d.b1},{d.b2},{d.b3}};
+						else
+							data_out = {{d.b3},{d.b2},{d.b1},{d.b0}};
+					end
 
-				LBU:	begin
-					case (addr[1:0])
-						2'b00:	data_out = zero_extend_b(d.b0);
-						2'b01:	data_out = zero_extend_b(d.b1);
-						2'b10:	data_out = zero_extend_b(d.b2);
-						2'b11:	data_out = zero_extend_b(d.b3);
-					endcase
-				end
+					LBU:	begin
+						case (addr[1:0])
+							2'b00:	data_out = zero_extend_b(d.b0);
+							2'b01:	data_out = zero_extend_b(d.b1);
+							2'b10:	data_out = zero_extend_b(d.b2);
+							2'b11:	data_out = zero_extend_b(d.b3);
+						endcase
+					end
 
-				LHU:	begin
-					case (addr[1])
-						1'b0: begin
-							if (ENDIANESS == BIG_ENDIAN)
-								data_out = zero_extend_h({{d.b0},{d.b1}});
-							else 
-								data_out = zero_extend_h({{d.b1},{d.b0}});
-						end
-						1'b1: begin
-							if (ENDIANESS == BIG_ENDIAN)
-								data_out = zero_extend_h({{d.b2},{d.b3}});
-							else 
-								data_out = zero_extend_h({{d.b3},{d.b2}});
-						end
-					endcase
-				end
+					LHU:	begin
+						case (addr[1])
+							1'b0: begin
+								if (ENDIANESS == BIG_ENDIAN)
+									data_out = zero_extend_h({{d.b0},{d.b1}});
+								else 
+									data_out = zero_extend_h({{d.b1},{d.b0}});
+							end
+							1'b1: begin
+								if (ENDIANESS == BIG_ENDIAN)
+									data_out = zero_extend_h({{d.b2},{d.b3}});
+								else 
+									data_out = zero_extend_h({{d.b3},{d.b2}});
+							end
+						endcase
+					end
+				endcase
+			end
 
-				default:begin
-					data_out = NULL;
-				end
-			endcase
-		end else begin
-			data_out = NULL;
-		end
+			LOAD_CONDITIONAL_OUT: begin
+				data_out = NULL;
+			end
+
+			STORE_CONDITIONAL_SUC_OUT: begin
+				data_out = SC_SUCCESS_CODE;
+			end
+
+			STORE_CONDITIONAL_FAIL_OUT: begin
+				data_out = SC_FAIL_ECODE;
+			end
+
+			AMO_INSTR_OUT: begin
+				data_out = NULL;	// TODO
+			end
+
+			NULL_OUT: begin
+				data_out = NULL;
+			end
+
+			default: begin
+				data_out = NULL;
+			end
+		endcase
 	end
 
 
