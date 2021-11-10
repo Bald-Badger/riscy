@@ -89,41 +89,37 @@ module memory (
 		done		= 1'b0;
 		unique case (state)
 			IDLE	: begin
+			update				= DISABLE;
 				if (is_ld) begin
 					nxt_state	= REGULAR;
 					rden		= ENABLE;
 					wren		= DISABLE;
-					update		= DISABLE;
 					done		= 1'b0;
 				end else if (is_st) begin
 					nxt_state	= REGULAR;
 					rden		= DISABLE;
 					wren		= ENABLE;
-					update		= DISABLE;
 					done		= 1'b0;
 				end else if (is_lc) begin
 					nxt_state	= REGULAR;
 					rden		= ENABLE;
 					wren		= DISABLE;
-					update		= ENABLE;
 					done		= 1'b0;
 				end else if (is_sc) begin
 					rden		= DISABLE;
-					update		= ENABLE;
 					if (sc_success) begin // success, write 0 to rd
 						nxt_state	= REGULAR;
 						wren		= ENABLE;
 						done		= 1'b0;
 					end else begin	// fail, write non-zero value to rd
 						nxt_state	= IDLE;
-						wren		= DISABLE;
+						wren		= DISABLE;			
 						done		= 1'b1;
 					end
 				end else begin
 					nxt_state	= IDLE;
 					rden		= DISABLE;
 					wren		= DISABLE;
-					update		= DISABLE;
 					done		= 1'b0;
 				end
 			end
@@ -134,11 +130,13 @@ module memory (
 					done		= 1'b1;
 					wren		= is_st || is_sc;
 					rden		= is_ld || is_lc;
+					update		= is_sc || is_lc;
 				end else begin
 					nxt_state	= REGULAR;
 					done		= 1'b0;
 					wren		= is_st || is_sc;
 					rden		= is_ld || is_lc;
+					update		= DISABLE;
 				end
 			end
 

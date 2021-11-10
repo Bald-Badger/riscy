@@ -285,7 +285,7 @@ endtask
 
 
 task load_conditional (
-	input data_t a,
+	input data_t a
 );
 	d_ref_raw = word_t'(ref_mem[addr >> 2]);
 	fork
@@ -297,7 +297,7 @@ task load_conditional (
 			end
 			addr_in	= a;
 			instr.opcode = LOAD;
-			instr.funct3 = mode;
+			instr.funct3 = 3'b000;
 			valid = 1;
 			@(posedge done);
 			#1;

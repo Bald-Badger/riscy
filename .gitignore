@@ -87,3 +87,4 @@ sim/instr.ver
 sim/instr.mif
 *.vstf
 workspace.code-workspace
+*.mpf_new
