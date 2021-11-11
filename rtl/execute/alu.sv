@@ -98,11 +98,6 @@ module alu (
 		add_sub_result = plus1 ? (adder_out[XLEN-1:0] + 1) : adder_out[XLEN-1:0];
 
 		// I could not use one single adder to achieve both add, sub, and set
-		/*
-		set_flag = 	(funct3 == SLT & $signed(adder_out[XLEN-1:0]) > 32'b0) ? ENABLE :
-					(funct3 == SLTU & $signed(adder_out[XLEN-1:0]) > 33'b0) ? ENABLE :
-					DISABLE;
-		*/
 		set_signed_flag = ($signed(a_in) < $signed(b_in)) ? ENABLE : DISABLE;
 		set_unsigned_flag = ($unsigned(a_in) < $unsigned(b_in)) ? ENABLE : DISABLE;
 		set_flag = 	(funct3 == SLT & set_signed_flag) ? ENABLE :
@@ -223,6 +218,11 @@ module alu (
 			SYS: begin
 				c_out = NULL;
 				rd_wr = DISABLE;
+			end
+
+			ATOMIC: begin
+				c_out = a_in;
+				rd_wr = ENABLE;
 			end
 
 			default: begin

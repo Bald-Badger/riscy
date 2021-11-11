@@ -151,9 +151,9 @@ package defines;
 	localparam	[2:0]	LHU			=	3'b101;		// load 16 bits and zero extend to 32 bits
 
 	// S type funct3 - Store
-	localparam	[2:0]	SB			=	3'b000;	// mem[rs1 + imm] <= rs2.byte0
-	localparam	[2:0]	SH			=	3'b001;	// mem[rs1 + imm] <= rs2.word0
-	localparam	[2:0]	SW			=	3'b010;	// mem[rs1 + imm] <= rs2
+	localparam	[2:0]	SB			=	3'b000;		// mem[rs1 + imm] <= rs2.byte0
+	localparam	[2:0]	SH			=	3'b001;		// mem[rs1 + imm] <= rs2.word0
+	localparam	[2:0]	SW			=	3'b010;		// mem[rs1 + imm] <= rs2
 	//localparam	[2:0]	SBU	 =	3'b100; not used
 	//localparam	[2:0]	SHU	 =	3'b101; not used
 
@@ -175,8 +175,8 @@ package defines;
 
 // funct5 define (Atomic only)
 	typedef enum logic[4:0] { 
-		LC			=	5'b00010,
-		SC			=	5'b00011,
+		LR			=	5'b00010,	// load-reserved
+		SC			=	5'b00011,	// store-conditional
 		AMOSWAP		=	5'b00001,	// rd <= mem[rs1], mem[rs1] <= rs2(old)
 		AMOADD		=	5'b00000,	// rd <= mem[rs1], mem[rs1] <= rs2(old) + rd
 		AMOXOR		=	5'b00100,

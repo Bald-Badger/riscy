@@ -655,7 +655,7 @@ always_ff @(negedge clk_50m) begin : checks
 	else begin
 		$error("Assertion hit_check failed! at time=%t", $realtime);
 		$strobe("hit0 = %b, hit1=%b", hit0_check_dcache, hit1_check_dcache);
-		$stop();
+		//$stop();
 	end
 end
 // synthesis translate_on

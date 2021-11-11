@@ -48,7 +48,7 @@ module memory (
 
 	// atomc contril signals
 	instr_a_t		instr_a;
-	logic			is_atomic, is_lc, is_sc;
+	logic			is_atomic, is_lr, is_sc;
 	logic			update;		// enable exclusive monitor for a single cycle
 	logic			sc_success;
 
@@ -58,7 +58,7 @@ module memory (
 		funct3		=	instr_a.funct3;
 		funct5		=	instr_a.funct5;
 		is_atomic	=	opcode == ATOMIC;
-		is_lc		=	is_atomic && funct5 == LC;
+		is_lr		=	is_atomic && funct5 == LR;
 		is_sc		=	is_atomic && funct5 == SC;
 		is_ld		=	opcode == LOAD;
 		is_st		=	opcode == STORE;
@@ -68,7 +68,6 @@ module memory (
 	typedef enum logic[2:0] { 
 		IDLE,		// no memory access
 		REGULAR,	// actual memory access
-		LC, SC,		// LC / SC memory access
 		AMO1, AMO2	// other automic memory access
 	} memory_ctrl_state_t;
 
@@ -89,38 +88,43 @@ module memory (
 		done		= 1'b0;
 		unique case (state)
 			IDLE	: begin
-			update				= DISABLE;
 				if (is_ld) begin
 					nxt_state	= REGULAR;
 					rden		= ENABLE;
 					wren		= DISABLE;
 					done		= 1'b0;
+					update		= DISABLE;
 				end else if (is_st) begin
 					nxt_state	= REGULAR;
 					rden		= DISABLE;
 					wren		= ENABLE;
 					done		= 1'b0;
-				end else if (is_lc) begin
+					update		= DISABLE;
+				end else if (is_lr) begin
 					nxt_state	= REGULAR;
 					rden		= ENABLE;
 					wren		= DISABLE;
 					done		= 1'b0;
+					update		= DISABLE;
 				end else if (is_sc) begin
 					rden		= DISABLE;
 					if (sc_success) begin // success, write 0 to rd
 						nxt_state	= REGULAR;
 						wren		= ENABLE;
 						done		= 1'b0;
+						update		= DISABLE;
 					end else begin	// fail, write non-zero value to rd
 						nxt_state	= IDLE;
 						wren		= DISABLE;			
 						done		= 1'b1;
+						update		= ENABLE;
 					end
 				end else begin
 					nxt_state	= IDLE;
 					rden		= DISABLE;
 					wren		= DISABLE;
 					done		= 1'b0;
+					update		= DISABLE;
 				end
 			end
 
@@ -129,24 +133,15 @@ module memory (
 					nxt_state	= IDLE;
 					done		= 1'b1;
 					wren		= is_st || is_sc;
-					rden		= is_ld || is_lc;
-					update		= is_sc || is_lc;
+					rden		= is_ld || is_lr;
+					update		= is_sc || is_lr || is_st;
 				end else begin
 					nxt_state	= REGULAR;
 					done		= 1'b0;
 					wren		= is_st || is_sc;
-					rden		= is_ld || is_lc;
+					rden		= is_ld || is_lr;
 					update		= DISABLE;
 				end
-			end
-
-
-			AMO1	: begin
-				
-			end
-
-			AMO2	: begin
-				
 			end
 
 			default	: begin
@@ -251,12 +246,12 @@ module memory (
 
 	mem_out_sel_t mem_out_sel;
 	always_comb begin : mem_out_sel_assign
-		assign mem_out_sel =	(is_ld || is_st) ? REGULAR_LD_OUT :
-								(is_lc) ? LOAD_CONDITIONAL_OUT :
-								(is_sc && sc_success) ? STORE_CONDITIONAL_SUC_OUT :
-								(is_sc && ~sc_success) ? STORE_CONDITIONAL_FAIL_OUT:
-								(is_atomic) ? AMO_INSTR_OUT:
-								NULL_OUT;
+		mem_out_sel =	(is_ld || is_st) ? REGULAR_LD_OUT :
+						(is_lr) ? LOAD_CONDITIONAL_OUT :
+						(is_sc && sc_success) ? STORE_CONDITIONAL_SUC_OUT :
+						(is_sc && ~sc_success) ? STORE_CONDITIONAL_FAIL_OUT:
+						(is_atomic) ? AMO_INSTR_OUT:
+						NULL_OUT;
 	end
 
 	always_comb begin : output_mask_pharse
@@ -321,11 +316,18 @@ module memory (
 							end
 						endcase
 					end
+
+					default:begin
+						data_out = NULL;
+					end
 				endcase
 			end
 
 			LOAD_CONDITIONAL_OUT: begin
-				data_out = NULL;
+				if (ENDIANESS == BIG_ENDIAN)
+					data_out = {{d.b0},{d.b1},{d.b2},{d.b3}};
+				else
+					data_out = {{d.b3},{d.b2},{d.b1},{d.b0}};
 			end
 
 			STORE_CONDITIONAL_SUC_OUT: begin
@@ -337,7 +339,7 @@ module memory (
 			end
 
 			AMO_INSTR_OUT: begin
-				data_out = NULL;	// TODO
+				data_out = NULL;
 			end
 
 			NULL_OUT: begin
@@ -347,6 +349,7 @@ module memory (
 			default: begin
 				data_out = NULL;
 			end
+
 		endcase
 	end
 

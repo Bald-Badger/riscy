@@ -169,6 +169,12 @@ typedef struct packed {
 	word_4_en_t l1en;
 } data_line_en_t;
 
+// for monitoring conditional load/store
+typedef struct packed{
+		data_t	addr;
+		logic	valid;
+} reservation_set_t;
+
 `endif
 
 endpackage : mem_defines
