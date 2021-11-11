@@ -27,7 +27,6 @@ word_t			w, d_dut, d_ref, d_ref_raw;
 data_t			data1, data2, data3, data4;
 logic			valid, done;
 logic			sdram_init_done;
-logic [2:0]		m;
 
 
 pll_clk	pll_inst (
@@ -490,7 +489,7 @@ task nested_long_lr_sc_suc_test();
 	addr = 4;
 	data1 = 4;
 
-	for (i = 0; i < MAX_NEST_LOCK-1; i++) begin
+	for (i = 0; i < MAX_NEST_LOCK; i++) begin
 		load_reserved(addr);
 		assert (d_dut == d_ref) 
 		else   err = 1;
@@ -499,7 +498,7 @@ task nested_long_lr_sc_suc_test();
 
 	addr = addr - 4;
 
-	for (i = 0; i < MAX_NEST_LOCK-1; i++) begin
+	for (i = 0; i < MAX_NEST_LOCK; i++) begin
 		store_conditional(addr, data1);	// should success
 		assert (d_dut == d_ref) 
 		else   err = 1;

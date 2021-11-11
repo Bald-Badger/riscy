@@ -11,7 +11,7 @@ package defines;
 
 
 //	core config
-	localparam	MAX_NEST_LOCK	=	16;			// max nested lock aquire length, 
+	localparam	MAX_NEST_LOCK	=	8;			// max nested lock aquire length, 
 												// cases that over 2 is very rare
 
 

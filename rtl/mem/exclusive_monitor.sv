@@ -46,11 +46,11 @@ module exclusive_monitor #(
 
 	always_ff @(posedge clk, negedge rst_n) begin
 		if (~rst_n) begin
-			pointer <= 4'b1111;
+			pointer <= 3'b111;
 		end else if (push && update) begin
-			pointer <= pointer + 4'b1;
+			pointer <= pointer + 3'b1;
 		end else if (pop && update) begin
-			pointer <= pointer - 4'b1;
+			pointer <= pointer - 3'b1;
 		end else begin
 			pointer <= pointer;
 		end
@@ -64,7 +64,7 @@ module exclusive_monitor #(
 				reservation_set[i].addr			<= NULL;
 				reservation_set[i].valid		<= INVALID;
 			end else if (set_valid && update) begin
-				if (i[3:0] == pointer + 4'b1) begin
+				if (i[$clog2(MAX_NEST_LOCK) - 1:0] == pointer + 3'b1) begin
 					reservation_set[i].addr		<= addr;
 					reservation_set[i].valid	<= VALID;
 				end else begin
@@ -73,7 +73,7 @@ module exclusive_monitor #(
 				end
 			// an regular st/ld without 'update' bit set can also trigger clear valid
 			end else if (clear_valid) begin
-				if (i[3:0] == pointer) begin
+				if (i[$clog2(MAX_NEST_LOCK) - 1:0] == pointer) begin
 					reservation_set[i].addr		<= reservation_set[i].addr;
 					reservation_set[i].valid	<= INVALID;
 				end else begin
