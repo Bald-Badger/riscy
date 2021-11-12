@@ -91,6 +91,7 @@ always_comb begin : c_out_assign
 		normal_rem		: c_out = remainder[(XLEN-1):0];
 		overflow_div	: c_out = overflow_result;
 		div_by_0_div	: c_out = div_by_0_result;
+		default			: c_out = NULL;
 	endcase
 end
 

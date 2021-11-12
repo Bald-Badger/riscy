@@ -28,9 +28,8 @@ import defines::*;
 			tag(19)            index(9)    word_off(2)   byte_off(2)
 */
 
-// using RARS compact, text at 0x0 memory layout
-localparam	MAX_PHY_MEM			= 32'h01ff_ffff;	// 32MB
-localparam	MMIO_BASE			= 32'h0200_0000;
+// using RARS default, text at 0x0 memory layout
+localparam	MAX_PHY_ADDR		= 32'h01ff_ffff;	// 32MB
 
 
 localparam	DEBUG_MEM_SYS		= DISABLE;

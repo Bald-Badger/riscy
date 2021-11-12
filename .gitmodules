@@ -16,3 +16,6 @@
 [submodule "ref/core_uriscv"]
 	path = ref/core_uriscv
 	url = https://github.com/Bald-Badger/core_uriscv.git
+[submodule "sim/bin2mif"]
+	path = sim/bin2mif
+	url = https://github.com/brNX/bin2mif.git

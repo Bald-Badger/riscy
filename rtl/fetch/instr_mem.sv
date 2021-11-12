@@ -20,12 +20,22 @@ module instr_mem (
 	output instr_t	instr
 );
 
+	instr_t instr_raw; 
+	always_comb begin : switch_endian
+		instr = (ENDIANESS == BIG_ENDIAN) ? instr_raw : 
+			instr_t'(
+				swap_endian(
+					data_t'(instr_raw)
+							)
+					);
+	end
+
 	rom_32b_1024wd	instr_mem_inst (
 		.address	( addr[11:2] ),
 		.clock		( clk ),
 		.clken		( ~stall ),
 		.rden		( rden ),
-		.q			( instr )
+		.q			( instr_raw )
 	);
 
 endmodule : instr_mem

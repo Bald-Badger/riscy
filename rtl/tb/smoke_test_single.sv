@@ -28,7 +28,7 @@ module smoke_test_single ();
 	);
 
 
-	proc_hier top_inst (
+	proc_hier proc_dut (
 		.osc_clk		(clk),
 		.but_rst_n		(rst_n),
 		.ebreak_start	(ebreak_start),
@@ -49,9 +49,9 @@ module smoke_test_single ();
 
 	initial begin
 		@(posedge ebreak_start);
-		assert (top_inst.processor_inst.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42)
+		assert (proc_dut.processor_inst.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42)
 				else error = 1;
-		assert (top_inst.processor_inst.decode_inst.registers_inst.reg_bypass_inst.registers[17] == 93)
+		assert (proc_dut.processor_inst.decode_inst.registers_inst.reg_bypass_inst.registers[17] == 93)
 				else error = 1;
 		
 		fd = $fopen("./result.txt", "w");
@@ -71,6 +71,21 @@ module smoke_test_single ();
 		end
 		$fclose(fd);
 		$stop();
+	end
+
+	// reg debug wire
+	logic 	reg_wr_en_dut;
+	r_t 	reg_wr_addr_dut;
+	data_t	reg_wr_data_dut;
+	assign 	reg_wr_en_dut	= proc_dut.processor_inst.rd_wren_w && 
+							  !proc_dut.processor_inst.stall_id_ex;
+	assign 	reg_wr_addr_dut	= proc_dut.processor_inst.rd_addr;
+	assign 	reg_wr_data_dut	= proc_dut.processor_inst.wb_data;
+
+	always_ff @(negedge proc_dut.processor_inst.clk) begin : dut_log
+		if (reg_wr_en_dut && reg_wr_addr_dut != X0) begin
+			$display("Write reg: %d, value: %h", reg_wr_addr_dut, reg_wr_data_dut);
+		end
 	end
 
 
@@ -109,6 +124,8 @@ module clkrst #(
 	end
 
 	initial begin
+		wait(proc_dut.processor_inst.sdram_init_done);
+		$display("sdram init done");
 		repeat(15000) @(negedge clk);
 		$display("timeout");
 		$stop();
@@ -117,9 +134,5 @@ module clkrst #(
 	always #half_period begin
       clk = ~clk;
     end
-
-	always @(posedge top_inst.processor_inst.sdram_init_done) begin
-		$display("sdram init done");
-	end
 	
 endmodule : clkrst
