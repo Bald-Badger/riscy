@@ -76,7 +76,7 @@ def assemble(filename='', out_name=''):
 
     example = "java -jar rars.jar mc CompactTextAtZero dump 0x00002000-0x00002fff " \
               "HexText instr.asm instr.s"
-    addr = "0x00000000-0x00000ffc"
+    addr = "0x00000000-0x00004000"
     in_name = find(filename, '.\\tests')
     if in_name is None:
         print("file: " + filename + "not found")
@@ -99,7 +99,9 @@ def compile_smoke_test():
     smoke_list.append('loop.s')
     smoke_list.append('memory.s')
     smoke_list.append('my_test_ldst.s')
+    smoke_list.append('my_test_simple.s')
     smoke_list.append('my_test_div.s')
+
     for f in smoke_list:
         assemble(f, f[:-2]+'.mc')
 
@@ -158,8 +160,11 @@ def mc_to_mif_all():
 
 
 def compile_all():
+    print("cimpiling .s files")
     compile_smoke_test()
+    print("complie finished, converting to mif...")
     mc_to_mif_all()
+    print("converting to mif finish")
 
 
 if __name__ == '__main__':

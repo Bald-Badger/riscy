@@ -24,9 +24,9 @@ module instr_mem (
 	always_comb begin : switch_endian
 		instr = (ENDIANESS == BIG_ENDIAN) ? instr_raw : 
 			instr_t'(
-				swap_endian(
+				//swap_endian(
 					data_t'(instr_raw)
-							)
+				//			)
 					);
 	end
 

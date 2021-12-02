@@ -4,22 +4,23 @@ package defines;
 `define _defines_sv_
 
 //	ISA define
-	localparam 	XLEN 			= 	32;			// RV32
-	localparam	N 				= 	XLEN;	 	// in case I forget should be XLEN instead of N
-	localparam 	OSC_FREQ 		= 	2e7;		// 50Mhz crystal oscillator on FPGA board
-	localparam 	FREQ 			= 	2e7;		// targeted core clock from PLL
+	localparam 	XLEN 			= 	32;				// RV32
+	localparam	N 				= 	XLEN;	 		// in case I forget should be XLEN instead of N
+	localparam 	OSC_FREQ 		= 	2e7;			// 50Mhz crystal oscillator on FPGA board
+	localparam 	FREQ 			= 	2e7;			// targeted core clock from PLL
 
 
 //	core config
-	localparam	MAX_NEST_LOCK	=	8;			// max nested lock aquire length, 
-												// cases that over 2 is very rare
+	localparam	MAX_NEST_LOCK	=	8;				// max nested lock aquire length, 
+													// cases that over 2 is very rare
+	localparam	SP_BASE			=	32'h0000_3ffc;		// stack base pointer, init SP to here
 
 
 //	constant define
-	localparam	BYTES 			= XLEN / 8; 	// number of bytes in a word
+	localparam	BYTES 			= XLEN / 8; 		// number of bytes in a word
 	localparam	TRUE 			= 1;
 	localparam	FALSE 			= 0;
-	localparam 	NULL 			= 32'b0;		// used to repersent blank data
+	localparam 	NULL 			= 32'b0;			// used to repersent blank data
 	localparam	ENABLE 			= 1'b1;
 	localparam	DISABLE			= 1'b0;
 	localparam	VALID			= 1'b1;
