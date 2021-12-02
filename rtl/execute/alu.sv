@@ -163,14 +163,14 @@ module alu (
 			I: begin
 				rd_wr = ENABLE;
 				unique case (funct3)
-					ADD:		c_out = add_sub_result;	// same as SUB
-					AND: 		c_out = and_result;
-					OR: 		c_out = or_result;
-					XOR: 		c_out = xor_result;
-					SLT: 		c_out = set_result;
-					SLTU:		c_out = set_result;
-					SLL: 		c_out = shift_result;
-					SRL: 		c_out = shift_result;	// same as SRA
+					ADDI:		c_out = add_sub_result;	// same as SUB
+					ANDI: 		c_out = and_result;
+					ORI: 		c_out = or_result;
+					XORI: 		c_out = xor_result;
+					SLTI: 		c_out = set_result;
+					SLTIU:		c_out = set_result;
+					SLLI: 		c_out = shift_result;
+					SRLI: 		c_out = shift_result;	// same as SRA
 					default:	c_out = NULL;
 				endcase
 			end
