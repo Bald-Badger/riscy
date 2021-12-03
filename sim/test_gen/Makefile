@@ -16,6 +16,7 @@ CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march
 OBJCOPY = riscv64-unknown-elf-objcopy
 COPYFLAGS = -O binary --only-section=.text
 TARGET = test
+TBTARGET = instr
 SRC = $(TARGET).c
 SDEST = $(TARGET).s
 JAVA = java
@@ -33,10 +34,10 @@ elf:
 	$(GCC) $(CFLAGS) -c $(SRC) -o $(TARGET)
 
 bin:
-	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TARGET).bin
+	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TBTARGET).bin
 
 mif:
-	python ./bin2mif.py $(TARGET).bin instr.mif 32
+	python ./bin2mif.py $(TBTARGET).bin instr.mif 32
 
 rars_mc: clean asm 
 	$(JAVA) $(JAVAFLAGS) $(TARGET).mc $(TARGET).s

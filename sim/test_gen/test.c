@@ -1,8 +1,18 @@
 #include "test.h"
 
 int main() {
-	int answer = 34;
-	int z = fib(9);
+	int x;
+	int y;
+	int z = 0;
+	for (x = 0; x <2; x++) {
+		z = z + 3;
+		for (y = 0; y < 3; y++) {
+			z = z + 5;
+		}
+		z = z - 7;
+	}
+
+	int answer = 1110;
 
 	if (z == answer) {
 		#ifdef TB
@@ -26,10 +36,4 @@ int main() {
 	#else
 	return 0;
 	#endif /* TB */
-}
-
-int fib(int n) {
-	if (n <= 1)
-		return n;
-	return fib(n-1) + fib(n-2);
 }
