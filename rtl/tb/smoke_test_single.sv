@@ -149,7 +149,7 @@ module clkrst #(
 	initial begin
 		wait(proc_dut.processor_inst.sdram_init_done);
 		$display("sdram init done");
-		@(negedge clk);
+		@(negedge proc_dut.clk);
 		$stop();
 		repeat(15000) @(negedge clk);
 		$display("timeout");

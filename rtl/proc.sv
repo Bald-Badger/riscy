@@ -389,7 +389,7 @@ typedef enum reg[2:0] {
 	EBREAK_WAIT		// wait for return instruction from debugger
 } ebreak_state_t;
 ebreak_state_t ebreak_state, ebreak_nxt_state;
-assign ebreak = (instr_d == EBREAK) ? 1'b1 : 1'b0;
+assign ebreak = ((instr_d == EBREAK) ||(instr_d == ECALL)) ? 1'b1 : 1'b0;
 assign ebreak_start = (ebreak_state == EBREAK_WAIT) ? 1'b1 : 1'b0;
 
 always_ff @(posedge clk or negedge rst_n)

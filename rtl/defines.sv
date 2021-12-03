@@ -94,8 +94,8 @@ package defines;
 
 	localparam	[XLEN-1:0]	NOP		= 32'h0000_0013;	// ADDI x0, x0, 0
 	// localparam	[XLEN-1:0]	HALT	= 32'h0000_0063;// BEQ x0, x0, 0
-	localparam	[XLEN-1:0]	EBREAK	= 32'h0000_0073;
-	localparam	[XLEN-1:0]	ECALL	= 32'h0010_0073;
+	localparam	[XLEN-1:0]	EBREAK	= 32'h0010_0073;
+	localparam	[XLEN-1:0]	ECALL	= 32'h0000_0073;
 	
 
 // Funt3 define
