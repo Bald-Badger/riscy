@@ -2,7 +2,7 @@ GCC = riscv64-unknown-elf-gcc
 CFLAGS = -Wall -O0 -mdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++
 OBJCOPY = riscv64-unknown-elf-objcopy
 COPYFLAGS = -O binary --only-section=.text
-TARGET = loop
+TARGET = test
 SRC = $(TARGET).c
 SDEST = $(TARGET).s
 JAVA = java
