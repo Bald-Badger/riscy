@@ -14,7 +14,7 @@ package defines;
 	localparam	MAX_NEST_LOCK	=	8;				// max nested lock aquire length, 
 													// cases that over 2 is very rare
 	localparam	SP_BASE			=	32'h0000_3ffc;	// stack base pointer, init SP to here
-	localparam	GP_BASE			=	32'h0000_1800;	// global pointer, init GO to here
+	localparam	GP_BASE			=	32'h0000_1800;	// global pointer, init GP to here
 
 
 //	constant define
@@ -27,6 +27,9 @@ package defines;
 	localparam	VALID			= 1'b1;
 	localparam	INVALID			= 1'b0;
 
+
+//	debug log option
+	localparam	TOP_DEBUG		= ENABLE;
 
 	// byte-varient endianess
 	localparam LITTLE_ENDIAN	= 1'b0;
