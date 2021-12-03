@@ -25,6 +25,8 @@ module reg_bypass (
 			for (i = 0; i < 32; i++) begin
 				if (i == SP) 
 					registers[i] <= SP_BASE;
+				else if (i == GP)
+					registers[i] <= GP_BASE;
 				else
 					registers[i] <= NULL;
 			end

@@ -13,7 +13,8 @@ package defines;
 //	core config
 	localparam	MAX_NEST_LOCK	=	8;				// max nested lock aquire length, 
 													// cases that over 2 is very rare
-	localparam	SP_BASE			=	32'h0000_3ffc;		// stack base pointer, init SP to here
+	localparam	SP_BASE			=	32'h0000_3ffc;	// stack base pointer, init SP to here
+	localparam	GP_BASE			=	32'h0000_1800;	// global pointer, init GO to here
 
 
 //	constant define

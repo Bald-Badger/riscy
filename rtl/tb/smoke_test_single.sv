@@ -22,7 +22,7 @@ module smoke_test_single ();
 	wire	[15:0]	sdram_data;
 	logic	[ 1:0]	sdram_dqm;
 
-	clkrst clkrst_inst(
+	clkrst #(.FREQ(FREQ)) clkrst_inst(
 		.clk	(clk),
 		.rst_n	(rst_n)
 	);
@@ -126,6 +126,8 @@ module clkrst #(
 	initial begin
 		wait(proc_dut.processor_inst.sdram_init_done);
 		$display("sdram init done");
+		@(negedge clk);
+		$stop();
 		repeat(15000) @(negedge clk);
 		$display("timeout");
 		$stop();
