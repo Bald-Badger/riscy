@@ -88,3 +88,5 @@ sim/instr.mif
 *.vstf
 workspace.code-workspace
 *.mpf_new
+sim/test.s
+*.bin

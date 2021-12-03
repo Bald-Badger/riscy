@@ -82,9 +82,32 @@ module smoke_test_single ();
 	assign 	reg_wr_addr_dut	= proc_dut.processor_inst.rd_addr;
 	assign 	reg_wr_data_dut	= proc_dut.processor_inst.wb_data;
 
-	always_ff @(negedge proc_dut.processor_inst.clk) begin : dut_log
-		if (reg_wr_en_dut && reg_wr_addr_dut != X0) begin
-			$display("Write reg: %d, value: %h", reg_wr_addr_dut, reg_wr_data_dut);
+	// mem debug wire
+	logic mem_wr_en_dut, mem_rd_en_dut, mem_access_done_dut;
+	data_t mem_wr_data_in_dut, mem_rd_data_out_dut;
+	data_t mem_access_addr_dut;
+	assign mem_wr_en_dut = proc_dut.processor_inst.memory_inst.wren;
+	assign mem_rd_en_dut = proc_dut.processor_inst.memory_inst.rden;
+	assign mem_access_done_dut = proc_dut.processor_inst.mem_access_done;
+	assign mem_wr_data_in_dut = (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor_inst.memory_inst.data_in_final :
+								swap_endian(proc_dut.processor_inst.memory_inst.data_in_final);
+	assign mem_rd_data_out_dut = (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor_inst.mem_data_m :
+								swap_endian(proc_dut.processor_inst.mem_data_m);
+	assign mem_access_addr_dut = proc_dut.processor_inst.memory_inst.addr;
+
+	always_ff @(negedge proc_dut.processor_inst.clk) begin : dut_debug_log
+		if (TOP_DEBUG == ENABLE) begin
+			// reg access debug
+			if (reg_wr_en_dut && reg_wr_addr_dut != X0) begin
+				$display("Write reg: %d, value: %h", reg_wr_addr_dut, reg_wr_data_dut);
+			end
+
+			// mem access debug
+			if (mem_wr_en_dut && mem_access_done_dut) begin
+				$display("Write mem: %d, value: %H", mem_access_addr_dut, mem_wr_data_in_dut);
+			end else if (mem_rd_en_dut && mem_access_done_dut) begin
+				$display("Read mem: %H, value: %H", mem_access_addr_dut, mem_rd_data_out_dut);
+			end
 		end
 	end
 
@@ -126,7 +149,7 @@ module clkrst #(
 	initial begin
 		wait(proc_dut.processor_inst.sdram_init_done);
 		$display("sdram init done");
-		@(negedge clk);
+		@(negedge proc_dut.clk);
 		$stop();
 		repeat(15000) @(negedge clk);
 		$display("timeout");
