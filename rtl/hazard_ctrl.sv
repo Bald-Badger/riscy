@@ -68,7 +68,7 @@ module hazard_ctrl (
 		id_rs1_read		=	((instr_d.opcode == B) || 
 							 (instr_d.opcode == JALR));
 
-		id_rs2_read		= 	 (instr_d.opcode == B) ||
+		id_rs2_read		=	(instr_d.opcode == B) ||
 							 (instr_d.opcode == STORE);
 
 		ex_rs1_read		=	((instr_x.opcode == R) ||
