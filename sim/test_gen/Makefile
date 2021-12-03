@@ -46,4 +46,4 @@ rars: rars_mc
 	$(PYTHON) $(PYTHONFPAGS) -i $(TARGET).mc -o my_test_$(TARGET).mif
 
 clean:
-	rm -f *.s $(TARGET) *.bin *.mif
+	rm -f *.s $(TARGET) *.bin *.mif *.mc
