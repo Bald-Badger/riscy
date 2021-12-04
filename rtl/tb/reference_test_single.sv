@@ -5,6 +5,7 @@
 import defines::*;
 
 module reference_test_single ();
+	localparam DEBUG = ENABLE;
 	
 	int error = 0;
 	int fd;
@@ -56,7 +57,7 @@ module reference_test_single ();
 	assign lock_rst = ~proc_dut.rst_n;
 	assign ref_halt = (data_t'(proc_ref.mem_i_inst_w) == ECALL);
 
-	// reg debug wire
+	// reg dut wire
 	logic 	reg_wr_en_dut;
 	r_t 	reg_wr_addr_dut;
 	data_t	reg_wr_data_dut;
@@ -65,7 +66,7 @@ module reference_test_single ();
 	assign 	reg_wr_addr_dut	= proc_dut.processor_inst.rd_addr;
 	assign 	reg_wr_data_dut	= proc_dut.processor_inst.wb_data;
 
-	// mem debug wire
+	// mem dut wire
 	logic	mem_wr_en_dut, mem_rd_en_dut, mem_access_done_dut;
 	data_t	mem_wr_data_in_dut, mem_rd_data_out_dut;
 	data_t	mem_access_addr_dut;
@@ -102,95 +103,282 @@ module reference_test_single ();
 	} rw_t;
 
 	typedef struct packed {
-		rw_t rw;
-		r_t	rw_addr;
-		data_t rw_data;
+		rw_t	rw;
+		r_t		rw_addr;
+		data_t	rw_data;
+		integer	sim_time;
+		data_t	pc;
+		instr_t	instr;
 	} reg_access_t;
 
 	typedef struct packed {
-		rw_t rw;
-		data_t rw_addr;
-		data_t rw_data;
+		rw_t	rw;
+		data_t	rw_addr;
+		data_t	rw_data;
+		integer	sim_time;
+		data_t	pc;
+		instr_t	instr;
 	} mem_access_t;   
 
-	reg_access_t reg_access_log[$] = {};
-	mem_access_t mem_access_log[$] = {};
+	reg_access_t reg_access_log_ref[$] = {};
+	reg_access_t reg_access_log_dut[$] = {};
+	mem_access_t mem_access_log_ref[$] = {};
+	mem_access_t mem_access_log_dut[$] = {};
 
-	always_ff @(negedge pll_clk) begin : ref_debug_log
+	function void push_reg_ref();
+		if (reg_access_log_ref.size() == 0) begin
+			reg_access_log_ref.push_back(
+				reg_access_t'({
+					rw:			WRITE,
+					rw_addr:	reg_wr_addr_ref,
+					rw_data:	reg_wr_data_ref,
+					sim_time:	$time,
+					pc:			proc_ref.core_ref.pc_q,
+					instr:		instr_t'(proc_ref.core_ref.mem_i_inst_i)
+				})
+			
+			);
+			if (DEBUG) begin
+				$display(
+					"debug: REF REG WRITE %h, to X%d at time=%t with pc=%h",
+					reg_wr_data_ref, $unsigned(reg_wr_addr_ref), $time, proc_ref.core_ref.pc_q
+				);
+			end
+		end else if (
+			reg_access_log_ref[reg_access_log_ref.size()].rw == WRITE &&
+			reg_access_log_ref[reg_access_log_ref.size()].rw_addr == reg_wr_addr_ref &&
+			reg_access_log_ref[reg_access_log_ref.size()].rw_data == reg_wr_data_ref
+		) begin 
+			// do nothing, duplicative entry
+		end else begin
+			reg_access_log_ref.push_back(
+				reg_access_t'({
+					rw:			WRITE,
+					rw_addr:	reg_wr_addr_ref,
+					rw_data:	reg_wr_data_ref,
+					sim_time:	$time,
+					pc:			proc_ref.core_ref.pc_q,
+					instr:		instr_t'(proc_ref.core_ref.mem_i_inst_i)
+				})
+			);
+			if (DEBUG) begin
+				$display(
+					"debug: REF REG WRITE %h, to X%d at time=%t with pc=%h",
+					reg_wr_data_ref, $unsigned(reg_wr_addr_ref), $time, proc_ref.core_ref.pc_q
+				);
+			end
+		end
+	endfunction
+
+	function void push_reg_dut();
+		if (reg_access_log_dut.size() == 0) begin
+			reg_access_log_dut.push_back(
+				reg_access_t'({
+					rw:			WRITE,
+					rw_addr:	reg_wr_addr_dut,
+					rw_data:	reg_wr_data_dut,
+					sim_time:	$time,
+					pc:			proc_dut.processor_inst.pcp4_w - 32'd4,
+					instr:		proc_dut.processor_inst.instr_w
+				})
+			);
+			if (DEBUG) begin
+				$display(
+					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor_inst.pcp4_w - 32'd4)
+				);
+			end
+		end else if (
+			reg_access_log_dut[reg_access_log_dut.size()].rw == WRITE &&
+			reg_access_log_dut[reg_access_log_dut.size()].rw_addr == reg_wr_addr_dut &&
+			reg_access_log_dut[reg_access_log_dut.size()].rw_data == reg_wr_data_dut
+		) begin 
+			// do nothing, duplicative entry
+		end else begin
+			reg_access_log_dut.push_back(
+				reg_access_t'({
+					rw:			WRITE,
+					rw_addr:	reg_wr_addr_dut,
+					rw_data:	reg_wr_data_dut,
+					sim_time:	$time,
+					pc:			proc_dut.processor_inst.pcp4_w - 32'd4,
+					instr:		proc_dut.processor_inst.instr_w
+				})
+			);
+			if (DEBUG) begin
+				$display(
+					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor_inst.pcp4_w - 32'd4)
+				);
+			end
+		end
+	endfunction
+
+	function void push_mem_ref();
+		if (mem_access_log_ref.size() == 0) begin
+			mem_access_log_ref.push_back(
+				mem_access_t'({
+					rw:			mem_wr_en_ref ? WRITE : READ,
+					rw_addr:	mem_access_addr_ref,
+					rw_data:	mem_wr_en_ref ? mem_wr_data_in_ref : mem_rd_data_out_ref,
+					sim_time:	$time,
+					pc:			proc_ref.core_ref.pc_q,
+					instr:		instr_t'(proc_ref.mem_i_inst_w)
+				})
+			);
+			if (DEBUG) begin
+				if (mem_wr_en_ref) begin
+					$display(
+						"debug: REF MEM WRITE %h, to %h at time=%t with pc=%h",
+						mem_wr_data_in_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q
+					);
+				end else begin
+					$display(
+						"debug: REF MEM READ %h, from %h at time=%t with pc=%h",
+						mem_rd_data_out_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q
+					);
+				end
+			end
+		end else if (
+			(
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== WRITE &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_ref &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_wr_data_in_ref
+			)	||
+			(
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== READ &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_ref &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_rd_data_out_ref
+			)
+		) begin 
+			// do nothing, duplicative entry
+		end else begin
+			mem_access_log_ref.push_back(
+				mem_access_t'({
+					rw:			mem_wr_en_ref ? WRITE : READ,
+					rw_addr:	mem_access_addr_ref,
+					rw_data:	mem_wr_en_ref ? mem_wr_data_in_ref : mem_rd_data_out_ref,
+					sim_time:	$time,
+					pc:			proc_ref.core_ref.pc_q,
+					instr:		instr_t'(proc_ref.mem_i_inst_w)
+				})
+			);
+			if (DEBUG) begin
+				if (mem_wr_en_ref) begin
+					$display(
+						"debug: REF MEM WRITE %h, to %h at time=%t with pc=%h",
+						mem_wr_data_in_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q
+					);
+				end else begin
+					$display(
+						"debug: REF MEM READ %h, from %h at time=%t with pc=%h",
+						mem_rd_data_out_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q
+					);
+				end
+			end
+		end
+	endfunction
+
+	function void push_mem_dut();
+		if (mem_access_log_dut.size() == 0) begin
+			mem_access_log_dut.push_back(
+				mem_access_t'({
+					rw:			mem_wr_en_dut ? WRITE : READ,
+					rw_addr:	mem_access_addr_dut,
+					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
+					sim_time:	$time,
+					pc:			proc_dut.processor_inst.pcp4_m - 32'd4,
+					instr:		instr_t'(proc_dut.processor_inst.instr_m)
+				})
+			);
+			if (DEBUG) begin
+				if (mem_wr_en_dut) begin
+					$display(
+						"debug: DUT MEM WRITE %h, to %h at time=%t with pc=%h",
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+					);
+				end else begin
+					$display(
+						"debug: DUT MEM READ %h, from %h at time=%t with pc=%h",
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+					);
+				end
+			end
+		end else if (
+			(
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== WRITE &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_dut &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_wr_data_in_dut
+			) ||
+			(
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== READ &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_dut &&
+				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_rd_data_out_dut
+			)
+		) begin 
+			// do nothing, duplicative entry
+		end else begin
+			mem_access_log_dut.push_back(
+				mem_access_t'({
+					rw:			mem_wr_en_dut ? WRITE : READ,
+					rw_addr:	mem_access_addr_dut,
+					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
+					sim_time:	$time,
+					pc:			proc_dut.processor_inst.pcp4_m - 32'd4,
+					instr:		instr_t'(proc_dut.processor_inst.instr_m)
+				})
+			);
+		end
+		if (DEBUG) begin
+				if (mem_wr_en_dut) begin
+					$display(
+						"debug: DUT MEM WRITE %h, to %h at time=%t with pc=%h",
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+					);
+				end else begin
+					$display(
+						"debug: DUT MEM READ %h, from %h at time=%t with pc=%h",
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+					);
+				end
+			end
+	endfunction
+
+	always @(negedge pll_clk) begin : ref_debug_log
 		// reg log
 		if (reg_wr_en_ref && reg_wr_addr_ref != X0) begin
-			reg_access_log.push_back(
-				reg_access_t'({
-					rw: WRITE,
-					rw_addr: reg_wr_addr_ref,
-					rw_data: reg_wr_data_ref
-				})
-			);
-			$display("REF, REG, write %h to addr %d", reg_wr_data_ref, reg_wr_addr_ref);
+			#1;
+			push_reg_ref();
 		end
 
 		// mem log
-		if (mem_wr_en_ref) begin
-			mem_access_log.push_back(
-				mem_access_t'({
-					rw: WRITE,
-					rw_addr: mem_access_addr_ref,
-					rw_data: mem_wr_data_in_ref
-				})
-			);
-			$display("REF, MEM, WRITE %h to addr %h", mem_wr_data_in_ref, mem_access_addr_ref);
-		end else if (mem_rd_en_ref && mem_access_done_ref) begin
-			mem_access_log.push_back(
-				mem_access_t'({
-					rw: READ,
-					rw_addr: mem_access_addr_ref,
-					rw_data: mem_rd_data_out_ref
-				})
-			);
-			$display("REF, MEM, READ %h from addr %h", mem_rd_data_out_ref, mem_access_addr_ref);
-		end
+		if (mem_wr_en_ref || mem_rd_en_ref) begin
+			#1;
+			push_mem_ref();
+		end 
 	end
 
-
-	always_ff @(negedge pll_clk) begin : dut_debug_log
+	always @(negedge pll_clk) begin : dut_debug_log
 		// reg log
 		if (reg_wr_en_dut && reg_wr_addr_dut != X0) begin
-			reg_access_log.push_back(
-				reg_access_t'({
-					rw: WRITE,
-					rw_addr: reg_wr_addr_dut,
-					rw_data: reg_wr_data_dut
-				})
-			);
-			$display("DUT, REG, write %h to addr %d", reg_wr_data_dut, reg_wr_addr_dut);
+			#1;
+			push_reg_dut();
 		end
 
 		// mem log
-		if (mem_wr_en_dut) begin
-			mem_access_log.push_back(
-				mem_access_t'({
-					rw: WRITE,
-					rw_addr: mem_access_addr_dut,
-					rw_data: mem_wr_data_in_dut
-				})
-			);
-			$display("DUT, MEM, WRITE %h to addr %h", mem_wr_data_in_dut, mem_access_addr_dut);
-		end else if (mem_rd_en_dut && mem_access_done_dut) begin
-			mem_access_log.push_back(
-				mem_access_t'({
-					rw: READ,
-					rw_addr: mem_access_addr_dut,
-					rw_data: mem_rd_data_out_dut
-				})
-			);
-			$display("DUT, MEM, READ %h from addr %h", mem_rd_data_out_dut, mem_access_addr_dut);
-		end
+		if ((mem_wr_en_dut || mem_rd_en_dut) && mem_access_done_dut) begin
+			#1;
+			push_mem_dut();
+		end 
 	end
 
 	initial begin
 		@(posedge ebreak_start);
 		// TODO:
 		error = 0;
+
+		$display("reg access count: ref: %d, dut: %d", reg_access_log_ref.size(), reg_access_log_dut.size());
+		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
 		
 		fd = $fopen("./result.txt", "w");
 		if (!fd) begin

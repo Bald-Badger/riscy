@@ -336,7 +336,7 @@ typedef enum logic[1:0] {
 } mem_fwd_sel_t;
 
 
-function stop;	// sometimes i mistype "$stop()" ans "stop()"...
+function void stop;	// sometimes i mistype "$stop()" ans "stop()"...
 	$stop();
 endfunction
 
