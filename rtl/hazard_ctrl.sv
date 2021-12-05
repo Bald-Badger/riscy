@@ -15,6 +15,8 @@ module hazard_ctrl (
 	input	logic			sdram_init_done,
 	input	logic			execute_busy,
 	input	logic			mem_access_done,
+	input	logic			branch_taken_d,
+	input	logic			branch_taken_x,
 
 	// forwarding signal to id stage
 	output	id_fwd_sel_t	fwd_id_rs1,
@@ -189,13 +191,17 @@ module hazard_ctrl (
 
 
 	logic jump_d, jump_x;	// jump instruction in decode/exe stage
+	logic branch_d, branch_x;
 	always_comb begin : flush_crtl_signal_assign
 		jump_d = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
 		jump_x = (instr_x.opcode == JAL) || (instr_x.opcode == JALR);
+		branch_d = (instr_d.opcode == B) && branch_taken_d;
+		branch_x = (instr_x.opcode == B) && branch_taken_x;
 	end
+
 	always_comb begin : flush_assign
-		flush_pc		= jump_d;		// actually masks output
-		flush_if_id		= jump_x;
+		flush_pc		= jump_d || branch_d;	// actually masks output
+		flush_if_id		= jump_x || branch_x;
 		flush_id_ex		= DISABLE;
 		flush_ex_mem	= DISABLE;
 		flush_mem_wb	= DISABLE;

@@ -36,18 +36,17 @@ module proc(
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
+	// synthesis translate_off
+	data_t		instr_raw;	// for debug
+	assign instr_raw = data_t'(instr_f);
+	// synthesis translate_o
 	data_t 		rs1_d, rs1_x, rs1_m, rs2_d, rs2_x, rs2_m;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
 	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
 	data_t 		mem_data_m, mem_data_w;	// data load from memory
 	logic		branch_take_f, branch_take_d;	// branch perdictor output from fetch stage
-	logic		branch_taken_actual;			// actual branch result from decode stage
-
-	// synthesis translate_off
-	data_t		instr_raw;	// for debug
-	assign instr_raw = data_t'(instr_f);
-	// synthesis translate_on
+	logic		branch_taken_actual_d, branch_taken_actual_x;	// actual branch result from decode stagen
 
 	// global control wire
 	logic 			pc_sel;			// should pc update to pc+4 or branch/jump result, 1 for bj, 0 for p4
@@ -166,7 +165,7 @@ module proc(
 		.rs1			(rs1_d),
 		.rs2			(rs2_d),
 		.imm			(imm_d),
-		.branch_taken	(branch_taken_actual)
+		.branch_taken	(branch_taken_actual_d)
 	);
 
 
@@ -185,29 +184,31 @@ module proc(
 	// decode-execute stage reg
 	id_ex_reg id_ex_reg_inst (
 		// common
-		.clk		(clk),
-		.rst_n		(rst_n),
-		.flush		(flush_id_ex),
-		.en			(!stall_id_ex),
+		.clk				(clk),
+		.rst_n				(rst_n),
+		.flush				(flush_id_ex),
+		.en					(!stall_id_ex),
 
 		// input
 		.instr_in	(
 			(stall_if_id && ~stall_id_ex)	? NOP : 
 			(flush_if_id)					? NOP : instr_d
 		),
-		.rs1_in		(rs1_d),
-		.rs2_in		(rs2_d_after_fwd),
-		.pc_in		(pc_d),
-		.imm_in		(imm_d),
-		.pc_p4_in	(pcp4_d),
+		.rs1_in				(rs1_d),
+		.rs2_in				(rs2_d_after_fwd),
+		.pc_in				(pc_d),
+		.imm_in				(imm_d),
+		.pc_p4_in			(pcp4_d),
+		.branch_taken_in	(branch_taken_actual_d),
 
 		//output
-		.instr_out	(instr_x),
-		.rs1_out	(rs1_x),
-		.rs2_out	(rs2_x),
-		.pc_out		(pc_x),
-		.imm_out	(imm_x),
-		.pc_p4_out	(pcp4_x)
+		.instr_out			(instr_x),
+		.rs1_out			(rs1_x),
+		.rs2_out			(rs2_x),
+		.pc_out				(pc_x),
+		.imm_out			(imm_x),
+		.pc_p4_out			(pcp4_x),
+		.branch_taken_out	(branch_taken_actual_x)
 	);
 
 
@@ -351,6 +352,8 @@ module proc(
 		.sdram_init_done	(sdram_init_done),
 		.execute_busy		(execute_busy),
 		.mem_access_done	(mem_access_done),
+		.branch_taken_d		(branch_taken_actual_d),
+		.branch_taken_x		(branch_taken_actual_x),
 		
 		// output
 		// forwarding signal
