@@ -1,6 +1,6 @@
 GCC = riscv64-unknown-elf-gcc
-CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=2 -mexplicit-relocs
-# -wall: optimization for compilation time
+CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
+# -wall: enable all warnings
 # -O0: only optimization for compilation time
 # -mdiv: use hardware int division
 # -mno-fdiv: do not use hardware fp div
@@ -8,9 +8,9 @@ CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march
 # -mstrict-align: Do not generate unaligned memory accesses
 # -mlittle-endian: generate little endian code
 # -march=rv32im: rv32im ISA
-# -mabi=ilp32: 32 bit data without fp
+# -mabi=ilp32: 32 bit data type without fp
 # -lstdc++: enable c++ compile
-# -mbranch-cost=2: low branch cost, so hopefully disable instruction reorder
+# -mbranch-cost=1: low branch cost, so hopefully disable instruction reorder
 # -mexplicit-relocs: use assembler relocation operators when dealing with symbolic addresses, hopefully reduce pseudo instruction
 
 OBJCOPY = riscv64-unknown-elf-objcopy
@@ -37,7 +37,7 @@ bin:
 	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TBTARGET).bin
 
 mif:
-	python ./bin2mif.py $(TBTARGET).bin instr.mif 32
+	python ./bin2mif.py $(TBTARGET).bin $(TBTARGET).mif 32
 
 rars_mc: clean asm 
 	$(JAVA) $(JAVAFLAGS) $(TARGET).mc $(TARGET).s

@@ -2,17 +2,12 @@
 
 int main() {
 	int x;
-	int y;
 	int z = 0;
-	for (x = 0; x <2; x++) {
-		z = z + 3;
-		for (y = 0; y < 3; y++) {
-			z = z + 5;
-		}
-		z = z - 7;
+	for (x = 0; x <3; x++) {
+		z = z + 2;
 	}
 
-	int answer = 1110;
+	int answer = 6;
 
 	if (z == answer) {
 		#ifdef TB
