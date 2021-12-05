@@ -64,6 +64,7 @@ testbench/
 _output_files/
 output_files/
 work/
+smoke/
 modelsim/
 .idea/
 par/
@@ -90,3 +91,4 @@ workspace.code-workspace
 *.mpf_new
 sim/test.s
 *.bin
+*.log
