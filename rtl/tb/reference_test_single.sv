@@ -76,8 +76,7 @@ module reference_test_single ();
 	assign	mem_access_done_dut	= proc_dut.processor_inst.mem_access_done;
 	assign	mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor_inst.memory_inst.data_in_final :
 								swap_endian(proc_dut.processor_inst.memory_inst.data_in_final);
-	assign	mem_rd_data_out_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor_inst.mem_data_m :
-								swap_endian(proc_dut.processor_inst.mem_data_m);
+	assign	mem_rd_data_out_dut	= proc_dut.processor_inst.mem_data_m;
 	assign	mem_access_addr_dut	= proc_dut.processor_inst.memory_inst.addr;
 
 	// reg ref wire
@@ -89,12 +88,12 @@ module reference_test_single ();
 	assign	reg_wr_data_ref		= data_t'(proc_ref.core_ref.rd_val_w);
 
 	// mem ref wire
-	logic	mem_wr_en_ref, mem_rd_en_ref, mem_access_done_ref;
+	logic	mem_wr_en_ref, mem_rd_en_ref, mem_access_ack_ref;
 	data_t	mem_wr_data_in_ref, mem_rd_data_out_ref;
 	data_t	mem_access_addr_ref;
 	assign	mem_wr_en_ref		= (proc_ref.mem_d_wr_w != 4'b0);	// byte enable all 0s
 	assign	mem_rd_en_ref		= proc_ref.mem_d_rd_w;
-	assign	mem_access_done_ref	= proc_ref.mem_d_ack_w;
+	assign	mem_access_ack_ref	= proc_ref.mem_d_ack_w;
 	assign	mem_wr_data_in_ref	= proc_ref.mem_d_data_wr_w;
 	assign	mem_rd_data_out_ref	= proc_ref.mem_d_data_rd_w;
 	assign	mem_access_addr_ref	= proc_ref.mem_d_addr_w;
@@ -215,9 +214,8 @@ module reference_test_single ();
 		end
 	endfunction
 
-	function void push_mem_ref();
-		if (mem_access_log_ref.size() == 0) begin
-			mem_access_log_ref.push_back(
+	task push_mem_ref_helper();
+		mem_access_log_ref.push_back(
 				mem_access_t'({
 					rw:			mem_wr_en_ref ? WRITE : READ,
 					rw_addr:	mem_access_addr_ref,
@@ -233,14 +231,26 @@ module reference_test_single ();
 						"debug: REF MEM WRITE %h, to   %h at time=%t with pc=%h",
 						mem_wr_data_in_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q - 32'd4
 					);
-				end else if (mem_rd_en_ref) begin
+				end else begin // don't add " else if (mem_rd_en_ref)" here cuz rden is not aserted when ack is high
 					$display(
 						"debug: REF MEM READ  %h, from %h at time=%t with pc=%h",
 						mem_rd_data_out_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q - 32'd4
 					);
 				end
 			end
-		end else if (
+	endtask
+
+	task push_mem_ref();
+		if (mem_access_log_ref.size() == 0) begin
+			if (mem_rd_en_ref) begin
+				@(posedge mem_access_ack_ref);
+				push_mem_ref_helper();
+			end else begin
+				push_mem_ref_helper();
+			end
+			
+		end else if ( mem_access_log_ref[mem_access_log_ref.size()-1].pc == proc_ref.core_ref.pc_q - 32'd4
+		/*
 			(	
 				mem_wr_en_ref &&
 				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== WRITE &&
@@ -253,34 +263,18 @@ module reference_test_single ();
 				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_ref &&
 				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_rd_data_out_ref
 			)
+		*/
 		) begin
 			// do nothing, duplicative entry
 		end else begin
-			mem_access_log_ref.push_back(
-				mem_access_t'({
-					rw:			mem_wr_en_ref ? WRITE : READ,
-					rw_addr:	mem_access_addr_ref,
-					rw_data:	mem_wr_en_ref ? mem_wr_data_in_ref : mem_rd_data_out_ref,
-					sim_time:	$time,
-					pc:			(proc_ref.core_ref.pc_q - 32'd4),
-					instr:		instr_t'(proc_ref.mem_i_inst_w)
-				})
-			);
-			if (MEM_DEBUG) begin
-				if (mem_wr_en_ref) begin
-					$display(
-						"debug: REF MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q - 32'd4
-					);
-				end else if (mem_rd_en_ref) begin
-					$display(
-						"debug: REF MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_ref, mem_access_addr_ref, $time, proc_ref.core_ref.pc_q - 32'd4
-					);
-				end
+			if (mem_rd_en_ref) begin
+				@(posedge mem_access_ack_ref);
+				push_mem_ref_helper();
+			end else begin
+				push_mem_ref_helper();
 			end
 		end
-	endfunction
+	endtask
 
 	function void push_mem_dut();
 		if (mem_access_log_dut.size() == 0) begin
@@ -290,7 +284,7 @@ module reference_test_single ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor_inst.pcp4_m - 32'd4,
+					pc:			proc_dut.processor_inst.pcp4_m - 4,
 					instr:		instr_t'(proc_dut.processor_inst.instr_m)
 				})
 			);
@@ -298,29 +292,32 @@ module reference_test_single ();
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 4)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 4)
 					);
 				end
 			end
-		end else if (
+		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.processor_inst.pcp4_m - 4)
+		/*
 			(
 				mem_wr_en_dut &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== WRITE &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_dut &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_wr_data_in_dut
+				mem_access_log_dut[mem_access_log_dut.size()-1].rw		== WRITE &&
+				mem_access_log_dut[mem_access_log_dut.size()-1].rw_addr	== mem_access_addr_dut &&
+				mem_access_log_dut[mem_access_log_dut.size()-1].rw_data	== mem_wr_data_in_dut
 			) ||
 			(
 				mem_rd_en_dut &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== READ &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_dut &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_rd_data_out_dut
+				mem_access_log_dut[mem_access_log_dut.size()-1].rw		== READ &&
+				mem_access_log_dut[mem_access_log_dut.size()-1].rw_addr	== mem_access_addr_dut &&
+				mem_access_log_dut[mem_access_log_dut.size()-1].rw_data	== mem_rd_data_out_dut
 			)
+		*/
 		) begin 
+			$display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.processor_inst.pcp4_m - 4));
 			// do nothing, duplicative entry
 		end else begin
 			mem_access_log_dut.push_back(
@@ -329,7 +326,7 @@ module reference_test_single ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor_inst.pcp4_m - 32'd4,
+					pc:			proc_dut.processor_inst.pcp4_m - 4,
 					instr:		instr_t'(proc_dut.processor_inst.instr_m)
 				})
 			);
@@ -337,12 +334,12 @@ module reference_test_single ();
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 4)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 32'd4)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor_inst.pcp4_m - 4)
 					);
 				end
 			end
@@ -381,7 +378,7 @@ module reference_test_single ();
 
 		$display("reg access count: ref: %d, dut: %d", reg_access_log_ref.size(), reg_access_log_dut.size());
 		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
-		
+		$display("last pc: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc);
 		fd = $fopen("./result.txt", "w");
 		if (!fd) begin
 			$display("file open failed");

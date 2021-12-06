@@ -190,24 +190,6 @@ module hazard_ctrl (
 	end
 
 
-	logic jump_d, jump_x;	// jump instruction in decode/exe stage
-	logic branch_d, branch_x;
-	always_comb begin : flush_crtl_signal_assign
-		jump_d = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
-		jump_x = (instr_x.opcode == JAL) || (instr_x.opcode == JALR);
-		branch_d = (instr_d.opcode == B) && branch_taken_d;
-		branch_x = (instr_x.opcode == B) && branch_taken_x;
-	end
-
-	always_comb begin : flush_assign
-		flush_pc		= jump_d || branch_d;	// actually masks output
-		flush_if_id		= jump_x || branch_x;
-		flush_id_ex		= DISABLE;
-		flush_ex_mem	= DISABLE;
-		flush_mem_wb	= DISABLE;
-	end
-
-
 	logic data_mem_stall;	// pipeline stall from data memory access
 	always_comb begin : data_mem_stall_assign
 		data_mem_stall = ((instr_m.opcode == STORE) || (instr_m.opcode == LOAD)) && ~mem_access_done;
@@ -252,14 +234,43 @@ module hazard_ctrl (
 		load_hazard_2	=	load_hazard_2a || load_hazard_2b;
 	end
 
+
+	logic ecall_f, ecall_d, ecall_x, ecall_m, ecall_w;
+	always_comb begin : ecall_sig_asign
+		ecall_w	= instr_w.opcode == SYS;
+		ecall_m	= instr_m.opcode == SYS || ecall_w;
+		ecall_x	= instr_x.opcode == SYS || ecall_m;
+		ecall_d	= instr_d.opcode == SYS || ecall_x;
+		ecall_f = instr_f.opcode == SYS || ecall_d;
+	end
+
+
 	// TODO: when seeing a FENSE instruction in decode stage, stall PC and IF untie see
 	// TODO: add fense bit in the pipeline stages to indicate instruction after finse done exe
 	always_comb begin : stall_assign
-		stall_pc		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy;
-		stall_if_id		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy;
-		stall_id_ex		= data_mem_stall || ~sdram_init_done || execute_busy;
-		stall_ex_mem	= data_mem_stall || ~sdram_init_done;
-		stall_mem_wb	= data_mem_stall || ~sdram_init_done;	// stall for mem-mem fwd
+		stall_pc		= data_mem_stall || ~sdram_init_done || execute_busy || load_hazard_1 || load_hazard_2 || ecall_d;
+		stall_if_id		= data_mem_stall || ~sdram_init_done || execute_busy || load_hazard_1 || load_hazard_2 || ecall_x;
+		stall_id_ex		= data_mem_stall || ~sdram_init_done || execute_busy || ecall_m;
+		stall_ex_mem	= data_mem_stall || ~sdram_init_done || ecall_w;
+		stall_mem_wb	= data_mem_stall || ~sdram_init_done || ecall_w;	// stall for mem-mem fwd
+	end
+
+
+	logic jump_d, jump_x;	// jump instruction in decode/exe stage
+	logic branch_d, branch_x;
+	always_comb begin : flush_crtl_signal_assign
+		jump_d = (instr_d.opcode == JAL) || (instr_d.opcode == JALR);
+		jump_x = (instr_x.opcode == JAL) || (instr_x.opcode == JALR);
+		branch_d = (instr_d.opcode == B) && branch_taken_d;
+		branch_x = (instr_x.opcode == B) && branch_taken_x;
+	end
+
+	always_comb begin : flush_assign
+		flush_pc		= jump_d || branch_d;	// actually masks output
+		flush_if_id		= jump_x || branch_x;
+		flush_id_ex		= DISABLE;
+		flush_ex_mem	= DISABLE;
+		flush_mem_wb	= DISABLE;
 	end
 
 endmodule : hazard_ctrl

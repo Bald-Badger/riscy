@@ -66,7 +66,6 @@ module proc(
 
 	// ebreak
 	logic		ebreak;			// ebreak instruction appear in decode stage
-	logic		ebreak_stall;	// stall from ebreak, waiting pipeline clear
 	logic		ebreak_return;	// wait for debugger return executation to core
 	assign		ebreak_return = 1'b0;	// disable debugger return
 
@@ -114,7 +113,7 @@ module proc(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.flush			(flush_if_id),
-		.en				((!stall_if_id) & (!ebreak_stall)),
+		.en				(!stall_if_id),
 
 		// input
 		.pc_p4_in		(pcp4_f),
@@ -382,71 +381,9 @@ module proc(
 	);
 
 
-// TODO: change ebreak status to "instr.w == ebreak"
 // TODO: stall pipeline for all instruction after ebreak until ebreak_returm
-typedef enum reg[2:0] {
-	EBREAK_IDLE,
-	EBREAK_CNT_1,
-	EBREAK_CNT_2,
-	EBREAK_CNT_3,
-	EBREAK_WAIT		// wait for return instruction from debugger
-} ebreak_state_t;
-ebreak_state_t ebreak_state, ebreak_nxt_state;
-assign ebreak = ((instr_d == EBREAK) ||(instr_d == ECALL)) ? 1'b1 : 1'b0;
-assign ebreak_start = (ebreak_state == EBREAK_WAIT) ? 1'b1 : 1'b0;
-
-always_ff @(posedge clk or negedge rst_n)
-  if (!rst_n)
-    ebreak_state <= EBREAK_IDLE;
-  else
-    ebreak_state <= ebreak_nxt_state;
-
-always_comb begin : ebreak_fsm
-	ebreak_nxt_state = EBREAK_IDLE;
-	ebreak_stall = 1'b0;
-	case (ebreak_state)
-
-		EBREAK_IDLE: begin
-			if (ebreak) begin
-				ebreak_nxt_state = EBREAK_CNT_1;
-				ebreak_stall = 1'b1;
-			end else begin
-				ebreak_nxt_state = EBREAK_IDLE;
-				ebreak_stall = 1'b0;
-			end
-		end
-
-		EBREAK_CNT_1: begin
-			ebreak_nxt_state = EBREAK_CNT_2;
-			ebreak_stall = 1'b1;
-		end
-
-		EBREAK_CNT_2: begin
-			ebreak_nxt_state = EBREAK_CNT_3;
-			ebreak_stall = 1'b1;
-		end
-
-		EBREAK_CNT_3: begin
-			ebreak_nxt_state = EBREAK_WAIT;
-			ebreak_stall = 1'b0;
-		end
-
-		EBREAK_WAIT: begin
-			if (ebreak_return) begin
-				ebreak_nxt_state = EBREAK_IDLE;
-				ebreak_stall = 1'b0;
-			end else begin
-				ebreak_nxt_state = EBREAK_WAIT;
-				ebreak_stall = 1'b1;
-			end
-		end
-
-		default: begin
-			ebreak_nxt_state = EBREAK_IDLE;
-			ebreak_stall = 1'b0;
-		end
-
-	endcase
+always_comb begin : ebreak_assign
+	ebreak_start = instr_w.opcode == SYS;
 end
 
 endmodule : proc
