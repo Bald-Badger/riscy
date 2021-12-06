@@ -31,7 +31,7 @@ asm:
 	$(GCC) $(CFLAGS) -S $(SRC) -o $(SDEST)
 	
 elf:
-	$(GCC) $(CFLAGS) -c $(SRC) -o $(TARGET)
+	$(GCC) $(CFLAGS) $(SDEST) -o $(TARGET)
 
 bin:
 	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TBTARGET).bin
@@ -43,7 +43,7 @@ rars_mc: clean asm
 	$(JAVA) $(JAVAFLAGS) $(TARGET).mc $(TARGET).s
 
 rars: rars_mc
-	$(PYTHON) $(PYTHONFPAGS) -i $(TARGET).mc -o my_test_$(TARGET).mif
+	$(PYTHON) $(PYTHONFPAGS) -i $(TARGET).mc -o $(TBTARGET).mif
 
 clean:
 	rm -f *.s $(TARGET) *.bin *.mif *.mc
