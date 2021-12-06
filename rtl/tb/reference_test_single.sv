@@ -5,10 +5,10 @@
 import defines::*;
 
 module reference_test_single ();
-	localparam REG_DEBUG = DISABLE;
-	localparam MEM_DEBUG = DISABLE;
+	localparam REG_DEBUG = ENABLE;
+	localparam MEM_DEBUG = ENABLE;
 	
-	int error = 0;
+	integer error;
 	int fd;
 
 	logic clk, rst_n, ebreak_start;
@@ -57,6 +57,11 @@ module reference_test_single ();
 	assign pll_clk = proc_dut.clk;
 	assign lock_rst = ~proc_dut.rst_n;
 	assign ref_halt = (data_t'(proc_ref.mem_i_inst_w) == ECALL);
+
+	initial begin
+		@(posedge ref_halt);
+		$display("ref module finished program");
+	end
 
 	// reg dut wire
 	logic 	reg_wr_en_dut;
@@ -107,7 +112,7 @@ module reference_test_single ();
 		data_t	rw_data;
 		integer	sim_time;
 		data_t	pc;
-		instr_t	instr;
+		//instr_t	instr;
 	} reg_access_t;
 
 	typedef struct packed {
@@ -116,7 +121,7 @@ module reference_test_single ();
 		data_t	rw_data;
 		integer	sim_time;
 		data_t	pc;
-		instr_t	instr;
+		//instr_t	instr;
 	} mem_access_t;   
 
 	reg_access_t reg_access_log_ref[$] = {};
@@ -132,8 +137,8 @@ module reference_test_single ();
 					rw_addr:	reg_wr_addr_ref,
 					rw_data:	reg_wr_data_ref,
 					sim_time:	$time,
-					pc:			(proc_ref.core_ref.pc_q - 32'd4),
-					instr:		instr_t'(proc_ref.core_ref.mem_i_inst_i)
+					pc:			(proc_ref.core_ref.pc_q - 32'd4)
+					//instr:		instr_t'(proc_ref.core_ref.mem_i_inst_i)
 				})
 			
 			);
@@ -158,8 +163,8 @@ module reference_test_single ();
 					rw_addr:	reg_wr_addr_ref,
 					rw_data:	reg_wr_data_ref,
 					sim_time:	$time,
-					pc:			(proc_ref.core_ref.pc_q - 4),
-					instr:		instr_t'(proc_ref.core_ref.mem_i_inst_i)
+					pc:			(proc_ref.core_ref.pc_q - 4)
+					//instr:		instr_t'(proc_ref.core_ref.mem_i_inst_i)
 				})
 			);
 			if (REG_DEBUG) begin
@@ -179,8 +184,8 @@ module reference_test_single ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			(proc_dut.processor_inst.pcp4_w - 32'd4),
-					instr:		proc_dut.processor_inst.instr_w
+					pc:			(proc_dut.processor_inst.pcp4_w - 32'd4)
+					//instr:		proc_dut.processor_inst.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
@@ -204,8 +209,8 @@ module reference_test_single ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor_inst.pcp4_w - 32'd4,
-					instr:		proc_dut.processor_inst.instr_w
+					pc:			proc_dut.processor_inst.pcp4_w - 32'd4
+					//instr:		proc_dut.processor_inst.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
@@ -224,8 +229,8 @@ module reference_test_single ();
 					rw_addr:	mem_access_addr_ref,
 					rw_data:	mem_wr_en_ref ? mem_wr_data_in_ref : mem_rd_data_out_ref,
 					sim_time:	$time,
-					pc:			(proc_ref.core_ref.pc_q - 32'd4),
-					instr:		instr_t'(proc_ref.mem_i_inst_w)
+					pc:			(proc_ref.core_ref.pc_q - 32'd4)
+					//instr:		instr_t'(proc_ref.mem_i_inst_w)
 				})
 			);
 			if (MEM_DEBUG) begin
@@ -287,8 +292,8 @@ module reference_test_single ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor_inst.pcp4_m - 4,
-					instr:		instr_t'(proc_dut.processor_inst.instr_m)
+					pc:			proc_dut.processor_inst.pcp4_m - 4
+					//instr:		instr_t'(proc_dut.processor_inst.instr_m)
 				})
 			);
 			if (MEM_DEBUG) begin
@@ -329,8 +334,8 @@ module reference_test_single ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor_inst.pcp4_m - 4,
-					instr:		instr_t'(proc_dut.processor_inst.instr_m)
+					pc:			proc_dut.processor_inst.pcp4_m - 4
+					//instr:		instr_t'(proc_dut.processor_inst.instr_m)
 				})
 			);
 			if (MEM_DEBUG) begin
@@ -374,13 +379,100 @@ module reference_test_single ();
 		end 
 	end
 
-	initial begin
-		@(posedge ebreak_start);
-		// TODO:
-		error = 0;
 
+	task compare_reg_log();
+		assert	(reg_access_log_ref[0].rw == reg_access_log_dut[0].rw) 
+		else begin
+			error = 1;
+			$error("REG RW mismatch at ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
+			reg_access_log_ref[0].pc, reg_access_log_ref[0].rw, reg_access_log_dut[0].rw);
+		end
+
+		assert	(reg_access_log_ref[0].rw_addr == reg_access_log_dut[0].rw_addr) 
+		else begin
+			error = 1;
+			$error("REG RW_ADDR mismatch at ref pc = %h, expecting addr is %d, dut addr is %d", 
+			reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_addr, reg_access_log_dut[0].rw_addr);
+		end
+
+		assert	(reg_access_log_ref[0].rw_data == reg_access_log_dut[0].rw_data) 
+		else begin
+			error = 1;
+			$error("REG RW_DATA mismatch at ref pc = %h, expecting data is %h, dut data is %h", 
+			reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_data, reg_access_log_dut[0].rw_data);
+		end
+
+		//$display("poped reg log at pc=%d", reg_access_log_ref[0].pc);
+		reg_access_log_ref.pop_front();
+		reg_access_log_dut.pop_front();
+	endtask
+
+	task compare_mem_log();
+		assert	(mem_access_log_ref[0].rw == mem_access_log_dut[0].rw) 
+		else begin
+			error = 1;
+			$error("MEM RW mismatch at ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
+			mem_access_log_ref[0].pc, mem_access_log_ref[0].rw, mem_access_log_dut[0].rw);
+		end
+
+		assert	(mem_access_log_ref[0].rw_addr == mem_access_log_dut[0].rw_addr) 
+		else begin
+			error = 1;
+			$error("MEM RW_ADDR mismatch at ref pc = %h, expecting addr is %h, dut addr is %h", 
+			mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_addr, mem_access_log_dut[0].rw_addr);
+		end
+
+		assert	(mem_access_log_ref[0].rw_data == mem_access_log_dut[0].rw_data) 
+		else begin
+			error = 1;
+			$error("MEM RW_DATA mismatch at ref pc = %h, expecting addr is %h, dut addr is %h", 
+			mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_data, mem_access_log_dut[0].rw_data);
+		end
+
+		//$display("poped mem log at pc=%d", mem_access_log_ref[0].pc);
+		mem_access_log_ref.pop_front();
+		mem_access_log_dut.pop_front();
+	endtask
+
+
+	initial begin
+		integer time_reg, time_mem;
+		integer iter;
+		iter = 0;
+		error = 0;
+		@(posedge ebreak_start);
 		$display("reg access count: ref: %d, dut: %d", reg_access_log_ref.size(), reg_access_log_dut.size());
 		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
+		
+		while (
+			(reg_access_log_ref.size() > 0) ||
+			(mem_access_log_ref.size() > 0)
+		) begin
+			
+			if (reg_access_log_ref.size() == 0 && mem_access_log_ref.size() > 0) begin
+				compare_mem_log();
+			end else if (mem_access_log_ref.size() == 0 && reg_access_log_ref.size() > 0) begin
+				compare_reg_log();
+			end else if (reg_access_log_ref.size() == 0 && mem_access_log_ref.size() == 0) begin
+				$display("test should be stopping soon...");
+			end else if (reg_access_log_ref[0].sim_time <= mem_access_log_ref[0].sim_time)begin
+				compare_reg_log();
+			end else begin
+				compare_mem_log();
+			end
+
+			if (error) begin
+				$display("test failed, stopping...");
+				$stop();
+			end
+
+			iter++;
+			if (iter > 1000000) begin
+				$display("log access overflow, stopping");
+				$stop();
+			end
+		end
+		
 		fd = $fopen("./result.txt", "w");
 		if (!fd) begin
 			$display("file open failed");
@@ -439,7 +531,6 @@ module clkrst #(
 		wait(proc_dut.processor_inst.sdram_init_done);
 		$display("sdram init done");
 		@(negedge proc_dut.clk);
-		$stop();
 		repeat(15000) @(negedge clk);
 		$display("timeout");
 		$stop();
