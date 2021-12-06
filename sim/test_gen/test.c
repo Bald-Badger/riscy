@@ -1,13 +1,10 @@
 #include "test.h"
 
 int main() {
-	int x;
-	int z = 0;
-	for (x = 0; x <3; x++) {
-		z = z + 2;
-	}
-
-	int answer = 6;
+	int x = 2;
+	int z;
+	int answer = 4;
+	z = foo(x);
 
 	if (z == answer) {
 		#ifdef TB
@@ -29,6 +26,11 @@ int main() {
 		__asm__("li a7, 93");
 		__asm__("ecall");
 	#else
+	printf("answer is %d\n", z);
 	return 0;
 	#endif /* TB */
+}
+
+int foo(int n) {
+	return n + n;
 }
