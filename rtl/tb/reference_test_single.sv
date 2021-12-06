@@ -6,7 +6,7 @@ import defines::*;
 
 module reference_test_single ();
 	localparam REG_DEBUG = DISABLE;
-	localparam MEM_DEBUG = ENABLE;
+	localparam MEM_DEBUG = DISABLE;
 	
 	int error = 0;
 	int fd;
@@ -62,8 +62,7 @@ module reference_test_single ();
 	logic 	reg_wr_en_dut;
 	r_t 	reg_wr_addr_dut;
 	data_t	reg_wr_data_dut;
-	assign 	reg_wr_en_dut	= proc_dut.processor_inst.rd_wren_w && 
-							  !proc_dut.processor_inst.stall_id_ex;
+	assign 	reg_wr_en_dut	= proc_dut.processor_inst.rd_wren_w;
 	assign 	reg_wr_addr_dut	= proc_dut.processor_inst.rd_addr;
 	assign 	reg_wr_data_dut	= proc_dut.processor_inst.wb_data;
 
@@ -144,10 +143,12 @@ module reference_test_single ();
 					reg_wr_data_ref, $unsigned(reg_wr_addr_ref), $time, proc_ref.core_ref.pc_q - 32'd4
 				);
 			end
-		end else if (
-			reg_access_log_ref[reg_access_log_ref.size()].rw == WRITE &&
-			reg_access_log_ref[reg_access_log_ref.size()].rw_addr == reg_wr_addr_ref &&
-			reg_access_log_ref[reg_access_log_ref.size()].rw_data == reg_wr_data_ref
+		end else if ( reg_access_log_ref[reg_access_log_ref.size()-1].pc == (proc_ref.core_ref.pc_q - 32'd4)
+			/*
+			reg_access_log_ref[reg_access_log_ref.size()-1].rw == WRITE &&
+			reg_access_log_ref[reg_access_log_ref.size()-1].rw_addr == reg_wr_addr_ref &&
+			reg_access_log_ref[reg_access_log_ref.size()-1].rw_data == reg_wr_data_ref
+			*/
 		) begin 
 			// do nothing, duplicative entry
 		end else begin
@@ -178,7 +179,7 @@ module reference_test_single ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor_inst.pcp4_w - 32'd4,
+					pc:			(proc_dut.processor_inst.pcp4_w - 32'd4),
 					instr:		proc_dut.processor_inst.instr_w
 				})
 			);
@@ -188,10 +189,12 @@ module reference_test_single ();
 					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor_inst.pcp4_w - 32'd4)
 				);
 			end
-		end else if (
-			reg_access_log_dut[reg_access_log_dut.size()].rw == WRITE &&
-			reg_access_log_dut[reg_access_log_dut.size()].rw_addr == reg_wr_addr_dut &&
-			reg_access_log_dut[reg_access_log_dut.size()].rw_data == reg_wr_data_dut
+		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.processor_inst.pcp4_w - 32'd4)
+			/*
+			reg_access_log_dut[reg_access_log_dut.size()-1].rw == WRITE &&
+			reg_access_log_dut[reg_access_log_dut.size()-1].rw_addr == reg_wr_addr_dut &&
+			reg_access_log_dut[reg_access_log_dut.size()-1].rw_data == reg_wr_data_dut
+			*/
 		) begin 
 			// do nothing, duplicative entry
 		end else begin
@@ -317,7 +320,7 @@ module reference_test_single ();
 			)
 		*/
 		) begin 
-			$display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.processor_inst.pcp4_m - 4));
+			// $display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.processor_inst.pcp4_m - 4));
 			// do nothing, duplicative entry
 		end else begin
 			mem_access_log_dut.push_back(
@@ -378,7 +381,6 @@ module reference_test_single ();
 
 		$display("reg access count: ref: %d, dut: %d", reg_access_log_ref.size(), reg_access_log_dut.size());
 		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
-		$display("last pc: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc);
 		fd = $fopen("./result.txt", "w");
 		if (!fd) begin
 			$display("file open failed");

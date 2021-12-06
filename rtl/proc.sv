@@ -381,7 +381,7 @@ module proc(
 	);
 
 
-// TODO: stall pipeline for all instruction after ebreak until ebreak_returm
+// TODO: resume pipeline after ebreak return
 always_comb begin : ebreak_assign
 	ebreak_start = instr_w.opcode == SYS;
 end
