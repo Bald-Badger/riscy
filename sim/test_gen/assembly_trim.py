@@ -1,7 +1,7 @@
 import re
 
 
-def trim(filename='instr.s'):
+def trim(filename='dasm.s'):
     with open(filename) as file:
         lines = file.readlines()
     for i in range(len(lines)):
@@ -23,9 +23,18 @@ def trim(filename='instr.s'):
     file.close()
     with open('instr_trim.s') as file:
         lines = file.readlines()
+    fp = open('instr.s', 'w')
     for line in lines:
-       print(re.findall("0x\d+\n", line))
-
+        regex = "0x\w+\n"
+        if len(re.findall(regex, line)) > 0:
+            line = re.sub(regex, str(int(re.findall(regex, line)[0], 0))+'\n', line)
+            fp.write(line)
+            #print(line)
+        else:
+            fp.write(line)
+            #print(line)
+    file.close()
+    fp.close()
 
 
 if __name__ == '__main__':

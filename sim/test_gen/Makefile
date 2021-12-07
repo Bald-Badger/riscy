@@ -1,5 +1,5 @@
 GCC = riscv64-unknown-elf-gcc
-CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
+CFLAGS = -g -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
 # -wall: enable all warnings
 # -O0: only optimization for compilation time
 # -mdiv: use hardware int division
@@ -24,7 +24,7 @@ RARSADDR = 0x00000000-0x00008000
 JAVAFLAGS = -jar rars.jar a mc CompactTextAtZero dump $(RARSADDR) HexText
 PYTHON = python
 READELF = riscv64-unknown-elf-readelf
-DASM = riscvdasm
+DASM = ./riscvdasm
 
 all: clean asm elf bin mif offset
 
@@ -33,28 +33,31 @@ asm:
 	$(GCC) $(CFLAGS) -S $(SRC) -o $(SDEST)
 
 # build the compiled and linked elf file	
-elf:
+elf: asm
 	$(GCC) $(CFLAGS) $(SDEST) -o $(TARGET)
 
 # extract the executable binary from elf
-bin:
+bin: elf
 	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TBTARGET).bin
 
 # build memory init file from binary
-mif:
+mif: bin
 	$(PYTHON) ./bin2mif.py $(TBTARGET).bin $(TBTARGET).mif 32
 
 # extract elf header info from elf file
-header:
+header: elf
 	$(READELF) -h $(TARGET) >> $(TARGET).header
 
 # extract section information from elf file
-section:
+section: elf
 	$(READELF) -S $(TARGET) >> $(TARGET).section
 
 # calculate entry point pc offset
-offset: header section asm elf
+offset: header section
 	$(PYTHON) ./get_off.py
+
+dasm: bin
+	$(DASM) < $(TBTARGET).bin > dasm.s
 
 rars_mc: clean asm 
 	$(JAVA) $(JAVAFLAGS) $(TARGET).mc $(TARGET).s
