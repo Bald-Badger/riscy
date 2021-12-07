@@ -24,6 +24,7 @@ RARSADDR = 0x00000000-0x00008000
 JAVAFLAGS = -jar rars.jar a mc CompactTextAtZero dump $(RARSADDR) HexText
 PYTHON = python
 READELF = riscv64-unknown-elf-readelf
+DASM = riscvdasm
 
 all: clean asm elf bin mif offset
 

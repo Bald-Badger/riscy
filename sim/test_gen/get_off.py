@@ -3,7 +3,7 @@ def get_entry_addr(filename="./test.header"):
         lines = file.readlines()
         lines = [line.rstrip() for line in lines]
     del lines[0]
-    for i in range(lines.__len__()):
+    for i in range(len(lines)):
         lines[i] = " ".join(lines[i].split())  # remove dupe white space
     header_dict = {}
     for line in lines:
