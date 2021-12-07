@@ -15,35 +15,54 @@ CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march
 
 OBJCOPY = riscv64-unknown-elf-objcopy
 COPYFLAGS = -O binary --only-section=.text
-TARGET = test
+TARGET = ./test
 TBTARGET = instr
 SRC = $(TARGET).c
-SDEST = $(TARGET).s
+SDEST = $(TBTARGET).s
 JAVA = java
 RARSADDR = 0x00000000-0x00008000
 JAVAFLAGS = -jar rars.jar a mc CompactTextAtZero dump $(RARSADDR) HexText
 PYTHON = python
-PYTHONFPAGS = ./mc2mif.py
+READELF = riscv64-unknown-elf-readelf
 
-all: clean asm elf bin mif
+all: clean asm elf bin mif offset
 
+# build the .S assembly file
 asm:
 	$(GCC) $(CFLAGS) -S $(SRC) -o $(SDEST)
-	
+
+# build the compiled and linked elf file	
 elf:
 	$(GCC) $(CFLAGS) $(SDEST) -o $(TARGET)
 
+# extract the executable binary from elf
 bin:
 	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TBTARGET).bin
 
+# build memory init file from binary
 mif:
-	python ./bin2mif.py $(TBTARGET).bin $(TBTARGET).mif 32
+	$(PYTHON) ./bin2mif.py $(TBTARGET).bin $(TBTARGET).mif 32
+
+# extract elf header info from elf file
+header:
+	$(READELF) -h $(TARGET) >> $(TARGET).header
+
+# extract section information from elf file
+section:
+	$(READELF) -S $(TARGET) >> $(TARGET).section
+
+# calculate entry point pc offset
+offset: header section asm elf
+	$(PYTHON) ./get_off.py
 
 rars_mc: clean asm 
 	$(JAVA) $(JAVAFLAGS) $(TARGET).mc $(TARGET).s
 
 rars: rars_mc
-	$(PYTHON) $(PYTHONFPAGS) -i $(TARGET).mc -o $(TBTARGET).mif
+	$(PYTHON) ./mc2mif.py -i $(TARGET).mc -o $(TBTARGET).mif
 
 clean:
-	rm -f *.s $(TARGET) *.bin *.mif *.mc
+	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg
+
+# dump disassembled code:
+# riscv64-unknown-elf-objdump --no-address --no-show-raw-insn -dj .text ./test > instr_full.s
