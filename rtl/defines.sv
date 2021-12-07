@@ -50,6 +50,13 @@ package defines;
 	localparam	CSR_SUPPORT		= FALSE;	// Control and status register, required for xv6
 
 
+	// boot options
+	typedef enum logic[1:0] {
+		BINARY_BOOT,	// boot from a mif file generated from gcc compiled binary file
+		RARS_BOOT		// boot from a rars compiled mif file
+	} boot_type_t;
+	boot_type_t BOOT_TYPE = BINARY_BOOT;
+
 	// Opcode define
 	typedef enum logic[6:0] { 
 		R		=	7'b0110011,

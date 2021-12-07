@@ -92,3 +92,6 @@ workspace.code-workspace
 sim/test.s
 *.bin
 *.log
+sim/boot.cfg
+sim/instr.s
+sim/instr_full.s

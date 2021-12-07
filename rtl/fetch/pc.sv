@@ -13,11 +13,19 @@ module pc (
 	output data_t 	pc_p4
 );
 
+	logic[XLEN-1:0] boot_pc [0:0];	
+
 	assign pc_p4 = pc + 32'd4; // 32 bits in byte-addressable memory system, so 32/8 = 4
 
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)
-			pc <= -4;	// funking sketchy, but can get around bug
+			if (BOOT_TYPE == BINARY_BOOT) begin
+				pc <= boot_pc[0] - 4;
+			end else if (BOOT_TYPE == RARS_BOOT) begin
+				pc <= -4;	// funking sketchy, but can get around bug
+			end else begin
+				pc <= -4;
+			end
 		else if (stall)
 			pc <= pc;
 		else if (pc_sel)
@@ -25,5 +33,18 @@ module pc (
 		else
 			pc <= pc_p4;
 	end
+
+	// synopsys translate_off
+	initial begin
+		if (BOOT_TYPE == BINARY_BOOT) begin
+			$readmemh("boot.cfg", boot_pc);
+			$display("DUT: booy mode: binary");
+			$display("DUT: booting from pc = %h", boot_pc[0]);
+		end else if (BOOT_TYPE == RARS_BOOT) begin
+			$display("DUT: booy mode: RARS");
+			$display("DUT: booting from pc = %h", 0);
+		end
+	end
+	// synopsys translate_on
 
 endmodule : pc

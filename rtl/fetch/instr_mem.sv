@@ -22,12 +22,15 @@ module instr_mem (
 
 	instr_t instr_raw; 
 	always_comb begin : switch_endian
-		instr = (ENDIANESS == BIG_ENDIAN) ? instr_raw : 
-			instr_t'(
-				swap_endian(
-					data_t'(instr_raw)
-							)
-					);
+		if (BOOT_TYPE == BINARY_BOOT) begin
+			instr =	(ENDIANESS == BIG_ENDIAN) ? instr_t'(instr_raw) : 
+					instr_t'(swap_endian(data_t'(instr_raw)));
+		end else if (BOOT_TYPE == RARS_BOOT) begin
+			instr = instr_t'(instr_raw); // always load from bit endian
+		end else begin
+			instr = NULL;
+		end
+		
 	end
 
 	rom_32b_1024wd	instr_mem_inst (
