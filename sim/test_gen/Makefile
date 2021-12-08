@@ -26,7 +26,7 @@ PYTHON = python
 READELF = riscv64-unknown-elf-readelf
 DASM = ./riscvdasm
 
-all: clean asm elf bin mif offset
+all: clean asm elf bin mif
 
 # build the .S assembly file
 asm:
@@ -34,7 +34,7 @@ asm:
 
 # build the compiled and linked elf file	
 elf: asm
-	$(GCC) $(CFLAGS) $(SDEST) -o $(TARGET)
+	$(GCC) $(CFLAGS) -c $(SDEST) -o $(TARGET)
 
 # extract the executable binary from elf
 bin: elf
