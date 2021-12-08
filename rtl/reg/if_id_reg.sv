@@ -12,12 +12,14 @@ module if_id_reg (
 	input data_t 	pc_in,
 	input instr_t 	instr_in,
 	input logic		branch_take_in,
+	input logic		instr_valid_in,
 
 	// output
 	output data_t 	pc_p4_out,
 	output data_t 	pc_out,
 	output instr_t 	instr_out,
-	output logic	branch_take_out
+	output logic	branch_take_out,
+	output logic	instr_valid_out
 );
 
 	dffe_wrap #(.WIDTH(XLEN)) pc_p4_reg (
@@ -50,6 +52,14 @@ module if_id_reg (
 		.rst_n	(rst_n),
 		.d		(flush ? 1'b0 : branch_take_in),
 		.q		(branch_take_out)
+	);
+
+	dffe_wrap #(.WIDTH(1)) instr_valid_reg (
+		.clk	(clk),
+		.en		(en),
+		.rst_n	(rst_n),
+		.d		(instr_valid_in),
+		.q		(instr_valid_out)
 	);
 
 endmodule

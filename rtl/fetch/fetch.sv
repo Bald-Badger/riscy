@@ -10,19 +10,36 @@ module fetch (
 	input 	logic	pc_sel,
 	input 	logic	stall,
 	input	logic	flush,
+	input	logic	go,
 
 	// output
 	output	data_t	pc_p4_out,
 	output	data_t	pc_out,
 	output	instr_t	instr,
-	output	logic	taken
+	output	logic	taken,
+	output	logic	instr_valid
 );
 	instr_t instr_raw;
-	assign instr = (flush) ? NOP : instr_raw;	// mask the output as if flushed
-	data_t pc, pc_p4;
-	assign pc_p4_out = pc_p4 - 4;
-	assign pc_out = pc - 4;
+	assign instr = 	(~instr_valid)	? NOP : 
+					(flush)			? NOP : // mask the output as if flushed
+									instr_raw;
+	always_ff @(posedge clk or negedge rst_n) begin
+		if (~rst_n)
+			instr_valid <= INVALID;
+		else
+			instr_valid <= go;
+	end
 
+	data_t pc, pc_p4;
+	
+	always_ff @(posedge clk) begin : pc_delay
+		if (stall)
+			pc_out <= pc_out;
+		else
+			pc_out <= pc;
+	end
+	
+	assign pc_p4_out = pc_out + 4;
 
 	pc pc_inst (
 		// input

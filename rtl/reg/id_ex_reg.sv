@@ -15,6 +15,7 @@ module id_ex_reg (
 	input data_t	imm_in,
 	input data_t	pc_p4_in,
 	input logic		branch_taken_in,
+	input logic		instr_valid_in,
 
 	// output
 	output instr_t	instr_out,
@@ -23,7 +24,8 @@ module id_ex_reg (
 	output data_t 	rs2_out,
 	output data_t	imm_out,
 	output data_t	pc_p4_out,
-	output logic	branch_taken_out
+	output logic	branch_taken_out,
+	output logic	instr_valid_out
 );
 
 	dffe_wrap #(.WIDTH(XLEN)) instr_reg (
@@ -80,6 +82,14 @@ module id_ex_reg (
 		.rst_n	(rst_n),
 		.d		(flush ? 1'b0 : branch_taken_in),
 		.q		(branch_taken_out)
+	);
+
+	dffe_wrap #(.WIDTH(1)) instr_valid_reg (
+		.clk	(clk),
+		.en		(en),
+		.rst_n	(rst_n),
+		.d		(instr_valid_in),
+		.q		(instr_valid_out)
 	);
 	
 endmodule

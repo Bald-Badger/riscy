@@ -55,7 +55,7 @@ package defines;
 		BINARY_BOOT,	// boot from a mif file generated from gcc compiled binary file
 		RARS_BOOT		// boot from a rars compiled mif file
 	} boot_type_t;
-	boot_type_t BOOT_TYPE = BINARY_BOOT;
+	boot_type_t BOOT_TYPE = RARS_BOOT;
 
 	// Opcode define
 	typedef enum logic[6:0] { 

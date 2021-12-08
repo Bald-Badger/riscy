@@ -26,13 +26,24 @@ module instr_mem (
 			instr =	(ENDIANESS == BIG_ENDIAN) ? instr_t'(instr_raw) : 
 					instr_t'(swap_endian(data_t'(instr_raw)));
 		end else if (BOOT_TYPE == RARS_BOOT) begin
-			instr = instr_t'(instr_raw); // always load from bit endian
+			instr = 
+			swap_endian(
+				instr_t'(instr_raw)
+			);
 		end else begin
 			instr = NULL;
 		end
-		
 	end
 
+	rom instr_mem_inst (
+		.addr		(addr[11:2]),
+		.clk		(clk),
+		.rden		(rden),
+		.clken		(~stall),
+		.q			(instr_raw)
+	);
+
+	/*
 	rom_32b_1024wd	instr_mem_inst (
 		.address	( addr[11:2] ),
 		.clock		( clk ),
@@ -40,5 +51,6 @@ module instr_mem (
 		.rden		( rden ),
 		.q			( instr_raw )
 	);
+	*/
 
 endmodule : instr_mem

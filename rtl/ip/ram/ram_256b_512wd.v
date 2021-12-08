@@ -101,7 +101,7 @@ module ram_256b_512wd (
 		altsyncram_component.operation_mode = "SINGLE_PORT",
 		altsyncram_component.outdata_aclr_a = "NONE",
 		altsyncram_component.outdata_reg_a = "UNREGISTERED",
-		altsyncram_component.power_up_uninitialized = "TRUE",
+		altsyncram_component.power_up_uninitialized = "FALSE",
 		altsyncram_component.read_during_write_mode_port_a = "NEW_DATA_NO_NBE_READ",
 		altsyncram_component.widthad_a = 9,
 		altsyncram_component.width_a = 256,
@@ -127,7 +127,7 @@ endmodule
 // Retrieval info: PRIVATE: DataBusSeparated NUMERIC "1"
 // Retrieval info: PRIVATE: IMPLEMENT_IN_LES NUMERIC "0"
 // Retrieval info: PRIVATE: INIT_FILE_LAYOUT STRING "PORT_A"
-// Retrieval info: PRIVATE: INIT_TO_SIM_X NUMERIC "1"
+// Retrieval info: PRIVATE: INIT_TO_SIM_X NUMERIC "0"
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
@@ -157,7 +157,7 @@ endmodule
 // Retrieval info: CONSTANT: OPERATION_MODE STRING "SINGLE_PORT"
 // Retrieval info: CONSTANT: OUTDATA_ACLR_A STRING "NONE"
 // Retrieval info: CONSTANT: OUTDATA_REG_A STRING "UNREGISTERED"
-// Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "TRUE"
+// Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "FALSE"
 // Retrieval info: CONSTANT: READ_DURING_WRITE_MODE_PORT_A STRING "NEW_DATA_NO_NBE_READ"
 // Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "9"
 // Retrieval info: CONSTANT: WIDTH_A NUMERIC "256"

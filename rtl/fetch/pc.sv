@@ -20,11 +20,11 @@ module pc (
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)
 			if (BOOT_TYPE == BINARY_BOOT) begin
-				pc <= boot_pc[0] - 4;
+				pc <= boot_pc[0];
 			end else if (BOOT_TYPE == RARS_BOOT) begin
-				pc <= -4;	// funking sketchy, but can get around bug
+				pc <= NULL;
 			end else begin
-				pc <= -4;
+				pc <= NULL;
 			end
 		else if (stall)
 			pc <= pc;
