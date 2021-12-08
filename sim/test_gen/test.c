@@ -1,10 +1,14 @@
 #include "test.h"
 
 int main() {
-	int x = 2;
+	int x;
 	int z;
-	int answer = 4;
-	z = foo(x);
+	int answer = 45;
+
+	for (x = 0; x < 10; x++) {
+		z = z + x;
+	}
+
 
 	if (z == answer) {
 		#ifdef TB
@@ -29,8 +33,4 @@ int main() {
 	printf("answer is %d\n", z);
 	return 0;
 	#endif /* TB */
-}
-
-int foo(int n) {
-	return n + n;
 }
