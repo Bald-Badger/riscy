@@ -1,2 +1,2 @@
 #define TB
-//int foo(int);
+int foo(int);

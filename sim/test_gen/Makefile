@@ -1,5 +1,5 @@
 GCC = riscv64-unknown-elf-gcc
-CFLAGS = -g -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
+CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
 # -wall: enable all warnings
 # -O0: only optimization for compilation time
 # -mdiv: use hardware int division
@@ -34,7 +34,7 @@ asm:
 
 # build the compiled and linked elf file	
 elf: asm
-	$(GCC) $(CFLAGS) -c $(SDEST) -o $(TARGET)
+	$(GCC) $(CFLAGS) $(SDEST) -o $(TARGET)
 
 # extract the executable binary from elf
 bin: elf

@@ -3,11 +3,10 @@
 int main() {
 	int x;
 	int z;
-	int answer = 45;
+	int answer = 1;
 
-	for (x = 0; x < 10; x++) {
-		z = z + x;
-	}
+	x = 0;
+	z = foo(x);
 
 
 	if (z == answer) {
@@ -33,4 +32,8 @@ int main() {
 	printf("answer is %d\n", z);
 	return 0;
 	#endif /* TB */
+}
+
+int foo(int x){
+	return x + 1;
 }
