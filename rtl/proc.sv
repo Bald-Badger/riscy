@@ -27,7 +27,10 @@ module proc(
 	// end don't touch
 );
 	// sdram init done signal;
-	logic		sdram_init_done;
+	logic		sdram_init_done, sdram_init_done_async;
+	always_ff @(posedge clk or negedge rst_n) begin
+		sdram_init_done <= sdram_init_done_async;
+	end
 
 	// stage-specific common data wires
 	// signal naming shceme:
@@ -36,10 +39,11 @@ module proc(
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
+	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
 	// synthesis translate_off
 	data_t		instr_raw;	// for debug
-	assign instr_raw = data_t'(instr_f);
-	// synthesis translate_o
+	assign		instr_raw = data_t'(instr_f);
+	// synthesis translate_on
 	data_t 		rs1_d, rs1_x, rs1_m, rs2_d, rs2_x, rs2_m;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
@@ -65,7 +69,6 @@ module proc(
 				flush_ex_mem, flush_mem_wb;
 
 	// ebreak
-	logic		ebreak;			// ebreak instruction appear in decode stage
 	logic		ebreak_return;	// wait for debugger return executation to core
 	assign		ebreak_return = 1'b0;	// disable debugger return
 
@@ -98,12 +101,14 @@ module proc(
 		.pc_sel			(pc_sel),
 		.stall			(stall_pc),
 		.flush			(flush_pc),
+		.go				(sdram_init_done),
 
 		// output
 		.pc_p4_out		(pcp4_f),
 		.pc_out			(pc_f),
 		.instr			(instr_f),
-		.taken			(branch_take_f)
+		.taken			(branch_take_f),
+		.instr_valid	(instr_valid_f)
 	);
 
 
@@ -113,22 +118,21 @@ module proc(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.flush			(flush_if_id),
-		.en				(!stall_if_id),
+		.en				((!stall_if_id) && sdram_init_done),
 
 		// input
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
-		.instr_in		(
-			(stall_pc && ~stall_if_id)	? NOP : 
-			(flush_pc) 					? NOP : instr_f
-		),
+		.instr_in		(instr_f),
 		.branch_take_in	(branch_take_f),
+		.instr_valid_in	(instr_valid_f),
 		
 		// output
 		.pc_p4_out		(pcp4_d),
 		.pc_out			(pc_d),
 		.instr_out		(instr_d),
-		.branch_take_out(branch_take_d)
+		.branch_take_out(branch_take_d),
+		.instr_valid_out(instr_valid_d)
 	);
 
 
@@ -199,6 +203,7 @@ module proc(
 		.imm_in				(imm_d),
 		.pc_p4_in			(pcp4_d),
 		.branch_taken_in	(branch_taken_actual_d),
+		.instr_valid_in		(instr_valid_d),
 
 		//output
 		.instr_out			(instr_x),
@@ -207,7 +212,8 @@ module proc(
 		.pc_out				(pc_x),
 		.imm_out			(imm_x),
 		.pc_p4_out			(pcp4_x),
-		.branch_taken_out	(branch_taken_actual_x)
+		.branch_taken_out	(branch_taken_actual_x),
+		.instr_valid_out	(instr_valid_x)
 	);
 
 
@@ -254,13 +260,15 @@ module proc(
 		.rs2_in			(rs2_x),
 		.pc_p4_in		(pcp4_x),
 		.rd_wren_in		(rd_wren_x),
+		.instr_valid_in	(instr_valid_x),
 
 		// output
 		.instr_out		(instr_m),
 		.alu_result_out	(alu_result_m),
 		.rs2_out		(rs2_m),
 		.pc_p4_out		(pcp4_m),
-		.rd_wren_out	(rd_wren_m)
+		.rd_wren_out	(rd_wren_m),
+		.instr_valid_out(instr_valid_m)
 	);
 
 
@@ -279,7 +287,7 @@ module proc(
 		
 		// output
 		.data_out			(mem_data_m),
-		.sdram_init_done	(sdram_init_done),
+		.sdram_init_done	(sdram_init_done_async),
 		.done				(mem_access_done),
 
 		// SDRAM hardware pins
@@ -313,13 +321,15 @@ module proc(
 		.mem_data_in	(mem_data_m),
 		.pc_p4_in		(pcp4_m),
 		.rd_wren_in		(rd_wren_m),
+		.instr_valid_in	(instr_valid_m),
 
 		// output
 		.instr_out		(instr_w),
 		.alu_result_out	(alu_result_w),
 		.mem_data_out	(mem_data_w),
 		.pc_p4_out		(pcp4_w),
-		.rd_wren_out	(rd_wren_w)
+		.rd_wren_out	(rd_wren_w),
+		.instr_valid_out(instr_valid_w)
 	);
 
 
@@ -343,6 +353,8 @@ module proc(
 		.instr_x			(instr_x),
 		.instr_m			(instr_m),
 		.instr_w			(instr_w),
+
+		.instr_valid_d		(instr_valid_d),
 
 		.ex_rd_write		(rd_wren_x),
 		.mem_rd_write		(rd_wren_m),

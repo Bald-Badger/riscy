@@ -8,6 +8,8 @@ module hazard_ctrl (
 	input	instr_t			instr_m,
 	input	instr_t			instr_w,
 
+	input	logic			instr_valid_d,
+
 	input	logic			ex_rd_write,
 	input	logic			mem_rd_write,
 	input	logic			wb_rd_write,
@@ -248,8 +250,8 @@ module hazard_ctrl (
 	// TODO: when seeing a FENSE instruction in decode stage, stall PC and IF untie see
 	// TODO: add fense bit in the pipeline stages to indicate instruction after finse done exe
 	always_comb begin : stall_assign
-		stall_pc		= data_mem_stall || ~sdram_init_done || execute_busy || load_hazard_1 || load_hazard_2 || ecall_d;
-		stall_if_id		= data_mem_stall || ~sdram_init_done || execute_busy || load_hazard_1 || load_hazard_2 || ecall_x;
+		stall_pc		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy || ecall_d;
+		stall_if_id		= data_mem_stall || ~sdram_init_done || load_hazard_1 || load_hazard_2 || execute_busy || ecall_x;
 		stall_id_ex		= data_mem_stall || ~sdram_init_done || execute_busy || ecall_m;
 		stall_ex_mem	= data_mem_stall || ~sdram_init_done || ecall_w;
 		stall_mem_wb	= data_mem_stall || ~sdram_init_done || ecall_w;	// stall for mem-mem fwd
@@ -266,7 +268,7 @@ module hazard_ctrl (
 	end
 
 	always_comb begin : flush_assign
-		flush_pc		= jump_d || branch_d;	// actually masks output
+		flush_pc		= (jump_d || branch_d) && instr_valid_d;	// actually masks output
 		flush_if_id		= jump_x || branch_x;
 		flush_id_ex		= DISABLE;
 		flush_ex_mem	= DISABLE;

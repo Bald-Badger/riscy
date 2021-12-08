@@ -5,7 +5,7 @@
 import defines::*;
 
 module reference_test_single ();
-	localparam REG_DEBUG = ENABLE;
+	localparam REG_DEBUG = DISABLE;
 	localparam MEM_DEBUG = ENABLE;
 	
 	integer error;
