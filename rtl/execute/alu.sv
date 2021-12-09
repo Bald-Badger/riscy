@@ -13,6 +13,8 @@ module alu (
 	output logic	mul_result_valid
 );
 
+
+
 	data_t			and_result,
 					or_result,
 					xor_result,
@@ -27,6 +29,7 @@ module alu (
 	logic 			sub_func;
 	opcode_t 		opcode;
 	funct3_t 		funct3;
+
 
 	always_comb begin
 		funct3 = 	instr.funct3;
@@ -126,7 +129,11 @@ module alu (
 		.c_out	(div_rem_result)
 	);
 
+	// opcode = R, instr.funct7 = M_INSTR, div_instr&div_result_valid
+	// opcode = R, instr.funct7 = M_INSTR, mul_result_vaild&~div_instr
+	// opcode = R, compare cout, when R, rd_wr = enable 
 
+	// opcode = I, rd_wr = enable 
 	logic div_instr;
 	always_comb begin : output_sel
 		c_out = NULL;
@@ -231,5 +238,197 @@ module alu (
 			end
 		endcase
 	end
+
+	// synthesis translate_off  
+
+	opcode_t		opcode_formal;
+	funct3_t		funct3_formal;
+	shift_type_t	shift_type_formal;
+	logic [4:0]     shamt_formal;
+	logic			sub_func_formal;
+
+	data_t			c_out_formal;
+	logic			rd_wr_formal;
+	logic			div_instr_formal;
+	
+
+	always_comb begin : formal
+		opcode_formal = opcode_t'(instr[6:0]);
+		funct3_formal = instr[14:12];
+
+		shamt_formal  = instr[24:20];
+		shift_type_formal = shift_type_t'(instr[30]);
+		sub_func_formal = (opcode == R) & instr[30];
+	end
+
+
+	assert final((opcode_formal == opcode) 
+			&&(funct3 == funct3_formal)
+			&&(shamt == shamt_formal)
+			&&(shift_type == shift_type_formal)
+			&&(sub_func == sub_func_formal))
+	else  $display("checker failed at instr/opcode");
+
+	logic[63:0]  mult_a_in;
+	logic[63:0]  mult_b_in;
+
+	logic carry_bit, carry_bit_i;
+	data_t c_gold, c_gold_i;
+
+	logic[63:0]  mult_raw;
+
+	logic[31:0]  mult_result_formal;
+
+	logic mul_result_valid_formal, div_result_valid_formal;
+
+	assign mult_a_in = {{32{a_in[31]}}, {a_in[31:0]}};
+
+	assign mult_b_in = {{32{b_in[31]}}, {b_in[31:0]}};
+
+	assign mult_raw  = mult_a_in * mult_b_in;
+
+	always_comb begin: mult
+		unique case (funct3_formal)
+			MUL:		mult_result_formal = mult_raw[31:0];
+			MULH:		mult_result_formal = mult_raw[63:32];
+			MULHSU:		mult_result_formal = mult_raw[63:32];
+			MULHU:		mult_result_formal = mult_raw[63:32];
+		endcase
+	end
+
+	always_comb begin: output_sel_formal
+		c_out_formal = NULL;
+		rd_wr_formal = rd_wr;
+
+		mul_result_valid_formal = mul_result_valid;
+
+		div_result_valid_formal = div_result_valid;
+
+		div_instr_formal = funct3_formal[2]; //for div, =1   for mult, = 0
+
+		{carry_bit, c_gold} = a_in + b_in;
+
+		{carry_bit_i, c_gold_i} = a_in + data_t'({ {20{instr[31]}} , instr[31:20]});
+
+		unique case (opcode_formal)
+			R: begin
+				unique case(instr[31:25]) //function 7
+					M_INSTR: begin
+						if (~div_instr)begin
+							c_out_formal = mult_result_formal;
+							assert property (@(posedge clk) (div_instr) |-> ##[12:12] ((c_out_formal == c_out) && (mul_result_valid && ~div_result_valid)))
+							else $display("R-type multiply output value not match");
+						end else begin
+							
+						end
+						// assertion needs here						
+					end
+					//c_out_formal use as golden value
+					default: begin
+						unique case (funct3_formal)
+							ADD:  c_out_formal = c_gold;
+							SUB:  c_out_formal = $signed(a_in) - $signed(b_in);
+							AND:  c_out_formal = a_in & b_in;
+							OR:   c_out_formal = a_in | b_in;
+							XOR:  c_out_formal = a_in ^ b_in;
+							SLT:  c_out_formal = ($signed(a_in) < $signed(b_in)) ? 32'b1 : 32'b0;
+							SLTU: c_out_formal = (a_in < b_in) ? 32'b1 : 32'b0;
+							SLL:  c_out_formal = a_in << b_in[4:0];
+							SRL:  c_out_formal = a_in >> b_in[4:0];
+							default: c_out_formal = NULL;
+						endcase
+					end 
+				endcase
+
+				assert ((rd_wr_formal) && (c_out_formal == c_out)) 
+				else   $display("R-type output value not match"); //check value 
+
+				if ((funct3_formal == SLTU) && (instr[19:15] == 5'b0) & b_in == 32'b0)begin
+					assert (c_out_formal == c_out == 1'b0)
+					else $display("R-type (STLU) output value not match");
+				end
+
+				if ((funct3_formal == SLTU) && (instr[19:15] == 5'b0) && b_in != 32'b0)begin
+					assert ((c_out_formal == c_out) && (c_out_formal == 1'b1))
+					else $display("R-type (STLU) output value not match");
+				end
+
+	
+			end
+
+			I: begin
+				unique case (funct3_formal)
+					ADDI: c_out_formal = c_gold_i;
+					ANDI: c_out_formal = a_in & (data_t'({ {20{instr[31]}} , instr[31:20]}));
+					ORI:  c_out_formal = a_in | data_t'({ {20{instr[31]}} , instr[31:20]});
+					XORI: c_out_formal = a_in ^ data_t'({ {20{instr[31]}} , instr[31:20]});
+					SLTI:  c_out_formal = ($signed(a_in) < $signed(data_t'({ {20{instr[31]}} , instr[31:20]}))) ? 32'b1: 32'b0;
+					SLTIU: c_out_formal = (a_in < data_t'({ {20{instr[31]}} , instr[31:20]})) ? 32'b1: 32'b0;
+					SLLI:  c_out_formal = a_in << instr[24:20];
+					SRLI:  c_out_formal = a_in >> instr[24:20];
+					default: c_out_formal = NULL;
+				endcase
+
+				//$diaplay("for I type, c_out is: %d", c_out);
+				//$display("for I type, c_out_formal is: %d", c_out_formal);
+
+				//$display("STATEMENT 1 :: time is %0t",$time);
+
+				if ((funct3_formal == SLLI) || (funct3_formal == SRLI)) begin
+					assert (instr[31:25] == 7'b0) 
+					else $display("I-type SLLI/SRLI instr not meet requirment");  
+				end
+
+			end
+
+			B:begin
+				assert ((c_out_formal = NULL) && (~rd_wr)) 
+				else  $display("B-type output not match");
+			end 
+
+			LUI:begin
+				c_out_formal = {instr[31:12], 12'b0};
+				assert ((rd_wr) && (c_out_formal == c_out))   
+				else   $display("LUI output not match"); 
+			end
+
+			AUIPC:begin
+				$display("result skip for now");
+
+				assert (rd_wr) 
+				else   $display("AUIPC-type output value not match");
+			end
+
+			JAL: begin
+				$display("result skip for now");
+
+				assert (rd_wr) 
+				else   $display("JAL-type output value not match");
+			end
+
+			JALR: begin
+				$display("result skip for now");
+
+				assert (rd_wr) 
+				else   $display("JALR-type output value not match");
+			
+			end
+
+			//LOAD
+			//STORE
+
+		endcase
+	end 
+//assume cover  
+	assert property(@(negedge clk)(opcode_formal == I) |-> ((rd_wr == rd_wr_formal) 
+					&& (c_out_formal == c_out))) 
+	else begin
+		$display("I-type output value not match, time: %t", $time);
+		$display("c out is %d, formal is %d", c_out, c_out_formal);
+					//#100
+		//$stop();
+	end
+
+	// synthesis translate_on 
 	
 endmodule
