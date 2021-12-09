@@ -25,11 +25,13 @@ module rom
 	// format of this file, or see the "Using $readmemb and $readmemh"
 	// template later in this section.
     integer fp, i;
+	// synopsys translate_off
 	initial
 	begin
         fp = $fopen("instr.bin","r");
         i = $fread(rom, fp);
 	end
+	// synopsys translate_on
 
 	logic gated_clk;
 
