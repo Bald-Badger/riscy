@@ -1,5 +1,4 @@
-GCC = riscv64-unknown-elf-gcc
-CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
+# -g: enable gdb symbols
 # -wall: enable all warnings
 # -O0: only optimization for compilation time
 # -mdiv: use hardware int division
@@ -12,9 +11,12 @@ CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march
 # -lstdc++: enable c++ compile
 # -mbranch-cost=1: low branch cost, so hopefully disable instruction reorder
 # -mexplicit-relocs: use assembler relocation operators when dealing with symbolic addresses, hopefully reduce pseudo instruction
-
+CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
+GCC = riscv64-unknown-elf-gcc
 OBJCOPY = riscv64-unknown-elf-objcopy
-COPYFLAGS = -O binary --only-section=.text
+OBJDUMP = riscv64-unknown-elf-objdump
+COPYFLAGS = -O binary
+# --only-section=.text
 TARGET = ./test
 TBTARGET = instr
 SRC = $(TARGET).c
@@ -26,7 +28,7 @@ PYTHON = python
 READELF = riscv64-unknown-elf-readelf
 DASM = ./riscvdasm
 
-all: clean asm elf bin mif
+all: clean offset
 
 # build the .S assembly file
 asm:
@@ -34,13 +36,13 @@ asm:
 
 # build the compiled and linked elf file	
 elf: asm
-	$(GCC) $(CFLAGS) $(SDEST) -o $(TARGET)
+	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET)
 
 # extract the executable binary from elf
 bin: elf
 	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TBTARGET).bin
 
-# build memory init file from binary
+# build memory init file from binary, only used for Altera memory init
 mif: bin
 	$(PYTHON) ./bin2mif.py $(TBTARGET).bin $(TBTARGET).mif 32
 
@@ -52,21 +54,35 @@ header: elf
 section: elf
 	$(READELF) -S $(TARGET) >> $(TARGET).section
 
+# extract the .text segment asm from elf
+text: elf
+	$(OBJDUMP) -dj .text $(TARGET) > instr_full.s 
+# --no-address --no-show-raw-insn
+
+# extract the all segments from elf to .S file
+full: elf
+	$(OBJDUMP) -D $(TARGET) > instr_full.s 
+
+# extract the data segment from elf
+data: elf
+	$(OBJDUMP) -dj .data $(TARGET) > instr_data.s 
+
 # calculate entry point pc offset
-offset: header section
+offset: header section full bin
 	$(PYTHON) ./get_off.py
 
+# 3rd party bin disassembler, deprecated
 dasm: bin
 	$(DASM) < $(TBTARGET).bin > dasm.s
 
+# using RARS to compile .S file into machine code, deprecated
 rars_mc: clean asm 
 	$(JAVA) $(JAVAFLAGS) $(TARGET).mc $(TARGET).s
 
+# using RARS to compule .S file to mif file, deprecated
 rars: rars_mc
 	$(PYTHON) ./mc2mif.py -i $(TARGET).mc -o $(TBTARGET).mif
 
+# delete all but .c, .h file
 clean:
 	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg
-
-# dump disassembled code:
-# riscv64-unknown-elf-objdump --no-address --no-show-raw-insn -dj .text ./test > instr_full.s
