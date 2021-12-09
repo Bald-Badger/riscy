@@ -36,7 +36,7 @@ module instr_mem (
 	end
 
 	rom instr_mem_inst (
-		.addr		(addr[11:2]),
+		.addr		(addr[13:2]),
 		.clk		(clk),
 		.rden		(rden),
 		.clken		(~stall),

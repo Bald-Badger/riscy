@@ -5,7 +5,7 @@
 import defines::*;
 
 module reference_test_single ();
-	localparam REG_DEBUG = DISABLE;
+	localparam REG_DEBUG = ENABLE;
 	localparam MEM_DEBUG = ENABLE;
 	
 	integer error;
@@ -54,53 +54,58 @@ module reference_test_single ();
 		.clk				(pll_clk && ~ref_halt),
 		.rst				(lock_rst)
 	);
-	assign pll_clk = proc_dut.clk;
-	assign lock_rst = ~proc_dut.rst_n;
-	assign ref_halt = (data_t'(proc_ref.mem_i_inst_w) == ECALL);
-
-	initial begin
-		@(posedge ref_halt);
-		$display("ref module finished program");
+	always_comb begin
+		pll_clk = proc_dut.clk;
+		lock_rst = ~proc_dut.rst_n;
+		ref_halt = (data_t'(proc_ref.mem_i_inst_w) == ECALL);
 	end
 
 	// reg dut wire
 	logic 	reg_wr_en_dut;
 	r_t 	reg_wr_addr_dut;
 	data_t	reg_wr_data_dut;
-	assign 	reg_wr_en_dut	= proc_dut.processor_inst.rd_wren_w;
-	assign 	reg_wr_addr_dut	= proc_dut.processor_inst.rd_addr;
-	assign 	reg_wr_data_dut	= proc_dut.processor_inst.wb_data;
+	always_comb begin : reg_dut_wire_assign
+		reg_wr_en_dut	= proc_dut.processor_inst.rd_wren_w;
+		reg_wr_addr_dut	= proc_dut.processor_inst.rd_addr;
+		reg_wr_data_dut	= proc_dut.processor_inst.wb_data;
+	end
 
 	// mem dut wire
 	logic	mem_wr_en_dut, mem_rd_en_dut, mem_access_done_dut;
 	data_t	mem_wr_data_in_dut, mem_rd_data_out_dut;
 	data_t	mem_access_addr_dut;
-	assign	mem_wr_en_dut		= proc_dut.processor_inst.memory_inst.wren;
-	assign	mem_rd_en_dut		= proc_dut.processor_inst.memory_inst.rden;
-	assign	mem_access_done_dut	= proc_dut.processor_inst.mem_access_done;
-	assign	mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor_inst.memory_inst.data_in_final :
+	always_comb begin : mem_dut_wire_assign
+		mem_wr_en_dut		= proc_dut.processor_inst.memory_inst.wren;
+		mem_rd_en_dut		= proc_dut.processor_inst.memory_inst.rden;
+		mem_access_done_dut	= proc_dut.processor_inst.mem_access_done;
+		mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor_inst.memory_inst.data_in_final :
 								swap_endian(proc_dut.processor_inst.memory_inst.data_in_final);
-	assign	mem_rd_data_out_dut	= proc_dut.processor_inst.mem_data_m;
-	assign	mem_access_addr_dut	= proc_dut.processor_inst.memory_inst.addr;
+		mem_rd_data_out_dut	= proc_dut.processor_inst.mem_data_m;
+		mem_access_addr_dut	= proc_dut.processor_inst.memory_inst.addr;
+	end
 
 	// reg ref wire
 	logic 	reg_wr_en_ref;
 	r_t 	reg_wr_addr_ref;
 	data_t	reg_wr_data_ref;
-	assign	reg_wr_en_ref		= proc_ref.core_ref.rd_writeen_w;
-	assign	reg_wr_addr_ref		= r_t'(proc_ref.core_ref.rd_q);
-	assign	reg_wr_data_ref		= data_t'(proc_ref.core_ref.rd_val_w);
+	always_comb begin : reg_reg_wire_assign
+		reg_wr_en_ref		= proc_ref.core_ref.rd_writeen_w;
+		reg_wr_addr_ref		= r_t'(proc_ref.core_ref.rd_q);
+		reg_wr_data_ref		= data_t'(proc_ref.core_ref.rd_val_w);
+	end
 
 	// mem ref wire
 	logic	mem_wr_en_ref, mem_rd_en_ref, mem_access_ack_ref;
 	data_t	mem_wr_data_in_ref, mem_rd_data_out_ref;
 	data_t	mem_access_addr_ref;
-	assign	mem_wr_en_ref		= (proc_ref.mem_d_wr_w != 4'b0);	// byte enable all 0s
-	assign	mem_rd_en_ref		= proc_ref.mem_d_rd_w;
-	assign	mem_access_ack_ref	= proc_ref.mem_d_ack_w;
-	assign	mem_wr_data_in_ref	= proc_ref.mem_d_data_wr_w;
-	assign	mem_rd_data_out_ref	= proc_ref.mem_d_data_rd_w;
-	assign	mem_access_addr_ref	= proc_ref.mem_d_addr_w;
+	always_comb begin : mem_ref_wire_assign
+		mem_wr_en_ref		= (proc_ref.mem_d_wr_w != 4'b0);	// byte enable all 0s
+		mem_rd_en_ref		= proc_ref.mem_d_rd_w;
+		mem_access_ack_ref	= proc_ref.mem_d_ack_w;
+		mem_wr_data_in_ref	= proc_ref.mem_d_data_wr_w;
+		mem_rd_data_out_ref	= proc_ref.mem_d_data_rd_w;
+		mem_access_addr_ref	= proc_ref.mem_d_addr_w;	
+	end
 
 	typedef enum logic {
 		READ, WRITE
@@ -384,22 +389,22 @@ module reference_test_single ();
 		assert	(reg_access_log_ref[0].rw == reg_access_log_dut[0].rw) 
 		else begin
 			error = 1;
-			$error("REG RW mismatch at ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
-			reg_access_log_ref[0].pc, reg_access_log_ref[0].rw, reg_access_log_dut[0].rw);
+			$error("REG RW mismatch at dut time = %t, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
+			reg_access_log_ref[0].sim_time, reg_access_log_ref[0].pc, reg_access_log_ref[0].rw, reg_access_log_dut[0].rw);
 		end
 
 		assert	(reg_access_log_ref[0].rw_addr == reg_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
-			$error("REG RW_ADDR mismatch at ref pc = %h, expecting addr is %d, dut addr is %d", 
-			reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_addr, reg_access_log_dut[0].rw_addr);
+			$error("REG RW_ADDR mismatch at dut time = %t, ref pc = %h, expecting addr is %d, dut addr is %d", 
+			reg_access_log_ref[0].sim_time, reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_addr, reg_access_log_dut[0].rw_addr);
 		end
 
 		assert	(reg_access_log_ref[0].rw_data == reg_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
-			$error("REG RW_DATA mismatch at ref pc = %h, expecting data is %h, dut data is %h", 
-			reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_data, reg_access_log_dut[0].rw_data);
+			$error("REG RW_DATA mismatch at dut time = %t, ref pc = %h, expecting data is %h, dut data is %h", 
+			reg_access_log_ref[0].sim_time, reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_data, reg_access_log_dut[0].rw_data);
 		end
 
 		//$display("poped reg log at pc=%d", reg_access_log_ref[0].pc);
@@ -411,22 +416,22 @@ module reference_test_single ();
 		assert	(mem_access_log_ref[0].rw == mem_access_log_dut[0].rw) 
 		else begin
 			error = 1;
-			$error("MEM RW mismatch at ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
-			mem_access_log_ref[0].pc, mem_access_log_ref[0].rw, mem_access_log_dut[0].rw);
+			$error("MEM RW mismatch at dut time = %t, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
+			mem_access_log_ref[0].sim_time, mem_access_log_ref[0].pc, mem_access_log_ref[0].rw, mem_access_log_dut[0].rw);
 		end
 
 		assert	(mem_access_log_ref[0].rw_addr == mem_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
-			$error("MEM RW_ADDR mismatch at ref pc = %h, expecting addr is %h, dut addr is %h", 
-			mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_addr, mem_access_log_dut[0].rw_addr);
+			$error("MEM RW_ADDR mismatch at dut time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
+			mem_access_log_ref[0].sim_time, mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_addr, mem_access_log_dut[0].rw_addr);
 		end
 
 		assert	(mem_access_log_ref[0].rw_data == mem_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
-			$error("MEM RW_DATA mismatch at ref pc = %h, expecting addr is %h, dut addr is %h", 
-			mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_data, mem_access_log_dut[0].rw_data);
+			$error("MEM RW_DATA mismatch at dut time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
+			mem_access_log_ref[0].sim_time, mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_data, mem_access_log_dut[0].rw_data);
 		end
 
 		//$display("poped mem log at pc=%d", mem_access_log_ref[0].pc);
@@ -436,11 +441,49 @@ module reference_test_single ();
 
 
 	initial begin
+		fork
+			begin
+				wait(proc_dut.processor_inst.sdram_init_done);
+				$display("sdram init done");
+			end
+
+			begin
+				@(posedge ref_halt);
+				$display("ref module finished program");
+			end
+
+			begin
+				wait(ebreak_start);
+				$display("dut module finished program");
+			end
+		join
+		
+	end
+
+	initial begin
 		integer time_reg, time_mem;
 		integer iter;
 		iter = 0;
 		error = 0;
-		@(posedge ebreak_start);
+
+		fork
+
+			// wait both REF and DUT finish
+			begin
+				wait(ref_halt && ebreak_start);
+				repeat(10) @(posedge clk);
+			end
+
+			// wait for timeout
+			begin
+				repeat(TB_TIMEOUT) @(posedge clk);
+				$display("TB timeout!");
+				$stop();
+			end
+		join_any
+		disable fork;	// disable the fork wither both core finish running or timeout
+		
+
 		$display("reg access count: ref: %d, dut: %d", reg_access_log_ref.size(), reg_access_log_dut.size());
 		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
 		
@@ -525,15 +568,6 @@ module clkrst #(
 		repeat(5) @(negedge clk);
 		#100;
 		rst_n = 1'b1;
-	end
-
-	initial begin
-		wait(proc_dut.processor_inst.sdram_init_done);
-		$display("sdram init done");
-		@(negedge proc_dut.clk);
-		repeat(15000) @(negedge clk);
-		$display("timeout");
-		$stop();
 	end
 
 	always #half_period begin

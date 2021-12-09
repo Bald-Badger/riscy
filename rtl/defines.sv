@@ -4,18 +4,22 @@ package defines;
 `define _defines_sv_
 
 //	ISA define
-	localparam 	XLEN 			= 	32;				// RV32
-	localparam	N 				= 	XLEN;	 		// in case I forget should be XLEN instead of N
-	localparam 	OSC_FREQ 		= 	2e7;			// 50Mhz crystal oscillator on FPGA board
-	localparam 	FREQ 			= 	2e7;			// targeted core clock from PLL
+	localparam 	XLEN 			= 32;				// RV32
+	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N
+	localparam 	OSC_FREQ 		= 2e7;				// 50Mhz crystal oscillator on FPGA board
+	localparam 	FREQ 			= 2e7;				// targeted core clock from PLL
 
 
 //	core config
-	localparam	MAX_NEST_LOCK	=	8;				// max nested lock aquire length, 
+	localparam	MAX_NEST_LOCK	= 8;				// max nested lock aquire length, 
 													// cases that over 2 is very rare
-	localparam	SP_BASE			=	32'h0000_3ffc;	// stack base pointer, init SP to here
-	localparam	GP_BASE			=	32'h0000_1800;	// global pointer, init GP to here
+	localparam	SP_BASE			= 32'h00a0_3ffc;	// stack base pointer, init SP to here
+	localparam	GP_BASE			= 32'h0000_1800;	// global pointer, init GP to here
 
+
+// TB config
+	localparam	TB_TIMEOUT		= 23333;			// test timeout in clock cycles
+													// testbench will end after this time is reached
 
 //	constant define
 	localparam	BYTES 			= XLEN / 8; 		// number of bytes in a word
@@ -55,7 +59,7 @@ package defines;
 		BINARY_BOOT,	// boot from a mif file generated from gcc compiled binary file
 		RARS_BOOT		// boot from a rars compiled mif file
 	} boot_type_t;
-	boot_type_t BOOT_TYPE = RARS_BOOT;
+	boot_type_t BOOT_TYPE = BINARY_BOOT;
 
 	// Opcode define
 	typedef enum logic[6:0] { 

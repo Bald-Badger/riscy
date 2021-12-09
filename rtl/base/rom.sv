@@ -3,7 +3,7 @@
 import defines::*;
 
 module rom
-#(parameter DATA_WIDTH=32, parameter ADDR_WIDTH=10)
+#(parameter DATA_WIDTH=32, parameter ADDR_WIDTH=12)
 (
 	input			[(ADDR_WIDTH-1):0] addr,
 	input			clk, 

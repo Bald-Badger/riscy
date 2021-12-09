@@ -38,10 +38,10 @@ module pc (
 	initial begin
 		if (BOOT_TYPE == BINARY_BOOT) begin
 			$readmemh("boot.cfg", boot_pc);
-			$display("DUT: booy mode: binary");
+			$display("DUT: boot mode: binary");
 			$display("DUT: booting from pc = %h", boot_pc[0]);
 		end else if (BOOT_TYPE == RARS_BOOT) begin
-			$display("DUT: booy mode: RARS");
+			$display("DUT: boot mode: RARS");
 			$display("DUT: booting from pc = %h", 0);
 		end
 	end
