@@ -30,7 +30,21 @@ def get_text_addr(filename="./test.section"):
             return int(textline[i], 16)
 
 
-if __name__ == '__main__':
+def get_main_addr(filename="./instr_full.s"):
+    with open(filename) as file:
+        lines = file.readlines()
+        lines = [line.rstrip() for line in lines]
+    for i in range(len(lines)):
+        lines[i] = " ".join(lines[i].split())  # remove dupe white space
+    for i in range(len(lines)):
+        if '''<main>:''' in lines[i]:
+            asm = lines[i].split()
+            return int(asm[0], 16)
+    print("get main addr failed")
+    return -1
+
+
+def get_enrty_point_offset():
     entry_addr = get_entry_addr()
     print(f"entry addr: {entry_addr}")
     text_addr = get_text_addr()
@@ -40,3 +54,19 @@ if __name__ == '__main__':
     fp = open("boot.cfg", 'w')
     fp.write(format(boot_offset, "x"))
     fp.close()
+
+
+def get_main_offset():
+    main_addr = get_main_addr()
+    print(f"main_addr: {main_addr}")
+    text_addr = get_text_addr()
+    print(f"text addr: {text_addr}")
+    boot_offset = main_addr - text_addr
+    print(f"boot offset: {int(boot_offset/4)} words")
+    fp = open("boot.cfg", 'w')
+    fp.write(format(boot_offset, "x"))
+    fp.close()
+
+
+if __name__ == '__main__':
+    get_main_offset()

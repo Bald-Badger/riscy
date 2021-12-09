@@ -1,12 +1,17 @@
 #include "test.h"
+#include <stdint.h>
+
+int32_t arr[10] = {0,1,2,3,4,5,6,7,8,9};
 
 int main() {
 	int x;
 	int z;
-	int answer = 1;
+	int answer = 45;
 
-	x = 0;
-	z = foo(x);
+	
+	for (x = 0; x < 10; x++) {
+		z += arr[x];
+	}
 
 
 	if (z == answer) {
@@ -34,6 +39,8 @@ int main() {
 	#endif /* TB */
 }
 
-int foo(int x){
-	return x + 1;
+int foo(int n){
+	if (n <= 1)
+		return n;
+	return foo(n - 1) + foo(n - 2);
 }
