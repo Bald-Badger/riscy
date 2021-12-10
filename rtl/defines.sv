@@ -56,7 +56,7 @@ package defines;
 
 	// boot options
 	typedef enum logic[1:0] {
-		BINARY_BOOT,	// boot from a mif file generated from gcc compiled binary file
+		BINARY_BOOT,	// boot from a bin file generated from gcc
 		RARS_BOOT		// boot from a rars compiled mif file
 	} boot_type_t;
 	localparam	[1:0] BOOT_TYPE = RARS_BOOT;
@@ -100,7 +100,7 @@ package defines;
 		X8, X9, X10, X11, X12, X13, X14, X15,
 		X16, X17, X18, X19, X20, X21, X22, X23,
 		X24, X25, X26, X27, X28, X29, X30, X31
-	} r_t;	// systemverilog will assign 5'd0 - 5'd31 in order
+	} r_t;	// simulator should assign 5'd0 - 5'd31 in order
 
 
 	localparam	[XLEN-1:0]	NOP		= 32'h0000_0013;	// ADDI x0, x0, 0
@@ -347,7 +347,8 @@ typedef enum logic[1:0] {
 } mem_fwd_sel_t;
 
 
-function void stop;	// sometimes i mistype "$stop()" ans "stop()"...
+// sometimes i mistype "$stop()" as "stop()"...
+function void stop;	
 	$stop();
 endfunction
 
