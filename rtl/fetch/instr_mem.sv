@@ -27,30 +27,34 @@ module instr_mem (
 					instr_t'(swap_endian(data_t'(instr_raw)));
 		end else if (BOOT_TYPE == RARS_BOOT) begin
 			instr = 
-			swap_endian(
-				instr_t'(instr_raw)
-			);
+			//swap_endian(
+				instr_t'(instr_raw);
+			//);
 		end else begin
 			instr = NULL;
 		end
 	end
 
-	rom instr_mem_inst (
-		.addr		(addr[13:2]),
-		.clk		(clk),
-		.rden		(rden),
-		.clken		(~stall),
-		.q			(instr_raw)
-	);
-
-	/*
-	rom_32b_1024wd	instr_mem_inst (
-		.address	( addr[11:2] ),
-		.clock		( clk ),
-		.clken		( ~stall ),
-		.rden		( rden ),
-		.q			( instr_raw )
-	);
-	*/
-
+	generate
+		case (BOOT_TYPE)
+			BINARY_BOOT: begin
+				rom instr_mem_inst (
+					.addr		(addr[13:2]),
+					.clk		(clk),
+					.rden		(rden),
+					.clken		(~stall),
+					.q			(instr_raw)
+				);
+			end
+			RARS_BOOT: begin
+				rom_32b_1024wd	instr_mem_inst (
+					.address	( addr[11:2] ),
+					.clock		( clk ),
+					.clken		( ~stall ),
+					.rden		( rden ),
+					.q			( instr_raw )
+				);
+			end
+		endcase
+	endgenerate
 endmodule : instr_mem

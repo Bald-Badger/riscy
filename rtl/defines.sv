@@ -6,7 +6,7 @@ package defines;
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
 	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N
-	localparam 	OSC_FREQ 		= 2e7;				// 50Mhz crystal oscillator on FPGA board
+	localparam 	OSC_FREQ 		= 5e7;				// 50Mhz crystal oscillator on FPGA board
 	localparam 	FREQ 			= 2e7;				// targeted core clock from PLL
 
 
@@ -59,7 +59,7 @@ package defines;
 		BINARY_BOOT,	// boot from a mif file generated from gcc compiled binary file
 		RARS_BOOT		// boot from a rars compiled mif file
 	} boot_type_t;
-	boot_type_t BOOT_TYPE = BINARY_BOOT;
+	localparam	[1:0] BOOT_TYPE = RARS_BOOT;
 
 	// Opcode define
 	typedef enum logic[6:0] { 
