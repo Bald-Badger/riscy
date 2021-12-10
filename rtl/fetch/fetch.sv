@@ -11,6 +11,7 @@ module fetch (
 	input 	logic	stall,
 	input	logic	flush,
 	input	logic	go,
+	input	logic	mispredict,
 
 	// output
 	output	data_t	pc_p4_out,

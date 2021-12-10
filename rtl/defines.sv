@@ -61,6 +61,17 @@ package defines;
 	} boot_type_t;
 	localparam	[1:0] BOOT_TYPE = RARS_BOOT;
 
+
+	// branch predictor
+	typedef enum logic[1:0] {
+		P_TAKEN,		// predict taken
+		P_N_TAKEN,		// predict not taken
+		BTFNT			// back taken forward not taken
+	} branch_predictor_t;
+	localparam	[1:0] PREDICTOR = P_N_TAKEN;
+	localparam	TAKEN = 1'b1;
+	localparam	NOT_TAKEN = 1'b0;
+
 	// Opcode define
 	typedef enum logic[6:0] { 
 		R		=	7'b0110011,

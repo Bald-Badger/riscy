@@ -49,8 +49,10 @@ module proc(
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
 	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
 	data_t 		mem_data_m, mem_data_w;	// data load from memory
-	logic		branch_take_f, branch_take_d;	// branch perdictor output from fetch stage
+	logic		branch_predict_f, branch_predict_d;	// branch perdictor output from fetch stage
 	logic		branch_taken_actual_d, branch_taken_actual_x;	// actual branch result from decode stagen
+	logic		branch_mispredict;
+	assign		branch_mispredict = branch_taken_actual_d != branch_predict_d;
 
 	// global control wire
 	logic 			pc_sel;			// should pc update to pc+4 or branch/jump result, 1 for bj, 0 for p4
@@ -102,12 +104,13 @@ module proc(
 		.stall			(stall_pc),
 		.flush			(flush_pc),
 		.go				(sdram_init_done),
+		.mispredict		(branch_mispredict),
 
 		// output
 		.pc_p4_out		(pcp4_f),
 		.pc_out			(pc_f),
 		.instr			(instr_f),
-		.taken			(branch_take_f),
+		.taken			(branch_predict_f),
 		.instr_valid	(instr_valid_f)
 	);
 
@@ -124,14 +127,14 @@ module proc(
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
 		.instr_in		(instr_f),
-		.branch_take_in	(branch_take_f),
+		.branch_take_in	(branch_predict_f),
 		.instr_valid_in	(instr_valid_f),
 		
 		// output
 		.pc_p4_out		(pcp4_d),
 		.pc_out			(pc_d),
 		.instr_out		(instr_d),
-		.branch_take_out(branch_take_d),
+		.branch_take_out(branch_predict_d),
 		.instr_valid_out(instr_valid_d)
 	);
 
