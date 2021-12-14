@@ -76,23 +76,23 @@ vsim.wlf
 
 vsim_stacktrace.vstf
 
-sim/transcript.txt
+transcript.txt
 *.qpg
 *.qtl
 *.qdb
 _info
 _vmake
 _data/
-sim/result.txt
-sim/instr.ver
-sim/instr.mif
+result.txt
+instr.ver
+instr.mif
 *.vstf
-workspace.code-workspace
 *.mpf_new
-sim/test.s
+test.s
 *.bin
 *.log
-sim/boot.cfg
-sim/instr.s
-sim/instr_full.s
-rtl/block/ahb_lite_bridge/component.xml
+boot.cfg
+instr.s
+instr_full.s
+*.component.xml
+*.code-workspace
