@@ -44,12 +44,12 @@ module mult (
 	result);
 
 	input	  clock;
-	input	[111:0]  dataa;
+	input	[39:0]  dataa;
 	input	[39:0]  datab;
-	output	[151:0]  result;
+	output	[79:0]  result;
 
-	wire [151:0] sub_wire0;
-	wire [151:0] result = sub_wire0[151:0];
+	wire [79:0] sub_wire0;
+	wire [79:0] result = sub_wire0[79:0];
 
 	lpm_mult	lpm_mult_component (
 				.clock (clock),
@@ -65,9 +65,9 @@ module mult (
 		lpm_mult_component.lpm_pipeline = 6,
 		lpm_mult_component.lpm_representation = "SIGNED",
 		lpm_mult_component.lpm_type = "LPM_MULT",
-		lpm_mult_component.lpm_widtha = 112,
+		lpm_mult_component.lpm_widtha = 40,
 		lpm_mult_component.lpm_widthb = 40,
-		lpm_mult_component.lpm_widthp = 152;
+		lpm_mult_component.lpm_widthp = 80;
 
 
 endmodule
@@ -85,9 +85,9 @@ endmodule
 // Retrieval info: PRIVATE: SignedMult NUMERIC "1"
 // Retrieval info: PRIVATE: USE_MULT NUMERIC "1"
 // Retrieval info: PRIVATE: ValidConstant NUMERIC "0"
-// Retrieval info: PRIVATE: WidthA NUMERIC "112"
+// Retrieval info: PRIVATE: WidthA NUMERIC "40"
 // Retrieval info: PRIVATE: WidthB NUMERIC "40"
-// Retrieval info: PRIVATE: WidthP NUMERIC "152"
+// Retrieval info: PRIVATE: WidthP NUMERIC "80"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
 // Retrieval info: PRIVATE: clken NUMERIC "0"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
@@ -97,17 +97,17 @@ endmodule
 // Retrieval info: CONSTANT: LPM_PIPELINE NUMERIC "6"
 // Retrieval info: CONSTANT: LPM_REPRESENTATION STRING "SIGNED"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_MULT"
-// Retrieval info: CONSTANT: LPM_WIDTHA NUMERIC "112"
+// Retrieval info: CONSTANT: LPM_WIDTHA NUMERIC "40"
 // Retrieval info: CONSTANT: LPM_WIDTHB NUMERIC "40"
-// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "152"
+// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "80"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
-// Retrieval info: USED_PORT: dataa 0 0 112 0 INPUT NODEFVAL "dataa[111..0]"
+// Retrieval info: USED_PORT: dataa 0 0 40 0 INPUT NODEFVAL "dataa[39..0]"
 // Retrieval info: USED_PORT: datab 0 0 40 0 INPUT NODEFVAL "datab[39..0]"
-// Retrieval info: USED_PORT: result 0 0 152 0 OUTPUT NODEFVAL "result[151..0]"
+// Retrieval info: USED_PORT: result 0 0 80 0 OUTPUT NODEFVAL "result[79..0]"
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
-// Retrieval info: CONNECT: @dataa 0 0 112 0 dataa 0 0 112 0
+// Retrieval info: CONNECT: @dataa 0 0 40 0 dataa 0 0 40 0
 // Retrieval info: CONNECT: @datab 0 0 40 0 datab 0 0 40 0
-// Retrieval info: CONNECT: result 0 0 152 0 @result 0 0 152 0
+// Retrieval info: CONNECT: result 0 0 80 0 @result 0 0 80 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL mult.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL mult.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL mult.cmp FALSE

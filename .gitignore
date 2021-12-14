@@ -96,3 +96,4 @@ instr.s
 instr_full.s
 *.component.xml
 *.code-workspace
+*.cnx
