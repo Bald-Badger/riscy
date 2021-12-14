@@ -26,10 +26,7 @@ module instr_mem (
 			instr =	(ENDIANESS == BIG_ENDIAN) ? instr_t'(instr_raw) : 
 					instr_t'(swap_endian(data_t'(instr_raw)));
 		end else if (BOOT_TYPE == RARS_BOOT) begin
-			instr = 
-			//swap_endian(
-				instr_t'(instr_raw);
-			//);
+			instr = instr_t'(instr_raw);
 		end else begin
 			instr = NULL;
 		end
