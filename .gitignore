@@ -95,3 +95,4 @@ sim/test.s
 sim/boot.cfg
 sim/instr.s
 sim/instr_full.s
+rtl/block/ahb_lite_bridge/component.xml
