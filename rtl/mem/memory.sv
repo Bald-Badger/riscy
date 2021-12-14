@@ -398,8 +398,9 @@ module memory (
 		.sdram_dqm		(sdram_dqm)
 	);
 
-	// synthesis translate_off 
-	assign misalign_trap = addr_misalign && (rden || wren);
+
+	////////////////////////// formal verification //////////////////////////
+	// synthesis translate_off
 	always_comb begin : misalign_detection
 		unique case (funct3)
 			LB:		addr_misalign = 1'b0;
@@ -409,14 +410,13 @@ module memory (
 			LHU:	addr_misalign = addr[0];
 			default:addr_misalign = 1'b0; 
 		endcase
+		misalign_trap = addr_misalign && (rden || wren);
 	end
 
-	// TODO: move this to verification module
-	always @(negedge clk) begin
-		if (misalign_trap) begin
-			$strobe("address misalign detected, funct3 is %b, addr is: %h", funct3, addr);
-		end
-	end
-	// synthesis translate_on 
+	address_misalign:
+		assert property (@(posedge clk) ~misalign_trap);
+	
+	conflicting_access:
+		assert property (@(posedge clk) ~(rden && wren));
 
 endmodule : memory
