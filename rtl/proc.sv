@@ -29,7 +29,10 @@ module proc(
 	// sdram init done signal;
 	logic		sdram_init_done, sdram_init_done_async;
 	always_ff @(posedge clk or negedge rst_n) begin
-		sdram_init_done <= sdram_init_done_async;
+		if (~rst_n)
+			sdram_init_done <= 1'b0;
+		else
+			sdram_init_done <= sdram_init_done_async;
 	end
 
 	// stage-specific common data wires

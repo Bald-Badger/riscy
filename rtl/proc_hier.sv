@@ -27,7 +27,12 @@ module proc_hier (
 	logic	clk_100m;			//sdram controller clk
 	logic	clk_100m_shift;		//shifted clk for sdram output
 
-	assign	rst_n = (but_rst_n & locked);
+	generate
+		if (VERIFICATION_TYPE == FORMAL)
+			assign rst_n = but_rst_n;
+		else
+			assign	rst_n = (but_rst_n & locked);
+	endgenerate
 	
 	pll_clk	pll_inst (
 		.areset			(~but_rst_n),

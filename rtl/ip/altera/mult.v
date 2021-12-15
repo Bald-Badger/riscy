@@ -58,7 +58,6 @@ module mult (
 				.result (sub_wire0),
 				.aclr (1'b0),
 				.clken (1'b1),
-				.sclr (1'b0),
 				.sum (1'b0));
 	defparam
 		lpm_mult_component.lpm_hint = "MAXIMIZE_SPEED=5",

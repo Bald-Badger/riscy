@@ -77,7 +77,6 @@ module wrfifo (
 				.wrreq (wrreq),
 				.q (sub_wire0),
 				.rdusedw (sub_wire1),
-				.eccstatus (),
 				.rdempty (),
 				.rdfull (),
 				.wrempty (),

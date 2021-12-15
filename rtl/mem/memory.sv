@@ -418,5 +418,6 @@ module memory (
 	
 	conflicting_access:
 		assert property (@(posedge clk) ~(rden && wren));
+	// synthesis translate_on
 
 endmodule : memory

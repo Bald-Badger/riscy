@@ -62,6 +62,14 @@ package defines;
 	localparam	[1:0] BOOT_TYPE = RARS_BOOT;
 
 
+	// verification options
+	typedef enum logic {
+		FORMAL,
+		SIMULATION
+	} verification_type_t;
+	localparam	[0:0] VERIFICATION_TYPE = FORMAL;
+
+
 	// branch predictor
 	typedef enum logic[1:0] {
 		P_TAKEN,		// predict taken
