@@ -95,7 +95,7 @@ compile:
 formal:
 	qverify -c -od Output_Results -do "\
 		do qs_files/directives.tcl; \
-		formal compile -d top_with_sdram; \
+		formal compile -d formal_tb; \
 		formal verify -init qs_files/wb_arbiter.init \
 		-timeout 5m; \
 		exit"
