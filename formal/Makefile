@@ -22,7 +22,7 @@ compile:
 	$(VLOG) -sv  ../rtl/defines.sv
 	$(VLOG) -sv  ../rtl/mem/mem_defines.sv
 
-	$(VLOG) -sv  ../rtl/tb/top_with_sdram.sv
+	$(VLOG) -sv  ../rtl/tb/formal_tb.sv
 
 	$(VLOG)  ../rtl/eda/other/altera_mf.v
 	$(VLOG)  ../rtl/eda/other/altera_primitives.v
@@ -81,13 +81,14 @@ compile:
 	$(VLOG)  ../rtl/mem/sdram/sdram_para.v
 	$(VLOG)  ../rtl/mem/sdram/sdram_top.v
 
-
 	$(VLOG) -sv  ../rtl/wb/wb.sv
 
 	$(VLOG) -sv  ../rtl/reg/if_id_reg.sv
 	$(VLOG) -sv  ../rtl/reg/id_ex_reg.sv
 	$(VLOG) -sv  ../rtl/reg/ex_mem_reg.sv
 	$(VLOG) -sv  ../rtl/reg/mem_wb_reg.sv
+
+	$(VLOG)  ../formal/riscv-formal/tests/coverage/riscv_rv32i_insn.v
 	
 
 ###### Run Formal Analysis #####################################################
