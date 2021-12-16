@@ -319,7 +319,7 @@ module alu (
 							assert property (@(posedge clk) (div_instr) |-> ##[12:12] ((c_out_formal == c_out) && (mul_result_valid && ~div_result_valid)))
 							else $display("R-type multiply output value not match");
 						end else begin
-							
+							c_out_formal = a_in/b_in;
 						end
 						// assertion needs here						
 					end
@@ -340,18 +340,7 @@ module alu (
 					end 
 				endcase
 
-				assert ((rd_wr_formal) && (c_out_formal == c_out)) 
-				else   $display("R-type output value not match"); //check value 
 
-				if ((funct3_formal == SLTU) && (instr[19:15] == 5'b0) & b_in == 32'b0)begin
-					assert (c_out_formal == c_out == 1'b0)
-					else $display("R-type (STLU) output value not match");
-				end
-
-				if ((funct3_formal == SLTU) && (instr[19:15] == 5'b0) && b_in != 32'b0)begin
-					assert ((c_out_formal == c_out) && (c_out_formal == 1'b1))
-					else $display("R-type (STLU) output value not match");
-				end
 
 	
 			end
@@ -374,45 +363,12 @@ module alu (
 
 				//$display("STATEMENT 1 :: time is %0t",$time);
 
-				if ((funct3_formal == SLLI) || (funct3_formal == SRLI)) begin
-					assert (instr[31:25] == 7'b0) 
-					else $display("I-type SLLI/SRLI instr not meet requirment");  
-				end
-
 			end
-
-			B:begin
-				assert ((c_out_formal = NULL) && (~rd_wr)) 
-				else  $display("B-type output not match");
-			end 
 
 			LUI:begin
 				c_out_formal = {instr[31:12], 12'b0};
-				assert ((rd_wr) && (c_out_formal == c_out))   
-				else   $display("LUI output not match"); 
 			end
 
-			AUIPC:begin
-				$display("result skip for now");
-
-				assert (rd_wr) 
-				else   $display("AUIPC-type output value not match");
-			end
-
-			JAL: begin
-				$display("result skip for now");
-
-				assert (rd_wr) 
-				else   $display("JAL-type output value not match");
-			end
-
-			JALR: begin
-				$display("result skip for now");
-
-				assert (rd_wr) 
-				else   $display("JALR-type output value not match");
-			
-			end
 
 			//LOAD
 			//STORE
@@ -420,13 +376,73 @@ module alu (
 		endcase
 	end 
 //assume cover  
-	assert property(@(negedge clk)(opcode_formal == I) |-> ((rd_wr == rd_wr_formal) 
+	assert property(@(posedge clk)(opcode_formal == I) |-> ((rd_wr == rd_wr_formal) 
 					&& (c_out_formal == c_out))) 
 	else begin
 		$display("I-type output value not match, time: %t", $time);
 		$display("c out is %d, formal is %d", c_out, c_out_formal);
 					//#100
 		//$stop();
+	end
+
+	assert property(@(posedge clk)(((opcode_formal == I) && ((funct3_formal == SLLI) || (funct3_formal == SRLI)))) |->
+					(instr[31:25] == 7'b0)) 
+	else begin
+		$display("I-type SLLI/SRLI instr not meet requirment"); 
+	end  
+
+	assert property(@(posedge clk)((opcode_formal == R) && (instr[31:25] == M_INSTR) && (~div_instr)) |->
+					##[6:6] ((c_out_formal == c_out) && (mul_result_valid && ~div_result_valid) && (rd_wr)))
+	else begin
+		$display("R-type output value not match, time: %t", $time);
+		$display("c out is %d, formal is %d, mul_result_vaild is %d, div_result_valid is %d", c_out, c_out_formal, mul_result_valid, div_result_valid);
+	end
+
+	assert property(@(posedge clk)((opcode_formal == R) && (instr[31:25] == M_INSTR) && (div_instr)) |->
+					##[12:12] ((c_out_formal == c_out) && (~mul_result_valid && div_result_valid) && (rd_wr)))
+	else begin
+		$display("R-type output value not match, time: %t", $time);
+		$display("c out is %d, formal is %d, mul_result_vaild is %d, div_result_valid is %d", c_out, c_out_formal, mul_result_valid, div_result_valid);
+	end
+
+	assert property(@(posedge clk)((opcode_formal == R) && (instr[31:25] != M_INSTR)) |->
+					((c_out_formal == c_out) && (rd_wr)))
+	else begin
+		$display("R-type output value not match, time: %t", $time);
+		$display("c out is %d, formal is %d, rd_wr is %d", c_out, c_out_formal, rd_wr);
+	end
+
+
+	
+
+
+	assert property(@(posedge clk)(opcode_formal == LUI) |-> ((rd_wr) && (c_out_formal == c_out)))
+	else begin
+		$display("LUI output not match, time: %t", $time);
+		$display("c out is %d, formal is %d, rd is %d", c_out, c_out_formal, rd_wr); 
+	end   
+
+
+	assert property(@(posedge clk)((opcode_formal == AUIPC) |-> (rd_wr)))
+	else begin
+		$display("AUIPC-type output value not match, rd_wr value is %d", rd_wr);
+	end
+				
+	assert property(@(posedge clk)(opcode_formal == JAL) |-> (rd_wr))
+	else begin
+		$display("JAL-type output value not match, rd_wr value is %d", rd_wr);
+	end
+
+	assert property(@(posedge clk)(opcode_formal == JALR) |-> (rd_wr))
+	else begin
+		$display("JALR-type output value not match, rd_wr value is %d", rd_wr);
+	end
+
+	assert property(@(posedge clk)(opcode_formal == B) |-> 
+					((c_out_formal == NULL) && (~rd_wr)))
+	else begin
+		$display("B-type output value not match, time: %t", $time);
+		$display("c out is %d, formal is %d, rd_wr is %d", c_out, c_out_formal, rd_wr);
 	end
 
 	// synthesis translate_on 
