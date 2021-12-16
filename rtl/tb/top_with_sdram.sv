@@ -4,9 +4,12 @@
 
 import defines::*;
 
-module top_with_sdram ();
-	logic clk, rst_n, ebreak_start;
+module top_with_sdram (
+	input logic clk,
+	input logic rst_n
+);
 
+	logic			ebreak_start;
 	logic			sdram_clk;
 	logic			sdram_cke;
 	logic			sdram_cs_n;
@@ -18,11 +21,6 @@ module top_with_sdram ();
 	wire	[15:0]	sdram_data;
 	logic	[ 1:0]	sdram_dqm;
 
-	clkrst #(.FREQ(FREQ)) clkrst_inst(
-		.clk	(clk),
-		.rst_n	(rst_n)
-	);
-
 
 	proc_hier proc_dut (
 		.osc_clk		(clk),
@@ -30,16 +28,16 @@ module top_with_sdram ();
 		.ebreak_start	(ebreak_start),
 
 		// SDRAM hardware pins
-		.sdram_clk			(sdram_clk), 
-		.sdram_cke			(sdram_cke),
-		.sdram_cs_n			(sdram_cs_n),
-		.sdram_ras_n		(sdram_ras_n),
-		.sdram_cas_n		(sdram_cas_n),
-		.sdram_we_n			(sdram_we_n),
-		.sdram_ba			(sdram_ba),
-		.sdram_addr			(sdram_addr),
-		.sdram_data			(sdram_data),
-		.sdram_dqm			(sdram_dqm)
+		.sdram_clk		(sdram_clk), 
+		.sdram_cke		(sdram_cke),
+		.sdram_cs_n		(sdram_cs_n),
+		.sdram_ras_n	(sdram_ras_n),
+		.sdram_cas_n	(sdram_cas_n),
+		.sdram_we_n		(sdram_we_n),
+		.sdram_ba		(sdram_ba),
+		.sdram_addr		(sdram_addr),
+		.sdram_data		(sdram_data),
+		.sdram_dqm		(sdram_dqm)
 	);
 
 
@@ -57,28 +55,3 @@ module top_with_sdram ();
 	);
 
 endmodule : top_with_sdram
-
-
-module clkrst #(
-	FREQ = FREQ
-) (
-	output logic clk,
-	output logic rst_n
-);
-
-	localparam period = 1e12/FREQ;	// in ps
-	localparam half_period = period/2;
-
-	initial begin
-		clk = 1'b0;
-		rst_n = 1'b0;
-		repeat(5) @(negedge clk);
-		#100;
-		rst_n = 1'b1;
-	end
-
-	always #half_period begin
-      clk = ~clk;
-    end
-	
-endmodule : clkrst
