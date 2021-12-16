@@ -239,8 +239,6 @@ module alu (
 		endcase
 	end
 
-	// synthesis translate_off  
-
 	opcode_t		opcode_formal;
 	funct3_t		funct3_formal;
 	shift_type_t	shift_type_formal;
@@ -340,9 +338,6 @@ module alu (
 					end 
 				endcase
 
-
-
-	
 			end
 
 			I: begin
@@ -445,6 +440,5 @@ module alu (
 		$display("c out is %d, formal is %d, rd_wr is %d", c_out, c_out_formal, rd_wr);
 	end
 
-	// synthesis translate_on 
 	
 endmodule
