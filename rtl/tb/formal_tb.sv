@@ -57,14 +57,14 @@ module formal_tb (
 
 //////////////////////// formal verification start ////////////////////////
 
-
-// assume instruction are all valid, nothing wrong in instruction memory
+//// assume instruction are all valid, nothing wrong in instruction memory ////
 data_t	instr_dut;
 logic	instr_valid_dut;	// this means the instruction is valid, can issue
 logic	instr_valid_formal;	// this means the instruction is in correct format
 assign	instr_dut = proc_dut.processor_inst.instr_f;
 assign	instr_valid_cut = proc_dut.processor_inst.instr_valid_f;
 
+// module credit: SymbioticEDA/riscv-formal, link available in git submodule
 riscv_rv32i_insn instr_valid_checker_module (
 	.insn	(instr_dut),
 	.valid	(instr_valid_formal)
@@ -75,6 +75,8 @@ property instruction_is_valid;
 endproperty
 
 assume property (instruction_is_valid);
+////////////////////////////////////////////////////////////////////////////////
+
 
 
 endmodule : formal_tb

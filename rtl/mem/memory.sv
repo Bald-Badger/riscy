@@ -37,14 +37,20 @@ module memory (
 	output	logic	[ 1:0]	sdram_dqm
 );
 
+	// control signals
 	opcode_t		opcode;
 	funct3_t		funct3;
 	funct5_t		funct5;
 	logic 			wren, rden;
-	logic			addr_misalign;
-	logic  			misalign_trap;
 	logic			is_st, is_ld;
 	logic			mem_access_done;
+	logic			valid;
+
+	// debug signals
+	logic			addr_misalign;
+	logic  			misalign_trap;
+	logic			max_phy_access;
+	logic			max_phy_access_trap;
 
 	// atomc contril signals
 	instr_a_t		instr_a;
@@ -62,6 +68,7 @@ module memory (
 		is_sc		=	is_atomic && funct5 == SC;
 		is_ld		=	opcode == LOAD;
 		is_st		=	opcode == STORE;
+		valid		=	wren || rden;
 	end
 
 
@@ -378,7 +385,7 @@ module memory (
 		.data_in		(data_in_final),
 		.wr				(wren),
 		.rd				(rden),
-		.valid			(wren || rden),	// TODO: add Atomic support
+		.valid			(valid),	// TODO: add Atomic support
 		.be				(be),
 		
 		.data_out		(data_out_mem),
@@ -400,8 +407,9 @@ module memory (
 
 
 	////////////////////////// formal verification //////////////////////////
-	
-	always_comb begin : misalign_detection
+
+	//// misalign assersion ////
+	always_comb begin
 		unique case (funct3)
 			LB:		addr_misalign = 1'b0;
 			LH:		addr_misalign = addr[0];
@@ -413,10 +421,36 @@ module memory (
 		misalign_trap = addr_misalign && (rden || wren);
 	end
 
-	address_misalign:
-		assert property (@(posedge clk) ~misalign_trap);
-	
-	conflicting_access:
-		assert property (@(posedge clk) ~(rden && wren));
+	property memory_address_misalign;
+		@(posedge clk) ~misalign_trap;
+	endproperty
+	assert property (memory_address_misalign);
+	//////////////////////////
+
+	//// write and rd in the same cycle ////
+	property memory_conflicting_access;
+		@(posedge clk) ~(rden && wren);
+	endproperty
+	assert property (memory_conflicting_access);
+	///////////////////////////////////////
+
+	//// assume all access are below max physical memory ////
+	always_comb begin
+		max_phy_access = $signed(addr) > $signed(MAX_PHY_ADDR);
+		max_phy_access_trap = max_phy_access && (rden || wren);
+	end
+
+	property memory_max_phy_access;
+		@(posedge clk) ~max_phy_access_trap;
+	endproperty
+	assume property (memory_max_phy_access);
+	///////////////////////////////////////////////////////
+
+	//// memory access must success////
+	property mem_access_success;
+		@(posedge clk) valid |-> ##[1:MEM_ACCESS_TIMEOUT] done;
+	endproperty
+	assert property(mem_access_success);
+	///////////////////////////////////
 
 endmodule : memory
