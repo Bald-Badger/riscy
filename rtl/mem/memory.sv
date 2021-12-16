@@ -400,7 +400,7 @@ module memory (
 
 
 	////////////////////////// formal verification //////////////////////////
-	// synthesis translate_off
+	
 	always_comb begin : misalign_detection
 		unique case (funct3)
 			LB:		addr_misalign = 1'b0;
@@ -418,6 +418,5 @@ module memory (
 	
 	conflicting_access:
 		assert property (@(posedge clk) ~(rden && wren));
-	// synthesis translate_on
 
 endmodule : memory
