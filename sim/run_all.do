@@ -38,12 +38,14 @@ vlog -work smoke -vopt -sv -stats=none  ../rtl/hazard_ctrl.sv
 
 vlog -work smoke -vopt -sv -stats=none  ../rtl/base/dffe_wrap.sv
 
-vlog -work smoke -vopt -stats=none  ../rtl/ip/divide/div.v
-vlog -work smoke -vopt -stats=none  ../rtl/ip/mult/mult.v
-vlog -work smoke -vopt -stats=none  ../rtl/ip/pll/pll_clk.v
-vlog -work smoke -vopt -stats=none  ../rtl/ip/ram/rom_32b_1024wd.v
-vlog -work smoke -vopt -stats=none  ../rtl/ip/ram/ram_48b_512wd.v
-vlog -work smoke -vopt -stats=none  ../rtl/ip/ram/ram_256b_512wd.v
+# compile ip files
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/div.v
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/mult.v
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/pll_clk.v
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_32b_1024wd.v
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_48b_512wd.v
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_256b_512wd.v
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_32b_1024wd.v
 
 vlog -work smoke -vopt -sv -stats=none  ../rtl/fetch/branch_predict.sv
 vlog -work smoke -vopt -sv -stats=none  ../rtl/fetch/fetch.sv

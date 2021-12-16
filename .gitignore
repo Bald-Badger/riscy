@@ -49,7 +49,6 @@
 *.sof
 *.sopc_builder
 *.summary
-*.tcl
 *.txt
 *~
 *example*
@@ -97,3 +96,8 @@ instr_full.s
 *.component.xml
 *.code-workspace
 *.cnx
+
+# formal
+.qverify_ui_local_prefs
+.visualizer/
+rtl/tb/clkrst/xgui/clkrst_v1_0.tcl

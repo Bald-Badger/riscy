@@ -19,3 +19,6 @@
 [submodule "sim/bin2mif"]
 	path = sim/bin2mif
 	url = https://github.com/brNX/bin2mif.git
+[submodule "formal/riscv-formal"]
+	path = formal/riscv-formal
+	url = https://github.com/Bald-Badger/riscv-formal.git
