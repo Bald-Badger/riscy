@@ -415,6 +415,8 @@ always_comb begin
 	opcode_m = instr_m.opcode;
 	opcode_w = instr_w.opcode;
 end
+
+
 //////////////////////// formal verification start /////////////////////////////
 
 //// legal instruction assertion ////
@@ -425,18 +427,22 @@ riscv_rv32i_insn instr_legal_check_f (
 	.insn	(instr_f),
 	.valid	(instr_legal_f)
 );
+
 riscv_rv32i_insn instr_legal_check_d (
 	.insn	(instr_d),
 	.valid	(instr_legal_d)
 );
+
 riscv_rv32i_insn instr_legal_check_x (
 	.insn	(instr_x),
 	.valid	(instr_legal_x)
 );
+
 riscv_rv32i_insn instr_legal_check_m (
 	.insn	(instr_m),
 	.valid	(instr_legal_m)
 );
+
 riscv_rv32i_insn instr_legal_check_w (
 	.insn	(instr_w),
 	.valid	(instr_legal_w)
@@ -462,6 +468,7 @@ property instr_w_legal_property;
 	@(posedge clk) (~instr_valid_w || ~init_done || instr_legal_w || opcode_w == SYS)
 endproperty
 
+// assume all fetched instruction are legal;
 assume property (instr_f_legal_property);
 
 assert property (instr_f_legal_property)
