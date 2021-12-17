@@ -443,23 +443,23 @@ riscv_rv32i_insn instr_legal_check_w (
 );
 
 property instr_f_legal_property;
-	@(posedge clk) (instr_valid_f) |-> (instr_legal_f || opcode_f == SYS)
+	@(posedge clk) (~instr_valid_f || ~init_done || instr_legal_f || opcode_f == SYS)
 endproperty
 
 property instr_d_legal_property;
-	@(posedge clk) (instr_valid_d) |-> (instr_legal_d || opcode_d == SYS)
+	@(posedge clk) (~instr_valid_d || ~init_done || instr_legal_d || opcode_d == SYS)
 endproperty
 
 property instr_x_legal_property;
-	@(posedge clk) (instr_valid_x) |-> (instr_legal_x || opcode_x == SYS)
+	@(posedge clk) (~instr_valid_x || ~init_done || instr_legal_x || opcode_x == SYS)
 endproperty
 
 property instr_m_legal_property;
-	@(posedge clk) (instr_valid_m) |-> (instr_legal_m || opcode_x == SYS)
+	@(posedge clk) (~instr_valid_m || ~init_done || instr_legal_m || opcode_m == SYS)
 endproperty
 
 property instr_w_legal_property;
-	@(posedge clk) (instr_valid_w) |-> (instr_legal_w || opcode_w == SYS)
+	@(posedge clk) (~instr_valid_w || ~init_done || instr_legal_w || opcode_w == SYS)
 endproperty
 
 assume property (instr_f_legal_property);
@@ -478,19 +478,6 @@ assert property (instr_m_legal_property)
 
 assert property (instr_w_legal_property)
 	else $warning("instr_w_legal_property failed at %t",$time());
-
-always @(posedge clk) begin
-	instr_f_legal: assert (~instr_valid_f || ~init_done || instr_legal_f || opcode_f == SYS)
-		else $error("Assertion instr_f_legal failed!");
-	instr_d_legal: assert (~instr_valid_d || ~init_done || instr_legal_d || opcode_d == SYS)
-		else $error("Assertion instr_d_legal failed!");
-	instr_x_legal: assert (~instr_valid_x || ~init_done || instr_legal_x || opcode_x == SYS)
-		else $error("Assertion instr_x_legal failed!");
-	instr_m_legal: assert (~instr_valid_m || ~init_done || instr_legal_m || opcode_m == SYS)
-		else $error("Assertion instr_m_legal failed!");
-	instr_w_legal: assert (~instr_valid_w || ~init_done || instr_legal_w || opcode_w == SYS)
-		else $error("Assertion instr_w_legal failed!");
-end
 /////////////////////////////////////
 
 endmodule : proc
