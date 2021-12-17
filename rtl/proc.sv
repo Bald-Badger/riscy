@@ -479,7 +479,7 @@ assert property (instr_m_legal_property)
 assert property (instr_w_legal_property)
 	else $warning("instr_w_legal_property failed at %t",$time());
 
-always_ff @(posedge clk or negedge rst_n) begin
+always @(posedge clk) begin
 	instr_f_legal: assert (~instr_valid_f || ~init_done || instr_legal_f || opcode_f == SYS)
 		else $error("Assertion instr_f_legal failed!");
 	instr_d_legal: assert (~instr_valid_d || ~init_done || instr_legal_d || opcode_d == SYS)
