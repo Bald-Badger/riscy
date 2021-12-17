@@ -286,7 +286,7 @@ module alu (
 	assign mult_raw  = mult_a_in * mult_b_in;
 
 	always_comb begin: mult
-		unique case (funct3_formal)
+		case (funct3_formal)
 			MUL:		mult_result_formal = mult_raw[31:0];
 			MULH:		mult_result_formal = mult_raw[63:32];
 			MULHSU:		mult_result_formal = mult_raw[63:32];
@@ -308,9 +308,9 @@ module alu (
 
 		{carry_bit_i, c_gold_i} = a_in + data_t'({ {20{instr[31]}} , instr[31:20]});
 
-		unique case (opcode_formal)
+		case (opcode_formal)
 			R: begin
-				unique case(instr[31:25]) //function 7
+				case(instr[31:25]) //function 7
 					M_INSTR: begin
 						if (~div_instr)begin
 							c_out_formal = mult_result_formal;
@@ -321,7 +321,7 @@ module alu (
 					end
 					//c_out_formal use as golden value
 					default: begin
-						unique case (funct3_formal)
+						case (funct3_formal)
 							ADD:  c_out_formal = c_gold;
 							SUB:  c_out_formal = $signed(a_in) - $signed(b_in);
 							AND:  c_out_formal = a_in & b_in;
