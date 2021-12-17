@@ -35,6 +35,9 @@ module proc(
 			sdram_init_done <= sdram_init_done_async;
 	end
 
+	logic init_done;
+	assign init_done = sdram_init_done;
+
 	// stage-specific common data wires
 	// signal naming shceme:
 	// e.g.		xxx_f => xxx signal in fetch stage
@@ -42,6 +45,7 @@ module proc(
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
+	opcode_t	opcode_f, opcode_d, opcode_x, opcode_m, opcode_w;
 	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
 	// synthesis translate_off
 	data_t		instr_raw;	// for debug
@@ -106,7 +110,7 @@ module proc(
 		.pc_sel			(pc_sel),
 		.stall			(stall_pc),
 		.flush			(flush_pc),
-		.go				(sdram_init_done),
+		.go				(init_done),
 		.mispredict		(branch_mispredict),
 
 		// output
@@ -124,7 +128,7 @@ module proc(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.flush			(flush_if_id),
-		.en				((!stall_if_id) && sdram_init_done),
+		.en				((!stall_if_id) && init_done),
 
 		// input
 		.pc_p4_in		(pcp4_f),
@@ -403,5 +407,90 @@ module proc(
 always_comb begin : ebreak_assign
 	ebreak_start = instr_w.opcode == SYS;
 end
+
+always_comb begin
+	opcode_f = instr_f.opcode;
+	opcode_d = instr_d.opcode;
+	opcode_x = instr_x.opcode;
+	opcode_m = instr_m.opcode;
+	opcode_w = instr_w.opcode;
+end
+//////////////////////// formal verification start /////////////////////////////
+
+//// legal instruction assertion ////
+logic instr_legal_f, instr_legal_d, instr_legal_x, instr_legal_m, instr_legal_w;
+
+// module credit: SymbioticEDA/riscv-formal, link available in git submodule
+riscv_rv32i_insn instr_legal_check_f (
+	.insn	(instr_f),
+	.valid	(instr_legal_f)
+);
+riscv_rv32i_insn instr_legal_check_d (
+	.insn	(instr_d),
+	.valid	(instr_legal_d)
+);
+riscv_rv32i_insn instr_legal_check_x (
+	.insn	(instr_x),
+	.valid	(instr_legal_x)
+);
+riscv_rv32i_insn instr_legal_check_m (
+	.insn	(instr_m),
+	.valid	(instr_legal_m)
+);
+riscv_rv32i_insn instr_legal_check_w (
+	.insn	(instr_w),
+	.valid	(instr_legal_w)
+);
+
+property instr_f_legal_property;
+	@(posedge clk) (instr_valid_f && init_done) |-> (instr_legal_f || opcode_f == SYS)
+endproperty
+
+property instr_d_legal_property;
+	@(posedge clk) (instr_valid_d && init_done) |-> (instr_legal_d || opcode_d == SYS)
+endproperty
+
+property instr_x_legal_property;
+	@(posedge clk) (instr_valid_x && init_done) |-> (instr_legal_x || opcode_x == SYS)
+endproperty
+
+property instr_m_legal_property;
+	@(posedge clk) (instr_valid_m && init_done) |-> (instr_legal_m || opcode_x == SYS)
+endproperty
+
+property instr_w_legal_property;
+	@(posedge clk) (instr_valid_w && init_done) |-> (instr_legal_w || opcode_w == SYS)
+endproperty
+
+assume property (instr_f_legal_property);
+
+assert property (instr_f_legal_property)
+	else $warning("instr_f_legal_property failed at %t",$time());
+
+assert property (instr_d_legal_property)
+	else $warning("instr_d_legal_property failed at %t",$time());
+
+assert property (instr_x_legal_property)
+	else $warning("instr_x_legal_property failed at %t",$time());
+
+assert property (instr_m_legal_property)
+	else $warning("instr_m_legal_property failed at %t",$time());
+
+assert property (instr_w_legal_property)
+	else $warning("instr_w_legal_property failed at %t",$time());
+
+always_ff @(posedge clk or negedge rst_n) begin
+	instr_f_legal: assert (~instr_valid_f || ~init_done || instr_legal_f || opcode_f == SYS)
+		else $error("Assertion instr_f_legal failed!");
+	instr_d_legal: assert (~instr_valid_d || ~init_done || instr_legal_d || opcode_d == SYS)
+		else $error("Assertion instr_d_legal failed!");
+	instr_x_legal: assert (~instr_valid_x || ~init_done || instr_legal_x || opcode_x == SYS)
+		else $error("Assertion instr_x_legal failed!");
+	instr_m_legal: assert (~instr_valid_m || ~init_done || instr_legal_m || opcode_m == SYS)
+		else $error("Assertion instr_m_legal failed!");
+	instr_w_legal: assert (~instr_valid_w || ~init_done || instr_legal_w || opcode_w == SYS)
+		else $error("Assertion instr_w_legal failed!");
+end
+/////////////////////////////////////
 
 endmodule : proc

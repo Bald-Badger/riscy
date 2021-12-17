@@ -49,15 +49,23 @@ module reference_test_single ();
 	);
 
 	logic pll_clk, lock_rst;
-	logic ref_halt;
+	logic ref_halt, ref_halt_wait;
+	logic kill_ref;
+	initial begin
+		ref_halt = 1'b0;
+		wait(ref_halt_wait);
+		ref_halt = 1'b1;
+	end
 	ref_hier proc_ref (
-		.clk				(pll_clk && ~ref_halt),
-		.rst				(lock_rst)
+		.clk				(pll_clk),
+		.rst				(lock_rst),
+		.kill				(kill_ref)
 	);
 	always_comb begin
 		pll_clk = proc_dut.clk;
-		lock_rst = ~proc_dut.rst_n;
-		ref_halt = (data_t'(proc_ref.mem_i_inst_w) == ECALL);
+		lock_rst = ~proc_dut.rst_n || ~proc_dut.locked;
+		ref_halt_wait = (data_t'(proc_ref.mem_i_inst_w) == ECALL);
+		kill_ref = ref_halt;
 	end
 
 	// reg dut wire

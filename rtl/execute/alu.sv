@@ -286,11 +286,12 @@ module alu (
 	assign mult_raw  = mult_a_in * mult_b_in;
 
 	always_comb begin: mult
-		unique case (funct3_formal)
+		case (funct3_formal)
 			MUL:		mult_result_formal = mult_raw[31:0];
 			MULH:		mult_result_formal = mult_raw[63:32];
 			MULHSU:		mult_result_formal = mult_raw[63:32];
 			MULHU:		mult_result_formal = mult_raw[63:32];
+			default:	mult_result_formal = NULL;
 		endcase
 	end
 
@@ -308,7 +309,7 @@ module alu (
 
 		{carry_bit_i, c_gold_i} = a_in + data_t'({ {20{instr[31]}} , instr[31:20]});
 
-		unique case (opcode_formal)
+		case (opcode_formal)
 			R: begin
 				unique case(instr[31:25]) //function 7
 					M_INSTR: begin
@@ -362,6 +363,10 @@ module alu (
 
 			LUI:begin
 				c_out_formal = {instr[31:12], 12'b0};
+			end
+
+			default: begin
+				c_out_formal = NULL;
 			end
 
 
