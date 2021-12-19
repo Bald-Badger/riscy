@@ -56,7 +56,7 @@ module formal_tb (
 
 ////////////////////// formal verification part //////////////////////
 logic check;
-assign check = proc_dut.processor_inst.init_done;
+assign check = ENABLE;
 
 
 
