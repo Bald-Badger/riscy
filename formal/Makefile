@@ -27,6 +27,9 @@ compile:
 	$(VLOG)  ../rtl/eda/other/altera_mf.v
 	$(VLOG)  ../rtl/eda/other/altera_primitives.v
 	$(VLOG)  ../rtl/eda/other/altera_primitives_quasar.v
+	$(VLOG)  ../rtl/eda/lpm/dffep.v
+	$(VLOG)  ../rtl/eda/lpm/addsub_block.v
+	$(VLOG)  ../rtl/eda/lpm/pipeline_internal_fv.v
 	$(VLOG)  ../rtl/eda/lpm/altpll.v
 	$(VLOG)  ../rtl/eda/lpm/lpm_mult.v
 	$(VLOG)  ../rtl/eda/lpm/mult_block.v
