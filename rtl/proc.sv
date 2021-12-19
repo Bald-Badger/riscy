@@ -45,7 +45,7 @@ module proc(
 	// e.g.		xxx_d => xxx signal in decode stafe
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
-	data_t		pc_nxt_f, pc_nxt_d, pc_nxt_x, pc_nxt_m, pc_nxt_w; // for debug
+	data_t		pc_nxt_d, pc_nxt_x, pc_nxt_m, pc_nxt_w; // for debug
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
 	opcode_t	opcode_f, opcode_d, opcode_x, opcode_m, opcode_w;
 	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
@@ -123,7 +123,6 @@ module proc(
 		// output
 		.pc_p4_out		(pcp4_f),
 		.pc_out			(pc_f),
-		.pc_nxt			(pc_nxt_f),
 		.instr			(instr_f),
 		.taken			(branch_predict_f),
 		.instr_valid	(instr_valid_f)
@@ -141,7 +140,6 @@ module proc(
 		// input
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
-		.pc_nxt_in		(pc_nxt_f),
 		.instr_in		(instr_f),
 		.branch_take_in	(branch_predict_f),
 		.instr_valid_in	(instr_valid_f),
@@ -149,7 +147,6 @@ module proc(
 		// output
 		.pc_p4_out		(pcp4_d),
 		.pc_out			(pc_d),
-		.pc_nxt_out		(pc_nxt_d),
 		.instr_out		(instr_d),
 		.branch_take_out(branch_predict_d),
 		.instr_valid_out(instr_valid_d)
@@ -170,6 +167,7 @@ module proc(
 
 		// input
 		.pc				(pc_d),
+		.pc_nxt			(pc_nxt_d),
 		.instr			(instr_d),
 		.wd				(wb_data),
 		.waddr			(rd_addr),

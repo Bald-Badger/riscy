@@ -16,7 +16,6 @@ module fetch (
 	// output
 	output	data_t	pc_p4_out,
 	output	data_t	pc_out,
-	output	data_t	pc_nxt,
 	output	instr_t	instr,
 	output	logic	taken,
 	output	logic	instr_valid
@@ -53,8 +52,7 @@ module fetch (
 
 		// output
 		.pc		(pc),
-		.pc_p4	(pc_p4),
-		.pc_nxt	(pc_nxt)
+		.pc_p4	(pc_p4)
 	);
 
 
