@@ -92,7 +92,8 @@ compile:
 	$(VLOG) -sv  ../rtl/reg/mem_wb_reg.sv
 
 	$(VLOG)  ../formal/riscv-formal/tests/coverage/riscv_rv32i_insn.v
-	$(VLOG)  ../formal/riscv-formal/checks/rvfi_causal_check.sv
+	$(VLOG)  ../formal/riscv-formal/checks/rvfi_macros.vh
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_causal_check.sv
 	
 
 ###### Run Formal Analysis #####################################################
