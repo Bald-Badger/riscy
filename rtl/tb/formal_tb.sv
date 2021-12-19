@@ -54,6 +54,12 @@ module formal_tb (
 	);
 
 
+////////////////////// formal verification part //////////////////////
+logic check;
+assign check = proc_dut.processor_inst.init_done;
+
+
+
 //// RVFI interface ////
 logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_valid;		// valid instruction
 logic [`RISCV_FORMAL_NRET *                 64   - 1 : 0] rvfi_order;		// programmer's instruction order
@@ -76,11 +82,63 @@ logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN/8 - 1 : 0] rvfi_mem_rmask;	// whi
 logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN/8 - 1 : 0] rvfi_mem_wmask;	// which bytes in rvfi_mem_wdata contain valid data that is written to rvfi_mem_addr
 logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_rdata;	// data being read by retired instruction
 logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_wdata;	// data being written by retired instruction
-///////////////////////
 
 
+always_comb begin : RVFI_interface_assign
+	rvfi_valid		=	proc_dut.processor_inst.rvfi_valid;
+	rvfi_order		=	proc_dut.processor_inst.rvfi_order;
+	rvfi_insn		=	proc_dut.processor_inst.rvfi_insn;
+	rvfi_trap		=	proc_dut.processor_inst.rvfi_trap;
+	rvfi_halt		=	proc_dut.processor_inst.rvfi_halt;
+	rvfi_intr		=	proc_dut.processor_inst.rvfi_intr;
+	rvfi_mode		=	proc_dut.processor_inst.rvfi_mode;
+	rvfi_ixl		=	proc_dut.processor_inst.rvfi_ixl;
+	rvfi_rs1_addr	=	proc_dut.processor_inst.rvfi_rs1_addr;
+	rvfi_rs2_addr	=	proc_dut.processor_inst.rvfi_rs2_addr;
+	rvfi_rs1_rdata	=	proc_dut.processor_inst.rvfi_rs1_rdata;
+	rvfi_rs2_rdata	=	proc_dut.processor_inst.rvfi_rs2_rdata;
+	rvfi_rd_addr	=	proc_dut.processor_inst.rvfi_rd_addr;
+	rvfi_rd_wdata	=	proc_dut.processor_inst.rvfi_rd_wdata;
+	rvfi_pc_rdata	=	proc_dut.processor_inst.rvfi_pc_rdata;
+	rvfi_pc_wdata	=	proc_dut.processor_inst.rvfi_pc_wdata;
+	rvfi_mem_addr	=	proc_dut.processor_inst.rvfi_mem_addr;
+	rvfi_mem_rmask	=	proc_dut.processor_inst.rvfi_mem_rmask;
+	rvfi_mem_wmask	=	proc_dut.processor_inst.rvfi_mem_wmask;
+	rvfi_mem_rdata	=	proc_dut.processor_inst.rvfi_mem_rdata;
+	rvfi_mem_wdata	=	proc_dut.processor_inst.rvfi_mem_wdata;
+end
+//// RVFI interface ////
 
 
+//// casual check ////
+rvfi_causal_check rvfi_causal_check_inst (
+	.clock			(clk),
+	.reset			(~rst_n),
+	.check			(check),
+
+	.rvfi_valid		(rvfi_valid),
+	.rvfi_order		(rvfi_order),
+	.rvfi_insn		(rvfi_insn),
+	.rvfi_trap		(rvfi_trap),
+	.rvfi_halt		(rvfi_halt),
+	.rvfi_intr		(rvfi_intr),
+	.rvfi_mode		(rvfi_mode),
+	.rvfi_ixl		(rvfi_ixl),
+	.rvfi_rs1_addr	(rvfi_rs1_addr),
+	.rvfi_rs2_addr	(rvfi_rs2_addr),
+	.rvfi_rs1_rdata	(rvfi_rs1_rdata),
+	.rvfi_rs2_rdata	(rvfi_rs2_rdata),
+	.rvfi_rd_addr	(rvfi_rd_addr),
+	.rvfi_rd_wdata	(rvfi_rd_wdata),
+	.rvfi_pc_rdata	(rvfi_pc_rdata),
+	.rvfi_pc_wdata	(rvfi_pc_wdata),
+	.rvfi_mem_addr	(rvfi_mem_addr),
+	.rvfi_mem_rmask	(rvfi_mem_rmask),
+	.rvfi_mem_wmask	(rvfi_mem_wmask),
+	.rvfi_mem_rdata	(rvfi_mem_rdata),
+	.rvfi_mem_wdata	(rvfi_mem_wdata)
+);
+//// casual check ////
 
 
 
