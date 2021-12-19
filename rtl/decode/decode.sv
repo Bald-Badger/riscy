@@ -19,6 +19,7 @@ module decode (
 
 	// output
 	output data_t 		pc_bj,
+	//output data_t		pc_nxt,
 	output logic 		pc_sel,
 	output data_t 		rs1,
 	output data_t 		rs2,
@@ -41,6 +42,7 @@ module decode (
 		// output
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
+		//.pc_nxt			(pc_nxt),
 		.branch_taken	(branch_taken)
 	);
 

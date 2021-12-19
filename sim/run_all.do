@@ -10,8 +10,8 @@ onerror {resume}
 if [file exists smoke] {
     vdel -all
 }
-project open riscy.mpf
-# project compileall
+
+project open riscy_altera.mpf
 
 # compile `defines
 vlog -work smoke -vopt -sv -stats=none  ../rtl/defines.sv
@@ -21,10 +21,13 @@ vlog -work smoke -vopt -sv -stats=none  ../rtl/mem/mem_defines.sv
 #vlog -work smoke -vopt -stats=none  ../rtl/eda/other/altera_mf.v
 #vlog -work smoke -vopt -stats=none  ../rtl/eda/other/altera_primitives.v
 #vlog -work smoke -vopt -stats=none  ../rtl/eda/other/altera_primitives_quasar.v
-#vlog -work smoke -vopt -stats=none  ../rtl/eda/lpm/altpll.v
+#vlog -work smoke -vopt -stats=none  ../rtl/eda/lpm/dffep.v
+#vlog -work smoke -vopt -stats=none  ../rtl/eda/lpm/addsub_block.v
+#vlog -work smoke -vopt -stats=none  ../rtl/eda/lpm/pipeline_internal_fv.v
 #vlog -work smoke -vopt -stats=none  ../rtl/eda/lpm/lpm_mult.v
 #vlog -work smoke -vopt -stats=none  ../rtl/eda/lpm/mult_block.v
 #vlog -work smoke -vopt -stats=none  ../rtl/eda/lpm/lpm_divide.v
+
 
 # compile top level tb
 vlog -work smoke -vopt -sv -stats=none  ../rtl/tb/smoke_test_single.sv
@@ -46,6 +49,7 @@ vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_32b_1024wd.v
 vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_48b_512wd.v
 vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_256b_512wd.v
 vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/ram_32b_1024wd.v
+vlog -work smoke -vopt -stats=none  ../rtl/ip/altera/rom_32b_1024wd.v
 
 vlog -work smoke -vopt -sv -stats=none  ../rtl/fetch/branch_predict.sv
 vlog -work smoke -vopt -sv -stats=none  ../rtl/fetch/fetch.sv
@@ -90,6 +94,9 @@ vlog -work smoke -vopt -sv -stats=none  ../rtl/reg/if_id_reg.sv
 vlog -work smoke -vopt -sv -stats=none  ../rtl/reg/id_ex_reg.sv
 vlog -work smoke -vopt -sv -stats=none  ../rtl/reg/ex_mem_reg.sv
 vlog -work smoke -vopt -sv -stats=none  ../rtl/reg/mem_wb_reg.sv
+
+# compile formal ver files
+vlog -work smoke -vopt -stats=none  ../formal/riscv-formal/tests/coverage/riscv_rv32i_insn.v
 
 
 # Simulate the design

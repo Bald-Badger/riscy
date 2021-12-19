@@ -45,6 +45,7 @@ module proc(
 	// e.g.		xxx_d => xxx signal in decode stafe
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
+	data_t		pc_nxt_f, pc_nxt_d, pc_nxt_x, pc_nxt_m, pc_nxt_w; // for debug
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
 	opcode_t	opcode_f, opcode_d, opcode_x, opcode_m, opcode_w;
 	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
@@ -52,11 +53,13 @@ module proc(
 	data_t		instr_raw;	// for debug
 	assign		instr_raw = data_t'(instr_f);
 	// synthesis translate_on
-	data_t 		rs1_d, rs1_x, rs1_m, rs2_d, rs2_x, rs2_m;	// data in register file #1
+	data_t 		rs1_d, rs1_x, rs1_m, rs1_w, rs2_d, rs2_x, rs2_m, rs2_w;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
 	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
-	data_t 		mem_data_m, mem_data_w;	// data load from memory
+	data_t 		mem_data_in_m, mem_data_in_w;	// data write to memory
+	data_t 		mem_data_out_m, mem_data_out_w;	// data read from memory
+	data_t		mem_addr_m, mem_addr_w;	// data access addr;
 	logic		branch_predict_f, branch_predict_d;	// branch perdictor output from fetch stage
 	logic		branch_taken_actual_d, branch_taken_actual_x;	// actual branch result from decode stagen
 	logic		branch_mispredict;
@@ -94,7 +97,7 @@ module proc(
 	data_t		mem_ex_fwd_data;	// fwd data from wb stage to exe stage
 	data_t		mem_mem_fwd_data;	// fwd data from wb stage to mem stage
 	always_comb begin : fwd_data_assign
-		ex_ex_fwd_data = (instr_m.opcode == LOAD) ? mem_data_m : alu_result_m;
+		ex_ex_fwd_data = (instr_m.opcode == LOAD) ? mem_data_out_m : alu_result_m;
 		mem_ex_fwd_data = wb_data;
 		mem_mem_fwd_data = wb_data;
 	end
@@ -120,6 +123,7 @@ module proc(
 		// output
 		.pc_p4_out		(pcp4_f),
 		.pc_out			(pc_f),
+		.pc_nxt			(pc_nxt_f),
 		.instr			(instr_f),
 		.taken			(branch_predict_f),
 		.instr_valid	(instr_valid_f)
@@ -137,6 +141,7 @@ module proc(
 		// input
 		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
+		.pc_nxt_in		(pc_nxt_f),
 		.instr_in		(instr_f),
 		.branch_take_in	(branch_predict_f),
 		.instr_valid_in	(instr_valid_f),
@@ -144,6 +149,7 @@ module proc(
 		// output
 		.pc_p4_out		(pcp4_d),
 		.pc_out			(pc_d),
+		.pc_nxt_out		(pc_nxt_d),
 		.instr_out		(instr_d),
 		.branch_take_out(branch_predict_d),
 		.instr_valid_out(instr_valid_d)
@@ -171,8 +177,8 @@ module proc(
 		
 		// for branch forwarding
 		.ex_data		(alu_result_x),
-		.mem_data		((instr_m.opcode == LOAD) ? mem_data_m : alu_result_m),
-		.wb_data		((instr_w.opcode == LOAD) ? mem_data_w : alu_result_w),
+		.mem_data		((instr_m.opcode == LOAD) ? mem_data_out_m : alu_result_m),
+		.wb_data		((instr_w.opcode == LOAD) ? mem_data_out_w : alu_result_w),
 		.fwd_rs1		(fwd_id_rs1),
 		.fwd_rs2		(fwd_id_rs2),
 
@@ -214,6 +220,7 @@ module proc(
 		.rs1_in				(rs1_d),
 		.rs2_in				(rs2_d_after_fwd),
 		.pc_in				(pc_d),
+		.pc_nxt_in			(pc_nxt_d),
 		.imm_in				(imm_d),
 		.pc_p4_in			(pcp4_d),
 		.branch_taken_in	(branch_taken_actual_d),
@@ -226,6 +233,7 @@ module proc(
 		.pc_out				(pc_x),
 		.imm_out			(imm_x),
 		.pc_p4_out			(pcp4_x),
+		.pc_nxt_out			(pc_nxt_x),
 		.branch_taken_out	(branch_taken_actual_x),
 		.instr_valid_out	(instr_valid_x)
 	);
@@ -273,6 +281,7 @@ module proc(
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
 		.pc_p4_in		(pcp4_x),
+		.pc_nxt_in		(pc_nxt_x),
 		.rd_wren_in		(rd_wren_x),
 		.instr_valid_in	(instr_valid_x),
 
@@ -281,6 +290,7 @@ module proc(
 		.alu_result_out	(alu_result_m),
 		.rs2_out		(rs2_m),
 		.pc_p4_out		(pcp4_m),
+		.pc_nxt_out		(pc_nxt_m),
 		.rd_wren_out	(rd_wren_m),
 		.instr_valid_out(instr_valid_m)
 	);
@@ -300,9 +310,10 @@ module proc(
 		.instr				(instr_m),
 		
 		// output
-		.data_out			(mem_data_m),
+		.data_out			(mem_data_out_m),
 		.sdram_init_done	(sdram_init_done_async),
 		.done				(mem_access_done),
+		.data_in_final		(mem_data_in_m),
 
 		// SDRAM hardware pins
 		.sdram_clk			(sdram_clk), 
@@ -318,32 +329,39 @@ module proc(
 	);
 
 
+	assign mem_addr_m = alu_result_m;
 	// memory-write-back stage reg
 	mem_wb_reg mem_wb_reg_inst (
 		// common
-		.clk			(clk),
-		.rst_n			(rst_n),
-		.flush			(flush_mem_wb),
-		.en				(!stall_mem_wb),
+		.clk				(clk),
+		.rst_n				(rst_n),
+		.flush				(flush_mem_wb),
+		.en					(!stall_mem_wb),
 
 		// input
-		.instr_in		(
+		.instr_in			(
 			stall_ex_mem ? NOP :
 			flush_ex_mem ? NOP : instr_m 
 		),
-		.alu_result_in	(alu_result_m),
-		.mem_data_in	(mem_data_m),
-		.pc_p4_in		(pcp4_m),
-		.rd_wren_in		(rd_wren_m),
-		.instr_valid_in	(instr_valid_m),
+		.alu_result_in		(alu_result_m),
+		.mem_data_in_in		(mem_data_in_m),
+		.mem_data_out_in	(mem_data_out_m),
+		.pc_p4_in			(pcp4_m),
+		.pc_nxt_in			(pc_nxt_m),
+		.rd_wren_in			(rd_wren_m),
+		.instr_valid_in		(instr_valid_m),
+		.mem_addr_in		(mem_addr_m),	// for debug
 
 		// output
-		.instr_out		(instr_w),
-		.alu_result_out	(alu_result_w),
-		.mem_data_out	(mem_data_w),
-		.pc_p4_out		(pcp4_w),
-		.rd_wren_out	(rd_wren_w),
-		.instr_valid_out(instr_valid_w)
+		.instr_out			(instr_w),
+		.alu_result_out		(alu_result_w),
+		.mem_data_in_out	(mem_data_in_w),
+		.mem_data_out_out	(mem_data_out_w),
+		.pc_p4_out			(pcp4_w),
+		.pc_nxt_out			(pc_nxt_w),
+		.rd_wren_out		(rd_wren_w),
+		.instr_valid_out	(instr_valid_w),
+		.mem_addr_out		(mem_addr_w)
 	);
 
 
@@ -352,7 +370,7 @@ module proc(
 		// input
 		.instr		(instr_w),
 		.alu_result	(alu_result_w),
-		.mem_data	(mem_data_w),
+		.mem_data	(mem_data_out_w),
 		.pc_p4		(pcp4_w),
 
 		// output
@@ -523,6 +541,50 @@ always_ff @(posedge clk or negedge rst_n) begin
 	end else begin
 		instr_order <= instr_order;
 	end
+end
+
+always_comb begin : RVFI_ASSIGN
+	rvfi_valid		= instr_valid_w && (instr_w != NOP) && (instr_w != NULL);
+
+	rvfi_order		= instr_order;
+
+	rvfi_insn		= data_t'(instr_w);
+
+	rvfi_trap		= (~instr_legal_w) && instr_w != NOP;
+
+	rvfi_halt		= instr_w.opcode == SYS;
+
+	rvfi_intr		= DISABLE;
+
+	rvfi_mode		= 2'b11;	// M mode
+
+	rvfi_ixl		= 2'b1;		// 32 bit arch
+
+	rvfi_rs1_addr	= instr_w.rs1;
+
+	rvfi_rs2_addr	= instr_w.rs2;
+
+	rvfi_rs1_rdata	= decode_inst.registers_inst.reg_bypass_inst.registers[rvfi_rs1_addr];
+
+	rvfi_rs2_rdata	= decode_inst.registers_inst.reg_bypass_inst.registers[rvfi_rs2_addr];
+
+	rvfi_rd_addr	= (rd_wren_w) ? instr_w.rd : 5'b0;
+
+	rvfi_rd_wdata	= (rd_wren_w) ? wb_data : NULL;
+
+	rvfi_pc_rdata	= pcp4_w - 32'd4;
+
+	rvfi_pc_wdata	= pc_nxt_w;		// prob
+
+	rvfi_mem_addr	= mem_addr_w;	// prob
+
+	rvfi_mem_rmask	= 4'b1111;
+
+	rvfi_mem_wmask	= 4'b1111;
+
+	rvfi_mem_rdata	= mem_data_in_w;
+
+	rvfi_mem_wdata	= mem_data_out_w;
 end
 
 endmodule : proc

@@ -21869,7 +21869,7 @@ module altpll (
 );
 
 // GLOBAL PARAMETER DECLARATION
-parameter   intended_device_family    = "Stratix" ;
+parameter   intended_device_family    = "CYCLONE IV E" ;
 parameter   operation_mode            = "NORMAL" ;
 parameter   pll_type                  = "AUTO" ;
 parameter   qualify_conf_done         = "OFF" ;
@@ -50778,7 +50778,7 @@ endmodule // altsyncram_body
 //                    RAM with 1 write port and 2 read ports.
 //
 // Limitation       : This megafunction is provided only for backward 
-//                    compatibility in Stratix designs; instead, Altera® 
+//                    compatibility in Stratix designs; instead, Alteraï¿½ 
 //                    recommends using the altsyncram megafunction.
 //
 //                    In MAX 3000, and MAX 7000 devices, 

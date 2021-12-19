@@ -10,7 +10,8 @@ module pc (
 
 	//output
 	output data_t 	pc,
-	output data_t 	pc_p4
+	output data_t 	pc_p4,
+	output data_t	pc_nxt
 );
 
 	logic[XLEN-1:0] boot_pc [0:0];	
@@ -32,6 +33,13 @@ module pc (
 			pc <= pc_bj;
 		else
 			pc <= pc_p4;
+	end
+
+	always_comb begin : pc_nxt_assign
+		if (pc_sel)
+			pc_nxt = pc_bj;
+		else
+			pc_nxt = pc;
 	end
 
 	// synopsys translate_off

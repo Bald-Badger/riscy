@@ -29,7 +29,7 @@ module altpll (
 // INTERFACE END
 //// default parameters ////
 
-	parameter intended_device_family = "NONE";
+	parameter intended_device_family = "CYCLONE IV E";
 	parameter operation_mode = "unused";
 	parameter pll_type = "AUTO";
 	parameter qualify_conf_done = "OFF";

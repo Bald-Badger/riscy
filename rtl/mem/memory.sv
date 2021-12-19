@@ -21,6 +21,7 @@ module memory (
 	input	instr_t			instr,
 
 	output	data_t			data_out,
+	output	data_t			data_in_final,	// for debug
 	output	logic			sdram_init_done,
 	output	logic			done,
 
@@ -193,7 +194,7 @@ module memory (
 
 	// may need to switch endianess for storing in of memory depending on endianess
 	data_t data_in;				// after fwd
-	data_t data_in_final; 		// after possible endian switch
+	//data_t data_in_final; 	// decleared as output, after possible endian switch
 	data_t data_out_mem; 		// data just out of mem, blue raw
 
 	always_comb begin : sel_fwd_data

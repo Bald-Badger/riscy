@@ -88,7 +88,7 @@ module reference_test_single ();
 		mem_access_done_dut	= proc_dut.processor_inst.mem_access_done;
 		mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor_inst.memory_inst.data_in_final :
 								swap_endian(proc_dut.processor_inst.memory_inst.data_in_final);
-		mem_rd_data_out_dut	= proc_dut.processor_inst.mem_data_m;
+		mem_rd_data_out_dut	= proc_dut.processor_inst.mem_data_out_m;
 		mem_access_addr_dut	= proc_dut.processor_inst.memory_inst.addr;
 	end
 
