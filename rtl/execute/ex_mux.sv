@@ -71,12 +71,12 @@ module ex_mux (
 		rs1_mux_sel = 2'b00;
 		rs2_mux_sel = 2'b00;
 		unique case (instr.opcode)
-			R: begin
+			R: begin //DONE
 				rs1_mux_sel = rs1_sel;
 				rs2_mux_sel = rs2_sel;
 			end
 
-			I: begin
+			I: begin //DONE
 				rs1_mux_sel = rs1_sel;
 				rs2_mux_sel = imm_sel;
 			end
@@ -106,12 +106,12 @@ module ex_mux (
 				rs2_mux_sel = imm_sel;
 			end
 			
-			LOAD: begin	// rs1 + imm
+			LOAD: begin	// rs1 + imm DONE
 				rs1_mux_sel = rs1_sel;
 				rs2_mux_sel = imm_sel;
 			end
 
-			STORE: begin // rs1 + imm
+			STORE: begin // rs1 + imm DONE
 				rs1_mux_sel = rs1_sel;
 				rs2_mux_sel = imm_sel;
 			end
@@ -132,5 +132,122 @@ module ex_mux (
 			end
 		endcase
 	end
+//((opcode_formal == R) && (instr[31:25] != M_INSTR)) |->
+					//((c_out_formal == c_out) && (rd_wr));
+
+	//opcode_t		opcode_formal;
+
+	//always_comb begin: formal
+		//opcode_formal = opcode_t'(instr[6:0]); 
+	//end
+
+
+	//property a_out_general;
+		//((a_out == rs1_mux_out) || (a_out == ex_ex_fwd_data) || (a_out == mem_ex_fwd_data) || (a_out == NULL));
+	//endproperty assert property(a_out_general); //make sure a_out comes from one of the fwd_a mux input
+
+	//property b_out_general;
+		//((b_out == rs2_mux_out) || (b_out == ex_ex_fwd_data) || (b_out == mem_ex_fwd_data) || (b_out == NULL));
+	//endproperty
+
+	/*assert property(b_out_general); //make sure a_out comes from one of the fwd_a mux input
+
+
+
+
+
+	property rs1_mux_out_prop;
+		((rs1_mux_out == NULL) || (rs1_mux_out == rs1) || (rs1_mux_out == pc));
+	endproperty
+
+	assert property(rs1_mux_out_prop); //make sure rs1_out rs1_mux_out comes from one of the rs1_mux input
+	
+	property rs2_mux_out_prop;
+		((rs2_mux_out == NULL) || (rs2_mux_out == rs2) || (rs2_mux_out == imm));
+	endproperty
+
+	assert property(rs2_mux_out_prop); //make sure rs1_out rs1_mux_out comes from one of the rs1_mux input
+
+	//RS_EX_SEL: 2'b00
+	//MEM_EX_SEL: 2'b01
+	//WB_EX_SEL: 2'b10
+
+
+////////////////////////////////////////////////////////////////////////R type rs1_sel = 2'b10, rs2_sel = 2'b10
+	property R_B_a_rs1_mux;
+		(((opcode_formal == R) || (opcode_formal == B)) 
+						|-> ((rs1_mux_out == rs1)));
+	endproperty
+
+	assert property(R_B_a_rs1_mux); //make sure R-type rs1_mux_out is rs1.....
+
+	property R_B_b_rs2_mux;
+		(((opcode_formal == R) || (opcode_formal == B)) 
+						|-> (rs2_mux_out == rs2));
+	endproperty
+
+	assert property(R_B_b_rs2_mux); // make sure R-type rs2_mux_out is rs2.....
+/////////////////////////////////////////////////////////////////////////I type rs1_sel=2'b10, imm_sel = 2'b11
+	property I_STORE_LOAD_a_rs1_mux;
+		(((opcode_formal == I) || (opcode_formal == STORE) || (opcode_formal == LOAD)) 
+						|-> ((rs1_mux_out == rs1)));
+	endproperty
+
+	assert property(I_STORE_LOAD_a_rs1_mux); //make sure R-type rs1_mux_out is rs1.....
+
+	property I_STORE_LOAD_b_rs2_mux;
+		(((opcode_formal == R) || (opcode_formal == STORE) || (opcode_formal == LOAD))
+						|-> ((rs2_mux_out == imm)));
+	endproperty
+
+	assert property(I_STORE_LOAD_b_rs2_mux); // make sure R-type rs2_mux_out is rs2.....
+/////////////////////////////////////////////////////////////////////// LUI: rs1_sel = null_sel,  rs2=imm_sel
+	property LUI_a_rs1_mux;
+		((opcode_formal == LUI) 
+						|-> (rs1_mux_out == NULL));
+	endproperty
+
+	assert property(LUI_a_rs1_mux);
+
+	property LUI_b_rs2_mux;
+		((opcode_formal == LUI) |-> (rs2_mux_out == imm));
+	endproperty
+
+	assert property(LUI_b_rs2_mux);
+/////////////////////////////////////////////////////////////////////////JAL, JALR rs1_sel = pc, rs2_sel = imm, imm =4
+	property JAL_JALR_a_rs1_mux;
+		(((opcode_formal == JAL) || (opcode_formal == JALR))
+						|-> (rs1_mux_out == pc));
+	endproperty
+
+	assert property(JAL_JALR_a_rs1_mux);
+
+	property JAL_JALR_b_rs2_mux;
+		(((opcode_formal == JAL) || (opcode_formal == JALR))
+						|-> ((rs2_mux_out == imm) && (imm == 4)));
+	endproperty
+
+	assert property(JAL_JALR_b_rs2_mux);
+///////////////////////////////////////////////////////////////////
+	property AUIPC_a_rs1_mux;
+		((opcode_formal == AUIPC)
+						|-> (rs1_mux_out == pc));
+	endproperty
+
+	assert property(AUIPC_a_rs1_mux);
+
+	property AUIPC_b_rs2_mux;
+		((opcode_formal == AUIPC)
+						|-> (rs2_mux_out == imm));
+	endproperty
+
+	assert property(AUIPC_b_rs2_mux);
+////////////////////////////////////////////////////////////////////
+	property MEM_SYS_output_mux;
+		((opcode_formal == MEM) || (opcode_formal == SYS)) 
+						|->  ((rs1_mux_out == NULL) || (rs2_mux_out == NULL))
+	endproperty
+
+	assert property(MEM_SYS_output_mux);*/
 
 endmodule : ex_mux
