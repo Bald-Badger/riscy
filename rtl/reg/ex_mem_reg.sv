@@ -12,6 +12,7 @@ module ex_mem_reg (
 	input data_t	alu_result_in,
 	input data_t 	rs2_in,
 	input data_t	pc_p4_in,
+	input data_t	pc_nxt_in,
 	input logic		rd_wren_in,
 	input logic		instr_valid_in,
 
@@ -20,6 +21,7 @@ module ex_mem_reg (
 	output data_t	alu_result_out,
 	output data_t 	rs2_out,
 	output data_t	pc_p4_out,
+	output data_t	pc_nxt_out,
 	output logic	rd_wren_out,
 	output logic	instr_valid_out
 );
@@ -55,6 +57,15 @@ module ex_mem_reg (
 		.d		(pc_p4_in),
 		.q		(pc_p4_out)
 	);
+
+	dffe_wrap #(.WIDTH(XLEN)) pc_nxt_reg (
+		.clk	(clk),
+		.en		(en),
+		.rst_n	(rst_n),
+		.d		(flush ? 0 : pc_nxt_in),
+		.q		(pc_nxt_out)
+	);
+
 
 	dffe_wrap #(.WIDTH(1)) rd_wren_reg (
 		.clk	(clk),

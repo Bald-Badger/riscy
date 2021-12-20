@@ -5,6 +5,7 @@
 // synopsys translate_on
 
 import defines::*;
+`include "../formal/riscv-formal/checks/rvfi_macros.vh"
 
 module proc(
 	input	logic 			clk,			// clock from PLL, frequency is defines::FREQ
@@ -35,23 +36,30 @@ module proc(
 			sdram_init_done <= sdram_init_done_async;
 	end
 
+	logic init_done;
+	assign init_done = sdram_init_done;
+
 	// stage-specific common data wires
 	// signal naming shceme:
 	// e.g.		xxx_f => xxx signal in fetch stage
 	// e.g.		xxx_d => xxx signal in decode stafe
 	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
 	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
+	data_t		pc_nxt_d, pc_nxt_x, pc_nxt_m, pc_nxt_w; // for debug
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
+	opcode_t	opcode_f, opcode_d, opcode_x, opcode_m, opcode_w;
 	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
 	// synthesis translate_off
 	data_t		instr_raw;	// for debug
 	assign		instr_raw = data_t'(instr_f);
 	// synthesis translate_on
-	data_t 		rs1_d, rs1_x, rs1_m, rs2_d, rs2_x, rs2_m;	// data in register file #1
+	data_t 		rs1_d, rs1_x, rs1_m, rs1_w, rs2_d, rs2_x, rs2_m, rs2_w;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
 	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
-	data_t 		mem_data_m, mem_data_w;	// data load from memory
+	data_t 		mem_data_in_m, mem_data_in_w;	// data write to memory
+	data_t 		mem_data_out_m, mem_data_out_w;	// data read from memory
+	data_t		mem_addr_m, mem_addr_w;	// data access addr;
 	logic		branch_predict_f, branch_predict_d;	// branch perdictor output from fetch stage
 	logic		branch_taken_actual_d, branch_taken_actual_x;	// actual branch result from decode stagen
 	logic		branch_mispredict;
@@ -89,10 +97,13 @@ module proc(
 	data_t		mem_ex_fwd_data;	// fwd data from wb stage to exe stage
 	data_t		mem_mem_fwd_data;	// fwd data from wb stage to mem stage
 	always_comb begin : fwd_data_assign
-		ex_ex_fwd_data = (instr_m.opcode == LOAD) ? mem_data_m : alu_result_m;
+		ex_ex_fwd_data = (instr_m.opcode == LOAD) ? mem_data_out_m : alu_result_m;
 		mem_ex_fwd_data = wb_data;
 		mem_mem_fwd_data = wb_data;
 	end
+
+	// instruction order
+	data_t		instr_order;
 
 
 	// fetch stage	
@@ -106,7 +117,7 @@ module proc(
 		.pc_sel			(pc_sel),
 		.stall			(stall_pc),
 		.flush			(flush_pc),
-		.go				(sdram_init_done),
+		.go				(init_done),
 		.mispredict		(branch_mispredict),
 
 		// output
@@ -124,7 +135,7 @@ module proc(
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.flush			(flush_if_id),
-		.en				((!stall_if_id) && sdram_init_done),
+		.en				((!stall_if_id) && init_done),
 
 		// input
 		.pc_p4_in		(pcp4_f),
@@ -156,6 +167,7 @@ module proc(
 
 		// input
 		.pc				(pc_d),
+		.pc_nxt			(pc_nxt_d),
 		.instr			(instr_d),
 		.wd				(wb_data),
 		.waddr			(rd_addr),
@@ -163,8 +175,8 @@ module proc(
 		
 		// for branch forwarding
 		.ex_data		(alu_result_x),
-		.mem_data		((instr_m.opcode == LOAD) ? mem_data_m : alu_result_m),
-		.wb_data		((instr_w.opcode == LOAD) ? mem_data_w : alu_result_w),
+		.mem_data		((instr_m.opcode == LOAD) ? mem_data_out_m : alu_result_m),
+		.wb_data		((instr_w.opcode == LOAD) ? mem_data_out_w : alu_result_w),
 		.fwd_rs1		(fwd_id_rs1),
 		.fwd_rs2		(fwd_id_rs2),
 
@@ -206,6 +218,7 @@ module proc(
 		.rs1_in				(rs1_d),
 		.rs2_in				(rs2_d_after_fwd),
 		.pc_in				(pc_d),
+		.pc_nxt_in			(pc_nxt_d),
 		.imm_in				(imm_d),
 		.pc_p4_in			(pcp4_d),
 		.branch_taken_in	(branch_taken_actual_d),
@@ -218,6 +231,7 @@ module proc(
 		.pc_out				(pc_x),
 		.imm_out			(imm_x),
 		.pc_p4_out			(pcp4_x),
+		.pc_nxt_out			(pc_nxt_x),
 		.branch_taken_out	(branch_taken_actual_x),
 		.instr_valid_out	(instr_valid_x)
 	);
@@ -265,6 +279,7 @@ module proc(
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
 		.pc_p4_in		(pcp4_x),
+		.pc_nxt_in		(pc_nxt_x),
 		.rd_wren_in		(rd_wren_x),
 		.instr_valid_in	(instr_valid_x),
 
@@ -273,6 +288,7 @@ module proc(
 		.alu_result_out	(alu_result_m),
 		.rs2_out		(rs2_m),
 		.pc_p4_out		(pcp4_m),
+		.pc_nxt_out		(pc_nxt_m),
 		.rd_wren_out	(rd_wren_m),
 		.instr_valid_out(instr_valid_m)
 	);
@@ -292,9 +308,10 @@ module proc(
 		.instr				(instr_m),
 		
 		// output
-		.data_out			(mem_data_m),
+		.data_out			(mem_data_out_m),
 		.sdram_init_done	(sdram_init_done_async),
 		.done				(mem_access_done),
+		.data_in_final		(mem_data_in_m),
 
 		// SDRAM hardware pins
 		.sdram_clk			(sdram_clk), 
@@ -310,32 +327,39 @@ module proc(
 	);
 
 
+	assign mem_addr_m = alu_result_m;
 	// memory-write-back stage reg
 	mem_wb_reg mem_wb_reg_inst (
 		// common
-		.clk			(clk),
-		.rst_n			(rst_n),
-		.flush			(flush_mem_wb),
-		.en				(!stall_mem_wb),
+		.clk				(clk),
+		.rst_n				(rst_n),
+		.flush				(flush_mem_wb),
+		.en					(!stall_mem_wb),
 
 		// input
-		.instr_in		(
+		.instr_in			(
 			stall_ex_mem ? NOP :
 			flush_ex_mem ? NOP : instr_m 
 		),
-		.alu_result_in	(alu_result_m),
-		.mem_data_in	(mem_data_m),
-		.pc_p4_in		(pcp4_m),
-		.rd_wren_in		(rd_wren_m),
-		.instr_valid_in	(instr_valid_m),
+		.alu_result_in		(alu_result_m),
+		.mem_data_in_in		(mem_data_in_m),
+		.mem_data_out_in	(mem_data_out_m),
+		.pc_p4_in			(pcp4_m),
+		.pc_nxt_in			(pc_nxt_m),
+		.rd_wren_in			(rd_wren_m),
+		.instr_valid_in		(instr_valid_m),
+		.mem_addr_in		(mem_addr_m),	// for debug
 
 		// output
-		.instr_out		(instr_w),
-		.alu_result_out	(alu_result_w),
-		.mem_data_out	(mem_data_w),
-		.pc_p4_out		(pcp4_w),
-		.rd_wren_out	(rd_wren_w),
-		.instr_valid_out(instr_valid_w)
+		.instr_out			(instr_w),
+		.alu_result_out		(alu_result_w),
+		.mem_data_in_out	(mem_data_in_w),
+		.mem_data_out_out	(mem_data_out_w),
+		.pc_p4_out			(pcp4_w),
+		.pc_nxt_out			(pc_nxt_w),
+		.rd_wren_out		(rd_wren_w),
+		.instr_valid_out	(instr_valid_w),
+		.mem_addr_out		(mem_addr_w)
 	);
 
 
@@ -344,7 +368,7 @@ module proc(
 		// input
 		.instr		(instr_w),
 		.alu_result	(alu_result_w),
-		.mem_data	(mem_data_w),
+		.mem_data	(mem_data_out_w),
 		.pc_p4		(pcp4_w),
 
 		// output
@@ -402,6 +426,163 @@ module proc(
 // TODO: resume pipeline after ebreak return
 always_comb begin : ebreak_assign
 	ebreak_start = instr_w.opcode == SYS;
+end
+
+always_comb begin
+	opcode_f = instr_f.opcode;
+	opcode_d = instr_d.opcode;
+	opcode_x = instr_x.opcode;
+	opcode_m = instr_m.opcode;
+	opcode_w = instr_w.opcode;
+end
+
+
+//////////////////////// formal verification start /////////////////////////////
+
+//// RVFI interface ////
+logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_valid;		// valid instruction
+logic [`RISCV_FORMAL_NRET *                 64   - 1 : 0] rvfi_order;		// programmer's instruction order
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_ILEN   - 1 : 0] rvfi_insn;		// retired instruction word
+logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_trap;		// instruction cannot be decoded
+logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_halt;		// last instruction
+logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_intr;		// must be set for the first instruction that is part of a trap handler
+logic [`RISCV_FORMAL_NRET *                  2   - 1 : 0] rvfi_mode;		// 0=U-Mode, 1=S-Mode, 2=Reserved, 3=M-Mode
+logic [`RISCV_FORMAL_NRET *                  2   - 1 : 0] rvfi_ixl;			// 1=32, 2=64
+logic [`RISCV_FORMAL_NRET *                  5   - 1 : 0] rvfi_rs1_addr;	// rs1 addr for retired instr
+logic [`RISCV_FORMAL_NRET *                  5   - 1 : 0] rvfi_rs2_addr;	// rs2 addr for retired instr
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_rs1_rdata;	// value of rs1 right before retired instr
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_rs2_rdata;	// value of rs2 right before retired instr
+logic [`RISCV_FORMAL_NRET *                  5   - 1 : 0] rvfi_rd_addr;		// rd addr for retired instr
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_rd_wdata;	// value of rd right after retired instr
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_pc_rdata;	// address of the retired instruction
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_pc_wdata;	// address of the next instruction
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_addr;	// mem access addr
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN/8 - 1 : 0] rvfi_mem_rmask;	// which bytes in rvfi_mem_rdata contain valid read data from rvfi_mem_addr
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN/8 - 1 : 0] rvfi_mem_wmask;	// which bytes in rvfi_mem_wdata contain valid data that is written to rvfi_mem_addr
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_rdata;	// data being read by retired instruction
+logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_wdata;	// data being written by retired instruction
+///////////////////////
+
+//// legal instruction assertion ////
+logic instr_legal_f, instr_legal_d, instr_legal_x, instr_legal_m, instr_legal_w;
+
+// module credit: SymbioticEDA/riscv-formal, link available in git submodule
+riscv_rv32i_insn instr_legal_check_f (
+	.insn	(instr_f),
+	.valid	(instr_legal_f)
+);
+
+riscv_rv32i_insn instr_legal_check_d (
+	.insn	(instr_d),
+	.valid	(instr_legal_d)
+);
+
+riscv_rv32i_insn instr_legal_check_x (
+	.insn	(instr_x),
+	.valid	(instr_legal_x)
+);
+
+riscv_rv32i_insn instr_legal_check_m (
+	.insn	(instr_m),
+	.valid	(instr_legal_m)
+);
+
+riscv_rv32i_insn instr_legal_check_w (
+	.insn	(instr_w),
+	.valid	(instr_legal_w)
+);
+
+property instr_f_legal_property;
+	@(posedge clk) (~instr_valid_f || ~init_done || instr_legal_f || opcode_f == SYS)
+endproperty
+
+property instr_d_legal_property;
+	@(posedge clk) (~instr_valid_d || ~init_done || instr_legal_d || opcode_d == SYS)
+endproperty
+
+property instr_x_legal_property;
+	@(posedge clk) (~instr_valid_x || ~init_done || instr_legal_x || opcode_x == SYS)
+endproperty
+
+property instr_m_legal_property;
+	@(posedge clk) (~instr_valid_m || ~init_done || instr_legal_m || opcode_m == SYS)
+endproperty
+
+property instr_w_legal_property;
+	@(posedge clk) (~instr_valid_w || ~init_done || instr_legal_w || opcode_w == SYS)
+endproperty
+
+// assume all fetched instruction are legal;
+assume property (instr_f_legal_property);
+
+assert property (instr_f_legal_property)
+	else $warning("instr_f_legal_property failed at %t",$time());
+
+assert property (instr_d_legal_property)
+	else $warning("instr_d_legal_property failed at %t",$time());
+
+assert property (instr_x_legal_property)
+	else $warning("instr_x_legal_property failed at %t",$time());
+
+assert property (instr_m_legal_property)
+	else $warning("instr_m_legal_property failed at %t",$time());
+
+assert property (instr_w_legal_property)
+	else $warning("instr_w_legal_property failed at %t",$time());
+/////////////////////////////////////
+
+always_ff @(posedge clk or negedge rst_n) begin
+	if (~rst_n) begin
+		instr_order <= NULL;
+	end else if (instr_legal_w && instr_w != NOP && ~stall_mem_wb) begin
+		instr_order <= instr_order + 1;
+	end else begin
+		instr_order <= instr_order;
+	end
+end
+
+always_comb begin : RVFI_ASSIGN
+	rvfi_valid		= instr_valid_w && (instr_w != NOP) && (instr_w != NULL);
+
+	rvfi_order		= instr_order;
+
+	rvfi_insn		= data_t'(instr_w);
+
+	rvfi_trap		= (~instr_legal_w) && instr_w != NOP;
+
+	rvfi_halt		= instr_w.opcode == SYS;
+
+	rvfi_intr		= DISABLE;
+
+	rvfi_mode		= 2'b11;	// M mode
+
+	rvfi_ixl		= 2'b1;		// 32 bit arch
+
+	rvfi_rs1_addr	= instr_w.rs1;
+
+	rvfi_rs2_addr	= instr_w.rs2;
+
+	rvfi_rs1_rdata	= decode_inst.registers_inst.reg_bypass_inst.registers[rvfi_rs1_addr];
+
+	rvfi_rs2_rdata	= decode_inst.registers_inst.reg_bypass_inst.registers[rvfi_rs2_addr];
+
+	rvfi_rd_addr	= (rd_wren_w) ? instr_w.rd : 5'b0;
+
+	rvfi_rd_wdata	= (rd_wren_w) ? wb_data : NULL;
+
+	rvfi_pc_rdata	= pcp4_w - 32'd4;
+
+	rvfi_pc_wdata	= pc_nxt_w;		// prob
+
+	rvfi_mem_addr	= mem_addr_w;	// prob
+
+	rvfi_mem_rmask	= 4'b1111;
+
+	rvfi_mem_wmask	= 4'b1111;
+
+	rvfi_mem_rdata	= mem_data_in_w;
+
+	rvfi_mem_wdata	= mem_data_out_w;
 end
 
 endmodule : proc

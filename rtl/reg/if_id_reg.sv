@@ -58,7 +58,7 @@ module if_id_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
-		.d		(instr_valid_in),
+		.d		(flush ? INVALID : instr_valid_in),
 		.q		(instr_valid_out)
 	);
 

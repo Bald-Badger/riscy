@@ -14,6 +14,7 @@ module pc_adder (
 	input	id_fwd_sel_t	fwd_rs2,
 
 	output	data_t			pc_bj,
+	output	data_t			pc_nxt,
 	output	logic			pc_sel,
 	output	logic			branch_taken
 );
@@ -100,5 +101,7 @@ module pc_adder (
 					(opcode == JAL)		? 1'b1 :
 					(opcode == JALR)	? 1'b1 :
 					1'b0;
+	
+	assign pc_nxt = (pc_sel) ? pc_bj : pc + 32'd4;
 
 endmodule : pc_adder
