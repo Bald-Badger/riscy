@@ -1,7 +1,6 @@
 `timescale 1 ps / 1 ps
-
-import defines::*;
 `include "../../formal/riscv-formal/checks/rvfi_macros.vh"
+import defines::*;
 
 module formal_tb (
 	input logic clk,
@@ -82,7 +81,8 @@ logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_wdata;	// dat
 
 always_comb begin : RVFI_interface_assign
 	rvfi_valid		=	proc_dut.processor_inst.rvfi_valid;
-	rvfi_order		=	proc_dut.processor_inst.rvfi_order;
+	rvfi_order = 64'b1;
+	//rvfi_order		=	proc_dut.processor_inst.rvfi_order;
 	rvfi_insn		=	proc_dut.processor_inst.rvfi_insn;
 	rvfi_trap		=	proc_dut.processor_inst.rvfi_trap;
 	rvfi_halt		=	proc_dut.processor_inst.rvfi_halt;
@@ -230,7 +230,6 @@ rvfi_unique_check rvfi_unique_check_inst (
 
 
 
-/*
 rvfi_reg_check rvfi_reg_check_inst (
 	.clock			(clk),
 	.reset			(~rst_n),
@@ -258,10 +257,9 @@ rvfi_reg_check rvfi_reg_check_inst (
 	.rvfi_mem_rdata	(rvfi_mem_rdata),
 	.rvfi_mem_wdata	(rvfi_mem_wdata)
 );
-*/
 
 
-/*
+
 rvfi_dmem_check rvfi_dmem_check_inst (
 	.clock			(clk),
 	.reset			(~rst_n),
@@ -289,9 +287,8 @@ rvfi_dmem_check rvfi_dmem_check_inst (
 	.rvfi_mem_rdata	(rvfi_mem_rdata),
 	.rvfi_mem_wdata	(rvfi_mem_wdata)
 );
-*/
 
-/*
+
 rvfi_hang_check rvfi_hang_check_inst (
 	.clock			(clk),
 	.reset			(~rst_n),
@@ -320,10 +317,8 @@ rvfi_hang_check rvfi_hang_check_inst (
 	.rvfi_mem_rdata	(rvfi_mem_rdata),
 	.rvfi_mem_wdata	(rvfi_mem_wdata)
 );
-*/
 
 
-/*
 rvfi_liveness_check rvfi_liveness_check_inst (
 	.clock			(clk),
 	.reset			(~rst_n),
@@ -352,9 +347,8 @@ rvfi_liveness_check rvfi_liveness_check_inst (
 	.rvfi_mem_rdata	(rvfi_mem_rdata),
 	.rvfi_mem_wdata	(rvfi_mem_wdata)
 );
-*/
 
-/*
+
 rvfi_imem_check rvfi_imem_check_inst (
 	.clock			(clk),
 	.reset			(~rst_n),
@@ -382,9 +376,8 @@ rvfi_imem_check rvfi_imem_check_inst (
 	.rvfi_mem_rdata	(rvfi_mem_rdata),
 	.rvfi_mem_wdata	(rvfi_mem_wdata)
 );
-*/
 
-/*
+
 rvfi_ill_check rvfi_ill_check_inst (
 	.clock			(clk),
 	.reset			(~rst_n),
@@ -412,7 +405,7 @@ rvfi_ill_check rvfi_ill_check_inst (
 	.rvfi_mem_rdata	(rvfi_mem_rdata),
 	.rvfi_mem_wdata	(rvfi_mem_wdata)
 );
-*/
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
