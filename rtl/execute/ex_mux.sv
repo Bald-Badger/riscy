@@ -382,32 +382,4 @@ module ex_mux (
 		endcase
 	end
 
-////////////////////////////////////////////////////////////////////////R type rs1_sel = 2'b10, rs2_sel = 2'b10
-	/*
-
-/////////////////////////////////////////////////////////////////////////I type rs1_sel=2'b10, imm_sel = 2'b11
-	property I_STORE_LOAD_a_rs1_mux;
-		(((opcode_formal == I) || (opcode_formal == STORE) || (opcode_formal == LOAD)) 
-						|-> ((rs1_mux_out == rs1)));
-	endproperty
-
-	assert property(I_STORE_LOAD_a_rs1_mux); //make sure R-type rs1_mux_out is rs1.....
-
-	property I_STORE_LOAD_b_rs2_mux;
-		(((opcode_formal == R) || (opcode_formal == STORE) || (opcode_formal == LOAD))
-						|-> ((rs2_mux_out == imm)));
-	endproperty
-
-	assert property(I_STORE_LOAD_b_rs2_mux); // make sure R-type rs2_mux_out is rs2.....
-/////////////////////////////////////////////////////////////////////// LUI: rs1_sel = null_sel,  rs2=imm_sel
-/////////////////////////////////////////////////////////////////////////JAL, JALR rs1_sel = pc, rs2_sel = imm, imm =4
-////
-////////////////////////////////////////////////////////////////////
-	property MEM_SYS_output_mux;
-		((opcode_formal == MEM) || (opcode_formal == SYS)) 
-						|->  ((rs1_mux_out == NULL) || (rs2_mux_out == NULL))
-	endproperty
-
-	assert property(MEM_SYS_output_mux);*/
-
 endmodule : ex_mux
