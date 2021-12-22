@@ -83,7 +83,7 @@ module wb (
 			end
 
 			I: begin
-				I_type_wb: assert (wb_data == alu_result) begin
+				I_type_wb: assert ((wb_data == alu_result) || (instr == NOP)) begin
 					$display("WB: I-type pass");
 				end else begin
 					$display("WB: I-type doesn't pass, wb_data is %d, alu_result is %d", wb_data, alu_result);

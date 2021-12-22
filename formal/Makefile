@@ -105,6 +105,8 @@ compile:
 	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_imem_check.sv
 	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_ill_check.sv
 
+	$(VLOG)  -sv ../formal/riscv-formal/monitor/riscy_monitor.sv
+
 ###### Run Formal Analysis #####################################################
 formal:
 	qverify -c -od Output_Results -do "\

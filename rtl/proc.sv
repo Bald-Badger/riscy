@@ -531,6 +531,35 @@ assert property (instr_w_legal_property)
 	else $warning("instr_w_legal_property failed at %t",$time());
 /////////////////////////////////////
 
+property stall_property_1;
+	@(posedge clk) (stall_if_id |-> stall_pc)
+endproperty
+
+property stall_property_2;
+	@(posedge clk) (stall_id_ex |-> stall_if_id)
+endproperty
+
+property stall_property_3;
+	@(posedge clk) (stall_ex_mem |-> stall_id_ex)
+endproperty
+
+property stall_property_4;
+	@(posedge clk) (stall_mem_wb |-> stall_ex_mem)
+endproperty
+
+assert property (stall_property_1)
+	else $warning("stall_property_1 failed at %t",$time());
+
+assert property (stall_property_2)
+	else $warning("stall_property_2 failed at %t",$time());
+
+assert property (stall_property_3)
+	else $warning("stall_property_3 failed at %t",$time());
+
+assert property (stall_property_4)
+	else $warning("stall_property_4 failed at %t",$time());
+
+
 always_ff @(posedge clk) begin
 	if (~rst_n) begin
 		instr_order <= NULL;
