@@ -531,7 +531,7 @@ assert property (instr_w_legal_property)
 	else $warning("instr_w_legal_property failed at %t",$time());
 /////////////////////////////////////
 
-always_ff @(posedge clk or negedge rst_n) begin
+always_ff @(posedge clk) begin
 	if (~rst_n) begin
 		instr_order <= NULL;
 	end else if (instr_legal_w && instr_w != NOP && ~stall_mem_wb) begin

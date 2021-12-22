@@ -1,5 +1,7 @@
 $default_clock clk
 $default_input_value 0
+rst_n = 1'b1
+##
 rst_n = 1'b0
 ##
 rst_n = 1'b1

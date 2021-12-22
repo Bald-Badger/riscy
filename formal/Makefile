@@ -47,6 +47,7 @@ compile:
 	$(VLOG) -sv  ../rtl/hazard_ctrl.sv
 
 	$(VLOG) -sv  ../rtl/base/dffe_wrap.sv
+	$(VLOG) -sv  ../rtl/base/rom.sv
 
 	$(VLOG) -sv  ../rtl/fetch/branch_predict.sv
 	$(VLOG) -sv  ../rtl/fetch/fetch.sv
@@ -91,8 +92,18 @@ compile:
 	$(VLOG) -sv  ../rtl/reg/ex_mem_reg.sv
 	$(VLOG) -sv  ../rtl/reg/mem_wb_reg.sv
 
-	$(VLOG)  ../formal/riscv-formal/tests/coverage/riscv_rv32i_insn.v
 	$(VLOG)  ../formal/riscv-formal/checks/rvfi_macros.vh
+	$(VLOG)  ../formal/riscv-formal/tests/coverage/riscv_rv32i_insn.v
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_causal_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_pc_fwd_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_pc_bwd_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_unique_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_reg_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_dmem_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_hang_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_liveness_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_imem_check.sv
+	$(VLOG)  -sv ../formal/riscv-formal/checks/rvfi_ill_check.sv
 
 ###### Run Formal Analysis #####################################################
 formal:
