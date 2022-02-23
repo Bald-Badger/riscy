@@ -326,9 +326,8 @@ axi_lite_interface axi0(
 
 initial begin : main
 	init();
-	single_w_r_test_1();
-	//smoke_test();
-	//rand_test();
+	smoke_test();
+	rand_test();
 	$stop();
 end
 
