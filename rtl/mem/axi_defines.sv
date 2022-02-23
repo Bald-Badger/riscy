@@ -10,6 +10,13 @@ typedef struct packed {
 	bit b2;	// 1 for Instruction access
 } awport_t;
 
+typedef enum logic[1:0] {
+	RESP_OKAY	= 2'b00,	// Normal access success
+	RESP_EXOKAY	= 2'b01,	// Exclusive access okay
+	RESP_SLVERR	= 2'b10,	// Slave error, rebel slave
+	RESP_DECERR	= 2'b11	// Decode error, rebel interconnect
+} RESP_t;
+
 // unprovileged, secure, data access
 localparam basic_awport = 3'b000;
 
