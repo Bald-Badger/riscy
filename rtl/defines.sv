@@ -30,6 +30,8 @@ package defines;
 	localparam	DISABLE			= 1'b0;
 	localparam	VALID			= 1'b1;
 	localparam	INVALID			= 1'b0;
+	localparam	READY			= 1'b1;
+	localparam	DONE			= 1'b1;
 
 
 //	debug log option

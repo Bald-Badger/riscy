@@ -48,13 +48,18 @@ module mem_sys_axil #(
 	logic	rst;
 	assign rst = ~rst_n;
 
+	logic rden, wren;
+	assign rden = rd && valid;
+	assign wren = wr && valid;
+
 	typedef enum logic[2:0] {
 		IDLE,
-		READ_INIT,
-		READ_RESP,
-		WRITE_ADDR,
-		WRITE_DATA,
-		WRITE_RESP
+		R_ADDR,
+		R_DATA,
+		W_ADDR,
+		W_DATA,
+		W_RESP,
+		BAD
 	} state_t;
 
 	state_t state, nxt_state;
@@ -64,6 +69,22 @@ module mem_sys_axil #(
 			state <= IDLE;
 		else
 			state <= nxt_state;
+	end
+
+	// five channels' handshake
+	logic read_addr_handshake, read_data_handshake;
+	logic write_addr_handshake, write_data_handshake, write_resp_handshake;
+	logic [1:0] read_handshake;
+	logic [2:0] write_handshake;
+
+	always_comb begin
+		read_addr_handshake = m_axil_arready && m_axil_arvalid && rden;
+		read_data_handshake = m_axil_rready && m_axil_rvalid && rden;
+		write_addr_handshake = m_axil_awready && m_axil_awvalid && wren;
+		write_data_handshake = m_axil_wready && m_axil_wvalid && wren;
+		write_resp_handshake = m_axil_bready && m_axil_bvalid && wren;
+		read_handshake = {read_addr_handshake, read_data_handshake};
+		write_handshake = {write_addr_handshake, write_data_handshake, write_resp_handshake};
 	end
 
 	always_comb begin
@@ -82,13 +103,13 @@ module mem_sys_axil #(
 		m_axil_wdata	= NULL;
 		m_axil_wstrb	= be;
 		m_axil_wvalid	= INVALID;
-		m_axil_bready	= VALID;
+		m_axil_bready	= READY;
 
 		// read
 		m_axil_araddr	= NULL;
 		m_axil_arprot	= basic_awport;
 		m_axil_arvalid	= INVALID;
-		m_axil_rready	= VALID;
+		m_axil_rready	= READY;
 
 		/*
 		input signals:
@@ -104,97 +125,156 @@ module mem_sys_axil #(
 		*/
 
 		unique case (state)
-			
 			IDLE: begin
-				if (valid && rd && ~m_axil_arready) begin
-					nxt_state = READ_INIT;
-					m_axil_araddr = addr;
-					m_axil_arvalid = VALID;
-					m_axil_rready	= VALID;
-				end else if (valid && rd && m_axil_arready) begin
-					nxt_state = READ_RESP;
-					m_axil_araddr = addr;
-					m_axil_arvalid = VALID;
-					m_axil_rready	= VALID;
-				end else if (valid && wr && ~m_axil_awready) begin
-					nxt_state = WRITE_ADDR;
+				if (rden) begin
+					m_axil_rready	= READY;
+					m_axil_araddr	= addr;
+					m_axil_arvalid	= VALID;
+					if (read_handshake == 2'b00) begin
+						nxt_state		= R_ADDR;
+						done			= 1'b0;
+						data_out		= NULL;
+					end else if (read_handshake == 2'b10) begin
+						nxt_state		= R_DATA;
+						done			= 1'b0;
+						data_out		= NULL;
+					end else if (read_handshake == 2'b11) begin
+						nxt_state		= IDLE;
+						done			= DONE;
+						data_out		= m_axil_rdata;
+					end else begin
+						nxt_state		= BAD;
+						done			= 1'b0;
+						data_out		= NULL;
+					end
+				end else if (wren) begin
 					m_axil_awaddr	= addr;
 					m_axil_awvalid	= VALID;
 					m_axil_wdata	= data_in;
 					m_axil_wvalid	= VALID;
-				end else if (valid && wr && m_axil_awready) begin
-					nxt_state = WRITE_DATA;
-					m_axil_awaddr	= addr;
-					m_axil_awvalid	= VALID;
-					m_axil_wdata	= data_in;
-					m_axil_wvalid	= VALID;
+					if (write_handshake == 3'b000) begin
+						nxt_state	= W_ADDR;
+						done		= 1'b0;
+					end else if (write_handshake == 3'b100) begin
+						nxt_state	= W_DATA;
+						done		= 1'b0;
+					end else if (write_handshake == 3'b110) begin
+						nxt_state	= W_RESP;
+						done		= 1'b0;
+					end else if (write_handshake == 3'b111) begin
+						nxt_state	= IDLE;
+						done		= DONE;
+					end else begin
+						nxt_state	= BAD;
+						done		= 1'b0;
+					end
 				end else begin
 					nxt_state = IDLE;
 				end
 			end
 
-			READ_INIT: begin
-				m_axil_araddr = addr;
-				m_axil_arvalid = VALID;
-				m_axil_rready = VALID;
-				if (m_axil_arready) begin
-					nxt_state = READ_RESP;
+			R_ADDR: begin
+				m_axil_rready	= READY;
+				m_axil_araddr	= addr;
+				m_axil_arvalid	= VALID;
+				if (read_handshake == 2'b00) begin
+					nxt_state	= R_ADDR;
+					done		= 1'b0;
+					data_out	= NULL;
+				end else if (read_handshake == 2'b10) begin
+					nxt_state	= R_DATA;
+					done		= 1'b0;
+					data_out	= NULL;
+				end else if (read_handshake == 2'b11) begin
+					nxt_state	= IDLE;
+					done		= DONE;
+					data_out	= m_axil_rdata;
 				end else begin
-					nxt_state = READ_INIT;
+					nxt_state	= BAD;
+					done		= 1'b0;
+					data_out	= NULL;
 				end
 			end
 
-			READ_RESP: begin
-				m_axil_rready = VALID;
-				if (m_axil_rvalid) begin
-					nxt_state = IDLE;
-					done = 1'b1;
-					data_out = m_axil_rdata;
+			R_DATA: begin
+				m_axil_rready = READY;
+				if (read_handshake == 2'b00) begin
+					nxt_state	= R_DATA;
+					done		= 1'b0;
+					data_out	= NULL;
+				end else if (read_handshake == 2'b01) begin
+					nxt_state	= IDLE;
+					done		= DONE;
+					data_out	= m_axil_rdata;
 				end else begin
-					nxt_state = READ_RESP;
-					done = 1'b0;
-					data_out = NULL;
+					nxt_state	= BAD;
+					done		= 1'b0;
+					data_out	= NULL;
 				end
 			end
 
-			WRITE_ADDR: begin
+			W_ADDR: begin
 				m_axil_awaddr	= addr;
 				m_axil_awvalid	= VALID;
 				m_axil_wdata	= data_in;
 				m_axil_wvalid	= VALID;
-				if (m_axil_awready && ~m_axil_wready) begin
-					nxt_state = 
-				end else if (~m_axil_awready && ~m_axil_wready) begin
-					nxt_state = 
+				if (write_handshake == 3'b000) begin
+					nxt_state	= W_ADDR;
+					done		= 1'b0;
+				end else if (write_handshake == 3'b100) begin
+					nxt_state	= W_DATA;
+					done		= 1'b0;
+				end else if (write_handshake == 3'b110) begin
+					nxt_state	= W_RESP;
+					done		= 1'b0;
+				end else if (write_handshake == 3'b111) begin
+					nxt_state	= IDLE;
+					done		= DONE;
 				end else begin
-
+					nxt_state	= BAD;
+					done		= 1'b0;
 				end
 			end
 
-			WRITE_DATA: begin
+			W_DATA: begin
 				m_axil_awaddr	= NULL;
 				m_axil_awvalid	= INVALID;
 				m_axil_wdata	= data_in;
 				m_axil_wvalid	= VALID;
-				if (m_axil_wready) begin
-					nxt_state = 
+				if (write_handshake == 3'b000) begin
+					nxt_state	= W_DATA;
+					done		= 1'b0;
+				end else if (write_handshake == 3'b010) begin
+					nxt_state	= W_RESP;
+					done		= 1'b0;
+				end else if (write_handshake == 3'b011) begin
+					nxt_state	= IDLE;
+					done		= DONE;
 				end else begin
-					nxt_state = 
+					nxt_state	= BAD;
+					done		= 1'b0;
 				end
 			end
 
-			WRITE_RESP: begin
+			W_RESP: begin
 				m_axil_awaddr	= NULL;
 				m_axil_awvalid	= INVALID;
 				m_axil_wdata	= NULL;
 				m_axil_wvalid	= INVALID;
-				if (m_axil_bvalid) begin
-					nxt_state = IDLE;
-					done = 1'b1;
+				if (write_handshake == 3'b000) begin
+					nxt_state	= W_RESP;
+					done		= 1'b0;
+				end else if (write_handshake == 3'b001) begin
+					nxt_state	= IDLE;
+					done		= DONE;
 				end else begin
-					nxt_state = WRITE_RESP;
-					done = 1'b0;
+					nxt_state	= BAD;
+					done		= 1'b0;
 				end
+			end
+
+			BAD: begin
+				nxt_state = BAD;
 			end
 
 			default: begin
