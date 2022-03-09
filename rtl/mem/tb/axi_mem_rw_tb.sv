@@ -320,8 +320,8 @@ task rand_test();
 endtask
 
 axi_lite_interface axi0(
-	.m_axil_clk(clk),
-	.m_axil_rst(~rst_n)
+	.clk(clk),
+	.rst(~rst_n)
 );
 
 initial begin : main

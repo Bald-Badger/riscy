@@ -32,6 +32,8 @@ package defines;
 	localparam	INVALID			= 1'b0;
 	localparam	READY			= 1'b1;
 	localparam	DONE			= 1'b1;
+	localparam	SET				= 1'b1;
+	localparam	CLEAR			= 1'b0;
 
 
 //	debug log option

@@ -11,8 +11,6 @@ import mem_defines::*;
 
 module memory (
 	input	logic			clk,
-	input	logic			clk_100m,
-	input	logic			clk_100m_shift,
 	input	logic			rst_n,
 	input	data_t			addr,
 	input	data_t			data_in_raw,
@@ -25,17 +23,29 @@ module memory (
 	output	logic			sdram_init_done,
 	output	logic			done,
 
-	// SDRAM hardware pins
-	output	logic			sdram_clk, 
-	output	logic			sdram_cke,
-	output	logic			sdram_cs_n,   
-	output	logic			sdram_ras_n,
-	output	logic			sdram_cas_n,
-	output	logic        	sdram_we_n,
-	output	logic	[ 1:0]	sdram_ba,
-	output	logic	[12:0]	sdram_addr,
-	inout	wire	[15:0]	sdram_data,
-	output	logic	[ 1:0]	sdram_dqm
+	// AXI Lite bus
+	output	logic 					m_axil_clk,		// bus clock
+	output	logic 					m_axil_rst,		// bus reset, active high
+	output	logic [XLEN-1:0]		m_axil_awaddr,	// Write address
+	output	logic [2:0]				m_axil_awprot,	// Write protection level, see axi_defines.sv
+	output	logic					m_axil_awvalid,	// Write address valid, signaling valid write address and control information.
+	input	logic					m_axil_awready,	// Write address ready (from slave), ready to accept an address and associated control signals
+	output	logic [XLEN-1:0]		m_axil_wdata,	// Write data
+	output	logic [XLEN/8-1:0]		m_axil_wstrb,	// Write data strobe (byte select)
+	output	logic					m_axil_wvalid,	// Write data valid, write data and strobes are available
+	input	logic					m_axil_wready,	// Write data ready, slave can accept the write data
+	input	logic [1:0]				m_axil_bresp,	// Write response (from slave)
+	input	logic					m_axil_bvalid,	// Write response valid, signaling a valid write response
+	output	logic					m_axil_bready,	// Write response ready (from master) can accept a write response
+	output	logic [XLEN-1:0]		m_axil_araddr,	// Read address
+	output	logic [2:0]				m_axil_arprot,	// Read protection level, see axi_defines.sv
+	output	logic					m_axil_arvalid,	// Read address valid,  signaling valid read address and control information
+	input	logic					m_axil_arready,	// Read address ready (from slave), ready to accept an address and associated control signals
+	input	logic [XLEN-1:0]		m_axil_rdata,	// Read data
+	input	logic [1:0]				m_axil_rresp,	// Read response (from slave)
+	input	logic					m_axil_rvalid,	// Read response valid, the channel is signaling the required read data
+	output	logic					m_axil_rready	// Read response ready (from master), can accept the read data and response information
+	// end AXI Lite bus
 );
 
 	// control signals
@@ -70,6 +80,7 @@ module memory (
 		is_ld		=	opcode == LOAD;
 		is_st		=	opcode == STORE;
 		valid		=	wren || rden;
+		sdram_init_done = DONE;
 	end
 
 
@@ -375,35 +386,46 @@ module memory (
 		.success		(sc_success)
 	);
 
-	
-	mem_sys memory_system (
-		.clk_50m		(clk),
-		.clk_100m		(clk_100m),
-		.clk_100m_shift	(clk_100m_shift),
+	axi_lite_interface axi0(
+	.m_axil_clk(clk),
+	.m_axil_rst(~rst_n)
+	);
+
+	mem_sys_axil memory_system (
+		.clk			(clk),
 		.rst_n			(rst_n),
 
 		.addr			(addr),
 		.data_in		(data_in_final),
 		.wr				(wren),
 		.rd				(rden),
-		.valid			(valid),	// TODO: add Atomic support
+		.valid			(valid),
 		.be				(be),
 		
 		.data_out		(data_out_mem),
 		.done			(mem_access_done),
-		.sdram_init_done(sdram_init_done),
 
-		// SDRAM hardware pins
-		.sdram_clk		(sdram_clk), 
-		.sdram_cke		(sdram_cke),
-		.sdram_cs_n		(sdram_cs_n),
-		.sdram_ras_n	(sdram_ras_n),
-		.sdram_cas_n	(sdram_cas_n),
-		.sdram_we_n		(sdram_we_n),
-		.sdram_ba		(sdram_ba),
-		.sdram_addr		(sdram_addr),
-		.sdram_data		(sdram_data),
-		.sdram_dqm		(sdram_dqm)
+		.m_axil_clk 	(axi0.m_axil_clk),
+		.m_axil_rst		(axi0.m_axil_rst),
+		.m_axil_awaddr	(axi0.m_axil_awaddr),
+		.m_axil_awprot	(axi0.m_axil_awprot),
+		.m_axil_awvalid	(axi0.m_axil_awvalid),
+		.m_axil_awready	(axi0.m_axil_awready),
+		.m_axil_wdata	(axi0.m_axil_wdata),
+		.m_axil_wstrb	(axi0.m_axil_wstrb),
+		.m_axil_wvalid	(axi0.m_axil_wvalid),
+		.m_axil_wready	(axi0.m_axil_wready),
+		.m_axil_bresp	(axi0.m_axil_bresp),
+		.m_axil_bvalid	(axi0.m_axil_bvalid),
+		.m_axil_bready	(axi0.m_axil_bready),
+		.m_axil_araddr	(axi0.m_axil_araddr),
+		.m_axil_arprot	(axi0.m_axil_arprot),
+		.m_axil_arvalid	(axi0.m_axil_arvalid),
+		.m_axil_arready	(axi0.m_axil_arready),
+		.m_axil_rdata	(axi0.m_axil_rdata),
+		.m_axil_rresp	(axi0.m_axil_rresp),
+		.m_axil_rvalid	(axi0.m_axil_rvalid),
+		.m_axil_rready	(axi0.m_axil_rready)
 	);
 
 

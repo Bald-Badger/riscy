@@ -3,7 +3,6 @@
 import defines::*;
 import mem_defines::*;
 import axi_defines::*;
-`include "./axi_lite_interface.sv";
 
 module mem_sys_axil #(
 	parameter WIDTH = XLEN
@@ -43,6 +42,7 @@ module mem_sys_axil #(
 	input	logic [1:0]				m_axil_rresp,	// Read response (from slave)
 	input	logic					m_axil_rvalid,	// Read response valid, the channel is signaling the required read data
 	output	logic					m_axil_rready	// Read response ready (from master), can accept the read data and response information
+	// end AXI-Lite master interface
 );
 
 	logic	rst;
