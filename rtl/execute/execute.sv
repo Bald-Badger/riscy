@@ -78,6 +78,7 @@ module execute (
 		.mul_result_valid	(mul_result_valid)
 	);
 
+	/*
 	property mul_div_not_equal;
 		@(posedge clk) ((instr.opcode == R) && (instr.funct7 == M_INSTR)) |-> (div_result_valid && (~mul_result_valid))
 	endproperty 
@@ -86,15 +87,6 @@ module execute (
 	else begin
 		$display("property mul and div not match");
 	end;
-/////////////////////////////////////////////////////////////
-	/*property test;
-		@(posedge clk) (((instr.opcode == R) ) |-> (execute_busy == 0))
-	endproperty 
-
-	assume property (test)
-	else begin
-		$display("execute_busy is %d, instr_funct7 is %d " ,execute_busy, instr.funct7);
-	end;*/
 
 	property property_ex_busy;
 		@(posedge clk) ((instr.opcode !=R) |-> (execute_busy == 0))
@@ -104,7 +96,7 @@ module execute (
 	else begin
 		$display("property_ex_busy not match"); 
 	end;
-///////////////////////////////////////////////////////////
+
 	property property_ex_busy_div;
 		@(posedge clk) (((instr.opcode == R) && (instr.funct7 == M_INSTR) && (instr.funct3[2] == 1)) |->
 						##[0:11] (execute_busy == 1))
@@ -125,9 +117,6 @@ module execute (
 		$display("property_ex_busy_mul not match, execute_busy is %d", execute_busy);
 	end;
 
-
-
-
-
+	*/
 	
 endmodule : execute

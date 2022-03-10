@@ -7,12 +7,12 @@ module rom
 (
 	input			[(ADDR_WIDTH-1):0] addr,
 	input			clk, 
-    input			rden,
+	input			rden,
 	input			clken,
 	output	logic	[(DATA_WIDTH-1):0] q
 );
 
-    reg [(DATA_WIDTH-1):0] q_raw;
+	reg [(DATA_WIDTH-1):0] q_raw;
 
 	// Declare the ROM variable
 	reg [DATA_WIDTH-1:0] rom[0:2**ADDR_WIDTH-1];
@@ -24,12 +24,12 @@ module rom
 	// See Verilog LRM 1364-2001 Section 17.2.8 for details on the
 	// format of this file, or see the "Using $readmemb and $readmemh"
 	// template later in this section.
-    integer fp, i;
+	integer fp, i;
 	// synopsys translate_off
 	initial
 	begin
-        fp = $fopen("instr.bin","r");
-        i = $fread(rom, fp);
+		fp = $fopen("instr.bin","r");
+		i = $fread(rom, fp);
 	end
 	// synopsys translate_on
 
