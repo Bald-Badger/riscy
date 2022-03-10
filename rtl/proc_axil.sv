@@ -1,31 +1,19 @@
-// for cyclone IV, deprecated! use proc_axi
+// top module of the processor
 
 // synopsys translate_off
-`timescale 1 ps / 1 ps
+`timescale 1ns / 1ps
 // synopsys translate_on
 
 import defines::*;
-`include "../formal/riscv-formal/checks/rvfi_macros.vh"
+import axi_defines::*;
 
-module proc(
-	input	logic 			clk,			// clock from PLL, frequency is defines::FREQ
-	input	logic 			clk_100m,		// clock to SDRAM FIFO
-	input	logic 			clk_100m_shift,	// clock to SDRAM
-	input	logic 			rst_n,			// global reset
-	output	logic			ebreak_start,	// 3 cycles after ebreak instruction
-	
-	// SDRAM hardware pins, don't touch
-	output	logic			sdram_clk, 
-	output	logic			sdram_cke,
-	output	logic			sdram_cs_n,   
-	output	logic			sdram_ras_n,
-	output	logic			sdram_cas_n,
-	output	logic        	sdram_we_n,
-	output	logic	[ 1:0]	sdram_ba,
-	output	logic	[12:0]	sdram_addr,
-	inout	wire	[15:0]	sdram_data,
-	output	logic	[ 1:0]	sdram_dqm
-	// end don't touch
+module proc_axil (
+	input	logic 		clk,					// clock from PLL, frequency is defines::FREQ
+	input	logic 		rst_n,					// global reset
+	output	logic		ebreak_start,			// last instr retire after ebreak instruction
+
+	axi_lite_interface	data_bus,
+	axi_lite_interface	instr_bus				
 );
 	// sdram init done signal;
 	logic		sdram_init_done, sdram_init_done_async;
@@ -107,7 +95,7 @@ module proc(
 
 
 	// fetch stage	
-	fetch fetch_inst (
+	fetch_axil fetch_inst (
 		// general
 		.clk			(clk),
 		.rst_n			(rst_n),
@@ -118,14 +106,16 @@ module proc(
 		.stall			(stall_pc),
 		.flush			(flush_pc),
 		.go				(init_done),
-		.mispredict		(branch_mispredict),
+		.instr_w		(instr_w),
 
 		// output
 		.pc_p4_out		(pcp4_f),
 		.pc_out			(pc_f),
 		.instr			(instr_f),
 		.taken			(branch_predict_f),
-		.instr_valid	(instr_valid_f)
+		.instr_valid	(instr_valid_f),
+
+		.axil_bus		(instr_bus)
 	);
 
 
@@ -293,13 +283,10 @@ module proc(
 		.instr_valid_out(instr_valid_m)
 	);
 
-
 	// memory stage
 	memory memory_inst (
 		// input
 		.clk				(clk),
-		.clk_100m			(clk_100m),
-		.clk_100m_shift		(clk_100m_shift),
 		.rst_n				(rst_n),
 		.addr				(alu_result_m),
 		.data_in_raw		(rs2_m),
@@ -313,17 +300,7 @@ module proc(
 		.done				(mem_access_done),
 		.data_in_final		(mem_data_in_m),
 
-		// SDRAM hardware pins
-		.sdram_clk			(sdram_clk), 
-		.sdram_cke			(sdram_cke),
-		.sdram_cs_n			(sdram_cs_n),
-		.sdram_ras_n		(sdram_ras_n),
-		.sdram_cas_n		(sdram_cas_n),
-		.sdram_we_n			(sdram_we_n),
-		.sdram_ba			(sdram_ba),
-		.sdram_addr			(sdram_addr),
-		.sdram_data			(sdram_data),
-		.sdram_dqm			(sdram_dqm)
+		.axil_bus			(data_bus)
 	);
 
 
@@ -436,182 +413,4 @@ always_comb begin
 	opcode_w = instr_w.opcode;
 end
 
-
-//////////////////////// formal verification start /////////////////////////////
-
-//// RVFI interface ////
-logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_valid;		// valid instruction
-logic [`RISCV_FORMAL_NRET *                 64   - 1 : 0] rvfi_order;		// programmer's instruction order
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_ILEN   - 1 : 0] rvfi_insn;		// retired instruction word
-logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_trap;		// instruction cannot be decoded
-logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_halt;		// last instruction
-logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_intr;		// must be set for the first instruction that is part of a trap handler
-logic [`RISCV_FORMAL_NRET *                  2   - 1 : 0] rvfi_mode;		// 0=U-Mode, 1=S-Mode, 2=Reserved, 3=M-Mode
-logic [`RISCV_FORMAL_NRET *                  2   - 1 : 0] rvfi_ixl;			// 1=32, 2=64
-logic [`RISCV_FORMAL_NRET *                  5   - 1 : 0] rvfi_rs1_addr;	// rs1 addr for retired instr
-logic [`RISCV_FORMAL_NRET *                  5   - 1 : 0] rvfi_rs2_addr;	// rs2 addr for retired instr
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_rs1_rdata;	// value of rs1 right before retired instr
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_rs2_rdata;	// value of rs2 right before retired instr
-logic [`RISCV_FORMAL_NRET *                  5   - 1 : 0] rvfi_rd_addr;		// rd addr for retired instr
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_rd_wdata;	// value of rd right after retired instr
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_pc_rdata;	// address of the retired instruction
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_pc_wdata;	// address of the next instruction
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_addr;	// mem access addr
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN/8 - 1 : 0] rvfi_mem_rmask;	// which bytes in rvfi_mem_rdata contain valid read data from rvfi_mem_addr
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN/8 - 1 : 0] rvfi_mem_wmask;	// which bytes in rvfi_mem_wdata contain valid data that is written to rvfi_mem_addr
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_rdata;	// data being read by retired instruction
-logic [`RISCV_FORMAL_NRET * `RISCV_FORMAL_XLEN   - 1 : 0] rvfi_mem_wdata;	// data being written by retired instruction
-///////////////////////
-
-//// legal instruction assertion ////
-logic instr_legal_f, instr_legal_d, instr_legal_x, instr_legal_m, instr_legal_w;
-
-// module credit: SymbioticEDA/riscv-formal, link available in git submodule
-riscv_rv32i_insn instr_legal_check_f (
-	.insn	(instr_f),
-	.valid	(instr_legal_f)
-);
-
-riscv_rv32i_insn instr_legal_check_d (
-	.insn	(instr_d),
-	.valid	(instr_legal_d)
-);
-
-riscv_rv32i_insn instr_legal_check_x (
-	.insn	(instr_x),
-	.valid	(instr_legal_x)
-);
-
-riscv_rv32i_insn instr_legal_check_m (
-	.insn	(instr_m),
-	.valid	(instr_legal_m)
-);
-
-riscv_rv32i_insn instr_legal_check_w (
-	.insn	(instr_w),
-	.valid	(instr_legal_w)
-);
-
-property instr_f_legal_property;
-	@(posedge clk) (~instr_valid_f || ~init_done || instr_legal_f || opcode_f == SYS)
-endproperty
-
-property instr_d_legal_property;
-	@(posedge clk) (~instr_valid_d || ~init_done || instr_legal_d || opcode_d == SYS)
-endproperty
-
-property instr_x_legal_property;
-	@(posedge clk) (~instr_valid_x || ~init_done || instr_legal_x || opcode_x == SYS)
-endproperty
-
-property instr_m_legal_property;
-	@(posedge clk) (~instr_valid_m || ~init_done || instr_legal_m || opcode_m == SYS)
-endproperty
-
-property instr_w_legal_property;
-	@(posedge clk) (~instr_valid_w || ~init_done || instr_legal_w || opcode_w == SYS)
-endproperty
-
-// assume all fetched instruction are legal;
-assume property (instr_f_legal_property);
-
-assert property (instr_f_legal_property)
-	else $warning("instr_f_legal_property failed at %t",$time());
-
-assert property (instr_d_legal_property)
-	else $warning("instr_d_legal_property failed at %t",$time());
-
-assert property (instr_x_legal_property)
-	else $warning("instr_x_legal_property failed at %t",$time());
-
-assert property (instr_m_legal_property)
-	else $warning("instr_m_legal_property failed at %t",$time());
-
-assert property (instr_w_legal_property)
-	else $warning("instr_w_legal_property failed at %t",$time());
-/////////////////////////////////////
-
-property stall_property_1;
-	@(posedge clk) (stall_if_id |-> stall_pc)
-endproperty
-
-property stall_property_2;
-	@(posedge clk) (stall_id_ex |-> stall_if_id)
-endproperty
-
-property stall_property_3;
-	@(posedge clk) (stall_ex_mem |-> stall_id_ex)
-endproperty
-
-property stall_property_4;
-	@(posedge clk) (stall_mem_wb |-> stall_ex_mem)
-endproperty
-
-assert property (stall_property_1)
-	else $warning("stall_property_1 failed at %t",$time());
-
-assert property (stall_property_2)
-	else $warning("stall_property_2 failed at %t",$time());
-
-assert property (stall_property_3)
-	else $warning("stall_property_3 failed at %t",$time());
-
-assert property (stall_property_4)
-	else $warning("stall_property_4 failed at %t",$time());
-
-
-always_ff @(posedge clk) begin
-	if (~rst_n) begin
-		instr_order <= NULL;
-	end else if (instr_legal_w && instr_w != NOP && ~stall_mem_wb) begin
-		instr_order <= instr_order + 1;
-	end else begin
-		instr_order <= instr_order;
-	end
-end
-
-always_comb begin : RVFI_ASSIGN
-	rvfi_valid		= instr_valid_w && (instr_w != NOP) && (instr_w != NULL);
-
-	rvfi_order		= instr_order;
-
-	rvfi_insn		= data_t'(instr_w);
-
-	rvfi_trap		= (~instr_legal_w) && instr_w != NOP;
-
-	rvfi_halt		= instr_w.opcode == SYS;
-
-	rvfi_intr		= DISABLE;
-
-	rvfi_mode		= 2'b11;	// M mode
-
-	rvfi_ixl		= 2'b1;		// 32 bit arch
-
-	rvfi_rs1_addr	= instr_w.rs1;
-
-	rvfi_rs2_addr	= instr_w.rs2;
-
-	rvfi_rs1_rdata	= decode_inst.registers_inst.reg_bypass_inst.registers[rvfi_rs1_addr];
-
-	rvfi_rs2_rdata	= decode_inst.registers_inst.reg_bypass_inst.registers[rvfi_rs2_addr];
-
-	rvfi_rd_addr	= (rd_wren_w) ? instr_w.rd : 5'b0;
-
-	rvfi_rd_wdata	= (rd_wren_w) ? wb_data : NULL;
-
-	rvfi_pc_rdata	= pcp4_w - 32'd4;
-
-	rvfi_pc_wdata	= pc_nxt_w;		// prob
-
-	rvfi_mem_addr	= mem_addr_w;	// prob
-
-	rvfi_mem_rmask	= 4'b1111;
-
-	rvfi_mem_wmask	= 4'b1111;
-
-	rvfi_mem_rdata	= mem_data_in_w;
-
-	rvfi_mem_wdata	= mem_data_out_w;
-end
-
-endmodule : proc
+endmodule : proc_axil

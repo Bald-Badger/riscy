@@ -266,6 +266,7 @@ module hazard_ctrl (
 		branch_d = (instr_d.opcode == B) && branch_taken_d;
 		branch_x = (instr_x.opcode == B) && branch_taken_x;
 	end
+	
 
 	always_comb begin : flush_assign
 		flush_pc		= (jump_d || branch_d) && instr_valid_d;	// actually masks output

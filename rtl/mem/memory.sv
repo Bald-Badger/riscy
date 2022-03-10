@@ -2,17 +2,15 @@ import defines::*;
 import mem_defines::*;
 
 // synopsys translate_off
-`timescale 1 ps / 1 ps
+`timescale 1 ns / 1 ps
 // synopsys translate_on
 
 
-// TODO: add - save how toforward
+// TODO: add - save how to forward
 // addi x1, x1, 4; sb x1, 0(x1)
 
 module memory (
 	input	logic			clk,
-	input	logic			clk_100m,
-	input	logic			clk_100m_shift,
 	input	logic			rst_n,
 	input	data_t			addr,
 	input	data_t			data_in_raw,
@@ -25,17 +23,7 @@ module memory (
 	output	logic			sdram_init_done,
 	output	logic			done,
 
-	// SDRAM hardware pins
-	output	logic			sdram_clk, 
-	output	logic			sdram_cke,
-	output	logic			sdram_cs_n,   
-	output	logic			sdram_ras_n,
-	output	logic			sdram_cas_n,
-	output	logic        	sdram_we_n,
-	output	logic	[ 1:0]	sdram_ba,
-	output	logic	[12:0]	sdram_addr,
-	inout	wire	[15:0]	sdram_data,
-	output	logic	[ 1:0]	sdram_dqm
+	axi_lite_interface		axil_bus
 );
 
 	// control signals
@@ -70,6 +58,7 @@ module memory (
 		is_ld		=	opcode == LOAD;
 		is_st		=	opcode == STORE;
 		valid		=	wren || rden;
+		sdram_init_done = DONE;
 	end
 
 
@@ -375,35 +364,41 @@ module memory (
 		.success		(sc_success)
 	);
 
-	
-	mem_sys memory_system (
-		.clk_50m		(clk),
-		.clk_100m		(clk_100m),
-		.clk_100m_shift	(clk_100m_shift),
+	mem_sys_axil memory_system (
+		.clk			(clk),
 		.rst_n			(rst_n),
 
 		.addr			(addr),
 		.data_in		(data_in_final),
 		.wr				(wren),
 		.rd				(rden),
-		.valid			(valid),	// TODO: add Atomic support
+		.valid			(valid),
 		.be				(be),
 		
 		.data_out		(data_out_mem),
 		.done			(mem_access_done),
-		.sdram_init_done(sdram_init_done),
 
-		// SDRAM hardware pins
-		.sdram_clk		(sdram_clk), 
-		.sdram_cke		(sdram_cke),
-		.sdram_cs_n		(sdram_cs_n),
-		.sdram_ras_n	(sdram_ras_n),
-		.sdram_cas_n	(sdram_cas_n),
-		.sdram_we_n		(sdram_we_n),
-		.sdram_ba		(sdram_ba),
-		.sdram_addr		(sdram_addr),
-		.sdram_data		(sdram_data),
-		.sdram_dqm		(sdram_dqm)
+		.m_axil_clk 	(axil_bus.m_axil_clk),
+		.m_axil_rst		(axil_bus.m_axil_rst),
+		.m_axil_awaddr	(axil_bus.m_axil_awaddr),
+		.m_axil_awprot	(axil_bus.m_axil_awprot),
+		.m_axil_awvalid	(axil_bus.m_axil_awvalid),
+		.m_axil_awready	(axil_bus.m_axil_awready),
+		.m_axil_wdata	(axil_bus.m_axil_wdata),
+		.m_axil_wstrb	(axil_bus.m_axil_wstrb),
+		.m_axil_wvalid	(axil_bus.m_axil_wvalid),
+		.m_axil_wready	(axil_bus.m_axil_wready),
+		.m_axil_bresp	(axil_bus.m_axil_bresp),
+		.m_axil_bvalid	(axil_bus.m_axil_bvalid),
+		.m_axil_bready	(axil_bus.m_axil_bready),
+		.m_axil_araddr	(axil_bus.m_axil_araddr),
+		.m_axil_arprot	(axil_bus.m_axil_arprot),
+		.m_axil_arvalid	(axil_bus.m_axil_arvalid),
+		.m_axil_arready	(axil_bus.m_axil_arready),
+		.m_axil_rdata	(axil_bus.m_axil_rdata),
+		.m_axil_rresp	(axil_bus.m_axil_rresp),
+		.m_axil_rvalid	(axil_bus.m_axil_rvalid),
+		.m_axil_rready	(axil_bus.m_axil_rready)
 	);
 
 
