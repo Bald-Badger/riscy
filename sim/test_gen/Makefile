@@ -11,7 +11,7 @@
 # -lstdc++: enable c++ compile
 # -mbranch-cost=1: low branch cost, so hopefully disable instruction reorder
 # -mexplicit-relocs: use assembler relocation operators when dealing with symbolic addresses, hopefully reduce pseudo instruction
-CFLAGS = -Wall -O0 -mdiv -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32im -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
+CFLAGS = -Wall -O0 -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
 GCC = riscv64-unknown-elf-gcc
 OBJCOPY = riscv64-unknown-elf-objcopy
 OBJDUMP = riscv64-unknown-elf-objdump
@@ -48,11 +48,11 @@ mif: bin
 
 # extract elf header info from elf file
 header: elf
-	$(READELF) -h $(TARGET) >> $(TARGET).header
+	$(READELF) -h $(TARGET) > $(TARGET).header
 
 # extract section information from elf file
 section: elf
-	$(READELF) -S $(TARGET) >> $(TARGET).section
+	$(READELF) -S $(TARGET) > $(TARGET).section
 
 # extract the .text segment asm from elf
 text: elf

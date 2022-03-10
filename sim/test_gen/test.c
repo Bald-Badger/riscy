@@ -25,12 +25,12 @@ int main() {
 	}
 	
 	#ifdef TB
-	PASS:
-		__asm__("li a0, 42");
-		__asm__("li a7, 93");
-		__asm__("ecall");
 	FAIL:
 		__asm__("li a0, 0");
+		__asm__("li a7, 93");
+		__asm__("ecall");
+	PASS:
+		__asm__("li a0, 42");
 		__asm__("li a7, 93");
 		__asm__("ecall");
 	#else
