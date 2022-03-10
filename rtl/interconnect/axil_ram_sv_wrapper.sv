@@ -13,6 +13,8 @@ module axil_ram_sv_wrapper #
     // Extra pipeline register on output
     parameter PIPELINE_OUTPUT = 0
 ) (
+	input logic clk,
+	input logic rst,
 	axi_lite_interface axil_bus
 );
 
@@ -22,8 +24,8 @@ module axil_ram_sv_wrapper #
 		.STRB_WIDTH			(DATA_WIDTH/8),
 		.PIPELINE_OUTPUT	(PIPELINE_OUTPUT)
 	) axil_ram (
-		.clk				(axil_bus.s_axil_clk),
-		.rst				(axil_bus.s_axil_rst),
+		.clk				(clk),
+		.rst				(rst),
 		.s_axil_awaddr		(axil_bus.s_axil_awaddr),
 		.s_axil_awprot		(axil_bus.s_axil_awprot),
 		.s_axil_awvalid		(axil_bus.s_axil_awvalid),

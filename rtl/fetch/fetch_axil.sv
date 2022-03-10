@@ -48,7 +48,7 @@ module fetch_axil (
 	typedef struct packed {
 		data_t	instr;
 		data_t	pc;
-	}instr_queue_entry_t;
+	} instr_queue_entry_t;
 
 	logic [INSTR_QUE_ADDR_WIDTH:0] fifo_counter;
 	logic ecall, ecall_clear;

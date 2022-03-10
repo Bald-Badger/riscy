@@ -14,6 +14,17 @@ module dffe_wrap #(
 	output logic[WIDTH-1:0] q
 );
 
+dffe_wrap_unsyn # (
+	.WIDTH	(WIDTH)
+) dffe (
+	.clk	(clk),
+	.en		(en),
+	.rst_n	(rst_n),
+	.d		(d),
+	.q		(q)
+);
+
+/*
 genvar i;	// number of dffe
 
 generate
@@ -28,5 +39,5 @@ generate
 		);
 	end
 endgenerate
-
+*/
 endmodule : dffe_wrap

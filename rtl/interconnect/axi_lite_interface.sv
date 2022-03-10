@@ -70,8 +70,8 @@ interface axi_lite_interface # (
 	logic							s_axil_rready;
 
 
-	assign m_axil_clk		= clk;
-	assign m_axil_rst		= rst;
+	//assign m_axil_clk		= clk;
+	//assign m_axil_rst		= rst;
 
 	assign s_axil_clk		= m_axil_clk;
 	assign s_axil_rst		= m_axil_rst;

@@ -7,7 +7,7 @@
 import defines::*;
 import axi_defines::*;
 
-module proc(
+module proc_axil (
 	input	logic 		clk,					// clock from PLL, frequency is defines::FREQ
 	input	logic 		rst_n,					// global reset
 	output	logic		ebreak_start,			// last instr retire after ebreak instruction
@@ -413,4 +413,4 @@ always_comb begin
 	opcode_w = instr_w.opcode;
 end
 
-endmodule : proc
+endmodule : proc_axil

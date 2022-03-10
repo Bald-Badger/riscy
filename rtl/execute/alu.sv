@@ -109,6 +109,7 @@ module alu (
 	end
 
 
+/*
 	// TODO: use generate on flag M_SUPPORT
 	multiplier multiplierer (
 		.clk	(clk),
@@ -128,6 +129,12 @@ module alu (
 		.valid	(div_result_valid),
 		.c_out	(div_rem_result)
 	);
+*/
+
+	assign div_result_valid = INVALID;
+	assign mul_result_valid = INVALID;
+	assign mult_result = NULL;
+	assign div_rem_result = NULL;
 
 	// opcode = R, instr.funct7 = M_INSTR, div_instr&div_result_valid
 	// opcode = R, instr.funct7 = M_INSTR, mul_result_vaild&~div_instr
@@ -239,6 +246,8 @@ module alu (
 		endcase
 	end
 
+
+/*
 	opcode_t		opcode_formal;
 	funct3_t		funct3_formal;
 	shift_type_t	shift_type_formal;
@@ -559,6 +568,6 @@ module alu (
 		$display("B-type output value not match, time: %t", $time);
 		$display("c out is %d, formal is %d, rd_wr is %d", c_out, c_out_formal, rd_wr);
 	end
-
+*/
 	
 endmodule
