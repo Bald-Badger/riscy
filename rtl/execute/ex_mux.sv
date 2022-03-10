@@ -134,6 +134,7 @@ module ex_mux (
 	end
 
 
+/*
 	opcode_t		opcode_formal;
 
 	always_comb begin: formal
@@ -185,13 +186,6 @@ module ex_mux (
 		end
 	
 	end //automatic
-
-
-
-	/*
-	//RS_EX_SEL: 2'b00
-	//MEM_EX_SEL: 2'b01
-	//WB_EX_SEL: 2'b10 */
 
 	always_comb begin: opcode_rs1_mux_out_formal
 		case (opcode_formal)
@@ -286,9 +280,6 @@ module ex_mux (
 		endcase
 	end
 
-
-
-
 	always_comb begin: opcode_rs2_mux_out_formal
 		case (opcode_formal)
 			R: begin
@@ -381,5 +372,6 @@ module ex_mux (
 
 		endcase
 	end
+*/
 
 endmodule : ex_mux

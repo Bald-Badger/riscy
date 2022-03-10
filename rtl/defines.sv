@@ -63,7 +63,7 @@ package defines;
 		BINARY_BOOT,	// boot from a bin file generated from gcc
 		RARS_BOOT		// boot from a rars compiled mif file
 	} boot_type_t;
-	localparam	[1:0] BOOT_TYPE = RARS_BOOT;
+	localparam	[1:0] BOOT_TYPE = BINARY_BOOT;
 
 
 	// verification options

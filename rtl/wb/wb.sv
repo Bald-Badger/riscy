@@ -66,6 +66,7 @@ module wb (
 		endcase
 	end
 
+/*
 	opcode_t		opcode_formal;
 	//assert final ((instr.opcode == SYS) |->  (wb_data== NULL));
 	always_comb begin formal:
@@ -164,5 +165,6 @@ module wb (
 
 		endcase
 	end
+*/
 	
 endmodule : wb
