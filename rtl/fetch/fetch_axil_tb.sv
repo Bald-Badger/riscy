@@ -34,7 +34,7 @@ always #100 clk = ~clk;
 initial begin
 	pc_bj = 0;
 	pc_sel = 0;
-	stall = 0;
+	stall = 1;
 	flush = 0;
 	go = 0;
 	repeat(15) @ (posedge clk);

@@ -7,58 +7,13 @@
 import defines::*;
 import axi_defines::*;
 
-//`include "../formal/riscv-formal/checks/rvfi_macros.vh"
-
 module proc(
-	input	logic 					clk,					// clock from PLL, frequency is defines::FREQ
-	input	logic 					rst_n,					// global reset
-	output	logic					ebreak_start,			// last instr retire after ebreak instruction
-	
-	// instr AXI bus
-	output	logic [XLEN-1:0]		m_instr_axil_awaddr,	// Write address
-	output	logic [2:0]				m_instr_axil_awprot,	// Write protection level, see axi_defines.sv
-	output	logic					m_instr_axil_awvalid,	// Write address valid, signaling valid write address and control information.
-	input	logic					m_instr_axil_awready,	// Write address ready (from slave), ready to accept an address and associated control signals
-	output	logic [XLEN-1:0]		m_instr_axil_wdata,		// Write data
-	output	logic [XLEN/8-1:0]		m_instr_axil_wstrb,		// Write data strobe (byte select)
-	output	logic					m_instr_axil_wvalid,	// Write data valid, write data and strobes are available
-	input	logic					m_instr_axil_wready,	// Write data ready, slave can accept the write data
-	input	logic [1:0]				m_instr_axil_bresp,		// Write response (from slave)
-	input	logic					m_instr_axil_bvalid,	// Write response valid, signaling a valid write response
-	output	logic					m_instr_axil_bready,	// Write response ready (from master) can accept a write response
-	output	logic [XLEN-1:0]		m_instr_axil_araddr,	// Read address
-	output	logic [2:0]				m_instr_axil_arprot,	// Read protection level, see axi_defines.sv
-	output	logic					m_instr_axil_arvalid,	// Read address valid,  signaling valid read address and control information
-	input	logic					m_instr_axil_arready,	// Read address ready (from slave), ready to accept an address and associated control signals
-	input	logic [XLEN-1:0]		m_instr_axil_rdata,		// Read data
-	input	logic [1:0]				m_instr_axil_rresp,		// Read response (from slave)
-	input	logic					m_instr_axil_rvalid,	// Read response valid, the channel is signaling the required read data
-	output	logic					m_instr_axil_rready,	// Read response ready (from master), can accept the read data and response information
-	// end instr AXI bus
+	input	logic 		clk,					// clock from PLL, frequency is defines::FREQ
+	input	logic 		rst_n,					// global reset
+	output	logic		ebreak_start,			// last instr retire after ebreak instruction
 
-	// data AXI bus
-	output	logic 					m_data_axil_clk,		// bus clock
-	output	logic 					m_data_axil_rst,		// bus reset, active high
-	output	logic [XLEN-1:0]		m_data_axil_awaddr,		// Write address
-	output	logic [2:0]				m_data_axil_awprot,		// Write protection level, see axi_defines.sv
-	output	logic					m_data_axil_awvalid,	// Write address valid, signaling valid write address and control information.
-	input	logic					m_data_axil_awready,	// Write address ready (from slave), ready to accept an address and associated control signals
-	output	logic [XLEN-1:0]		m_data_axil_wdata,		// Write data
-	output	logic [XLEN/8-1:0]		m_data_axil_wstrb,		// Write data strobe (byte select)
-	output	logic					m_data_axil_wvalid,		// Write data valid, write data and strobes are available
-	input	logic					m_data_axil_wready,		// Write data ready, slave can accept the write data
-	input	logic [1:0]				m_data_axil_bresp,		// Write response (from slave)
-	input	logic					m_data_axil_bvalid,		// Write response valid, signaling a valid write response
-	output	logic					m_data_axil_bready,		// Write response ready (from master) can accept a write response
-	output	logic [XLEN-1:0]		m_data_axil_araddr,		// Read address
-	output	logic [2:0]				m_data_axil_arprot,		// Read protection level, see axi_defines.sv
-	output	logic					m_data_axil_arvalid,	// Read address valid,  signaling valid read address and control information
-	input	logic					m_data_axil_arready,	// Read address ready (from slave), ready to accept an address and associated control signals
-	input	logic [XLEN-1:0]		m_data_axil_rdata,		// Read data
-	input	logic [1:0]				m_data_axil_rresp,		// Read response (from slave)
-	input	logic					m_data_axil_rvalid,		// Read response valid, the channel is signaling the required read data
-	output	logic					m_data_axil_rready		// Read response ready (from master), can accept the read data and response information
-	// data AXI bus
+	axi_lite_interface	data_bus,
+	axi_lite_interface	instr_bus				
 );
 	// sdram init done signal;
 	logic		sdram_init_done, sdram_init_done_async;
@@ -140,7 +95,7 @@ module proc(
 
 
 	// fetch stage	
-	fetch fetch_inst (
+	fetch_axil fetch_inst (
 		// general
 		.clk			(clk),
 		.rst_n			(rst_n),
@@ -151,14 +106,16 @@ module proc(
 		.stall			(stall_pc),
 		.flush			(flush_pc),
 		.go				(init_done),
-		.mispredict		(branch_mispredict),
+		.instr_w		(instr_w),
 
 		// output
 		.pc_p4_out		(pcp4_f),
 		.pc_out			(pc_f),
 		.instr			(instr_f),
 		.taken			(branch_predict_f),
-		.instr_valid	(instr_valid_f)
+		.instr_valid	(instr_valid_f),
+
+		.axil_bus		(instr_bus)
 	);
 
 
@@ -343,29 +300,7 @@ module proc(
 		.done				(mem_access_done),
 		.data_in_final		(mem_data_in_m),
 
-		// AXI Lite data bus
-		.m_axil_clk 		(m_data_axil_clk),
-		.m_axil_rst			(m_data_axil_rst),
-		.m_axil_awaddr		(m_data_axil_awaddr),
-		.m_axil_awprot		(m_data_axil_awprot),
-		.m_axil_awvalid		(m_data_axil_awvalid),
-		.m_axil_awready		(m_data_axil_awready),
-		.m_axil_wdata		(m_data_axil_wdata),
-		.m_axil_wstrb		(m_data_axil_wstrb),
-		.m_axil_wvalid		(m_data_axil_wvalid),
-		.m_axil_wready		(m_data_axil_wready),
-		.m_axil_bresp		(m_data_axil_bresp),
-		.m_axil_bvalid		(m_data_axil_bvalid),
-		.m_axil_bready		(m_data_axil_bready),
-		.m_axil_araddr		(m_data_axil_araddr),
-		.m_axil_arprot		(m_data_axil_arprot),
-		.m_axil_arvalid		(m_data_axil_arvalid),
-		.m_axil_arready		(m_data_axil_arready),
-		.m_axil_rdata		(m_data_axil_rdata),
-		.m_axil_rresp		(m_data_axil_rresp),
-		.m_axil_rvalid		(m_data_axil_rvalid),
-		.m_axil_rready		(m_data_axil_rready)
-		// end AXI lite data bus
+		.axil_bus			(data_bus)
 	);
 
 
