@@ -86,12 +86,12 @@ module fetch_axil (
 	initial begin
 		if (BOOT_TYPE == BINARY_BOOT) begin
 			$readmemh("boot.cfg", boot_pc);
-			$display("REF: boot mode: binary");
-			$display("REF: booting from pc = %h", boot_pc[0]);
+			$display("DUT: boot mode: binary");
+			$display("DUT: booting from pc = %h", boot_pc[0]);
 		end else if (BOOT_TYPE == RARS_BOOT) begin
 			boot_pc[0] = 32'b0;
-			$display("REF: boot mode: RARS");
-			$display("REF: booting from pc = %h", 0);
+			$display("DUT: boot mode: RARS");
+			$display("DUT: booting from pc = %h", 0);
 		end
 	end
 // synopsys translate_on
