@@ -1,20 +1,16 @@
-#include "test.h"
+#include "./test.h"
 #include <stdint.h>
 
-int32_t arr[10] = {0,1,2,3,4,5,6,7,8,9};
+// int32_t arr[10] = {0,1,2,3,4,5,6,7,8,9};
 
 int main() {
-	int x;
-	int z;
-	int answer = 45;
+	int x = 10;
+	int y = 0;
+	int answer = 55;
 
+	y = foo(x);
 	
-	for (x = 0; x < 10; x++) {
-		z += arr[x];
-	}
-
-
-	if (z == answer) {
+	if (y == answer) {
 		#ifdef TB
 			goto PASS;
 		#endif
@@ -34,7 +30,7 @@ int main() {
 		__asm__("li a7, 93");
 		__asm__("ecall");
 	#else
-	printf("answer is %d\n", z);
+	printf("answer is %d\n", y);
 	return 0;
 	#endif /* TB */
 }
