@@ -3,8 +3,8 @@
 import defines::*;
 
 module reference_test_axil ();
-	localparam REG_DEBUG = ENABLE;
-	localparam MEM_DEBUG = ENABLE;
+	localparam REG_DEBUG = DISABLE;
+	localparam MEM_DEBUG = DISABLE;
 	
 	integer error;
 	int fd;
