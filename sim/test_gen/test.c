@@ -1,12 +1,13 @@
 #include "./test.h"
 #include <stdint.h>
+#include <stdio.h>
 
 // int32_t arr[10] = {0,1,2,3,4,5,6,7,8,9};
 
 int main() {
-	int x = 10;
+	int x = 2;
 	int y = 0;
-	int answer = 55;
+	int answer = 2;
 
 	y = foo(x);
 	
