@@ -476,6 +476,40 @@ module reference_test_axil ();
 		
 	end
 
+
+	logic answer_match;
+	initial begin
+		answer_match = 1;
+		fork
+
+			// wait both REF and DUT finish
+			begin
+				wait(ref_halt && ebreak_start);
+				repeat(10) @(posedge clk);
+			end
+
+			// wait for timeout
+			begin
+				repeat(TB_TIMEOUT) @(posedge clk);
+				$display("TB timeout!");
+				$stop();
+			end
+		join_any
+		disable fork;	// disable the fork wither both core finish running or timeout
+
+		@(posedge ebreak_start);
+		assert (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42)
+				else answer_match = 0;
+		assert (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[17] == 93)
+				else answer_match = 0;
+
+		if (answer_match)
+			$display("answer match, test passed?");
+		else
+			$display("answer doesn't match, test failed");
+
+	end
+
 	initial begin
 		integer time_reg, time_mem;
 		integer iter;
@@ -499,6 +533,7 @@ module reference_test_axil ();
 		join_any
 		disable fork;	// disable the fork wither both core finish running or timeout
 		
+		#100;
 
 		$display("reg access count: ref: %d, dut: %d", reg_access_log_ref.size(), reg_access_log_dut.size());
 		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
@@ -518,11 +553,6 @@ module reference_test_axil ();
 				compare_reg_log();
 			end else begin
 				compare_mem_log();
-			end
-
-			if (error) begin
-				$display("test failed, stopping...");
-				$stop();
 			end
 
 			iter++;
@@ -547,6 +577,12 @@ module reference_test_axil ();
 			$display("test passed");
 			$fwrite(fd, "success");
 		end
+
+		if (answer_match)
+			$display("answer match, test passed?");
+		else
+			$display("answer doesn't match, test failed");
+
 		$fclose(fd);
 		$stop();
 	end
