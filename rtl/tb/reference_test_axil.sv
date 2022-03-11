@@ -496,10 +496,11 @@ module reference_test_axil ();
 		disable fork;	// disable the fork wither both core finish running or timeout
 
 		@(posedge ebreak_start);
-		assert (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42)
-				else answer_match = 0;
-		assert (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[17] == 93)
-				else answer_match = 0;
+		if (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[10] != 42)
+			answer_match = 0;
+			
+		if (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[17] != 93)
+			answer_match = 0;
 
 		if (answer_match != 0)
 			$display("answer match, test passed?");
