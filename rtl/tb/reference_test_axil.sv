@@ -3,8 +3,8 @@
 import defines::*;
 
 module reference_test_axil ();
-	localparam REG_DEBUG = DISABLE;
-	localparam MEM_DEBUG = DISABLE;
+	localparam REG_DEBUG = ENABLE;
+	localparam MEM_DEBUG = ENABLE;
 	
 	integer error;
 	int fd;
@@ -453,6 +453,102 @@ module reference_test_axil ();
 		mem_access_log_dut.pop_front();
 	endtask
 
+/*
+	typedef struct packed {
+		rw_t	rw;
+		r_t		rw_addr;
+		data_t	rw_data;
+		integer	sim_time;
+		data_t	pc;
+		//instr_t	instr;
+	} reg_access_t;
+
+	typedef struct packed {
+		rw_t	rw;
+		data_t	rw_addr;
+		data_t	rw_data;
+		integer	sim_time;
+		data_t	pc;
+		//instr_t	instr;
+	} mem_access_t; 
+*/
+
+	task write_log();
+		integer wli, f;	// write log index, file number
+		$display("sim finished, writing log file...\n");
+		f = $fopen("reg_ref.log","w");
+		for (wli = 0; wli < reg_access_log_ref.size(); wli++) begin
+			if (reg_access_log_ref[wli].rw == READ) begin
+					$fwrite(f, "sim time = %t, pc = %h, READ %h from X%d \n",
+					reg_access_log_ref[wli].sim_time,
+					reg_access_log_ref[wli].pc,
+					reg_access_log_ref[wli].rw_data,
+					reg_access_log_ref[wli].rw_addr);
+			end else begin
+					$fwrite(f, "sim time = %t, pc = %h, WRITE %h to X%d \n",
+					reg_access_log_ref[wli].sim_time,
+					reg_access_log_ref[wli].pc,
+					reg_access_log_ref[wli].rw_data,
+					reg_access_log_ref[wli].rw_addr);
+			end
+		end
+		$fclose(f);
+
+		f = $fopen("reg_dut.log","w");
+		for (wli = 0; wli < reg_access_log_dut.size(); wli++) begin
+			if (reg_access_log_dut[wli].rw == READ) begin
+					$fwrite(f, "sim time = %t, pc = %h, READ %h from X%d \n",
+					reg_access_log_dut[wli].sim_time,
+					reg_access_log_dut[wli].pc,
+					reg_access_log_dut[wli].rw_data,
+					reg_access_log_dut[wli].rw_addr);
+			end else begin
+					$fwrite(f, "sim time = %t, pc = %h, WRITE %h to X%d \n",
+					reg_access_log_dut[wli].sim_time,
+					reg_access_log_dut[wli].pc,
+					reg_access_log_dut[wli].rw_data,
+					reg_access_log_dut[wli].rw_addr);
+			end
+		end
+		$fclose(f);
+
+		f = $fopen("mem_ref.log","w");
+		for (wli = 0; wli < mem_access_log_ref.size(); wli++) begin
+			if (mem_access_log_ref[wli].rw == READ) begin
+					$fwrite(f, "sim time = %t, pc = %h, READ %h from mem[%h] \n",
+					mem_access_log_ref[wli].sim_time,
+					mem_access_log_ref[wli].pc,
+					mem_access_log_ref[wli].rw_data,
+					mem_access_log_ref[wli].rw_addr);
+			end else begin
+					$fwrite(f, "sim time = %t, pc = %h, WRITE %h to mem[%h] \n",
+					mem_access_log_ref[wli].sim_time,
+					mem_access_log_ref[wli].pc,
+					mem_access_log_ref[wli].rw_data,
+					mem_access_log_ref[wli].rw_addr);
+			end
+		end
+		$fclose(f);
+
+		f = $fopen("mem_dut.log","w");
+		for (wli = 0; wli < mem_access_log_dut.size(); wli++) begin
+			if (mem_access_log_dut[wli].rw == READ) begin
+					$fwrite(f, "sim time = %t, pc = %h, READ %h from mem[%h] \n",
+					mem_access_log_dut[wli].sim_time,
+					mem_access_log_dut[wli].pc,
+					mem_access_log_dut[wli].rw_data,
+					mem_access_log_dut[wli].rw_addr);
+			end else begin
+					$fwrite(f, "sim time = %t, pc = %h, WRITE %h to mem[%h] \n",
+					mem_access_log_dut[wli].sim_time,
+					mem_access_log_dut[wli].pc,
+					mem_access_log_dut[wli].rw_data,
+					mem_access_log_dut[wli].rw_addr);
+			end
+		end
+		$fclose(f);
+	endtask
+
 
 	initial begin
 		fork
@@ -470,8 +566,7 @@ module reference_test_axil ();
 				wait(ebreak_start);
 				$display("dut module finished program");
 			end
-		join
-		
+		join	
 	end
 
 
@@ -482,7 +577,6 @@ module reference_test_axil ();
 		error = 0;
 
 		fork
-
 			// wait both REF and DUT finish
 			begin
 				wait(ref_halt && ebreak_start);
@@ -503,6 +597,9 @@ module reference_test_axil ();
 		$display("reg access count: ref: %d, dut: %d", reg_access_log_ref.size(), reg_access_log_dut.size());
 		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
 		
+		// write log into log file
+		write_log();
+
 		while (
 			(reg_access_log_ref.size() > 0) ||
 			(mem_access_log_ref.size() > 0)

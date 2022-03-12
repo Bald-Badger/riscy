@@ -39,7 +39,7 @@ module proc_axil (
 	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
 	// synthesis translate_off
 	data_t		instr_raw;	// for debug
-	assign		instr_raw = data_t'(instr_f);
+	assign		instr_raw = swap_endian(data_t'(instr_f));
 	// synthesis translate_on
 	data_t 		rs1_d, rs1_x, rs1_m, rs1_w, rs2_d, rs2_x, rs2_m, rs2_w;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
