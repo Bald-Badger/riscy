@@ -13,7 +13,7 @@ package defines;
 //	core config
 	localparam	MAX_NEST_LOCK	= 8;				// max nested lock aquire length, 
 													// cases that over 2 is very rare
-	localparam	SP_BASE			= 32'h00a0_3ffc;	// stack base pointer, init SP to here
+	localparam	SP_BASE			= 32'h0000_3ffc;	// stack base pointer, init SP to here
 	localparam	GP_BASE			= 32'h0000_1800;	// global pointer, init GP to here
 
 
@@ -48,7 +48,7 @@ package defines;
 	// sopported extension
 	// this part shoule be only accessed by generate
 	localparam	I_SUPPORT		= TRUE;		// Base (Integer) operations, must implement
-	localparam	M_SUPPORT		= TRUE;		// Integer Mult / Dvi, should implement
+	localparam	M_SUPPORT		= FALSE;	// Integer Mult / Dvi, should implement
 	localparam	Z_SUPPORT		= FALSE;	// Instruction-Fetch fence, required for xv6
 	localparam	A_SUPPORT		= FALSE;	// Atomic instructions, required for xv6
 	localparam	F_SUPPORT		= FALSE;	// Single-Precision FP, implement if enough FPGA space
@@ -71,7 +71,7 @@ package defines;
 		FORMAL,
 		SIMULATION
 	} verification_type_t;
-	localparam	[0:0] VERIFICATION_TYPE = FORMAL;
+	localparam	[0:0] VERIFICATION_TYPE = SIMULATION;
 
 
 	// branch predictor
