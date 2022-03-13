@@ -3,8 +3,8 @@
 import defines::*;
 
 module reference_test_axil ();
-	localparam REG_DEBUG = ENABLE;
-	localparam MEM_DEBUG = ENABLE;
+	localparam REG_DEBUG = DISABLE;
+	localparam MEM_DEBUG = DISABLE;
 	
 	integer error;
 	int fd;
@@ -147,6 +147,28 @@ module reference_test_axil ();
 	reg_access_t reg_access_log_dut[$] = {};
 	mem_access_t mem_access_log_ref[$] = {};
 	mem_access_t mem_access_log_dut[$] = {};
+	data_t pc_log_ref[$] = {};
+	data_t pc_log_dut[$] = {};
+
+	function void push_pc_ref();
+		if (pc_log_ref.size() == 0) begin
+			pc_log_ref.push_back(proc_ref.core_ref.pc_q - 32'd4);
+		end else if ( reg_access_log_ref[reg_access_log_ref.size()-1] == (proc_ref.core_ref.pc_q - 32'd4)) begin 
+			// do nothing, duplicative entry
+		end else begin
+			pc_log_ref.push_back(proc_ref.core_ref.pc_q - 32'd4);
+		end
+	endfunction
+
+	function void push_pc_dut();
+		if (pc_log_dut.size() == 0) begin
+			pc_log_dut.push_back(proc_dut.pcp4_w - 32'd4);
+		end else if (pc_log_dut[pc_log_dut.size()-1] == (proc_dut.pcp4_w - 32'd4)) begin 
+			// do nothing, duplicative entry
+		end else begin
+			pc_log_dut.push_back(proc_dut.pcp4_w - 32'd4);
+		end
+	endfunction
 
 	function void push_reg_ref();
 		if (reg_access_log_ref.size() == 0) begin
@@ -453,26 +475,6 @@ module reference_test_axil ();
 		mem_access_log_dut.pop_front();
 	endtask
 
-/*
-	typedef struct packed {
-		rw_t	rw;
-		r_t		rw_addr;
-		data_t	rw_data;
-		integer	sim_time;
-		data_t	pc;
-		//instr_t	instr;
-	} reg_access_t;
-
-	typedef struct packed {
-		rw_t	rw;
-		data_t	rw_addr;
-		data_t	rw_data;
-		integer	sim_time;
-		data_t	pc;
-		//instr_t	instr;
-	} mem_access_t; 
-*/
-
 	task write_log();
 		integer wli, f;	// write log index, file number
 		$display("sim finished, writing log file...\n");
@@ -631,19 +633,29 @@ module reference_test_axil ();
 		end
 
 		if (error)begin
-			$display("test failed");
+			$display("log mismatch, test failed");
 			$fwrite(fd, "fail");
 		end
 			
 		else begin
-			$display("test passed");
+			$display("all log match, test passed");
 			$fwrite(fd, "success");
 		end
 
-		if (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42)
-			$display("answer match, test passed?");
-		else
-			$display("answer doesn't match, test failed");
+		if (proc_ref.core_ref.reg_file[10] == 42) begin
+			$display("golden module passed the test");
+			if (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
+				$display("DUT dilivered correct answer, test passed?");
+			end else begin
+				$display("DUT failed the test");
+			end
+		end else begin
+			$display("golden module failed the test! bad test?");
+			if (proc_dut.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
+				$display("WTF this should not happeds");
+			end
+		end
+
 		$fclose(fd);
 		$stop();
 	end
