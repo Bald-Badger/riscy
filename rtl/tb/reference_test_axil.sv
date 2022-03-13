@@ -152,11 +152,11 @@ module reference_test_axil ();
 
 	function void push_pc_ref();
 		if (pc_log_ref.size() == 0) begin
-			pc_log_ref.push_back(proc_ref.core_ref.pc_q - 32'd4);
-		end else if ( reg_access_log_ref[reg_access_log_ref.size()-1] == (proc_ref.core_ref.pc_q - 32'd4)) begin 
+			pc_log_ref.push_back(proc_ref.core_ref.pc_q);
+		end else if (pc_log_ref[pc_log_ref.size()-1] == (proc_ref.core_ref.pc_q)) begin 
 			// do nothing, duplicative entry
 		end else begin
-			pc_log_ref.push_back(proc_ref.core_ref.pc_q - 32'd4);
+			pc_log_ref.push_back(proc_ref.core_ref.pc_q);
 		end
 	endfunction
 
@@ -169,6 +169,22 @@ module reference_test_axil ();
 			pc_log_dut.push_back(proc_dut.pcp4_w - 32'd4);
 		end
 	endfunction
+
+	function void compare_pc_log();
+		for (integer i = 0; i < ( (pc_log_ref.size() > pc_log_dut.size()) ? pc_log_dut.size() : pc_log_ref.size() ); i++ ) begin
+			if (pc_log_ref[i] != pc_log_dut[i]) begin
+				$display("PC mismatch found at the #%d instr", i + 1);
+				break;
+			end
+		end
+	endfunction
+
+	always_ff @(negedge clk) begin
+		if (~$isunknown(proc_ref.core_ref.pc_q))
+			push_pc_ref();
+		if (proc_dut.instr_valid_w)
+			push_pc_dut();
+	end
 
 	function void push_reg_ref();
 		if (reg_access_log_ref.size() == 0) begin
@@ -217,6 +233,7 @@ module reference_test_axil ();
 		end
 	endfunction
 
+
 	function void push_reg_dut();
 		if (reg_access_log_dut.size() == 0) begin
 			reg_access_log_dut.push_back(
@@ -263,6 +280,7 @@ module reference_test_axil ();
 		end
 	endfunction
 
+
 	task push_mem_ref_helper();
 		mem_access_log_ref.push_back(
 				mem_access_t'({
@@ -288,6 +306,7 @@ module reference_test_axil ();
 				end
 			end
 	endtask
+
 
 	task push_mem_ref();
 		if (mem_access_log_ref.size() == 0) begin
@@ -324,6 +343,7 @@ module reference_test_axil ();
 			end
 		end
 	endtask
+
 
 	function void push_mem_dut();
 		if (mem_access_log_dut.size() == 0) begin
@@ -395,6 +415,7 @@ module reference_test_axil ();
 		end
 	endfunction
 
+
 	always @(negedge clk) begin : ref_debug_log
 		// reg log
 		if (reg_wr_en_ref && reg_wr_addr_ref != X0) begin
@@ -407,6 +428,7 @@ module reference_test_axil ();
 			push_mem_ref();
 		end 
 	end
+
 
 	always @(negedge clk) begin : dut_debug_log
 		// reg log
@@ -448,6 +470,7 @@ module reference_test_axil ();
 		reg_access_log_dut.pop_front();
 	endtask
 
+
 	task compare_mem_log();
 		assert	(mem_access_log_ref[0].rw == mem_access_log_dut[0].rw) 
 		else begin
@@ -474,6 +497,7 @@ module reference_test_axil ();
 		mem_access_log_ref.pop_front();
 		mem_access_log_dut.pop_front();
 	endtask
+
 
 	task write_log();
 		integer wli, f;	// write log index, file number
@@ -549,6 +573,19 @@ module reference_test_axil ();
 			end
 		end
 		$fclose(f);
+
+		f = $fopen("pc_ref.log","w");
+		for (wli = 0; wli < pc_log_ref.size(); wli++) begin
+			$fwrite(f, "%h - %d\n", pc_log_ref[wli], pc_log_ref[wli]);
+		end
+		$fclose(f);
+
+		f = $fopen("pc_dut.log","w");
+		for (wli = 0; wli < pc_log_dut.size(); wli++) begin
+			$fwrite(f, "%h - %d\n", pc_log_dut[wli], pc_log_dut[wli]);
+		end
+		$fclose(f);
+
 	endtask
 
 
@@ -632,11 +669,13 @@ module reference_test_axil ();
 			$stop();
 		end
 
+		compare_pc_log();
+
 		if (error)begin
 			$display("log mismatch, test failed");
 			$fwrite(fd, "fail");
 		end
-			
+
 		else begin
 			$display("all log match, test passed");
 			$fwrite(fd, "success");
