@@ -37,8 +37,8 @@ module reference_test_axil ();
 	axil_crossbar_2x1_wrapper crossbar (
 		.clk	(clk),
 		.rst	(~rst_n),
-		.s00	(instr_bus),
-		.s01	(data_bus),
+		.s00	(data_bus),
+		.s01	(instr_bus),
 		.m00	(ram_bus)
 	);
 
@@ -179,7 +179,7 @@ module reference_test_axil ();
 		end
 	endfunction
 
-	always_ff @(negedge clk) begin
+	always_ff @(posedge clk) begin
 		if (~$isunknown(proc_ref.core_ref.pc_q))
 			push_pc_ref();
 		if (proc_dut.instr_valid_w)

@@ -7,7 +7,7 @@ package defines;
 	localparam 	XLEN 			= 32;				// RV32
 	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N
 	localparam 	OSC_FREQ 		= 5e7;				// 50Mhz crystal oscillator on FPGA board
-	localparam 	FREQ 			= 2e7;				// targeted core clock from PLL
+	localparam 	FREQ 			= 1e9;				// targeted core clock from PLL
 
 
 //	core config
