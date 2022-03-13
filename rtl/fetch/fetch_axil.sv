@@ -1,3 +1,6 @@
+// Seriously, this code is a shit-whole
+// Rewrite this mudule with better FSM in the future
+
 import defines::*;
 import axi_defines::*;
 
@@ -96,21 +99,65 @@ module fetch_axil (
 	end
 // synopsys translate_on
 
+
+	data_t pc_nxt;
+	logic bj_flag;
+	logic invalid_flag_early, invalid_flag;
+
+	always_ff @(posedge clk or negedge rst_n) begin
+		if (~rst_n) begin
+			pc_nxt <= pc_p4;
+		end else if (pc_sel) begin
+			pc_nxt <= pc_bj;
+		end else if (bj_flag)
+			pc_nxt <= pc_nxt;
+		else begin
+			pc_nxt <= pc_p4;
+		end
+	end
+
+
+	always_ff @(posedge clk or negedge rst_n) begin
+		if (~rst_n)
+			bj_flag <= CLEAR;
+		else if (pc_sel)
+			bj_flag <= SET;
+		else if (update_pc)
+			bj_flag <= CLEAR;
+		else
+			bj_flag <= bj_flag;
+	end
+
+
+	always_ff @(posedge clk or negedge rst_n) begin
+		if (~rst_n)
+			invalid_flag_early <= CLEAR;
+		else if (flush && ~done)
+			invalid_flag_early <= SET;
+		else if (done && invalid_flag_early)
+			invalid_flag_early <= CLEAR;
+		else
+			invalid_flag_early <= invalid_flag_early;
+	end
+
+
+	always_ff @(posedge clk) begin
+		invalid_flag <= invalid_flag_early;
+	end
+
+
 	// TODO: assert flush && pc_sel
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n) begin
 			pc <= boot_pc[0];
-		end else if (flush) begin
-			pc <= pc_bj;
-		end else if (buf_almost_full) begin
-			pc <= pc;
-		end else if (pc_en && update_pc)begin
-			pc <= pc_sel ? pc_bj : pc_p4;
+		end else if (pc_en && update_pc) begin
+			pc <= pc_nxt;
 		end else begin
 			pc <= pc;
 		end
 	end
 	// end pc control logic
+
 
 	// instruction wires
 	instr_queue_entry_t instr_fifo_in, instr_fifo_out;
@@ -121,8 +168,9 @@ module fetch_axil (
 	assign instr_fifo_in = instr_queue_entry_t'({instr_mem_sys, pc});
 	assign ecall = (instr_plain == ECALL);
 	assign ecall_clear = (data_t'(instr_w) == ECALL);
-	assign instr_valid = ((!buf_empty) && (~stall));
+	assign instr_valid = ((~buf_empty) && (~stall) && (!invalid_flag));
 	// end instruction wires
+
 
 	always_comb begin
 		nxt_state			= DEBUG;
@@ -141,8 +189,14 @@ module fetch_axil (
 			end
 
 			FETCH: begin
-				ifu_rden = ENABLE;
-				ifu_valid = VALID;
+				if (flush && done) begin
+					// wait
+					ifu_rden = DISABLE;
+					ifu_valid = INVALID;
+				end else begin
+					ifu_rden = ENABLE;
+					ifu_valid = VALID;
+				end
 				if (done && buf_almost_full) begin
 					nxt_state	= STALL;
 				end else if (done && ecall) begin
