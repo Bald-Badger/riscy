@@ -1,67 +1,69 @@
-#include "./test.h"
+#define TB
 #include <stdint.h>
-#include <stdio.h>
 
-// int32_t arr[10] = {0,1,2,3,4,5,6,7,8,9};
+#ifndef TB
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
+void swap(int*, int*);
+void bubbleSort(int*, int);
+void merge(int*, int, int, int);
+void mergeSort(int*, int, int);
 
 int main() {
-
-    int arr[] = { 12, 11, 13, 5, 6, 7 };
-	int sorted[] = { 5, 6, 7, 11, 12, 13 };
-    int arr_size = sizeof(arr) / sizeof(arr[0]);
-  
-    mergeSort(arr, 0, arr_size - 1);
-  
-    for (int i = 0; i < arr_size; i++) {
+	int arr[] = {64, 34, 25, 12, 22, 11};
+	int sorted[] = {11, 12, 22, 25, 34, 64};
+	int n = sizeof(arr)/sizeof(arr[0]);
+    bubbleSort(arr, n);
+	// mergeSort(arr, 0, n - 1);
+	
+	for (int i = 0; i < n; i++) {
 		if (arr[i] != sorted[i]) {
-		#ifdef TB
 			goto FAIL;
-		#endif
 		}
 	}
-	#ifdef TB
-		goto PASS;
-	#endif
+	goto PASS;
 
-/*
-	if (y == answer) {
-		#ifdef TB
-			goto PASS;
-		#endif
-	} else {
-		#ifdef TB
-			goto FAIL;
-		#endif
-	}
-*/	
-	#ifdef TB
 	FAIL:
-		__asm__("li a0, 0");
+		#ifdef TB
+		__asm__("li a0, -1");
 		__asm__("li a7, 93");
 		__asm__("ecall");
+		#else
+		printf("test failed");
+		return 0;
+		#endif /* TB */
 	PASS:
+		#ifdef TB
 		__asm__("li a0, 42");
 		__asm__("li a7, 93");
 		__asm__("ecall");
-	#else
-	printf("answer is %d\n", y);
+		#else
+		printf("test passed");
+		return 0;
+		#endif /* TB */
+	
 	return 0;
-	#endif /* TB */
 }
 
-void mergeSort(int arr[], int l, int r)
+void swap(int *xp, int *yp)
 {
-    if (l < r) {
-        // Same as (l+r)/2, but avoids overflow for
-        // large l and h
-        int m = l + (r - l) / 2;
-  
-        // Sort first and second halves
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
-  
-        merge(arr, l, m, r);
-    }
+    int temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+ 
+// A function to implement bubble sort
+void bubbleSort(int arr[], int n)
+{
+   int i, j;
+   for (i = 0; i < n-1; i++)     
+ 
+       // Last i elements are already in place  
+       for (j = 0; j < n-i-1; j++)
+           if (arr[j] > arr[j+1])
+              swap(&arr[j], &arr[j+1]);
 }
 
 void merge(int arr[], int l, int m, int r)
@@ -109,5 +111,22 @@ void merge(int arr[], int l, int m, int r)
         arr[k] = R[j];
         j++;
         k++;
+    }
+}
+  
+/* l is for left index and r is right index of the
+sub-array of arr to be sorted */
+void mergeSort(int arr[], int l, int r)
+{
+    if (l < r) {
+        // Same as (l+r)/2, but avoids overflow for
+        // large l and h
+        int m = l + (r - l) / 2;
+  
+        // Sort first and second halves
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+  
+        merge(arr, l, m, r);
     }
 }
