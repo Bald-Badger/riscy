@@ -401,7 +401,7 @@ module memory (
 		.m_axil_rready	(axil_bus.m_axil_rready)
 	);
 
-
+/*
 	////////////////////////// formal verification //////////////////////////
 
 	//// misalign assersion ////
@@ -448,5 +448,5 @@ module memory (
 	endproperty
 	assert property(mem_access_success);
 	///////////////////////////////////
-
+*/
 endmodule : memory
