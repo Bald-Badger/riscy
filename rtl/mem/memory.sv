@@ -401,7 +401,7 @@ module memory (
 		.m_axil_rready	(axil_bus.m_axil_rready)
 	);
 
-/*
+
 	////////////////////////// formal verification //////////////////////////
 
 	//// misalign assersion ////
@@ -441,7 +441,7 @@ module memory (
 	endproperty
 	assume property (memory_max_phy_access);
 	///////////////////////////////////////////////////////
-
+/*
 	//// memory access must success////
 	property mem_access_success;
 		@(posedge clk) valid |-> ##[1:MEM_ACCESS_TIMEOUT] done;
