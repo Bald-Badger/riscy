@@ -43,7 +43,7 @@ always_comb begin
 end
 
 //Setting FIFO counter value for different situations of read and write operations.
-always_ff @(posedge clk or posedge rst) begin
+always_ff @(posedge clk) begin
 	if( rst )
 		fifo_counter <= 0;		// Reset the counter of FIFO
 	else if( (!buf_full && wr_en) && ( !buf_empty && rd_en ) )	//When doing read and write operation simultaneously
@@ -83,7 +83,7 @@ always_ff @(posedge clk) begin
 		buf_mem[ wr_ptr ] <= buf_mem[ wr_ptr ];
 end
 
-always_ff @(posedge clk or posedge rst) begin
+always_ff @(posedge clk) begin
 	if( rst ) begin
 	  wr_ptr <= 0;		// Initializing write pointer
 	  rd_ptr <= 0;		//Initializing read pointer

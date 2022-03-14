@@ -141,42 +141,77 @@ module reference_test_axil ();
 		integer	sim_time;
 		data_t	pc;
 		//instr_t	instr;
-	} mem_access_t;   
+	} mem_access_t;
+
+	typedef struct packed {
+		integer	sim_time;
+		data_t	pc;
+		//instr_t	instr;
+	} pc_log_t;
 
 	reg_access_t reg_access_log_ref[$] = {};
 	reg_access_t reg_access_log_dut[$] = {};
 	mem_access_t mem_access_log_ref[$] = {};
 	mem_access_t mem_access_log_dut[$] = {};
-	data_t pc_log_ref[$] = {};
-	data_t pc_log_dut[$] = {};
+	pc_log_t pc_log_ref[$] = {};
+	pc_log_t pc_log_dut[$] = {};
 
 	function void push_pc_ref();
 		if (pc_log_ref.size() == 0) begin
-			pc_log_ref.push_back(proc_ref.core_ref.pc_q);
-		end else if (pc_log_ref[pc_log_ref.size()-1] == (proc_ref.core_ref.pc_q)) begin 
+			pc_log_ref.push_back(
+				pc_log_t'(
+					{	
+						sim_time:	$time,
+						pc:			proc_ref.core_ref.pc_q
+					}
+				)
+			);
+		end else if (pc_log_ref[pc_log_ref.size()-1].pc == (proc_ref.core_ref.pc_q)) begin 
 			// do nothing, duplicative entry
 		end else begin
-			pc_log_ref.push_back(proc_ref.core_ref.pc_q);
+			pc_log_ref.push_back(
+				pc_log_t'(
+					{	
+						sim_time:	$time,
+						pc:			proc_ref.core_ref.pc_q
+					}
+				)
+			);
 		end
 	endfunction
 
 	function void push_pc_dut();
 		if (pc_log_dut.size() == 0) begin
-			pc_log_dut.push_back(proc_dut.pcp4_w - 32'd4);
-		end else if (pc_log_dut[pc_log_dut.size()-1] == (proc_dut.pcp4_w - 32'd4)) begin 
+			pc_log_dut.push_back(
+				pc_log_t'(
+					{
+						sim_time:	$time,
+						pc:			proc_dut.pcp4_w - 32'd4
+					}
+				)
+			);
+		end else if (pc_log_dut[pc_log_dut.size()-1].pc == (proc_dut.pcp4_w - 32'd4)) begin 
 			// do nothing, duplicative entry
 		end else begin
-			pc_log_dut.push_back(proc_dut.pcp4_w - 32'd4);
+			pc_log_dut.push_back(
+				pc_log_t'(
+					{
+						sim_time:	$time,
+						pc:			proc_dut.pcp4_w - 32'd4
+					}
+				)
+			);
 		end
 	endfunction
 
 	function void compare_pc_log();
 		for (integer i = 0; i < ( (pc_log_ref.size() > pc_log_dut.size()) ? pc_log_dut.size() : pc_log_ref.size() ); i++ ) begin
-			if (pc_log_ref[i] != pc_log_dut[i]) begin
+			if (pc_log_ref[i].pc != pc_log_dut[i].pc) begin
 				$display("PC mismatch found at the #%d instr", i + 1);
 				break;
 			end
 		end
+		$display("Good: PC flow match");
 	endfunction
 
 	always_ff @(posedge clk) begin
@@ -576,13 +611,13 @@ module reference_test_axil ();
 
 		f = $fopen("pc_ref.log","w");
 		for (wli = 0; wli < pc_log_ref.size(); wli++) begin
-			$fwrite(f, "%h - %d\n", pc_log_ref[wli], pc_log_ref[wli]);
+			$fwrite(f, "%h - %d @ t = %t\n", pc_log_ref[wli].pc, pc_log_ref[wli].pc, pc_log_ref[wli].sim_time);
 		end
 		$fclose(f);
 
 		f = $fopen("pc_dut.log","w");
 		for (wli = 0; wli < pc_log_dut.size(); wli++) begin
-			$fwrite(f, "%h - %d\n", pc_log_dut[wli], pc_log_dut[wli]);
+			$fwrite(f, "%h - %d @ t = %t\n", pc_log_dut[wli].pc, pc_log_dut[wli].pc, pc_log_dut[wli].sim_time);
 		end
 		$fclose(f);
 

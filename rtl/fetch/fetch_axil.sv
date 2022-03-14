@@ -32,7 +32,6 @@ module fetch_axil (
 	typedef enum logic[2:0] {
 		DEBUG,
 		FETCH,
-		WAIT,
 		STALL,
 		ECALL_WAIT
 	} state_t;
@@ -59,7 +58,8 @@ module fetch_axil (
 	
 	logic buf_empty, buf_full, buf_almost_full;
 
-	logic ifu_rden, ifu_valid;
+	logic ifu_rden;
+	logic ifu_valid;
 
 	// pc control logic
 	logic[XLEN-1:0] boot_pc [0:0];
@@ -100,49 +100,39 @@ module fetch_axil (
 // synopsys translate_on
 
 
-	data_t pc_nxt;
-	logic bj_flag;
-	logic invalid_flag_early, invalid_flag;
-
-	always_ff @(posedge clk or negedge rst_n) begin
-		if (~rst_n) begin
-			pc_nxt <= pc_p4;
-		end else if (pc_sel) begin
-			pc_nxt <= pc_bj;
-		end else if (bj_flag)
-			pc_nxt <= pc_nxt;
-		else begin
-			pc_nxt <= pc_p4;
-		end
-	end
-
+	data_t pc_nxt, pc_bj_ff;
+	logic flush_flag, flush_flag_delay;
 
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)
-			bj_flag <= CLEAR;
-		else if (pc_sel)
-			bj_flag <= SET;
-		else if (update_pc)
-			bj_flag <= CLEAR;
-		else
-			bj_flag <= bj_flag;
-	end
-
-
-	always_ff @(posedge clk or negedge rst_n) begin
-		if (~rst_n)
-			invalid_flag_early <= CLEAR;
+			flush_flag <= CLEAR;
 		else if (flush && ~done)
-			invalid_flag_early <= SET;
-		else if (done && invalid_flag_early)
-			invalid_flag_early <= CLEAR;
+			flush_flag <= SET;
+		else if (done)
+			flush_flag <= CLEAR;
 		else
-			invalid_flag_early <= invalid_flag_early;
+			flush_flag <= flush_flag;
 	end
-
 
 	always_ff @(posedge clk) begin
-		invalid_flag <= invalid_flag_early;
+		flush_flag_delay <= flush_flag;
+	end
+
+	always_ff @(posedge clk or negedge rst_n) begin
+		if (~rst_n)
+			pc_bj_ff <= NULL;
+		else if (pc_sel)
+			pc_bj_ff <= pc_bj;
+		else
+			pc_bj_ff <= pc_bj_ff;
+	end
+
+
+	always_comb begin
+		if (done && flush)
+			pc_nxt = pc_bj;
+		else
+			pc_nxt = flush_flag ? pc_bj_ff : pc_p4;
 	end
 
 
@@ -166,9 +156,10 @@ module fetch_axil (
 	data_t instr_switch;	// switch endianess
 	assign instr_plain = data_t'(instr_mem_sys);
 	assign instr_fifo_in = instr_queue_entry_t'({instr_mem_sys, pc});
+	// BUG: assert ecall = instr_d == ecall
 	assign ecall = (instr_plain == ECALL);
 	assign ecall_clear = (data_t'(instr_w) == ECALL);
-	assign instr_valid = ((~buf_empty) && (~stall) && (!invalid_flag));
+	assign instr_valid = ((~buf_empty) && (~stall) && (~flush) && (~flush_flag) && (~flush_flag_delay));
 	// end instruction wires
 
 
@@ -189,14 +180,8 @@ module fetch_axil (
 			end
 
 			FETCH: begin
-				if (flush && done) begin
-					// wait
-					ifu_rden = DISABLE;
-					ifu_valid = INVALID;
-				end else begin
 					ifu_rden = ENABLE;
 					ifu_valid = VALID;
-				end
 				if (done && buf_almost_full) begin
 					nxt_state	= STALL;
 				end else if (done && ecall) begin
@@ -241,12 +226,11 @@ module fetch_axil (
 		end
 	end
 
-	assign instr = instr_valid ? instr_switch : NOP;
-
 
 	always_comb begin
-		pc_out = instr_fifo_out.pc;
-		pc_p4_out = pc_out + 32'd4;
+		instr = instr_valid ? instr_switch : NOP;
+		pc_out = instr_valid ? instr_fifo_out.pc : NULL;
+		pc_p4_out = instr_valid ? (pc_out + 32'd4) : NULL;
 	end
 
 

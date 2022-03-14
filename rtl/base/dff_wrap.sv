@@ -1,7 +1,7 @@
 import defines::*;
 
 // synopsys translate_off
-// `timescale 1 ps / 1 ps
+`timescale 1 ns / 1 ps
 // synopsys translate_on
 
 module dff_wrap #(
@@ -15,7 +15,8 @@ module dff_wrap #(
 
 	reg     [WIDTH-1:0]	state;
 
-	assign 	q = state;
+	assign #(1) q = state;
+	//assign 	q = state;
 	
 	always_ff @ (posedge clk or negedge rst_n)
 		if (!rst_n)

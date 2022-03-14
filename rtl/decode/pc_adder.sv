@@ -53,14 +53,17 @@ module pc_adder (
 	wire bge_take 	= ~blt_take;
 	wire bgeu_take 	= ~bltu_take;
 
-	assign branch_taken =	((funct3 == BEQ && beq_take)	? taken :
-							(funct3 == BNE && bne_take) 	? taken :
-							(funct3 == BLT && blt_take) 	? taken :
-							(funct3 == BLTU && bltu_take) 	? taken :
-							(funct3 == BGE && bge_take) 	? taken :
-							(funct3 == BGEU && bgeu_take) 	? taken :
-							not_taken) && (opcode == B);
-
+	always_comb begin
+		branch_taken =	(
+						(funct3 == BEQ && beq_take)		? taken :
+						(funct3 == BNE && bne_take) 	? taken :
+						(funct3 == BLT && blt_take) 	? taken :
+						(funct3 == BLTU && bltu_take) 	? taken :
+						(funct3 == BGE && bge_take) 	? taken :
+						(funct3 == BGEU && bgeu_take) 	? taken :
+						not_taken
+					) && (opcode == B);
+	end
 
 	/*
 	possible combos:
@@ -90,18 +93,19 @@ module pc_adder (
 	
 	data_t pc_add, pc_add_carry;
 
-	assign pc_add_carry = pc_add_comp + imm; 
-	assign pc_add = pc_add_carry[XLEN-1 : 0];
+	always_comb begin
+		pc_add_carry = pc_add_comp + imm; 
+		pc_add = pc_add_carry[XLEN-1 : 0];
 
-	// JALR should mask the last bit to 0
-	assign pc_bj = (opcode == JALR) ? {pc_add[31:1], 1'b0} : pc_add;
+		// JALR should mask the last bit to 0
+		pc_bj = (opcode == JALR) ? {pc_add[31:1], 1'b0} : pc_add;
 
-	// 1 for branch/jump, 0 for pc + 4
-	assign pc_sel = (branch_taken)		? 1'b1 :
-					(opcode == JAL)		? 1'b1 :
-					(opcode == JALR)	? 1'b1 :
-					1'b0;
-	
-	assign pc_nxt = (pc_sel) ? pc_bj : pc + 32'd4;
+		// 1 for branch/jump, 0 for pc + 4
+		pc_sel = (branch_taken)		? 1'b1 :
+				(opcode == JAL)		? 1'b1 :
+				(opcode == JALR)	? 1'b1 :
+				1'b0;
+		pc_nxt = (pc_sel) ? pc_bj : pc + 32'd4;
+	end
 
 endmodule : pc_adder

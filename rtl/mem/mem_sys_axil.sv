@@ -49,6 +49,8 @@ module mem_sys_axil #(
 	assign rst = ~rst_n;
 
 	logic rden, wren;
+	//assign rdrn = rd;
+	//assign wren = wr;
 	assign rden = rd && valid;
 	assign wren = wr && valid;
 
