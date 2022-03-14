@@ -15,8 +15,8 @@ int main() {
 	int arr[] = {64, 34, 25, 12, 22, 11};
 	int sorted[] = {11, 12, 22, 25, 34, 64};
 	int n = sizeof(arr)/sizeof(arr[0]);
-    bubbleSort(arr, n);
-	// mergeSort(arr, 0, n - 1);
+    // bubbleSort(arr, n);
+	mergeSort(arr, 0, n - 1);
 	
 	for (int i = 0; i < n; i++) {
 		if (arr[i] != sorted[i]) {
