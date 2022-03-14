@@ -482,21 +482,21 @@ module reference_test_axil ();
 		assert	(reg_access_log_ref[0].rw == reg_access_log_dut[0].rw) 
 		else begin
 			error = 1;
-			$error("REG RW mismatch at dut time = %t, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
+			$display("REG RW mismatch at dut time = %t, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
 			reg_access_log_ref[0].sim_time, reg_access_log_ref[0].pc, reg_access_log_ref[0].rw, reg_access_log_dut[0].rw);
 		end
 
 		assert	(reg_access_log_ref[0].rw_addr == reg_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
-			$error("REG RW_ADDR mismatch at dut time = %t, ref pc = %h, expecting addr is %d, dut addr is %d", 
+			$display("REG RW_ADDR mismatch at dut time = %t, ref pc = %h, expecting addr is %d, dut addr is %d", 
 			reg_access_log_ref[0].sim_time, reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_addr, reg_access_log_dut[0].rw_addr);
 		end
 
 		assert	(reg_access_log_ref[0].rw_data == reg_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
-			$error("REG RW_DATA mismatch at dut time = %t, ref pc = %h, expecting data is %h, dut data is %h", 
+			$display("REG RW_DATA mismatch at dut time = %t, ref pc = %h, expecting data is %h, dut data is %h", 
 			reg_access_log_ref[0].sim_time, reg_access_log_ref[0].pc, reg_access_log_ref[0].rw_data, reg_access_log_dut[0].rw_data);
 		end
 
@@ -510,22 +510,39 @@ module reference_test_axil ();
 		assert	(mem_access_log_ref[0].rw == mem_access_log_dut[0].rw) 
 		else begin
 			error = 1;
-			$error("MEM RW mismatch at dut time = %t, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
-			mem_access_log_ref[0].sim_time, mem_access_log_ref[0].pc, mem_access_log_ref[0].rw, mem_access_log_dut[0].rw);
+			$display("MEM RW mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
+			mem_access_log_dut[0].sim_time, 
+			mem_access_log_ref[0].sim_time,
+			mem_access_log_ref[0].pc, 
+			mem_access_log_ref[0].rw ? "WRITE" : "READ", 
+			mem_access_log_ref[0].rw ? "WRITE" : "READ"
+			);
 		end
 
 		assert	(mem_access_log_ref[0].rw_addr == mem_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
-			$error("MEM RW_ADDR mismatch at dut time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
-			mem_access_log_ref[0].sim_time, mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_addr, mem_access_log_dut[0].rw_addr);
+			$display("MEM %s RW_ADDR mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
+			mem_access_log_ref[0].rw ? "WRITE" : "READ",
+			mem_access_log_dut[0].sim_time, 
+			mem_access_log_ref[0].sim_time, 
+			mem_access_log_ref[0].pc, 
+			mem_access_log_ref[0].rw_addr, 
+			mem_access_log_dut[0].rw_addr
+			);
 		end
 
 		assert	(mem_access_log_ref[0].rw_data == mem_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
-			$error("MEM RW_DATA mismatch at dut time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
-			mem_access_log_ref[0].sim_time, mem_access_log_ref[0].pc, mem_access_log_ref[0].rw_data, mem_access_log_dut[0].rw_data);
+			$display("MEM %s RW_DATA mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
+			mem_access_log_ref[0].rw ? "WRITE" : "READ",
+			mem_access_log_dut[0].sim_time, 
+			mem_access_log_ref[0].sim_time, 
+			mem_access_log_ref[0].pc, 
+			mem_access_log_ref[0].rw_data, 
+			mem_access_log_dut[0].rw_data
+			);
 		end
 
 		//$display("poped mem log at pc=%d", mem_access_log_ref[0].pc);
