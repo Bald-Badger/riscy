@@ -41,7 +41,7 @@ module proc_axil (
 	data_t		instr_raw;	// for debug
 	assign		instr_raw = swap_endian(data_t'(instr_f));
 	// synthesis translate_on
-	data_t 		rs1_d, rs1_x, rs1_m, rs1_w, rs2_d, rs2_x, rs2_m, rs2_w;	// data in register file #1
+	data_t 		rs1_d, rs1_x, rs2_d, rs2_x, rs2_m;	// data in register file #1
 	data_t 		imm_d, imm_x;	// immidiate value
 	data_t 		alu_result_x, alu_result_m, alu_result_w;	// alu computation result
 	logic 		rd_wren_x, rd_wren_m, rd_wren_w;	// register write enable
@@ -89,9 +89,6 @@ module proc_axil (
 		mem_ex_fwd_data = wb_data;
 		mem_mem_fwd_data = wb_data;
 	end
-
-	// instruction order
-	data_t		instr_order;
 
 
 	// fetch stage	
@@ -179,14 +176,14 @@ module proc_axil (
 		.branch_taken	(branch_taken_actual_d)
 	);
 
-
+	// TODO: !!! BUGGGGGGGGG
 	data_t rs2_d_after_fwd;
 	always_comb begin : rs2_d_after_fwd_assign
 		unique case (fwd_id_rs2)
 			RS_ID_SEL: 	rs2_d_after_fwd = rs2_d;
-			EX_ID_SEL:	rs2_d_after_fwd = alu_result_x;
-			MEM_ID_SEL:	rs2_d_after_fwd = alu_result_m;
-			WB_ID_SEL:	rs2_d_after_fwd = alu_result_w;
+			EX_ID_SEL:	rs2_d_after_fwd = (opcode_m == LOAD) ? rs2_d : alu_result_x;
+			MEM_ID_SEL:	rs2_d_after_fwd = (opcode_m == LOAD) ? mem_data_out_m : alu_result_m;
+			WB_ID_SEL:	rs2_d_after_fwd = wb_data;
 			default:	rs2_d_after_fwd = NULL;
 		endcase
 	end

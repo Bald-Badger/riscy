@@ -32,9 +32,9 @@ module alu (
 
 
 	always_comb begin
-		funct3 = 	instr.funct3;
-		opcode = 	instr.opcode;
-		shamt  = 	instr.rs2;
+		funct3 =	instr.funct3;
+		opcode =	instr.opcode;
+		shamt  =	instr.rs2;
 		shift_type = shift_type_t'(instr[30]); // 0 for logical, 1 for arith
 		sub_func = (opcode == R) & instr[30];
 	end

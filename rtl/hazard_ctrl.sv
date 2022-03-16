@@ -86,7 +86,8 @@ module hazard_ctrl (
 		mem_rs1_read	=	((instr_m.opcode == LOAD) ||
 							 (instr_m.opcode == STORE));
 
-		mem_rs2_read	=	 (DISABLE);
+		// mem_rs2_read	=	DISABLE;
+		mem_rs2_read	=	(instr_m.opcode == STORE);
 	end
 
 
@@ -152,6 +153,7 @@ module hazard_ctrl (
 
 
 	logic hazard_wb2mem_1, hazard_wb2mem_2;
+	logic hazard_wb2mem;
 	always_comb begin : mem_hazard_detect
 		hazard_wb2mem_1 =	(mem_rs1_read) &&
 							(mem_rs1 != X0) &&
@@ -162,6 +164,7 @@ module hazard_ctrl (
 							(mem_rs2 != X0) &&
 							(wb_rd_write) &&
 							(wb_rd == mem_rs2);
+		hazard_wb2mem	=	hazard_wb2mem_1 || hazard_wb2mem_2;
 	end
 
 
