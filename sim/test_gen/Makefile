@@ -11,8 +11,14 @@
 # -lstdc++: enable c++ compile
 # -mbranch-cost=1: low branch cost, so hopefully disable instruction reorder
 # -mexplicit-relocs: use assembler relocation operators when dealing with symbolic addresses, hopefully reduce pseudo instruction
-CFLAGS = -Wall -O0 -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs
+# -D: defines a macro to be used by the preprocessor
+
 GCC = riscv64-unknown-elf-gcc
+CFLAGS = -Wall -O0 -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
+
+GCC_X86 = gcc
+CFLAGS_X86 = -Wall
+
 OBJCOPY = riscv64-unknown-elf-objcopy
 OBJDUMP = riscv64-unknown-elf-objdump
 COPYFLAGS = -O binary
@@ -83,6 +89,10 @@ rars_mc: clean asm
 rars: rars_mc
 	$(PYTHON) ./mc2mif.py -i $(TARGET).mc -o $(TBTARGET).mif
 
+# compile x86 ELF for debug on x86 system
+x86: clean
+	$(GCC_X86) $(CFLAGS_X86) $(SRC) -o $(TARGET).out
+
 # delete all but .c, .h file
 clean:
-	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg
+	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg ./*.out

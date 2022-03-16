@@ -1,19 +1,11 @@
-#define TB
+// #define TB	// shoule be passed by makefile e.g. gcc -D TB
+#include "test.h"
 #include <stdint.h>
 #include <stdlib.h>
 
 #ifndef TB
 #include <stdio.h>
 #endif
-
-void swap(int*, int*);
-void bubbleSort(int*, int);
-void merge(int*, int, int, int);
-void mergeSort(int*, int, int);
-void swap(int*, int*);
-int partition (int*, int, int);
-void quickSort(int*, int, int);
-
 
 int main() {
 	int n = 100;
@@ -54,7 +46,7 @@ int main() {
 		__asm__("li a7, 93");
 		__asm__("ecall");
 		#else
-		printf("test passed");
+		printf("test passed\n");
 		return 0;
 		#endif /* TB */
 	
