@@ -41,7 +41,7 @@ module memory (
 	logic			max_phy_access;
 	logic			max_phy_access_trap;
 
-	// atomc contril signals
+	// atomic contril signals
 	instr_a_t		instr_a;
 	logic			is_atomic, is_lr, is_sc;
 	logic			update;		// enable exclusive monitor for a single cycle
@@ -418,35 +418,39 @@ module memory (
 	end
 
 	property memory_address_misalign;
+		disable iff (~rst_n)
 		@(posedge clk) ~misalign_trap;
 	endproperty
-	assert property (memory_address_misalign);
+	
+	assert property (memory_address_misalign)
+		else $error("misaligned memory access");
 	//////////////////////////
+
 
 	//// write and rd in the same cycle ////
 	property memory_conflicting_access;
+		disable iff (~rst_n)
 		@(posedge clk) ~(rden && wren);
 	endproperty
-	assert property (memory_conflicting_access);
+
+	assert property (memory_conflicting_access)
+		else $error("read and write mem at same access");
 	///////////////////////////////////////
+
 
 	//// assume all access are below max physical memory ////
 	always_comb begin
-		max_phy_access = $signed(addr) > $signed(MAX_PHY_ADDR);
+		max_phy_access = $signed(addr) >= $signed(MAX_PHY_ADDR);
 		max_phy_access_trap = max_phy_access && (rden || wren);
 	end
 
 	property memory_max_phy_access;
+		disable iff (~rst_n)
 		@(posedge clk) ~max_phy_access_trap;
 	endproperty
-	assume property (memory_max_phy_access);
+
+	assert property (memory_max_phy_access)
+		else $error("access exceed physical memory boundary");
 	///////////////////////////////////////////////////////
-/*
-	//// memory access must success////
-	property mem_access_success;
-		@(posedge clk) valid |-> ##[1:MEM_ACCESS_TIMEOUT] done;
-	endproperty
-	assert property(mem_access_success);
-	///////////////////////////////////
-*/
+
 endmodule : memory

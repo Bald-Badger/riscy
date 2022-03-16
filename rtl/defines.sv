@@ -3,6 +3,12 @@ package defines;
 `ifndef _defines_sv_
 `define _defines_sv_
 
+//	generate synthesizable code if set
+	`define		SYNTHESIZE
+
+//	generate Altera-compatable code
+	`define		ALTERA
+
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
 	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N
@@ -64,14 +70,6 @@ package defines;
 		RARS_BOOT		// boot from a rars compiled mif file
 	} boot_type_t;
 	localparam	[1:0] BOOT_TYPE = BINARY_BOOT;
-
-
-	// verification options
-	typedef enum logic {
-		FORMAL,
-		SIMULATION
-	} verification_type_t;
-	localparam	[0:0] VERIFICATION_TYPE = SIMULATION;
 
 
 	// branch predictor

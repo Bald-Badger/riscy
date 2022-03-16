@@ -298,4 +298,38 @@ module mem_sys_axil #(
 		endcase
 	end
 
+//////////////////////////// Formal Verifivation //////////////////////////////////
+
+	/////////// read handshake ///////////
+	property read_handshake_success;
+		disable iff (m_axil_rst)
+		@(posedge m_axil_clk) read_addr_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] read_data_handshake;
+	endproperty
+
+	assert property(read_handshake_success)
+		else $error("AXI-L read timeout");
+	/////////////////////////////////////
+
+
+	/////////// write handshake ///////////
+	property write_addr_handshake_success;
+		disable iff (m_axil_rst)
+		@(posedge m_axil_clk) write_addr_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] write_resp_handshake;
+	endproperty
+
+	assert property(write_addr_handshake_success)
+		else $error("AXI-L write addr -> resp timeout");
+
+
+	property write_data_handshake_success;
+		disable iff (m_axil_rst)
+		@(posedge m_axil_clk) write_data_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] write_resp_handshake;
+	endproperty
+
+	assert property(write_data_handshake_success)
+		else $error("AXIL write data -> resp timeout");
+	/////////////////////////////////////
+
+////////////////////////// End Formal Verifivation /////////////////////////////////
+
 endmodule : mem_sys_axil

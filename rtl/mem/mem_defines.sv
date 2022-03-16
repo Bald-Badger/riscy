@@ -31,7 +31,7 @@ import defines::*;
 // using RARS default, text at 0x0 memory layout
 localparam	MAX_PHY_ADDR		= 32'h01ff_ffff;	// 32MB
 
-localparam	MEM_ACCESS_TIMEOUT	= 128;		// 128 cycles
+localparam	MEM_ACCESS_TIMEOUT	= 128;			// 128 cycles
 
 localparam	DEBUG_MEM_SYS		= DISABLE;
 localparam	DEBUG_SDRAM			= DISABLE;

@@ -15,8 +15,11 @@ module dff_wrap #(
 
 	reg     [WIDTH-1:0]	state;
 
-	assign #(1) q = state;
-	//assign 	q = state;
+	`ifdef SYNTHESIZE
+		assign 	q = state;
+	`else
+		assign #(1) q = state;
+	`endif
 	
 	always_ff @ (posedge clk or negedge rst_n)
 		if (!rst_n)
