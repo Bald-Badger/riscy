@@ -1,7 +1,7 @@
 import defines::*;
 
 // synopsys translate_off
-// `timescale 1 ps / 1 ps
+`timescale 1 ns / 1 ps
 // synopsys translate_on
 
 // quartus have dffe primitive but not parameterizable, i dont like it

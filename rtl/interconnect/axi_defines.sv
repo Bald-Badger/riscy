@@ -1,6 +1,18 @@
 package axi_defines;
 import defines::*;
 
+/*
+to connect lite to full axi, set:
+
+AWID = 0 // X
+AWBURST= 1 // INCR
+AWLEN = 0 // SINGLE
+WLAST = 1 // SINGLE
+ARID = 0 // X
+ARBURST = 1 // INCR
+ARLEN = 0 // SINGLE
+*/
+
 `ifndef _axi_defines_
 `define _axi_defines_
 
@@ -14,7 +26,7 @@ typedef enum logic[1:0] {
 	RESP_OKAY	= 2'b00,	// Normal access success
 	RESP_EXOKAY	= 2'b01,	// Exclusive access okay
 	RESP_SLVERR	= 2'b10,	// Slave error, rebel slave
-	RESP_DECERR	= 2'b11	// Decode error, rebel interconnect
+	RESP_DECERR	= 2'b11		// Decode error, rebel interconnect
 } RESP_t;
 
 // unprovileged, secure, data access
