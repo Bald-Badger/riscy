@@ -87,15 +87,21 @@ instr.ver
 instr.mif
 *.vstf
 *.mpf_new
-test.s
-*.bin
 *.log
-boot.cfg
-instr.s
-instr_full.s
 *.component.xml
-*.code-workspace
 *.cnx
+
+# test_gen
+sim/test_gen/test
+sim/test_gen/*.bin
+sim/*.bin
+sim/test_gen/*.mif
+sim/test_gen/*.mc
+sim/test_gen/*.header
+sim/test_gen/*.section
+sim/test_gen/*.cfg
+sim/*.cfg
+test_gen/*.out
 
 # formal
 .qverify_ui_local_prefs
