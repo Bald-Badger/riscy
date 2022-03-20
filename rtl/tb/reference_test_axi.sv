@@ -58,7 +58,7 @@ module reference_test_axi ();
 		.axi_bus	(data_bus)
 	);
 
-	axi_interconnect_2x1_wrapper interconnect (
+	axi_interconnect_2x1_wrapper inter_connect (
 		.clk	(clk),
 		.rst	(~rst_n),
 		.s00	(data_bus),

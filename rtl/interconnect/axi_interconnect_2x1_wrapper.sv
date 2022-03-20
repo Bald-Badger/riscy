@@ -6,7 +6,7 @@ module axi_interconnect_2x1_wrapper (
 	axi_interface m00
 );
 
-	axi_interconnect_2x1 net (
+	axi_interconnect_2x1 inter_connect (
 		.clk				(clk),
 		.rst				(rst),
 
