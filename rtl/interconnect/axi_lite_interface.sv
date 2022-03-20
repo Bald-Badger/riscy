@@ -8,8 +8,8 @@ interface axi_lite_interface # (
 	// When adapting to a wider bus, re-pack all bursts instead of passing through narrow burst if possible
 	parameter CONVERT_NARROW_BURST = 0
 ) (
-	input logic clk,
-	input logic rst
+	input wire clk,
+	input wire rst
 );
 
 	// Width of address bus in bits
@@ -24,50 +24,50 @@ interface axi_lite_interface # (
 	localparam AXIL_STRB_WIDTH = (AXIL_DATA_WIDTH/8);
 
 	// master modport
-	logic							m_axil_clk;
-	logic							m_axil_rst;
-	logic	[ADDR_WIDTH-1:0]		m_axil_awaddr;
-	logic	[2:0]					m_axil_awprot;
-	logic							m_axil_awvalid;
-	logic							m_axil_awready;
-	logic	[AXIL_DATA_WIDTH-1:0]	m_axil_wdata;
-	logic	[AXIL_STRB_WIDTH-1:0]	m_axil_wstrb;	
-	logic							m_axil_wvalid;
-	logic							m_axil_wready;
-	logic	[1:0]					m_axil_bresp;
-	logic							m_axil_bvalid;
-	logic							m_axil_bready;
-	logic	[ADDR_WIDTH-1:0]		m_axil_araddr;
-	logic	[2:0]					m_axil_arprot;
-	logic							m_axil_arvalid;
-	logic							m_axil_arready;
-	logic	[AXIL_DATA_WIDTH-1:0]	m_axil_rdata;
-	logic	[1:0]					m_axil_rresp;
-	logic							m_axil_rvalid;
-	logic							m_axil_rready;
+	wire							m_axil_clk;
+	wire							m_axil_rst;
+	wire	[ADDR_WIDTH-1:0]		m_axil_awaddr;
+	wire	[2:0]					m_axil_awprot;
+	wire							m_axil_awvalid;
+	wire							m_axil_awready;
+	wire	[AXIL_DATA_WIDTH-1:0]	m_axil_wdata;
+	wire	[AXIL_STRB_WIDTH-1:0]	m_axil_wstrb;	
+	wire							m_axil_wvalid;
+	wire							m_axil_wready;
+	wire	[1:0]					m_axil_bresp;
+	wire							m_axil_bvalid;
+	wire							m_axil_bready;
+	wire	[ADDR_WIDTH-1:0]		m_axil_araddr;
+	wire	[2:0]					m_axil_arprot;
+	wire							m_axil_arvalid;
+	wire							m_axil_arready;
+	wire	[AXIL_DATA_WIDTH-1:0]	m_axil_rdata;
+	wire	[1:0]					m_axil_rresp;
+	wire							m_axil_rvalid;
+	wire							m_axil_rready;
 
 	// slave modport
-	logic							s_axil_clk;
-	logic							s_axil_rst;
-	logic [AXIL_DATA_WIDTH-1:0]		s_axil_awaddr;
-	logic [2:0]						s_axil_awprot;
-	logic							s_axil_awvalid;
-	logic							s_axil_awready;
-	logic [AXIL_DATA_WIDTH-1:0]		s_axil_wdata;
-	logic [AXIL_STRB_WIDTH-1:0]		s_axil_wstrb;
-	logic							s_axil_wvalid;
-	logic							s_axil_wready;
-	logic [1:0]						s_axil_bresp;
-	logic							s_axil_bvalid;
-	logic							s_axil_bready;
-	logic [ADDR_WIDTH-1:0]			s_axil_araddr;
-	logic [2:0]						s_axil_arprot;
-	logic							s_axil_arvalid;
-	logic							s_axil_arready;
-	logic [AXIL_DATA_WIDTH-1:0]		s_axil_rdata;
-	logic[1:0]						s_axil_rresp;
-	logic							s_axil_rvalid;
-	logic							s_axil_rready;
+	wire							s_axil_clk;
+	wire							s_axil_rst;
+	wire [AXIL_DATA_WIDTH-1:0]		s_axil_awaddr;
+	wire [2:0]						s_axil_awprot;
+	wire							s_axil_awvalid;
+	wire							s_axil_awready;
+	wire [AXIL_DATA_WIDTH-1:0]		s_axil_wdata;
+	wire [AXIL_STRB_WIDTH-1:0]		s_axil_wstrb;
+	wire							s_axil_wvalid;
+	wire							s_axil_wready;
+	wire [1:0]						s_axil_bresp;
+	wire							s_axil_bvalid;
+	wire							s_axil_bready;
+	wire [ADDR_WIDTH-1:0]			s_axil_araddr;
+	wire [2:0]						s_axil_arprot;
+	wire							s_axil_arvalid;
+	wire							s_axil_arready;
+	wire [AXIL_DATA_WIDTH-1:0]		s_axil_rdata;
+	wire[1:0]						s_axil_rresp;
+	wire							s_axil_rvalid;
+	wire							s_axil_rready;
 
 
 	//assign m_axil_clk		= clk;
@@ -149,27 +149,27 @@ interface axi_lite_interface # (
 // back-up text
 /*
 	// AXI-Lite master interface
-	output	logic 					m_axil_clk,		// bus clock
-	output	logic 					m_axil_rst,		// bus reset, active high
-	output	logic [WIDTH-1:0]		m_axil_awaddr,	// Write address
-	output	logic [2:0]				m_axil_awprot,	// Write protection level, see axi_defines.sv
-	output	logic					m_axil_awvalid,	// Write address valid, signaling valid write address and control information.
-	input	logic					m_axil_awready,	// Write address ready (from slave), ready to accept an address and associated control signals
-	output	logic [WIDTH-1:0]		m_axil_wdata,	// Write data
-	output	logic [WIDTH/8-1:0]		m_axil_wstrb,	// Write data strobe (byte select)
-	output	logic					m_axil_wvalid,	// Write data valid, write data and strobes are available
-	input	logic					m_axil_wready,	// Write data ready, slave can accept the write data
-	input	logic [1:0]				m_axil_bresp,	// Write response (from slave)
-	input	logic					m_axil_bvalid,	// Write response valid, signaling a valid write response
-	output	logic					m_axil_bready,	// Write response ready (from master) can accept a write response
-	output	logic [WIDTH-1:0]		m_axil_araddr,	// Read address
-	output	logic [2:0]				m_axil_arprot,	// Read protection level, see axi_defines.sv
-	output	logic					m_axil_arvalid,	// Read address valid,  signaling valid read address and control information
-	input	logic					m_axil_arready,	// Read address ready (from slave), ready to accept an address and associated control signals
-	input	logic [WIDTH-1:0]		m_axil_rdata,	// Read data
-	input	logic [1:0]				m_axil_rresp,	// Read response (from slave)
-	input	logic					m_axil_rvalid,	// Read response valid, the channel is signaling the required read data
-	output	logic					m_axil_rready	// Read response ready (from master), can accept the read data and response information
+	output	wire 					m_axil_clk,		// bus clock
+	output	wire 					m_axil_rst,		// bus reset, active high
+	output	wire [WIDTH-1:0]		m_axil_awaddr,	// Write address
+	output	wire [2:0]				m_axil_awprot,	// Write protection level, see axi_defines.sv
+	output	wire					m_axil_awvalid,	// Write address valid, signaling valid write address and control information.
+	input	wire					m_axil_awready,	// Write address ready (from slave), ready to accept an address and associated control signals
+	output	wire [WIDTH-1:0]		m_axil_wdata,	// Write data
+	output	wire [WIDTH/8-1:0]		m_axil_wstrb,	// Write data strobe (byte select)
+	output	wire					m_axil_wvalid,	// Write data valid, write data and strobes are available
+	input	wire					m_axil_wready,	// Write data ready, slave can accept the write data
+	input	wire [1:0]				m_axil_bresp,	// Write response (from slave)
+	input	wire					m_axil_bvalid,	// Write response valid, signaling a valid write response
+	output	wire					m_axil_bready,	// Write response ready (from master) can accept a write response
+	output	wire [WIDTH-1:0]		m_axil_araddr,	// Read address
+	output	wire [2:0]				m_axil_arprot,	// Read protection level, see axi_defines.sv
+	output	wire					m_axil_arvalid,	// Read address valid,  signaling valid read address and control information
+	input	wire					m_axil_arready,	// Read address ready (from slave), ready to accept an address and associated control signals
+	input	wire [WIDTH-1:0]		m_axil_rdata,	// Read data
+	input	wire [1:0]				m_axil_rresp,	// Read response (from slave)
+	input	wire					m_axil_rvalid,	// Read response valid, the channel is signaling the required read data
+	output	wire					m_axil_rready	// Read response ready (from master), can accept the read data and response information
 	// end AXI-Lite master interface
 */
 

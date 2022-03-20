@@ -10,9 +10,7 @@ wire [ 15:0]		sdram_data_in_w;
 wire [ 15:0]		sdram_data_out_w;
 wire				sdram_data_out_en_w;
 
-sdram_axi
-u_sdram
-(
+sdram_axi u_sdram (
 	 .clk_i(clk_i)
 	,.rst_i(rst_i)
 
@@ -61,15 +59,15 @@ u_sdram
 );
 
 genvar i;
-for (i=0; i < 16; i = i + 1) 
-begin
-	iobuf databuf
-	(
-		.o(sdram_data_in_w[i]),
-		.io(sdram_bus.sdram_data_io[i]),
-		.i(sdram_data_out_w[i]),
-		.t(~sdram_data_out_en_w)
-	);
-end
+generate
+	for (i=0; i < 16; i = i + 1) begin : iobuf_gen
+		iobuf databuf (
+			.o(sdram_data_in_w[i]),
+			.io(sdram_bus.sdram_data_io[i]),
+			.i(sdram_data_out_w[i]),
+			.en(~sdram_data_out_en_w)
+		);
+	end
+endgenerate
 
 endmodule : sdram_axi_wrapper

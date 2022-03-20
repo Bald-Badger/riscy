@@ -4,8 +4,8 @@ interface axi_interface # (
 	// Width of AXI ID signal
 	parameter ID_WIDTH = 8
 ) (
-	input logic clk,
-	input logic rst
+	input wire clk,
+	input wire rst
 );
 
 	// Width of address bus in bits
@@ -17,95 +17,95 @@ interface axi_interface # (
 
 
 	// master interface
-	logic [ID_WIDTH-1:0]	m_axi_awid;
-	logic [ADDR_WIDTH-1:0]	m_axi_awaddr;
-	logic [7:0]				m_axi_awlen;
-	logic [2:0]				m_axi_awsize;
-	logic [1:0]				m_axi_awburst;
-	logic					m_axi_awlock;
-	logic [3:0]				m_axi_awcache;
-	logic [2:0]				m_axi_awprot;
-	logic [3:0]				m_axi_awqos;
-	logic [3:0]				m_axi_awregion;
-	logic					m_axi_awuser;
-	logic					m_axi_awvalid;
-	logic					m_axi_awready;
-	logic [DATA_WIDTH-1:0]	m_axi_wdata;
-	logic [STRB_WIDTH-1:0]	m_axi_wstrb;
-	logic					m_axi_wlast;
-	logic					m_axi_wuser;
-	logic					m_axi_wvalid;
-	logic					m_axi_wready;
-	logic [ID_WIDTH-1:0]	m_axi_bid;
-	logic [1:0]				m_axi_bresp;
-	logic					m_axi_buser;
-	logic					m_axi_bvalid;
-	logic					m_axi_bready;
-	logic [ID_WIDTH-1:0]	m_axi_arid;
-	logic [ADDR_WIDTH-1:0]	m_axi_araddr;
-	logic [7:0]				m_axi_arlen;
-	logic [2:0]				m_axi_arsize;
-	logic [1:0]				m_axi_arburst;
-	logic					m_axi_arlock;
-	logic [3:0]				m_axi_arcache;
-	logic [2:0]				m_axi_arprot;
-	logic [3:0]				m_axi_arqos;
-	logic [3:0]				m_axi_arregion;
-	logic					m_axi_aruser;
-	logic					m_axi_arvalid;
-	logic					m_axi_arready;
-	logic [ID_WIDTH-1:0]    m_axi_rid;
-	logic [DATA_WIDTH-1:0]  m_axi_rdata;
-	logic [1:0]				m_axi_rresp;
-	logic					m_axi_rlast;
-	logic					m_axi_ruser;
-	logic					m_axi_rvalid;
-	logic					m_axi_rready;
+	wire [ID_WIDTH-1:0]	m_axi_awid;
+	wire [ADDR_WIDTH-1:0]	m_axi_awaddr;
+	wire [7:0]				m_axi_awlen;
+	wire [2:0]				m_axi_awsize;
+	wire [1:0]				m_axi_awburst;
+	wire					m_axi_awlock;
+	wire [3:0]				m_axi_awcache;
+	wire [2:0]				m_axi_awprot;
+	wire [3:0]				m_axi_awqos;
+	wire [3:0]				m_axi_awregion;
+	wire					m_axi_awuser;
+	wire					m_axi_awvalid;
+	wire					m_axi_awready;
+	wire [DATA_WIDTH-1:0]	m_axi_wdata;
+	wire [STRB_WIDTH-1:0]	m_axi_wstrb;
+	wire					m_axi_wlast;
+	wire					m_axi_wuser;
+	wire					m_axi_wvalid;
+	wire					m_axi_wready;
+	wire [ID_WIDTH-1:0]	m_axi_bid;
+	wire [1:0]				m_axi_bresp;
+	wire					m_axi_buser;
+	wire					m_axi_bvalid;
+	wire					m_axi_bready;
+	wire [ID_WIDTH-1:0]	m_axi_arid;
+	wire [ADDR_WIDTH-1:0]	m_axi_araddr;
+	wire [7:0]				m_axi_arlen;
+	wire [2:0]				m_axi_arsize;
+	wire [1:0]				m_axi_arburst;
+	wire					m_axi_arlock;
+	wire [3:0]				m_axi_arcache;
+	wire [2:0]				m_axi_arprot;
+	wire [3:0]				m_axi_arqos;
+	wire [3:0]				m_axi_arregion;
+	wire					m_axi_aruser;
+	wire					m_axi_arvalid;
+	wire					m_axi_arready;
+	wire [ID_WIDTH-1:0]    m_axi_rid;
+	wire [DATA_WIDTH-1:0]  m_axi_rdata;
+	wire [1:0]				m_axi_rresp;
+	wire					m_axi_rlast;
+	wire					m_axi_ruser;
+	wire					m_axi_rvalid;
+	wire					m_axi_rready;
 
 
 	// slave interface
-	logic [ID_WIDTH-1:0]	s_axi_awid;
-	logic [ADDR_WIDTH-1:0]	s_axi_awaddr;
-	logic [7:0]				s_axi_awlen;
-	logic [2:0]				s_axi_awsize;
-	logic [1:0]				s_axi_awburst;
-	logic					s_axi_awlock;
-	logic [3:0]				s_axi_awcache;
-	logic [2:0]				s_axi_awprot;
-	logic [3:0]				s_axi_awqos;
-	logic					s_axi_awuser;
-	logic					s_axi_awvalid;
-	logic					s_axi_awready;
-	logic [DATA_WIDTH-1:0]	s_axi_wdata;
-	logic [STRB_WIDTH-1:0]	s_axi_wstrb;
-	logic					s_axi_wlast;
-	logic					s_axi_wuser;
-	logic					s_axi_wvalid;
-	logic					s_axi_wready;
-	logic [ID_WIDTH-1:0]	s_axi_bid;
-	logic [1:0]				s_axi_bresp;
-	logic					s_axi_buser;
-	logic					s_axi_bvalid;
-	logic					s_axi_bready;
-	logic [ID_WIDTH-1:0]	s_axi_arid;
-	logic [ADDR_WIDTH-1:0]	s_axi_araddr;
-	logic [7:0]				s_axi_arlen;
-	logic [2:0]				s_axi_arsize;
-	logic [1:0]				s_axi_arburst;
-	logic					s_axi_arlock;
-	logic [3:0]				s_axi_arcache;
-	logic [2:0]				s_axi_arprot;
-	logic [3:0]				s_axi_arqos;
-	logic					s_axi_aruser;
-	logic					s_axi_arvalid;
-	logic					s_axi_arready;
-	logic [ID_WIDTH-1:0]    s_axi_rid;
-	logic [DATA_WIDTH-1:0]  s_axi_rdata;
-	logic [1:0]				s_axi_rresp;
-	logic					s_axi_rlast;
-	logic					s_axi_ruser;
-	logic					s_axi_rvalid;
-	logic					s_axi_rready;
+	wire [ID_WIDTH-1:0]	s_axi_awid;
+	wire [ADDR_WIDTH-1:0]	s_axi_awaddr;
+	wire [7:0]				s_axi_awlen;
+	wire [2:0]				s_axi_awsize;
+	wire [1:0]				s_axi_awburst;
+	wire					s_axi_awlock;
+	wire [3:0]				s_axi_awcache;
+	wire [2:0]				s_axi_awprot;
+	wire [3:0]				s_axi_awqos;
+	wire					s_axi_awuser;
+	wire					s_axi_awvalid;
+	wire					s_axi_awready;
+	wire [DATA_WIDTH-1:0]	s_axi_wdata;
+	wire [STRB_WIDTH-1:0]	s_axi_wstrb;
+	wire					s_axi_wlast;
+	wire					s_axi_wuser;
+	wire					s_axi_wvalid;
+	wire					s_axi_wready;
+	wire [ID_WIDTH-1:0]	s_axi_bid;
+	wire [1:0]				s_axi_bresp;
+	wire					s_axi_buser;
+	wire					s_axi_bvalid;
+	wire					s_axi_bready;
+	wire [ID_WIDTH-1:0]	s_axi_arid;
+	wire [ADDR_WIDTH-1:0]	s_axi_araddr;
+	wire [7:0]				s_axi_arlen;
+	wire [2:0]				s_axi_arsize;
+	wire [1:0]				s_axi_arburst;
+	wire					s_axi_arlock;
+	wire [3:0]				s_axi_arcache;
+	wire [2:0]				s_axi_arprot;
+	wire [3:0]				s_axi_arqos;
+	wire					s_axi_aruser;
+	wire					s_axi_arvalid;
+	wire					s_axi_arready;
+	wire [ID_WIDTH-1:0]    s_axi_rid;
+	wire [DATA_WIDTH-1:0]  s_axi_rdata;
+	wire [1:0]				s_axi_rresp;
+	wire					s_axi_rlast;
+	wire					s_axi_ruser;
+	wire					s_axi_rvalid;
+	wire					s_axi_rready;
 
 
 	// wire linking
