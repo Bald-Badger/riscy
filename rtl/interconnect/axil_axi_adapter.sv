@@ -22,7 +22,7 @@ module axil_axi_adapter # (
 	assign axi_bus.m_axi_awvalid	= axil_bus.s_axil_awvalid;
 	assign axi_bus.m_axi_wdata		= axil_bus.s_axil_wdata;
 	assign axi_bus.m_axi_wstrb		= axil_bus.s_axil_wstrb;
-	assign axi_bus.m_axi_wlast		= (axil_bus.s_axil_wvalid || axi_bus.m_axi_wready);	// BUG?
+	assign axi_bus.m_axi_wlast		= (axil_bus.s_axil_wvalid || axi_bus.m_axi_wready);	// TODO: BUG?
 	assign axi_bus.m_axi_wuser		= 0;
 	assign axi_bus.m_axi_wvalid		= axil_bus.s_axil_wvalid;
 	// assign axi_bus.m_axi_buser		= 0; // don't care
@@ -53,4 +53,4 @@ module axil_axi_adapter # (
 	//assign axi_bus.s_axi_rlast	= ;	// don't care
 	assign axil_bus.s_axil_rvalid	= axi_bus.m_axi_rvalid;
 
-endmodule
+endmodule : axil_axi_adapter
