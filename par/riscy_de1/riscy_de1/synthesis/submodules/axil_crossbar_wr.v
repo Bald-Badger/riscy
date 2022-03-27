@@ -455,7 +455,7 @@ generate
 
         assign int_axil_awready[n*S_COUNT +: S_COUNT] = (a_grant_valid && s_axil_awready_mux) << a_grant_encoded;
 
-        for (m = 0; m < S_COUNT; m = m + 1) begin : request_ack_assign_m
+        for (m = 0; m < S_COUNT; m = m + 1) begin
             assign a_request[m] = int_axil_awvalid[m*M_COUNT+n] && !a_grant[m] && !fifo_half_full_reg && !w_select_valid_next;
             assign a_acknowledge[m] = a_grant[m] && int_axil_awvalid[m*M_COUNT+n] && s_axil_awready_mux;
         end

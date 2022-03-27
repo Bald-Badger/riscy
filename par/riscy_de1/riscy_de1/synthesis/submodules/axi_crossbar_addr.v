@@ -280,7 +280,7 @@ wire [S_INT_THREADS-1:0] thread_trans_complete;
 generate
     genvar n;
 
-    for (n = 0; n < S_INT_THREADS; n = n + 1) begin : thread_assign_n
+    for (n = 0; n < S_INT_THREADS; n = n + 1) begin
         initial begin
             thread_count_reg[n] <= 0;
         end

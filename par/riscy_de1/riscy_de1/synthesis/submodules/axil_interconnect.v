@@ -339,7 +339,7 @@ genvar n;
 
 // request generation
 generate
-for (n = 0; n < S_COUNT; n = n + 1) begin : request_assign_n
+for (n = 0; n < S_COUNT; n = n + 1) begin
     assign request[2*n]   = s_axil_awvalid[n];
     assign request[2*n+1] = s_axil_arvalid[n];
 end
@@ -347,7 +347,7 @@ endgenerate
 
 // acknowledge generation
 generate
-for (n = 0; n < S_COUNT; n = n + 1) begin : ack_assign_n
+for (n = 0; n < S_COUNT; n = n + 1) begin
     assign acknowledge[2*n]   = grant[2*n]   && s_axil_bvalid[n] && s_axil_bready[n];
     assign acknowledge[2*n+1] = grant[2*n+1] && s_axil_rvalid[n] && s_axil_rready[n];
 end

@@ -357,7 +357,7 @@ generate
         assign int_axi_rready[m*M_COUNT +: M_COUNT] = (r_grant_valid && m_axi_rready_mux) << r_grant_encoded;
         assign decerr_m_axi_rready = (r_grant_valid && m_axi_rready_mux) && (r_grant_encoded == M_COUNT_P1-1);
 
-        for (n = 0; n < M_COUNT; n = n + 1) begin : request_ack_assign_n
+        for (n = 0; n < M_COUNT; n = n + 1) begin
             assign r_request[n] = int_axi_rvalid[n*S_COUNT+m] && !r_grant[n];
             assign r_acknowledge[n] = r_grant[n] && int_axi_rvalid[n*S_COUNT+m] && m_axi_rlast_mux && m_axi_rready_mux;
         end
@@ -488,7 +488,7 @@ generate
 
         assign int_axi_arready[n*S_COUNT +: S_COUNT] = (a_grant_valid && s_axi_arready_mux) << a_grant_encoded;
 
-        for (m = 0; m < S_COUNT; m = m + 1) begin : request_ack_assign_m
+        for (m = 0; m < S_COUNT; m = m + 1) begin
             assign a_request[m] = int_axi_arvalid[m*M_COUNT+n] && !a_grant[m] && !trans_limit;
             assign a_acknowledge[m] = a_grant[m] && int_axi_arvalid[m*M_COUNT+n] && s_axi_arready_mux;
         end

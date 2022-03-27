@@ -405,7 +405,7 @@ generate
         assign int_axi_bready[m*M_COUNT +: M_COUNT] = (b_grant_valid && m_axi_bready_mux) << b_grant_encoded;
         assign decerr_m_axi_bready = (b_grant_valid && m_axi_bready_mux) && (b_grant_encoded == M_COUNT_P1-1);
 
-        for (n = 0; n < M_COUNT; n = n + 1) begin : request_ack_assign_n
+        for (n = 0; n < M_COUNT; n = n + 1) begin
             assign b_request[n] = int_axi_bvalid[n*S_COUNT+m] && !b_grant[n];
             assign b_acknowledge[n] = b_grant[n] && int_axi_bvalid[n*S_COUNT+m] && m_axi_bready_mux;
         end
@@ -551,7 +551,7 @@ generate
 
         assign int_axi_awready[n*S_COUNT +: S_COUNT] = (a_grant_valid && s_axi_awready_mux) << a_grant_encoded;
 
-        for (m = 0; m < S_COUNT; m = m + 1) begin : request_ack_assign_m
+        for (m = 0; m < S_COUNT; m = m + 1) begin
             assign a_request[m] = int_axi_awvalid[m*M_COUNT+n] && !a_grant[m] && !trans_limit && !w_select_valid_next;
             assign a_acknowledge[m] = a_grant[m] && int_axi_awvalid[m*M_COUNT+n] && s_axi_awready_mux;
         end

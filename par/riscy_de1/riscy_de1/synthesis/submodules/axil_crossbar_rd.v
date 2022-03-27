@@ -387,7 +387,7 @@ generate
 
         assign int_axil_arready[n*S_COUNT +: S_COUNT] = (a_grant_valid && s_axil_arready_mux) << a_grant_encoded;
 
-        for (m = 0; m < S_COUNT; m = m + 1) begin : request_ack_assign_m
+        for (m = 0; m < S_COUNT; m = m + 1) begin
             assign a_request[m] = int_axil_arvalid[m*M_COUNT+n] && !a_grant[m] && !fifo_half_full_reg;
             assign a_acknowledge[m] = a_grant[m] && int_axil_arvalid[m*M_COUNT+n] && s_axil_arready_mux;
         end
