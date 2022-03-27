@@ -16,6 +16,8 @@ ARLEN = 0 // SINGLE
 `ifndef _axi_defines_
 `define _axi_defines_
 
+localparam ID_WIDTH = 8;
+
 typedef struct packed {
 	bit b0;	// 1 for Privileged access
 	bit b1;	// 1 for Non-secure access
@@ -31,7 +33,6 @@ typedef enum logic[1:0] {
 
 // unprovileged, secure, data access
 localparam basic_awport = 3'b000;
-
 
 `endif
 
