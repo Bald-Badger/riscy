@@ -439,6 +439,8 @@ end
 
 //////////////////////// formal verification start /////////////////////////////
 
+// synthesis translate_off
+
 //// RVFI interface ////
 logic [`RISCV_FORMAL_NRET                        - 1 : 0] rvfi_valid;		// valid instruction
 logic [`RISCV_FORMAL_NRET *                 64   - 1 : 0] rvfi_order;		// programmer's instruction order
@@ -613,5 +615,9 @@ always_comb begin : RVFI_ASSIGN
 
 	rvfi_mem_wdata	= mem_data_out_w;
 end
+
+// synthesis translate_on
+
+//////////////////////// formal verification end /////////////////////////////
 
 endmodule : proc

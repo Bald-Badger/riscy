@@ -5,7 +5,7 @@
 import defines::*;
 import axi_defines::*;
 
-module riscy_core_qsys (
+module riscy_core_axi_qsys (
 	input logic 					clk,
 	input logic						rst,
 
@@ -117,4 +117,4 @@ module riscy_core_qsys (
 		axi_bus.m_axi_rvalid	= rvalid;
 	end
 
-endmodule : riscy_core_qsys
+endmodule : riscy_core_axi_qsys
