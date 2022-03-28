@@ -223,15 +223,23 @@ $(TARFILE) : $(TARFILES)
 #
 # Remove all generated files
 
-.PHONY : clean quartus-clean qsys-clean project-clean
-clean : quartus-clean qsys-clean project-clean dtb-clean preloader-clean \
+#.PHONY : clean quartus-clean qsys-clean project-clean
+#clean : quartus-clean qsys-clean project-clean dtb-clean preloader-clean \
+#	uboot-clean
+
+.PHONY : clean quartus-clean qsys-clean
+clean : quartus-clean qsys-clean dtb-clean preloader-clean \
 	uboot-clean
 
 project-clean :
 	rm -rf $(QPF) $(QSF) $(SDC)
 
+#qsys-clean :
+#	rm -rf $(SOPCINFO) $(QIP) $(SYSTEM)/ .qsys_edit \
+#	hps_isw_handoff/ hps_sdram_p0_summary.csv
+
 qsys-clean :
-	rm -rf $(SOPCINFO) $(QIP) $(SYSTEM)/ .qsys_edit \
+	rm -rf qsys_edit \
 	hps_isw_handoff/ hps_sdram_p0_summary.csv
 
 quartus-clean :

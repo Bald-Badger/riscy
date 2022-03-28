@@ -71,6 +71,7 @@ transcript
 vsim.wlf
 *.mpf
 *.mti
+*.xml
 
 vsim_stacktrace.vstf
 
