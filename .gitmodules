@@ -24,4 +24,4 @@
 	url = https://github.com/Bald-Badger/riscv-formal.git
 [submodule "rtl/verilog-axi"]
 	path = rtl/verilog-axi
-	url = https://github.com/alexforencich/verilog-axi.git
+	url = https://github.com/Bald-Badger/verilog-axi.git
