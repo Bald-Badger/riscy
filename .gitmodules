@@ -1,27 +1,36 @@
 [submodule "sim/Assembly-To-Machine-Code-RISC-V"]
 	path = sim/Assembly-To-Machine-Code-RISC-V
 	url = https://github.com/Kritagya-Agarwal/Assembly-To-Machine-Code-RISC-V.git
+	branch = master
 [submodule "sim/riscv-assembler"]
 	path = sim/riscv-assembler
 	url = https://github.com/kcelebi/riscv-assembler.git
+	branch = main
 [submodule "sim/riscemu"]
 	path = sim/riscemu
 	url = https://github.com/AntonLydike/riscemu.git
+	branch = master
 [submodule "sim/rars"]
 	path = sim/rars
 	url = https://github.com/TheThirdOne/rars.git
+	branch = master
 [submodule "sim/riscv-tests"]
 	path = sim/riscv-tests
 	url = https://github.com/riscv-software-src/riscv-tests.git
+	branch = master
 [submodule "ref/core_uriscv"]
 	path = ref/core_uriscv
 	url = https://github.com/Bald-Badger/core_uriscv.git
+	branch = main
 [submodule "sim/bin2mif"]
 	path = sim/bin2mif
 	url = https://github.com/brNX/bin2mif.git
+	branch = master
 [submodule "formal/riscv-formal"]
 	path = formal/riscv-formal
 	url = https://github.com/Bald-Badger/riscv-formal.git
+	branch = master
 [submodule "rtl/verilog-axi"]
 	path = rtl/verilog-axi
 	url = https://github.com/Bald-Badger/verilog-axi.git
+	branch = master
