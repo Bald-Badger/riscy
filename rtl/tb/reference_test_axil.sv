@@ -167,18 +167,18 @@ module reference_test_axil ();
 				pc_log_t'(
 					{
 						sim_time:	$time,
-						pc:			proc_dut.processor.pcp4_w - 32'd4
+						pc:			proc_dut.processor.pc_w
 					}
 				)
 			);
-		end else if (pc_log_dut[pc_log_dut.size()-1].pc == (proc_dut.processor.pcp4_w - 32'd4)) begin 
+		end else if (pc_log_dut[pc_log_dut.size()-1].pc == (proc_dut.processor.pc_w)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			pc_log_dut.push_back(
 				pc_log_t'(
 					{
 						sim_time:	$time,
-						pc:			proc_dut.processor.pcp4_w - 32'd4
+						pc:			proc_dut.processor.pc_w
 					}
 				)
 			);
@@ -258,17 +258,17 @@ module reference_test_axil ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			(proc_dut.processor.pcp4_w - 32'd4)
+					pc:			(proc_dut.processor.pc_w)
 					//instr:		proc_dut.processor.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
 				$display(
 					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
-					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pcp4_w - 32'd4)
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pc_w)
 				);
 			end
-		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.processor.pcp4_w - 32'd4)
+		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.processor.pc_w)
 			/*
 			reg_access_log_dut[reg_access_log_dut.size()-1].rw == WRITE &&
 			reg_access_log_dut[reg_access_log_dut.size()-1].rw_addr == reg_wr_addr_dut &&
@@ -283,14 +283,14 @@ module reference_test_axil ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor.pcp4_w - 32'd4
+					pc:			proc_dut.processor.pc_w
 					//instr:		proc_dut.processor.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
 				$display(
 					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
-					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pcp4_w - 32'd4)
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pc_w)
 				);
 			end
 		end
@@ -369,7 +369,7 @@ module reference_test_axil ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor.pcp4_m - 4
+					pc:			proc_dut.processor.pc_m
 					//instr:		instr_t'(proc_dut.processor.instr_m)
 				})
 			);
@@ -377,16 +377,16 @@ module reference_test_axil ();
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pcp4_m - 4)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pcp4_m - 4)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end
 			end
-		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.processor.pcp4_m - 4)
+		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.processor.pc_m)
 		/*
 			(
 				mem_wr_en_dut &&
@@ -402,7 +402,7 @@ module reference_test_axil ();
 			)
 		*/
 		) begin 
-			// $display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.processor.pcp4_m - 4));
+			// $display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.processor.pc_m));
 			// do nothing, duplicative entry
 		end else begin
 			mem_access_log_dut.push_back(
@@ -411,7 +411,7 @@ module reference_test_axil ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor.pcp4_m - 4
+					pc:			proc_dut.processor.pc_m
 					//instr:		instr_t'(proc_dut.processor.instr_m)
 				})
 			);
@@ -419,12 +419,12 @@ module reference_test_axil ();
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pcp4_m - 4)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pcp4_m - 4)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end
 			end
