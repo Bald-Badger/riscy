@@ -17,7 +17,7 @@ module reg_bypass (
 	output	data_t	rs2_data
 );
 
-	reg [XLEN-1:0] registers [0:31]; 
+	logic [XLEN-1:0] registers [0:31] /* synthesis ramstyle = "logic" */; 
 	integer i;
 
 	always_ff @(negedge clk or negedge rst_n) begin
