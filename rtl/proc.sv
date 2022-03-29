@@ -46,10 +46,7 @@ module proc (
 	data_t 		mem_data_in_m, mem_data_in_w;	// data write to memory
 	data_t 		mem_data_out_m, mem_data_out_w;	// data read from memory
 	data_t		mem_addr_m, mem_addr_w;	// data access addr;
-	logic		branch_predict_f, branch_predict_d;	// branch perdictor output from fetch stage
 	logic		branch_taken_actual_d, branch_taken_actual_x;	// actual branch result from decode stagen
-	logic		branch_mispredict;
-	assign		branch_mispredict = branch_taken_actual_d != branch_predict_d;
 
 	// global control wire
 	logic 			pc_sel;			// should pc update to pc+4 or branch/jump result, 1 for bj, 0 for p4
@@ -106,7 +103,6 @@ module proc (
 		// output
 		.pc_out			(pc_f),
 		.instr			(instr_f),
-		.taken			(branch_predict_f),
 		.instr_valid	(instr_valid_f),
 
 		.axil_bus		(instr_bus)
@@ -124,13 +120,11 @@ module proc (
 		// input
 		.pc_in			(pc_f),
 		.instr_in		(instr_f),
-		.branch_take_in	(branch_predict_f),
 		.instr_valid_in	(instr_valid_f),
 		
 		// output
 		.pc_out			(pc_d),
 		.instr_out		(instr_d),
-		.branch_take_out(branch_predict_d),
 		.instr_valid_out(instr_valid_d)
 	);
 
