@@ -13,7 +13,7 @@ package defines;
 		XILINX
 	} target_t;
 
-	localparam	TARGET			= target_t'(ALTERA);
+	localparam [1:0]	TARGET	= ALTERA;
 
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
