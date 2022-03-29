@@ -13,7 +13,7 @@ module reg_ctrl (
 	always_comb begin
 		opcode = opcode_t'(instr.opcode);
 
-		unique case (opcode)
+		case (opcode)
 			JALR:		rs1_rden = ENABLE;
 			B:			rs1_rden = ENABLE;
 			LOAD:		rs1_rden = ENABLE;
@@ -24,13 +24,13 @@ module reg_ctrl (
 			default:	rs1_rden = DISABLE;
 		endcase
 
-		unique case (opcode)
+		case (opcode)
 			B:			rs2_rden = ENABLE;
 			STORE:		rs2_rden = ENABLE;
 			R:			rs2_rden = ENABLE;
 			default:	rs2_rden = DISABLE;
 		endcase
-		
+
 		rs1_addr = 	(rs1_rden) ? instr.rs1 : r_t'(ZERO); // read from X0 when no read operation
 		rs2_addr = 	(rs2_rden) ? instr.rs2 : r_t'(ZERO);
 	end
