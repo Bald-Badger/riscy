@@ -134,7 +134,7 @@ module pc_adder (
 				(opcode == JAL)		? 1'b1 :
 				(opcode == JALR)	? 1'b1 :
 				1'b0;
-		pc_nxt = (pc_sel) ? pc_bj : pc + 32'd4;
+		pc_nxt = (pc_sel) ? pc_bj : (pc + 32'd4);
 	end
 
 endmodule : pc_adder

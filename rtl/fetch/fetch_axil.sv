@@ -230,7 +230,7 @@ module fetch_axil (
 	always_comb begin
 		instr = instr_valid ? instr_switch : NOP;
 		pc_out = instr_valid ? instr_fifo_out.pc : NULL;
-		pc_p4_out = instr_valid ? (pc_out + 32'd4) : NULL;
+		pc_p4_out = pc_out + 32'd4;
 	end
 
 
