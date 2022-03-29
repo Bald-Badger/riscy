@@ -45,14 +45,25 @@ module pc_adder (
 	end
 
 /*
-	logic [XLEN+1:0] rs_diff_unsign = ({1'b0, op2} - {1'b0, op1}); // 34 bits
-	logic [XLEN:0] rs_diff_sign = $signed(op2) - $signed(op1); // 33 bits
-	logic beq_take	= (rs_diff_sign == 34'b0);				// pass
-	logic bne_take 	= ~beq_take;						// pass
-	logic blt_take 	= $signed(rs_diff_sign[XLEN:0]) > 0;
-	logic bltu_take 	= $signed(rs_diff_unsign[XLEN:0]) > 0;	// pass
-	logic bge_take 	= ~blt_take;
-	logic bgeu_take 	= ~bltu_take;
+	logic [XLEN+1:0] rs_diff_unsign;
+	logic [XLEN:0] rs_diff_sign;
+	logic beq_take;
+	logic bne_take;
+	logic blt_take;
+	logic bltu_take;
+	logic bge_take;
+	logic bgeu_take;
+
+	always_comb begin
+		rs_diff_unsign	= ({1'b0, op2} - {1'b0, op1});
+		rs_diff_sign	= $signed(op2) - $signed(op1);
+		beq_take		= (rs_diff_sign == 34'b0);
+		bne_take 		= ~beq_take;
+		blt_take 		= $signed(rs_diff_sign[XLEN:0]) > 0;
+		bltu_take 		= $signed(rs_diff_unsign[XLEN:0]) > 0;
+		bge_take 		= ~blt_take;
+		bgeu_take 		= ~bltu_take;
+	end
 */
 
 	logic beq_take;
@@ -63,13 +74,14 @@ module pc_adder (
 	logic bgeu_take;
 
 	always_comb begin : branck_taken_assign
-		beq_take	= op1 == op2;
-		bne_take	= op1 != op2;
-		blt_take	= $signed(op1) < $signed(op2);
-		bltu_take	= $unsigned(op1) < $unsigned(op2);
-		bge_take 	= $signed(op1) > $signed(op2);
-		bgeu_take	= $unsigned(op1) > $unsigned(op2);
+		beq_take	= (op1 == op2);
+		bne_take	= (op1 != op2);
+		blt_take	= ($signed(op1) < $signed(op2));
+		bltu_take	= ($unsigned(op1) < $unsigned(op2));
+		bge_take 	= ($signed(op1) >= $signed(op2));
+		bgeu_take	= ($unsigned(op1) >= $unsigned(op2));
 	end
+	
 
 	always_comb begin
 		branch_taken =	
@@ -89,13 +101,6 @@ module pc_adder (
 	1. pc + imm (branch and JAL)
 	2. rs1 + imm (JALR)
 	*/
-	data_t pc_add_comp;
-	always_comb begin
-		pc_add_comp =	(branch_taken)		? pc  :
-						(opcode == JAL)		? pc  :
-						(opcode == JALR)	? op1 :
-						NULL;
-	end
 
 	// for B and JAL, the imm is counted in multiple of 2 bytes
 	// for JALR, the imm is counted in multuple of single byte
@@ -110,11 +115,16 @@ module pc_adder (
 		endcase
 	end
 	
-	data_t pc_add, pc_add_carry;
+	data_t pc_add, pc_add_imm, op1_add_imm;
 
 	always_comb begin
-		pc_add_carry = pc_add_comp + imm; 
-		pc_add = pc_add_carry[XLEN-1 : 0];
+		pc_add_imm = pc + imm;
+		op1_add_imm = op1 + imm;
+
+		pc_add =	(branch_taken)		? pc_add_imm  :
+					(opcode == JAL)		? pc_add_imm  :
+					(opcode == JALR)	? op1_add_imm :
+					NULL;
 
 		// JALR should mask the last bit to 0
 		pc_bj = (opcode == JALR) ? {pc_add[31:1], 1'b0} : pc_add;

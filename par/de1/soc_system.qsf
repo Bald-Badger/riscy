@@ -45,7 +45,7 @@ set_global_assignment -name PROJECT_CREATION_TIME_DATE "17:13:13  MARCH 28, 2022
 set_global_assignment -name LAST_QUARTUS_VERSION "21.1.0 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_global_assignment -name NUM_PARALLEL_PROCESSORS 4
+set_global_assignment -name NUM_PARALLEL_PROCESSORS 8
 set_global_assignment -name SYSTEMVERILOG_FILE soc_system_top.sv
 set_global_assignment -name QIP_FILE soc_system/synthesis/soc_system.qip
 set_location_assignment PIN_AJ4 -to ADC_CS_N
