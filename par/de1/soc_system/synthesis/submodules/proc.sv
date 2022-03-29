@@ -31,9 +31,7 @@ module proc (
 	// signal naming shceme:
 	// e.g.		xxx_f => xxx signal in fetch stage
 	// e.g.		xxx_d => xxx signal in decode stafe
-	data_t 		pc_f, pc_d, pc_x; // program counter of current instruction
-	data_t 		pcp4_f, pcp4_d, pcp4_x, pcp4_m, pcp4_w;	// program counter + 4
-	data_t		pc_nxt_d, pc_nxt_x, pc_nxt_m, pc_nxt_w; // for debug
+	data_t 		pc_f, pc_d, pc_x, pc_m, pc_w; // program counter of current instruction
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
 	opcode_t	opcode_f, opcode_d, opcode_x, opcode_m, opcode_w;
 	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
@@ -106,7 +104,6 @@ module proc (
 		.instr_w		(instr_w),
 
 		// output
-		.pc_p4_out		(pcp4_f),
 		.pc_out			(pc_f),
 		.instr			(instr_f),
 		.taken			(branch_predict_f),
@@ -125,14 +122,12 @@ module proc (
 		.en				((!stall_if_id) && init_done),
 
 		// input
-		.pc_p4_in		(pcp4_f),
 		.pc_in			(pc_f),
 		.instr_in		(instr_f),
 		.branch_take_in	(branch_predict_f),
 		.instr_valid_in	(instr_valid_f),
 		
 		// output
-		.pc_p4_out		(pcp4_d),
 		.pc_out			(pc_d),
 		.instr_out		(instr_d),
 		.branch_take_out(branch_predict_d),
@@ -154,7 +149,6 @@ module proc (
 
 		// input
 		.pc				(pc_d),
-		.pc_nxt			(pc_nxt_d),
 		.instr			(instr_d),
 		.wd				(wb_data),
 		.waddr			(rd_addr),
@@ -205,9 +199,7 @@ module proc (
 		.rs1_in				(rs1_d),
 		.rs2_in				(rs2_d_after_fwd),
 		.pc_in				(pc_d),
-		.pc_nxt_in			(pc_nxt_d),
 		.imm_in				(imm_d),
-		.pc_p4_in			(pcp4_d),
 		.branch_taken_in	(branch_taken_actual_d),
 		.instr_valid_in		(instr_valid_d),
 
@@ -217,8 +209,6 @@ module proc (
 		.rs2_out			(rs2_x),
 		.pc_out				(pc_x),
 		.imm_out			(imm_x),
-		.pc_p4_out			(pcp4_x),
-		.pc_nxt_out			(pc_nxt_x),
 		.branch_taken_out	(branch_taken_actual_x),
 		.instr_valid_out	(instr_valid_x)
 	);
@@ -265,8 +255,7 @@ module proc (
 		),
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
-		.pc_p4_in		(pcp4_x),
-		.pc_nxt_in		(pc_nxt_x),
+		.pc_in			(pc_x),
 		.rd_wren_in		(rd_wren_x),
 		.instr_valid_in	(instr_valid_x),
 
@@ -274,8 +263,7 @@ module proc (
 		.instr_out		(instr_m),
 		.alu_result_out	(alu_result_m),
 		.rs2_out		(rs2_m),
-		.pc_p4_out		(pcp4_m),
-		.pc_nxt_out		(pc_nxt_m),
+		.pc_out			(pc_m),
 		.rd_wren_out	(rd_wren_m),
 		.instr_valid_out(instr_valid_m)
 	);
@@ -318,8 +306,7 @@ module proc (
 		.alu_result_in		(alu_result_m),
 		.mem_data_in_in		(mem_data_in_m),
 		.mem_data_out_in	(mem_data_out_m),
-		.pc_p4_in			(pcp4_m),
-		.pc_nxt_in			(pc_nxt_m),
+		.pc_in				(pc_m),
 		.rd_wren_in			(rd_wren_m),
 		.instr_valid_in		(instr_valid_m),
 		.mem_addr_in		(mem_addr_m),	// for debug
@@ -329,8 +316,7 @@ module proc (
 		.alu_result_out		(alu_result_w),
 		.mem_data_in_out	(mem_data_in_w),
 		.mem_data_out_out	(mem_data_out_w),
-		.pc_p4_out			(pcp4_w),
-		.pc_nxt_out			(pc_nxt_w),
+		.pc_out				(pc_w),
 		.rd_wren_out		(rd_wren_w),
 		.instr_valid_out	(instr_valid_w),
 		.mem_addr_out		(mem_addr_w)
@@ -343,7 +329,6 @@ module proc (
 		.instr		(instr_w),
 		.alu_result	(alu_result_w),
 		.mem_data	(mem_data_out_w),
-		.pc_p4		(pcp4_w),
 
 		// output
 		.wb_data	(wb_data)

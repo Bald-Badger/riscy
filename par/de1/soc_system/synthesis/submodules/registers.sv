@@ -16,8 +16,8 @@ module registers (
 	output	data_t	rs2_data
 );
 
-	r_t rs1_addr, rs2_addr;
-	wire rs1_rden, rs2_rden;
+	r_t		rs1_addr, rs2_addr;
+	logic	rs1_rden, rs2_rden;
 
 	reg_bypass reg_bypass_inst (
 		.clk		(clk),

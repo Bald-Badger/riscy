@@ -73,6 +73,7 @@ module soc_system (
 		input  wire        reset_reset_n                 //    reset.reset_n
 	);
 
+	wire         pll_0_outclk0_clk;                             // pll_0:outclk_0 -> [hps_0:f2h_axi_clk, hps_0:h2f_axi_clk, mm_interconnect_0:pll_0_outclk0_clk, riscy_core_0:clk, rst_controller:clk, rst_controller_001:clk]
 	wire  [31:0] riscy_core_0_altera_axi4lite_master_awaddr;    // riscy_core_0:awaddr -> mm_interconnect_0:riscy_core_0_altera_axi4lite_master_awaddr
 	wire         riscy_core_0_altera_axi4lite_master_arready;   // mm_interconnect_0:riscy_core_0_altera_axi4lite_master_arready -> riscy_core_0:arready
 	wire   [1:0] riscy_core_0_altera_axi4lite_master_bresp;     // mm_interconnect_0:riscy_core_0_altera_axi4lite_master_bresp -> riscy_core_0:bresp
@@ -205,7 +206,7 @@ module soc_system (
 		.hps_io_gpio_inst_GPIO54  (hps_hps_io_gpio_inst_GPIO54),                   //                .hps_io_gpio_inst_GPIO54
 		.hps_io_gpio_inst_GPIO61  (hps_hps_io_gpio_inst_GPIO61),                   //                .hps_io_gpio_inst_GPIO61
 		.h2f_rst_n                (hps_0_h2f_reset_reset),                         //       h2f_reset.reset_n
-		.h2f_axi_clk              (clk_clk),                                       //   h2f_axi_clock.clk
+		.h2f_axi_clk              (pll_0_outclk0_clk),                             //   h2f_axi_clock.clk
 		.h2f_AWID                 (),                                              //  h2f_axi_master.awid
 		.h2f_AWADDR               (),                                              //                .awaddr
 		.h2f_AWLEN                (),                                              //                .awlen
@@ -242,7 +243,7 @@ module soc_system (
 		.h2f_RLAST                (),                                              //                .rlast
 		.h2f_RVALID               (),                                              //                .rvalid
 		.h2f_RREADY               (),                                              //                .rready
-		.f2h_axi_clk              (clk_clk),                                       //   f2h_axi_clock.clk
+		.f2h_axi_clk              (pll_0_outclk0_clk),                             //   f2h_axi_clock.clk
 		.f2h_AWID                 (mm_interconnect_0_hps_0_f2h_axi_slave_awid),    //   f2h_axi_slave.awid
 		.f2h_AWADDR               (mm_interconnect_0_hps_0_f2h_axi_slave_awaddr),  //                .awaddr
 		.f2h_AWLEN                (mm_interconnect_0_hps_0_f2h_axi_slave_awlen),   //                .awlen
@@ -283,8 +284,15 @@ module soc_system (
 		.f2h_RREADY               (mm_interconnect_0_hps_0_f2h_axi_slave_rready)   //                .rready
 	);
 
+	soc_system_pll_0 pll_0 (
+		.refclk   (clk_clk),           //  refclk.clk
+		.rst      (~reset_reset_n),    //   reset.reset
+		.outclk_0 (pll_0_outclk0_clk), // outclk0.clk
+		.locked   ()                   // (terminated)
+	);
+
 	riscy_core_axil_qsys riscy_core_0 (
-		.clk     (clk_clk),                                     //                  clock.clk
+		.clk     (pll_0_outclk0_clk),                           //                  clock.clk
 		.araddr  (riscy_core_0_altera_axi4lite_master_araddr),  // altera_axi4lite_master.araddr
 		.arprot  (riscy_core_0_altera_axi4lite_master_arprot),  //                       .arprot
 		.arready (riscy_core_0_altera_axi4lite_master_arready), //                       .arready
@@ -365,7 +373,7 @@ module soc_system (
 		.riscy_core_0_altera_axi4lite_master_rresp                        (riscy_core_0_altera_axi4lite_master_rresp),     //                                                           .rresp
 		.riscy_core_0_altera_axi4lite_master_rvalid                       (riscy_core_0_altera_axi4lite_master_rvalid),    //                                                           .rvalid
 		.riscy_core_0_altera_axi4lite_master_rready                       (riscy_core_0_altera_axi4lite_master_rready),    //                                                           .rready
-		.clk_0_clk_clk                                                    (clk_clk),                                       //                                                  clk_0_clk.clk
+		.pll_0_outclk0_clk                                                (pll_0_outclk0_clk),                             //                                              pll_0_outclk0.clk
 		.hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset (rst_controller_001_reset_out_reset),            // hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset.reset
 		.riscy_core_0_reset_sink_reset_bridge_in_reset_reset              (rst_controller_reset_out_reset)                 //              riscy_core_0_reset_sink_reset_bridge_in_reset.reset
 	);
@@ -397,7 +405,7 @@ module soc_system (
 		.ADAPT_RESET_REQUEST       (0)
 	) rst_controller (
 		.reset_in0      (~reset_reset_n),                 // reset_in0.reset
-		.clk            (clk_clk),                        //       clk.clk
+		.clk            (pll_0_outclk0_clk),              //       clk.clk
 		.reset_out      (rst_controller_reset_out_reset), // reset_out.reset
 		.reset_req      (),                               // (terminated)
 		.reset_req_in0  (1'b0),                           // (terminated)
@@ -460,7 +468,7 @@ module soc_system (
 		.ADAPT_RESET_REQUEST       (0)
 	) rst_controller_001 (
 		.reset_in0      (~hps_0_h2f_reset_reset),             // reset_in0.reset
-		.clk            (clk_clk),                            //       clk.clk
+		.clk            (pll_0_outclk0_clk),                  //       clk.clk
 		.reset_out      (rst_controller_001_reset_out_reset), // reset_out.reset
 		.reset_req      (),                                   // (terminated)
 		.reset_req_in0  (1'b0),                               // (terminated)

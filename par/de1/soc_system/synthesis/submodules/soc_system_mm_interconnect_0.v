@@ -64,7 +64,7 @@ module soc_system_mm_interconnect_0 (
 		output wire [1:0]  riscy_core_0_altera_axi4lite_master_rresp,                        //                                                           .rresp
 		output wire        riscy_core_0_altera_axi4lite_master_rvalid,                       //                                                           .rvalid
 		input  wire        riscy_core_0_altera_axi4lite_master_rready,                       //                                                           .rready
-		input  wire        clk_0_clk_clk,                                                    //                                                  clk_0_clk.clk
+		input  wire        pll_0_outclk0_clk,                                                //                                              pll_0_outclk0.clk
 		input  wire        hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset, // hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset.reset
 		input  wire        riscy_core_0_reset_sink_reset_bridge_in_reset_reset               //              riscy_core_0_reset_sink_reset_bridge_in_reset.reset
 	);
@@ -219,7 +219,7 @@ module soc_system_mm_interconnect_0 (
 		.ST_CHANNEL_W              (2),
 		.ID                        (0)
 	) riscy_core_0_altera_axi4lite_master_agent (
-		.aclk                   (clk_0_clk_clk),                                                    //              clk.clk
+		.aclk                   (pll_0_outclk0_clk),                                                //              clk.clk
 		.aresetn                (~riscy_core_0_reset_sink_reset_bridge_in_reset_reset),             //        clk_reset.reset_n
 		.write_cp_valid         (riscy_core_0_altera_axi4lite_master_agent_write_cp_valid),         //         write_cp.valid
 		.write_cp_data          (riscy_core_0_altera_axi4lite_master_agent_write_cp_data),          //                 .data
@@ -345,7 +345,7 @@ module soc_system_mm_interconnect_0 (
 		.WRITE_ACCEPTANCE_CAPABILITY (8),
 		.READ_ACCEPTANCE_CAPABILITY  (8)
 	) hps_0_f2h_axi_slave_agent (
-		.aclk                   (clk_0_clk_clk),                                                     //        clock_sink.clk
+		.aclk                   (pll_0_outclk0_clk),                                                 //        clock_sink.clk
 		.aresetn                (~hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset), //        reset_sink.reset_n
 		.read_cp_valid          (cmd_mux_001_src_valid),                                             //           read_cp.valid
 		.read_cp_ready          (cmd_mux_001_src_ready),                                             //                  .ready
@@ -415,7 +415,7 @@ module soc_system_mm_interconnect_0 (
 		.sink_data          (riscy_core_0_altera_axi4lite_master_agent_write_cp_data),          //          .data
 		.sink_startofpacket (riscy_core_0_altera_axi4lite_master_agent_write_cp_startofpacket), //          .startofpacket
 		.sink_endofpacket   (riscy_core_0_altera_axi4lite_master_agent_write_cp_endofpacket),   //          .endofpacket
-		.clk                (clk_0_clk_clk),                                                    //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                                //       clk.clk
 		.reset              (riscy_core_0_reset_sink_reset_bridge_in_reset_reset),              // clk_reset.reset
 		.src_ready          (router_src_ready),                                                 //       src.ready
 		.src_valid          (router_src_valid),                                                 //          .valid
@@ -431,7 +431,7 @@ module soc_system_mm_interconnect_0 (
 		.sink_data          (riscy_core_0_altera_axi4lite_master_agent_read_cp_data),          //          .data
 		.sink_startofpacket (riscy_core_0_altera_axi4lite_master_agent_read_cp_startofpacket), //          .startofpacket
 		.sink_endofpacket   (riscy_core_0_altera_axi4lite_master_agent_read_cp_endofpacket),   //          .endofpacket
-		.clk                (clk_0_clk_clk),                                                   //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                               //       clk.clk
 		.reset              (riscy_core_0_reset_sink_reset_bridge_in_reset_reset),             // clk_reset.reset
 		.src_ready          (router_001_src_ready),                                            //       src.ready
 		.src_valid          (router_001_src_valid),                                            //          .valid
@@ -447,7 +447,7 @@ module soc_system_mm_interconnect_0 (
 		.sink_data          (hps_0_f2h_axi_slave_agent_write_rp_data),                          //          .data
 		.sink_startofpacket (hps_0_f2h_axi_slave_agent_write_rp_startofpacket),                 //          .startofpacket
 		.sink_endofpacket   (hps_0_f2h_axi_slave_agent_write_rp_endofpacket),                   //          .endofpacket
-		.clk                (clk_0_clk_clk),                                                    //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                                //       clk.clk
 		.reset              (hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.src_ready          (router_002_src_ready),                                             //       src.ready
 		.src_valid          (router_002_src_valid),                                             //          .valid
@@ -463,7 +463,7 @@ module soc_system_mm_interconnect_0 (
 		.sink_data          (hps_0_f2h_axi_slave_agent_read_rp_data),                           //          .data
 		.sink_startofpacket (hps_0_f2h_axi_slave_agent_read_rp_startofpacket),                  //          .startofpacket
 		.sink_endofpacket   (hps_0_f2h_axi_slave_agent_read_rp_endofpacket),                    //          .endofpacket
-		.clk                (clk_0_clk_clk),                                                    //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                                //       clk.clk
 		.reset              (hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.src_ready          (router_003_src_ready),                                             //       src.ready
 		.src_valid          (router_003_src_valid),                                             //          .valid
@@ -474,7 +474,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_cmd_demux cmd_demux (
-		.clk                (clk_0_clk_clk),                                       //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                   //       clk.clk
 		.reset              (riscy_core_0_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.sink_ready         (router_src_ready),                                    //      sink.ready
 		.sink_channel       (router_src_channel),                                  //          .channel
@@ -491,7 +491,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_cmd_demux cmd_demux_001 (
-		.clk                (clk_0_clk_clk),                                       //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                   //       clk.clk
 		.reset              (riscy_core_0_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.sink_ready         (router_001_src_ready),                                //      sink.ready
 		.sink_channel       (router_001_src_channel),                              //          .channel
@@ -508,7 +508,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_cmd_mux cmd_mux (
-		.clk                 (clk_0_clk_clk),                                                    //       clk.clk
+		.clk                 (pll_0_outclk0_clk),                                                //       clk.clk
 		.reset               (hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.src_ready           (cmd_mux_src_ready),                                                //       src.ready
 		.src_valid           (cmd_mux_src_valid),                                                //          .valid
@@ -525,7 +525,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_cmd_mux cmd_mux_001 (
-		.clk                 (clk_0_clk_clk),                                                    //       clk.clk
+		.clk                 (pll_0_outclk0_clk),                                                //       clk.clk
 		.reset               (hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.src_ready           (cmd_mux_001_src_ready),                                            //       src.ready
 		.src_valid           (cmd_mux_001_src_valid),                                            //          .valid
@@ -542,7 +542,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_cmd_demux rsp_demux (
-		.clk                (clk_0_clk_clk),                                                    //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                                //       clk.clk
 		.reset              (hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.sink_ready         (router_002_src_ready),                                             //      sink.ready
 		.sink_channel       (router_002_src_channel),                                           //          .channel
@@ -559,7 +559,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_cmd_demux rsp_demux_001 (
-		.clk                (clk_0_clk_clk),                                                    //       clk.clk
+		.clk                (pll_0_outclk0_clk),                                                //       clk.clk
 		.reset              (hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.sink_ready         (router_003_src_ready),                                             //      sink.ready
 		.sink_channel       (router_003_src_channel),                                           //          .channel
@@ -576,7 +576,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_rsp_mux rsp_mux (
-		.clk                 (clk_0_clk_clk),                                       //       clk.clk
+		.clk                 (pll_0_outclk0_clk),                                   //       clk.clk
 		.reset               (riscy_core_0_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.src_ready           (rsp_mux_src_ready),                                   //       src.ready
 		.src_valid           (rsp_mux_src_valid),                                   //          .valid
@@ -593,7 +593,7 @@ module soc_system_mm_interconnect_0 (
 	);
 
 	soc_system_mm_interconnect_0_rsp_mux rsp_mux_001 (
-		.clk                 (clk_0_clk_clk),                                       //       clk.clk
+		.clk                 (pll_0_outclk0_clk),                                   //       clk.clk
 		.reset               (riscy_core_0_reset_sink_reset_bridge_in_reset_reset), // clk_reset.reset
 		.src_ready           (rsp_mux_001_src_ready),                               //       src.ready
 		.src_valid           (rsp_mux_001_src_valid),                               //          .valid

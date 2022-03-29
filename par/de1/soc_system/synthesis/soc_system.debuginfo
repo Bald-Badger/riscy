@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="soc_system" kind="system" version="21.1" fabric="QSYS">
  <!-- Format version 21.1 842 (Future versions may contain additional information.) -->
- <!-- 2022.03.28.19:44:55 -->
+ <!-- 2022.03.29.06:43:11 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1648511058</value>
+  <value>1648550568</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -384,39 +384,9 @@ parameters are a RESULT of the module parameters. -->
    </port>
    <clockDomainMember>
     <isBridge>false</isBridge>
-    <moduleName>riscy_core_0</moduleName>
-    <slaveName>clock</slaveName>
-    <name>riscy_core_0.clock</name>
-   </clockDomainMember>
-   <clockDomainMember>
-    <isBridge>false</isBridge>
-    <moduleName>hps_0_fpga_interfaces</moduleName>
-    <slaveName>f2h_axi_clock</slaveName>
-    <name>hps_0_fpga_interfaces.f2h_axi_clock</name>
-   </clockDomainMember>
-   <clockDomainMember>
-    <isBridge>false</isBridge>
-    <moduleName>hps_0_fpga_interfaces</moduleName>
-    <slaveName>h2f_axi_clock</slaveName>
-    <name>hps_0_fpga_interfaces.h2f_axi_clock</name>
-   </clockDomainMember>
-   <clockDomainMember>
-    <isBridge>false</isBridge>
-    <moduleName>mm_interconnect_0</moduleName>
-    <slaveName>clk_0_clk</slaveName>
-    <name>mm_interconnect_0.clk_0_clk</name>
-   </clockDomainMember>
-   <clockDomainMember>
-    <isBridge>false</isBridge>
-    <moduleName>rst_controller</moduleName>
-    <slaveName>clk</slaveName>
-    <name>rst_controller.clk</name>
-   </clockDomainMember>
-   <clockDomainMember>
-    <isBridge>false</isBridge>
-    <moduleName>rst_controller_001</moduleName>
-    <slaveName>clk</slaveName>
-    <name>rst_controller_001.clk</name>
+    <moduleName>pll_0</moduleName>
+    <slaveName>refclk</slaveName>
+    <name>pll_0.refclk</name>
    </clockDomainMember>
   </interface>
   <interface name="clk_reset" kind="reset_source" version="21.1">
@@ -41269,6 +41239,3999 @@ parameters are a RESULT of the module parameters. -->
    </port>
   </interface>
  </module>
+ <module name="pll_0" kind="altera_pll" version="21.1" path="pll_0">
+  <!-- Describes a single module. Module parameters are
+the requested settings for a module instance. -->
+  <parameter name="debug_print_output">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="debug_use_rbc_taf_method">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="device_family">
+   <type>java.lang.String</type>
+   <value>CYCLONEV</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+   <sysinfo_type>DEVICE_FAMILY</sysinfo_type>
+  </parameter>
+  <parameter name="device">
+   <type>java.lang.String</type>
+   <value>5CSEMA5F31C6</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+   <sysinfo_type>DEVICE</sysinfo_type>
+  </parameter>
+  <parameter name="gui_device_speed_grade">
+   <type>java.lang.String</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_pll_mode">
+   <type>java.lang.String</type>
+   <value>Integer-N PLL</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="fractional_vco_multiplier">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_reference_clock_frequency">
+   <type>double</type>
+   <value>50.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="reference_clock_frequency">
+   <type>java.lang.String</type>
+   <value>50.0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_channel_spacing">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_operation_mode">
+   <type>java.lang.String</type>
+   <value>direct</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_feedback_clock">
+   <type>java.lang.String</type>
+   <value>Global Clock</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_fractional_cout">
+   <type>int</type>
+   <value>32</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_fractional_cout">
+   <type>int</type>
+   <value>32</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_dsm_out_sel">
+   <type>java.lang.String</type>
+   <value>1st_order</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_dsm_out_sel">
+   <type>java.lang.String</type>
+   <value>1st_order</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="operation_mode">
+   <type>java.lang.String</type>
+   <value>direct</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_use_locked">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_en_adv_params">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_number_of_clocks">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="number_of_clocks">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="number_of_cascade_counters">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_multiply_factor">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_frac_multiply_factor">
+   <type>long</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_n">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter0">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency0">
+   <type>double</type>
+   <value>50.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c0">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor0">
+   <type>int</type>
+   <value>6</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor0">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor0">
+   <type>int</type>
+   <value>6</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency0">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units0">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift0">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg0">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift0">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle0">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter1">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency1">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c1">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor1">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor1">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor1">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency1">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units1">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift1">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg1">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift1">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle1">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter2">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency2">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c2">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor2">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor2">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor2">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency2">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units2">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift2">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg2">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift2">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle2">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter3">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency3">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c3">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor3">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor3">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor3">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency3">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units3">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift3">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg3">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift3">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle3">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter4">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency4">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c4">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor4">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor4">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor4">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency4">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units4">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift4">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg4">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift4">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle4">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter5">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency5">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c5">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor5">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor5">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor5">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency5">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units5">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift5">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg5">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift5">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle5">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter6">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency6">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c6">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor6">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor6">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor6">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency6">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units6">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift6">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg6">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift6">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle6">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter7">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency7">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c7">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor7">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor7">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor7">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency7">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units7">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift7">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg7">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift7">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle7">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter8">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency8">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c8">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor8">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor8">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor8">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency8">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units8">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift8">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg8">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift8">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle8">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter9">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency9">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c9">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor9">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor9">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor9">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency9">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units9">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift9">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg9">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift9">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle9">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter10">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency10">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c10">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor10">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor10">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor10">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency10">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units10">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift10">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg10">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift10">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle10">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter11">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency11">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c11">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor11">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor11">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor11">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency11">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units11">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift11">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg11">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift11">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle11">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter12">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency12">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c12">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor12">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor12">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor12">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency12">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units12">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift12">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg12">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift12">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle12">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter13">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency13">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c13">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor13">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor13">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor13">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency13">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units13">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift13">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg13">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift13">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle13">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter14">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency14">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c14">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor14">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor14">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor14">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency14">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units14">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift14">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg14">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift14">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle14">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter15">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency15">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c15">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor15">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor15">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor15">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency15">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units15">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift15">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg15">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift15">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle15">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter16">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency16">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c16">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor16">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor16">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor16">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency16">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units16">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift16">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg16">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift16">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle16">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_counter17">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_output_clock_frequency17">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_divide_factor_c17">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_multiply_factor17">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_frac_multiply_factor17">
+   <type>long</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_divide_factor17">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_output_clock_frequency17">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_ps_units17">
+   <type>java.lang.String</type>
+   <value>ps</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift17">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phase_shift_deg17">
+   <type>double</type>
+   <value>0.0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_actual_phase_shift17">
+   <type>java.lang.String</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_duty_cycle17">
+   <type>int</type>
+   <value>50</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency0">
+   <type>java.lang.String</type>
+   <value>50.000000 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift0">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle0">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency1">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift1">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle1">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency2">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift2">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle2">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency3">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift3">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle3">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency4">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift4">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle4">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency5">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift5">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle5">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency6">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift6">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle6">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency7">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift7">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle7">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency8">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift8">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle8">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency9">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift9">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle9">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency10">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift10">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle10">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency11">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift11">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle11">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency12">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift12">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle12">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency13">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift13">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle13">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency14">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift14">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle14">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency15">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift15">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle15">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency16">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift16">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle16">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="output_clock_frequency17">
+   <type>java.lang.String</type>
+   <value>0 MHz</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="phase_shift17">
+   <type>java.lang.String</type>
+   <value>0 ps</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="duty_cycle17">
+   <type>int</type>
+   <value>50</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_pll_auto_reset">
+   <type>java.lang.String</type>
+   <value>On</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_pll_bandwidth_preset">
+   <type>java.lang.String</type>
+   <value>Auto</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_en_reconf">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_en_dps_ports">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_en_phout_ports">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_phout_division">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_vcoph_div">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_type">
+   <type>java.lang.String</type>
+   <value>General</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_subtype">
+   <type>java.lang.String</type>
+   <value>General</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="m_cnt_hi_div">
+   <type>int</type>
+   <value>3</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="m_cnt_lo_div">
+   <type>int</type>
+   <value>3</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="n_cnt_hi_div">
+   <type>int</type>
+   <value>256</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="n_cnt_lo_div">
+   <type>int</type>
+   <value>256</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="m_cnt_bypass_en">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="n_cnt_bypass_en">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="m_cnt_odd_div_duty_en">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="n_cnt_odd_div_duty_en">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div0">
+   <type>int</type>
+   <value>3</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div0">
+   <type>int</type>
+   <value>3</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst0">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst0">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src0">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en0">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en0">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div1">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div1">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst1">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst1">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src1">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en1">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en1">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div2">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div2">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst2">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst2">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src2">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en2">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en2">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div3">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div3">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst3">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst3">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src3">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en3">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en3">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div4">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div4">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst4">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst4">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src4">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en4">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en4">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div5">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div5">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst5">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst5">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src5">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en5">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en5">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div6">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div6">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst6">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst6">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src6">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en6">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en6">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div7">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div7">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst7">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst7">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src7">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en7">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en7">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div8">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div8">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst8">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst8">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src8">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en8">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en8">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div9">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div9">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst9">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst9">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src9">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en9">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en9">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div10">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div10">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst10">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst10">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src10">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en10">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en10">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div11">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div11">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst11">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst11">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src11">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en11">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en11">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div12">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div12">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst12">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst12">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src12">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en12">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en12">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div13">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div13">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst13">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst13">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src13">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en13">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en13">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div14">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div14">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst14">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst14">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src14">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en14">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en14">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div15">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div15">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst15">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst15">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src15">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en15">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en15">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div16">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div16">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst16">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst16">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src16">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en16">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en16">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_hi_div17">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_lo_div17">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_prst17">
+   <type>int</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_ph_mux_prst17">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_in_src17">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_bypass_en17">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="c_cnt_odd_div_duty_en17">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_vco_div">
+   <type>int</type>
+   <value>2</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_cp_current">
+   <type>int</type>
+   <value>30</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_bwctrl">
+   <type>int</type>
+   <value>2000</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_output_clk_frequency">
+   <type>java.lang.String</type>
+   <value>300.0 MHz</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_fractional_division">
+   <type>java.lang.String</type>
+   <value>1</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="mimic_fbclk_type">
+   <type>java.lang.String</type>
+   <value>none</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_fbclk_mux_1">
+   <type>java.lang.String</type>
+   <value>glb</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_fbclk_mux_2">
+   <type>java.lang.String</type>
+   <value>m_cnt</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_m_cnt_in_src">
+   <type>java.lang.String</type>
+   <value>ph_mux_clk</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_slf_rst">
+   <type>java.lang.String</type>
+   <value>true</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_parameter_list">
+   <type>[Ljava.lang.String;</type>
+   <value>M-Counter Hi Divide,M-Counter Low Divide,N-Counter Hi Divide,N-Counter Low Divide,M-Counter Bypass Enable,N-Counter Bypass Enable,M-Counter Odd Divide Enable,N-Counter Odd Divide Enable,C-Counter-0 Hi Divide,C-Counter-0 Low Divide,C-Counter-0 Coarse Phase Shift,C-Counter-0 VCO Phase Tap,C-Counter-0 Input Source,C-Counter-0 Bypass Enable,C-Counter-0 Odd Divide Enable,VCO Post Divide Counter Enable,Charge Pump current (uA),Loop Filter Bandwidth Resistor (Ohms) ,PLL Output VCO Frequency,K-Fractional Division Value (DSM),Feedback Clock Type,Feedback Clock MUX 1,Feedback Clock MUX 2,M Counter Source MUX,PLL Auto Reset</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_parameter_values">
+   <type>[Ljava.lang.String;</type>
+   <value>3,3,256,256,false,true,false,false,3,3,1,0,ph_mux_clk,false,false,2,30,2000,300.0 MHz,1,none,glb,m_cnt,ph_mux_clk,true</value>
+   <derived>true</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_mif_generate">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_enable_mif_dps">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_dps_cntr">
+   <type>java.lang.String</type>
+   <value>C0</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_dps_num">
+   <type>int</type>
+   <value>1</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_dps_dir">
+   <type>java.lang.String</type>
+   <value>Positive</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_refclk_switch">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_refclk1_frequency">
+   <type>double</type>
+   <value>100.0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_switchover_mode">
+   <type>java.lang.String</type>
+   <value>Automatic Switchover</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_switchover_delay">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_active_clk">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_clk_bad">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="refclk1_frequency">
+   <type>java.lang.String</type>
+   <value>100.0 MHz</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_clk_loss_sw_en">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_manu_clk_sw_en">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_auto_clk_sw_en">
+   <type>java.lang.String</type>
+   <value>false</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_clkin_1_src">
+   <type>java.lang.String</type>
+   <value>clk_0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_clk_sw_dly">
+   <type>int</type>
+   <value>0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_enable_cascade_out">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_cascade_outclk_index">
+   <type>int</type>
+   <value>0</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_enable_cascade_in">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="pll_clkin_0_src">
+   <type>java.lang.String</type>
+   <value>clk_0</value>
+   <derived>true</derived>
+   <enabled>false</enabled>
+   <visible>false</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="gui_pll_cascading_mode">
+   <type>java.lang.String</type>
+   <value>Create an adjpllin signal to connect with an upstream PLL</value>
+   <derived>false</derived>
+   <enabled>false</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <interface name="refclk" kind="clock_sink" version="21.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <parameter name="externallyDriven">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="ptfSchematicName">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>clock</type>
+   <isStart>false</isStart>
+   <port>
+    <name>refclk</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>clk</role>
+   </port>
+  </interface>
+  <interface name="reset" kind="reset_sink" version="21.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <parameter name="associatedClock">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="synchronousEdges">
+    <type>com.altera.sopcmodel.reset.Reset$Edges</type>
+    <value>NONE</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>reset</type>
+   <isStart>false</isStart>
+   <port>
+    <name>rst</name>
+    <direction>Input</direction>
+    <width>1</width>
+    <role>reset</role>
+   </port>
+  </interface>
+  <interface name="outclk0" kind="clock_source" version="21.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <parameter name="associatedDirectClock">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="clockRate">
+    <type>long</type>
+    <value>50000000</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="clockRateKnown">
+    <type>boolean</type>
+    <value>true</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="externallyDriven">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="ptfSchematicName">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>false</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>clock</type>
+   <isStart>true</isStart>
+   <port>
+    <name>outclk_0</name>
+    <direction>Output</direction>
+    <width>1</width>
+    <role>clk</role>
+   </port>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>riscy_core_0</moduleName>
+    <slaveName>clock</slaveName>
+    <name>riscy_core_0.clock</name>
+   </clockDomainMember>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>hps_0_fpga_interfaces</moduleName>
+    <slaveName>f2h_axi_clock</slaveName>
+    <name>hps_0_fpga_interfaces.f2h_axi_clock</name>
+   </clockDomainMember>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>hps_0_fpga_interfaces</moduleName>
+    <slaveName>h2f_axi_clock</slaveName>
+    <name>hps_0_fpga_interfaces.h2f_axi_clock</name>
+   </clockDomainMember>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>mm_interconnect_0</moduleName>
+    <slaveName>pll_0_outclk0</slaveName>
+    <name>mm_interconnect_0.pll_0_outclk0</name>
+   </clockDomainMember>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>rst_controller</moduleName>
+    <slaveName>clk</slaveName>
+    <name>rst_controller.clk</name>
+   </clockDomainMember>
+   <clockDomainMember>
+    <isBridge>false</isBridge>
+    <moduleName>rst_controller_001</moduleName>
+    <slaveName>clk</slaveName>
+    <name>rst_controller_001.clk</name>
+   </clockDomainMember>
+  </interface>
+ </module>
  <module
    name="riscy_core_0"
    kind="riscy_core"
@@ -41630,7 +45593,7 @@ the requested settings for a module instance. -->
    responds="1"
    user_default="0" />
 </address_map>
-};set_instance_parameter_value {riscy_core_0_altera_axi4lite_master_agent} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {hps_0_f2h_axi_slave_agent} {altera_merlin_axi_slave_ni};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_QOS_H} {100};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_QOS_L} {100};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_THREAD_ID_H} {103};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_THREAD_ID_L} {103};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_RESPONSE_STATUS_H} {112};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_RESPONSE_STATUS_L} {111};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BEGIN_BURST} {99};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_CACHE_H} {110};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_CACHE_L} {107};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_SIDEBAND_H} {98};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_SIDEBAND_L} {98};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_SIDEBAND_H} {97};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_SIDEBAND_L} {93};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_TYPE_H} {92};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_TYPE_L} {91};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_PROTECTION_H} {106};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_PROTECTION_L} {104};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_SIZE_H} {90};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_SIZE_L} {88};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURSTWRAP_H} {87};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURSTWRAP_L} {81};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTE_CNT_H} {80};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTE_CNT_L} {74};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_H} {67};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_L} {36};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_EXCLUSIVE} {73};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_COMPRESSED_READ} {68};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_POSTED} {69};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_READ} {71};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_H} {31};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_L} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTEEN_H} {35};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTEEN_L} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_SRC_ID_H} {101};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_SRC_ID_L} {101};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DEST_ID_H} {102};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DEST_ID_L} {102};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ORI_BURST_SIZE_L} {113};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ORI_BURST_SIZE_H} {115};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ADDR_USER_WIDTH} {5};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {DATA_USER_WIDTH} {1};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ST_DATA_W} {116};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ADDR_WIDTH} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {RDATA_WIDTH} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {WDATA_WIDTH} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ST_CHANNEL_W} {2};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {AXI_SLAVE_ID_W} {8};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PASS_ID_TO_SLAVE} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {AXI_VERSION} {AXI3};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {WRITE_ACCEPTANCE_CAPABILITY} {8};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {READ_ACCEPTANCE_CAPABILITY} {8};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ID} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {USE_ADDR_USER} {1};add_instance {router} {altera_merlin_router};set_instance_parameter_value {router} {DESTINATION_ID} {0 };set_instance_parameter_value {router} {CHANNEL_ID} {1 };set_instance_parameter_value {router} {TYPE_OF_TRANSACTION} {write };set_instance_parameter_value {router} {START_ADDRESS} {0x0 };set_instance_parameter_value {router} {END_ADDRESS} {0x100000000 };set_instance_parameter_value {router} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router} {SPAN_OFFSET} {};set_instance_parameter_value {router} {PKT_ADDR_H} {67};set_instance_parameter_value {router} {PKT_ADDR_L} {36};set_instance_parameter_value {router} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router} {PKT_TRANS_READ} {71};set_instance_parameter_value {router} {ST_DATA_W} {116};set_instance_parameter_value {router} {ST_CHANNEL_W} {2};set_instance_parameter_value {router} {DECODER_TYPE} {0};set_instance_parameter_value {router} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router} {DEFAULT_DESTID} {0};set_instance_parameter_value {router} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router} {MEMORY_ALIASING_DECODE} {0};add_instance {router_001} {altera_merlin_router};set_instance_parameter_value {router_001} {DESTINATION_ID} {0 };set_instance_parameter_value {router_001} {CHANNEL_ID} {1 };set_instance_parameter_value {router_001} {TYPE_OF_TRANSACTION} {read };set_instance_parameter_value {router_001} {START_ADDRESS} {0x0 };set_instance_parameter_value {router_001} {END_ADDRESS} {0x100000000 };set_instance_parameter_value {router_001} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router_001} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router_001} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router_001} {SPAN_OFFSET} {};set_instance_parameter_value {router_001} {PKT_ADDR_H} {67};set_instance_parameter_value {router_001} {PKT_ADDR_L} {36};set_instance_parameter_value {router_001} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router_001} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router_001} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router_001} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router_001} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router_001} {PKT_TRANS_READ} {71};set_instance_parameter_value {router_001} {ST_DATA_W} {116};set_instance_parameter_value {router_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {router_001} {DECODER_TYPE} {0};set_instance_parameter_value {router_001} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router_001} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router_001} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router_001} {DEFAULT_DESTID} {0};set_instance_parameter_value {router_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router_001} {MEMORY_ALIASING_DECODE} {0};add_instance {router_002} {altera_merlin_router};set_instance_parameter_value {router_002} {DESTINATION_ID} {0 };set_instance_parameter_value {router_002} {CHANNEL_ID} {1 };set_instance_parameter_value {router_002} {TYPE_OF_TRANSACTION} {write };set_instance_parameter_value {router_002} {START_ADDRESS} {0x0 };set_instance_parameter_value {router_002} {END_ADDRESS} {0x0 };set_instance_parameter_value {router_002} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router_002} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router_002} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router_002} {SPAN_OFFSET} {};set_instance_parameter_value {router_002} {PKT_ADDR_H} {67};set_instance_parameter_value {router_002} {PKT_ADDR_L} {36};set_instance_parameter_value {router_002} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router_002} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router_002} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router_002} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router_002} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router_002} {PKT_TRANS_READ} {71};set_instance_parameter_value {router_002} {ST_DATA_W} {116};set_instance_parameter_value {router_002} {ST_CHANNEL_W} {2};set_instance_parameter_value {router_002} {DECODER_TYPE} {1};set_instance_parameter_value {router_002} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router_002} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router_002} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router_002} {DEFAULT_DESTID} {0};set_instance_parameter_value {router_002} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router_002} {MEMORY_ALIASING_DECODE} {0};add_instance {router_003} {altera_merlin_router};set_instance_parameter_value {router_003} {DESTINATION_ID} {0 };set_instance_parameter_value {router_003} {CHANNEL_ID} {1 };set_instance_parameter_value {router_003} {TYPE_OF_TRANSACTION} {read };set_instance_parameter_value {router_003} {START_ADDRESS} {0x0 };set_instance_parameter_value {router_003} {END_ADDRESS} {0x0 };set_instance_parameter_value {router_003} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router_003} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router_003} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router_003} {SPAN_OFFSET} {};set_instance_parameter_value {router_003} {PKT_ADDR_H} {67};set_instance_parameter_value {router_003} {PKT_ADDR_L} {36};set_instance_parameter_value {router_003} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router_003} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router_003} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router_003} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router_003} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router_003} {PKT_TRANS_READ} {71};set_instance_parameter_value {router_003} {ST_DATA_W} {116};set_instance_parameter_value {router_003} {ST_CHANNEL_W} {2};set_instance_parameter_value {router_003} {DECODER_TYPE} {1};set_instance_parameter_value {router_003} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router_003} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router_003} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router_003} {DEFAULT_DESTID} {0};set_instance_parameter_value {router_003} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router_003} {MEMORY_ALIASING_DECODE} {0};add_instance {cmd_demux} {altera_merlin_demultiplexer};set_instance_parameter_value {cmd_demux} {ST_DATA_W} {116};set_instance_parameter_value {cmd_demux} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_demux} {NUM_OUTPUTS} {1};set_instance_parameter_value {cmd_demux} {VALID_WIDTH} {1};set_instance_parameter_value {cmd_demux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {cmd_demux_001} {altera_merlin_demultiplexer};set_instance_parameter_value {cmd_demux_001} {ST_DATA_W} {116};set_instance_parameter_value {cmd_demux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_demux_001} {NUM_OUTPUTS} {1};set_instance_parameter_value {cmd_demux_001} {VALID_WIDTH} {1};set_instance_parameter_value {cmd_demux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {cmd_mux} {altera_merlin_multiplexer};set_instance_parameter_value {cmd_mux} {ST_DATA_W} {116};set_instance_parameter_value {cmd_mux} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_mux} {NUM_INPUTS} {1};set_instance_parameter_value {cmd_mux} {PIPELINE_ARB} {1};set_instance_parameter_value {cmd_mux} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {cmd_mux} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {cmd_mux} {ARBITRATION_SCHEME} {round-robin};set_instance_parameter_value {cmd_mux} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {cmd_mux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {cmd_mux_001} {altera_merlin_multiplexer};set_instance_parameter_value {cmd_mux_001} {ST_DATA_W} {116};set_instance_parameter_value {cmd_mux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_mux_001} {NUM_INPUTS} {1};set_instance_parameter_value {cmd_mux_001} {PIPELINE_ARB} {1};set_instance_parameter_value {cmd_mux_001} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {cmd_mux_001} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {cmd_mux_001} {ARBITRATION_SCHEME} {round-robin};set_instance_parameter_value {cmd_mux_001} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {cmd_mux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_demux} {altera_merlin_demultiplexer};set_instance_parameter_value {rsp_demux} {ST_DATA_W} {116};set_instance_parameter_value {rsp_demux} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_demux} {NUM_OUTPUTS} {1};set_instance_parameter_value {rsp_demux} {VALID_WIDTH} {1};set_instance_parameter_value {rsp_demux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_demux_001} {altera_merlin_demultiplexer};set_instance_parameter_value {rsp_demux_001} {ST_DATA_W} {116};set_instance_parameter_value {rsp_demux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_demux_001} {NUM_OUTPUTS} {1};set_instance_parameter_value {rsp_demux_001} {VALID_WIDTH} {1};set_instance_parameter_value {rsp_demux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_mux} {altera_merlin_multiplexer};set_instance_parameter_value {rsp_mux} {ST_DATA_W} {116};set_instance_parameter_value {rsp_mux} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_mux} {NUM_INPUTS} {1};set_instance_parameter_value {rsp_mux} {PIPELINE_ARB} {0};set_instance_parameter_value {rsp_mux} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {rsp_mux} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {rsp_mux} {ARBITRATION_SCHEME} {no-arb};set_instance_parameter_value {rsp_mux} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {rsp_mux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_mux_001} {altera_merlin_multiplexer};set_instance_parameter_value {rsp_mux_001} {ST_DATA_W} {116};set_instance_parameter_value {rsp_mux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_mux_001} {NUM_INPUTS} {1};set_instance_parameter_value {rsp_mux_001} {PIPELINE_ARB} {0};set_instance_parameter_value {rsp_mux_001} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {rsp_mux_001} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {rsp_mux_001} {ARBITRATION_SCHEME} {no-arb};set_instance_parameter_value {rsp_mux_001} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {rsp_mux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {riscy_core_0_reset_sink_reset_bridge} {altera_reset_bridge};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {ACTIVE_LOW_RESET} {0};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {SYNCHRONOUS_EDGES} {deassert};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {NUM_RESET_OUTPUTS} {1};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {USE_RESET_REQUEST} {0};add_instance {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {altera_reset_bridge};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {ACTIVE_LOW_RESET} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {SYNCHRONOUS_EDGES} {deassert};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {NUM_RESET_OUTPUTS} {1};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {USE_RESET_REQUEST} {0};add_instance {clk_0_clk_clock_bridge} {altera_clock_bridge};set_instance_parameter_value {clk_0_clk_clock_bridge} {EXPLICIT_CLOCK_RATE} {50000000};set_instance_parameter_value {clk_0_clk_clock_bridge} {NUM_CLOCK_OUTPUTS} {1};add_connection {rsp_mux.src} {riscy_core_0_altera_axi4lite_master_agent.write_rp} {avalon_streaming};preview_set_connection_tag {rsp_mux.src/riscy_core_0_altera_axi4lite_master_agent.write_rp} {qsys_mm.response};add_connection {rsp_mux_001.src} {riscy_core_0_altera_axi4lite_master_agent.read_rp} {avalon_streaming};preview_set_connection_tag {rsp_mux_001.src/riscy_core_0_altera_axi4lite_master_agent.read_rp} {qsys_mm.response};add_connection {cmd_mux.src} {hps_0_f2h_axi_slave_agent.write_cp} {avalon_streaming};preview_set_connection_tag {cmd_mux.src/hps_0_f2h_axi_slave_agent.write_cp} {qsys_mm.command};add_connection {cmd_mux_001.src} {hps_0_f2h_axi_slave_agent.read_cp} {avalon_streaming};preview_set_connection_tag {cmd_mux_001.src/hps_0_f2h_axi_slave_agent.read_cp} {qsys_mm.command};add_connection {riscy_core_0_altera_axi4lite_master_agent.write_cp} {router.sink} {avalon_streaming};preview_set_connection_tag {riscy_core_0_altera_axi4lite_master_agent.write_cp/router.sink} {qsys_mm.command};add_connection {router.src} {cmd_demux.sink} {avalon_streaming};preview_set_connection_tag {router.src/cmd_demux.sink} {qsys_mm.command};add_connection {riscy_core_0_altera_axi4lite_master_agent.read_cp} {router_001.sink} {avalon_streaming};preview_set_connection_tag {riscy_core_0_altera_axi4lite_master_agent.read_cp/router_001.sink} {qsys_mm.command};add_connection {router_001.src} {cmd_demux_001.sink} {avalon_streaming};preview_set_connection_tag {router_001.src/cmd_demux_001.sink} {qsys_mm.command};add_connection {hps_0_f2h_axi_slave_agent.write_rp} {router_002.sink} {avalon_streaming};preview_set_connection_tag {hps_0_f2h_axi_slave_agent.write_rp/router_002.sink} {qsys_mm.response};add_connection {router_002.src} {rsp_demux.sink} {avalon_streaming};preview_set_connection_tag {router_002.src/rsp_demux.sink} {qsys_mm.response};add_connection {hps_0_f2h_axi_slave_agent.read_rp} {router_003.sink} {avalon_streaming};preview_set_connection_tag {hps_0_f2h_axi_slave_agent.read_rp/router_003.sink} {qsys_mm.response};add_connection {router_003.src} {rsp_demux_001.sink} {avalon_streaming};preview_set_connection_tag {router_003.src/rsp_demux_001.sink} {qsys_mm.response};add_connection {cmd_demux.src0} {cmd_mux.sink0} {avalon_streaming};preview_set_connection_tag {cmd_demux.src0/cmd_mux.sink0} {qsys_mm.command};add_connection {cmd_demux_001.src0} {cmd_mux_001.sink0} {avalon_streaming};preview_set_connection_tag {cmd_demux_001.src0/cmd_mux_001.sink0} {qsys_mm.command};add_connection {rsp_demux.src0} {rsp_mux.sink0} {avalon_streaming};preview_set_connection_tag {rsp_demux.src0/rsp_mux.sink0} {qsys_mm.response};add_connection {rsp_demux_001.src0} {rsp_mux_001.sink0} {avalon_streaming};preview_set_connection_tag {rsp_demux_001.src0/rsp_mux_001.sink0} {qsys_mm.response};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {riscy_core_0_altera_axi4lite_master_agent.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {router.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {router_001.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {cmd_demux.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {cmd_demux_001.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {rsp_mux.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {rsp_mux_001.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {hps_0_f2h_axi_slave_agent.reset_sink} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {router_002.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {router_003.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {cmd_mux.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {cmd_mux_001.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {rsp_demux.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {rsp_demux_001.clk_reset} {reset};add_connection {clk_0_clk_clock_bridge.out_clk} {riscy_core_0_altera_axi4lite_master_agent.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {hps_0_f2h_axi_slave_agent.clock_sink} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {router.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {router_001.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {router_002.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {router_003.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {cmd_demux.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {rsp_mux.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {cmd_demux_001.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {rsp_mux_001.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {cmd_mux.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {rsp_demux.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {cmd_mux_001.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {rsp_demux_001.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {riscy_core_0_reset_sink_reset_bridge.clk} {clock};add_connection {clk_0_clk_clock_bridge.out_clk} {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.clk} {clock};add_interface {hps_0_f2h_axi_slave} {axi} {master};set_interface_property {hps_0_f2h_axi_slave} {EXPORT_OF} {hps_0_f2h_axi_slave_agent.altera_axi_master};add_interface {riscy_core_0_altera_axi4lite_master} {axi4lite} {slave};set_interface_property {riscy_core_0_altera_axi4lite_master} {EXPORT_OF} {riscy_core_0_altera_axi4lite_master_agent.altera_axi_slave};add_interface {clk_0_clk} {clock} {slave};set_interface_property {clk_0_clk} {EXPORT_OF} {clk_0_clk_clock_bridge.in_clk};add_interface {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset} {reset} {slave};set_interface_property {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset} {EXPORT_OF} {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.in_reset};add_interface {riscy_core_0_reset_sink_reset_bridge_in_reset} {reset} {slave};set_interface_property {riscy_core_0_reset_sink_reset_bridge_in_reset} {EXPORT_OF} {riscy_core_0_reset_sink_reset_bridge.in_reset};set_module_assignment {interconnect_id.hps_0.f2h_axi_slave} {0};set_module_assignment {interconnect_id.riscy_core_0.altera_axi4lite_master} {0};]]></value>
+};set_instance_parameter_value {riscy_core_0_altera_axi4lite_master_agent} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {hps_0_f2h_axi_slave_agent} {altera_merlin_axi_slave_ni};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_QOS_H} {100};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_QOS_L} {100};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_THREAD_ID_H} {103};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_THREAD_ID_L} {103};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_RESPONSE_STATUS_H} {112};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_RESPONSE_STATUS_L} {111};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BEGIN_BURST} {99};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_CACHE_H} {110};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_CACHE_L} {107};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_SIDEBAND_H} {98};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_SIDEBAND_L} {98};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_SIDEBAND_H} {97};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_SIDEBAND_L} {93};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_TYPE_H} {92};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_TYPE_L} {91};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_PROTECTION_H} {106};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_PROTECTION_L} {104};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_SIZE_H} {90};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURST_SIZE_L} {88};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURSTWRAP_H} {87};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BURSTWRAP_L} {81};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTE_CNT_H} {80};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTE_CNT_L} {74};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_H} {67};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ADDR_L} {36};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_EXCLUSIVE} {73};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_COMPRESSED_READ} {68};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_POSTED} {69};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_TRANS_READ} {71};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_H} {31};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DATA_L} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTEEN_H} {35};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_BYTEEN_L} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_SRC_ID_H} {101};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_SRC_ID_L} {101};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DEST_ID_H} {102};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_DEST_ID_L} {102};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ORI_BURST_SIZE_L} {113};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PKT_ORI_BURST_SIZE_H} {115};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ADDR_USER_WIDTH} {5};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {DATA_USER_WIDTH} {1};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ST_DATA_W} {116};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ADDR_WIDTH} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {RDATA_WIDTH} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {WDATA_WIDTH} {32};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ST_CHANNEL_W} {2};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {AXI_SLAVE_ID_W} {8};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {PASS_ID_TO_SLAVE} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {AXI_VERSION} {AXI3};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {WRITE_ACCEPTANCE_CAPABILITY} {8};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {READ_ACCEPTANCE_CAPABILITY} {8};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {ID} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {hps_0_f2h_axi_slave_agent} {USE_ADDR_USER} {1};add_instance {router} {altera_merlin_router};set_instance_parameter_value {router} {DESTINATION_ID} {0 };set_instance_parameter_value {router} {CHANNEL_ID} {1 };set_instance_parameter_value {router} {TYPE_OF_TRANSACTION} {write };set_instance_parameter_value {router} {START_ADDRESS} {0x0 };set_instance_parameter_value {router} {END_ADDRESS} {0x100000000 };set_instance_parameter_value {router} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router} {SPAN_OFFSET} {};set_instance_parameter_value {router} {PKT_ADDR_H} {67};set_instance_parameter_value {router} {PKT_ADDR_L} {36};set_instance_parameter_value {router} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router} {PKT_TRANS_READ} {71};set_instance_parameter_value {router} {ST_DATA_W} {116};set_instance_parameter_value {router} {ST_CHANNEL_W} {2};set_instance_parameter_value {router} {DECODER_TYPE} {0};set_instance_parameter_value {router} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router} {DEFAULT_DESTID} {0};set_instance_parameter_value {router} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router} {MEMORY_ALIASING_DECODE} {0};add_instance {router_001} {altera_merlin_router};set_instance_parameter_value {router_001} {DESTINATION_ID} {0 };set_instance_parameter_value {router_001} {CHANNEL_ID} {1 };set_instance_parameter_value {router_001} {TYPE_OF_TRANSACTION} {read };set_instance_parameter_value {router_001} {START_ADDRESS} {0x0 };set_instance_parameter_value {router_001} {END_ADDRESS} {0x100000000 };set_instance_parameter_value {router_001} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router_001} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router_001} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router_001} {SPAN_OFFSET} {};set_instance_parameter_value {router_001} {PKT_ADDR_H} {67};set_instance_parameter_value {router_001} {PKT_ADDR_L} {36};set_instance_parameter_value {router_001} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router_001} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router_001} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router_001} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router_001} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router_001} {PKT_TRANS_READ} {71};set_instance_parameter_value {router_001} {ST_DATA_W} {116};set_instance_parameter_value {router_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {router_001} {DECODER_TYPE} {0};set_instance_parameter_value {router_001} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router_001} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router_001} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router_001} {DEFAULT_DESTID} {0};set_instance_parameter_value {router_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router_001} {MEMORY_ALIASING_DECODE} {0};add_instance {router_002} {altera_merlin_router};set_instance_parameter_value {router_002} {DESTINATION_ID} {0 };set_instance_parameter_value {router_002} {CHANNEL_ID} {1 };set_instance_parameter_value {router_002} {TYPE_OF_TRANSACTION} {write };set_instance_parameter_value {router_002} {START_ADDRESS} {0x0 };set_instance_parameter_value {router_002} {END_ADDRESS} {0x0 };set_instance_parameter_value {router_002} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router_002} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router_002} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router_002} {SPAN_OFFSET} {};set_instance_parameter_value {router_002} {PKT_ADDR_H} {67};set_instance_parameter_value {router_002} {PKT_ADDR_L} {36};set_instance_parameter_value {router_002} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router_002} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router_002} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router_002} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router_002} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router_002} {PKT_TRANS_READ} {71};set_instance_parameter_value {router_002} {ST_DATA_W} {116};set_instance_parameter_value {router_002} {ST_CHANNEL_W} {2};set_instance_parameter_value {router_002} {DECODER_TYPE} {1};set_instance_parameter_value {router_002} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router_002} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router_002} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router_002} {DEFAULT_DESTID} {0};set_instance_parameter_value {router_002} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router_002} {MEMORY_ALIASING_DECODE} {0};add_instance {router_003} {altera_merlin_router};set_instance_parameter_value {router_003} {DESTINATION_ID} {0 };set_instance_parameter_value {router_003} {CHANNEL_ID} {1 };set_instance_parameter_value {router_003} {TYPE_OF_TRANSACTION} {read };set_instance_parameter_value {router_003} {START_ADDRESS} {0x0 };set_instance_parameter_value {router_003} {END_ADDRESS} {0x0 };set_instance_parameter_value {router_003} {NON_SECURED_TAG} {1 };set_instance_parameter_value {router_003} {SECURED_RANGE_PAIRS} {0 };set_instance_parameter_value {router_003} {SECURED_RANGE_LIST} {0 };set_instance_parameter_value {router_003} {SPAN_OFFSET} {};set_instance_parameter_value {router_003} {PKT_ADDR_H} {67};set_instance_parameter_value {router_003} {PKT_ADDR_L} {36};set_instance_parameter_value {router_003} {PKT_PROTECTION_H} {106};set_instance_parameter_value {router_003} {PKT_PROTECTION_L} {104};set_instance_parameter_value {router_003} {PKT_DEST_ID_H} {102};set_instance_parameter_value {router_003} {PKT_DEST_ID_L} {102};set_instance_parameter_value {router_003} {PKT_TRANS_WRITE} {70};set_instance_parameter_value {router_003} {PKT_TRANS_READ} {71};set_instance_parameter_value {router_003} {ST_DATA_W} {116};set_instance_parameter_value {router_003} {ST_CHANNEL_W} {2};set_instance_parameter_value {router_003} {DECODER_TYPE} {1};set_instance_parameter_value {router_003} {DEFAULT_CHANNEL} {0};set_instance_parameter_value {router_003} {DEFAULT_WR_CHANNEL} {-1};set_instance_parameter_value {router_003} {DEFAULT_RD_CHANNEL} {-1};set_instance_parameter_value {router_003} {DEFAULT_DESTID} {0};set_instance_parameter_value {router_003} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};set_instance_parameter_value {router_003} {MEMORY_ALIASING_DECODE} {0};add_instance {cmd_demux} {altera_merlin_demultiplexer};set_instance_parameter_value {cmd_demux} {ST_DATA_W} {116};set_instance_parameter_value {cmd_demux} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_demux} {NUM_OUTPUTS} {1};set_instance_parameter_value {cmd_demux} {VALID_WIDTH} {1};set_instance_parameter_value {cmd_demux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {cmd_demux_001} {altera_merlin_demultiplexer};set_instance_parameter_value {cmd_demux_001} {ST_DATA_W} {116};set_instance_parameter_value {cmd_demux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_demux_001} {NUM_OUTPUTS} {1};set_instance_parameter_value {cmd_demux_001} {VALID_WIDTH} {1};set_instance_parameter_value {cmd_demux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {cmd_mux} {altera_merlin_multiplexer};set_instance_parameter_value {cmd_mux} {ST_DATA_W} {116};set_instance_parameter_value {cmd_mux} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_mux} {NUM_INPUTS} {1};set_instance_parameter_value {cmd_mux} {PIPELINE_ARB} {1};set_instance_parameter_value {cmd_mux} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {cmd_mux} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {cmd_mux} {ARBITRATION_SCHEME} {round-robin};set_instance_parameter_value {cmd_mux} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {cmd_mux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {cmd_mux_001} {altera_merlin_multiplexer};set_instance_parameter_value {cmd_mux_001} {ST_DATA_W} {116};set_instance_parameter_value {cmd_mux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {cmd_mux_001} {NUM_INPUTS} {1};set_instance_parameter_value {cmd_mux_001} {PIPELINE_ARB} {1};set_instance_parameter_value {cmd_mux_001} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {cmd_mux_001} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {cmd_mux_001} {ARBITRATION_SCHEME} {round-robin};set_instance_parameter_value {cmd_mux_001} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {cmd_mux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_demux} {altera_merlin_demultiplexer};set_instance_parameter_value {rsp_demux} {ST_DATA_W} {116};set_instance_parameter_value {rsp_demux} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_demux} {NUM_OUTPUTS} {1};set_instance_parameter_value {rsp_demux} {VALID_WIDTH} {1};set_instance_parameter_value {rsp_demux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_demux_001} {altera_merlin_demultiplexer};set_instance_parameter_value {rsp_demux_001} {ST_DATA_W} {116};set_instance_parameter_value {rsp_demux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_demux_001} {NUM_OUTPUTS} {1};set_instance_parameter_value {rsp_demux_001} {VALID_WIDTH} {1};set_instance_parameter_value {rsp_demux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_mux} {altera_merlin_multiplexer};set_instance_parameter_value {rsp_mux} {ST_DATA_W} {116};set_instance_parameter_value {rsp_mux} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_mux} {NUM_INPUTS} {1};set_instance_parameter_value {rsp_mux} {PIPELINE_ARB} {0};set_instance_parameter_value {rsp_mux} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {rsp_mux} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {rsp_mux} {ARBITRATION_SCHEME} {no-arb};set_instance_parameter_value {rsp_mux} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {rsp_mux} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {rsp_mux_001} {altera_merlin_multiplexer};set_instance_parameter_value {rsp_mux_001} {ST_DATA_W} {116};set_instance_parameter_value {rsp_mux_001} {ST_CHANNEL_W} {2};set_instance_parameter_value {rsp_mux_001} {NUM_INPUTS} {1};set_instance_parameter_value {rsp_mux_001} {PIPELINE_ARB} {0};set_instance_parameter_value {rsp_mux_001} {USE_EXTERNAL_ARB} {0};set_instance_parameter_value {rsp_mux_001} {PKT_TRANS_LOCK} {72};set_instance_parameter_value {rsp_mux_001} {ARBITRATION_SCHEME} {no-arb};set_instance_parameter_value {rsp_mux_001} {ARBITRATION_SHARES} {1 };set_instance_parameter_value {rsp_mux_001} {MERLIN_PACKET_FORMAT} {ori_burst_size(115:113) response_status(112:111) cache(110:107) protection(106:104) thread_id(103) dest_id(102) src_id(101) qos(100) begin_burst(99) data_sideband(98) addr_sideband(97:93) burst_type(92:91) burst_size(90:88) burstwrap(87:81) byte_cnt(80:74) trans_exclusive(73) trans_lock(72) trans_read(71) trans_write(70) trans_posted(69) trans_compressed_read(68) addr(67:36) byteen(35:32) data(31:0)};add_instance {riscy_core_0_reset_sink_reset_bridge} {altera_reset_bridge};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {ACTIVE_LOW_RESET} {0};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {SYNCHRONOUS_EDGES} {deassert};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {NUM_RESET_OUTPUTS} {1};set_instance_parameter_value {riscy_core_0_reset_sink_reset_bridge} {USE_RESET_REQUEST} {0};add_instance {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {altera_reset_bridge};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {ACTIVE_LOW_RESET} {0};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {SYNCHRONOUS_EDGES} {deassert};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {NUM_RESET_OUTPUTS} {1};set_instance_parameter_value {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge} {USE_RESET_REQUEST} {0};add_instance {pll_0_outclk0_clock_bridge} {altera_clock_bridge};set_instance_parameter_value {pll_0_outclk0_clock_bridge} {EXPLICIT_CLOCK_RATE} {50000000};set_instance_parameter_value {pll_0_outclk0_clock_bridge} {NUM_CLOCK_OUTPUTS} {1};add_connection {rsp_mux.src} {riscy_core_0_altera_axi4lite_master_agent.write_rp} {avalon_streaming};preview_set_connection_tag {rsp_mux.src/riscy_core_0_altera_axi4lite_master_agent.write_rp} {qsys_mm.response};add_connection {rsp_mux_001.src} {riscy_core_0_altera_axi4lite_master_agent.read_rp} {avalon_streaming};preview_set_connection_tag {rsp_mux_001.src/riscy_core_0_altera_axi4lite_master_agent.read_rp} {qsys_mm.response};add_connection {cmd_mux.src} {hps_0_f2h_axi_slave_agent.write_cp} {avalon_streaming};preview_set_connection_tag {cmd_mux.src/hps_0_f2h_axi_slave_agent.write_cp} {qsys_mm.command};add_connection {cmd_mux_001.src} {hps_0_f2h_axi_slave_agent.read_cp} {avalon_streaming};preview_set_connection_tag {cmd_mux_001.src/hps_0_f2h_axi_slave_agent.read_cp} {qsys_mm.command};add_connection {riscy_core_0_altera_axi4lite_master_agent.write_cp} {router.sink} {avalon_streaming};preview_set_connection_tag {riscy_core_0_altera_axi4lite_master_agent.write_cp/router.sink} {qsys_mm.command};add_connection {router.src} {cmd_demux.sink} {avalon_streaming};preview_set_connection_tag {router.src/cmd_demux.sink} {qsys_mm.command};add_connection {riscy_core_0_altera_axi4lite_master_agent.read_cp} {router_001.sink} {avalon_streaming};preview_set_connection_tag {riscy_core_0_altera_axi4lite_master_agent.read_cp/router_001.sink} {qsys_mm.command};add_connection {router_001.src} {cmd_demux_001.sink} {avalon_streaming};preview_set_connection_tag {router_001.src/cmd_demux_001.sink} {qsys_mm.command};add_connection {hps_0_f2h_axi_slave_agent.write_rp} {router_002.sink} {avalon_streaming};preview_set_connection_tag {hps_0_f2h_axi_slave_agent.write_rp/router_002.sink} {qsys_mm.response};add_connection {router_002.src} {rsp_demux.sink} {avalon_streaming};preview_set_connection_tag {router_002.src/rsp_demux.sink} {qsys_mm.response};add_connection {hps_0_f2h_axi_slave_agent.read_rp} {router_003.sink} {avalon_streaming};preview_set_connection_tag {hps_0_f2h_axi_slave_agent.read_rp/router_003.sink} {qsys_mm.response};add_connection {router_003.src} {rsp_demux_001.sink} {avalon_streaming};preview_set_connection_tag {router_003.src/rsp_demux_001.sink} {qsys_mm.response};add_connection {cmd_demux.src0} {cmd_mux.sink0} {avalon_streaming};preview_set_connection_tag {cmd_demux.src0/cmd_mux.sink0} {qsys_mm.command};add_connection {cmd_demux_001.src0} {cmd_mux_001.sink0} {avalon_streaming};preview_set_connection_tag {cmd_demux_001.src0/cmd_mux_001.sink0} {qsys_mm.command};add_connection {rsp_demux.src0} {rsp_mux.sink0} {avalon_streaming};preview_set_connection_tag {rsp_demux.src0/rsp_mux.sink0} {qsys_mm.response};add_connection {rsp_demux_001.src0} {rsp_mux_001.sink0} {avalon_streaming};preview_set_connection_tag {rsp_demux_001.src0/rsp_mux_001.sink0} {qsys_mm.response};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {riscy_core_0_altera_axi4lite_master_agent.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {router.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {router_001.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {cmd_demux.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {cmd_demux_001.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {rsp_mux.clk_reset} {reset};add_connection {riscy_core_0_reset_sink_reset_bridge.out_reset} {rsp_mux_001.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {hps_0_f2h_axi_slave_agent.reset_sink} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {router_002.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {router_003.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {cmd_mux.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {cmd_mux_001.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {rsp_demux.clk_reset} {reset};add_connection {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.out_reset} {rsp_demux_001.clk_reset} {reset};add_connection {pll_0_outclk0_clock_bridge.out_clk} {riscy_core_0_altera_axi4lite_master_agent.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {hps_0_f2h_axi_slave_agent.clock_sink} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {router.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {router_001.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {router_002.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {router_003.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {cmd_demux.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {rsp_mux.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {cmd_demux_001.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {rsp_mux_001.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {cmd_mux.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {rsp_demux.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {cmd_mux_001.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {rsp_demux_001.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {riscy_core_0_reset_sink_reset_bridge.clk} {clock};add_connection {pll_0_outclk0_clock_bridge.out_clk} {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.clk} {clock};add_interface {hps_0_f2h_axi_slave} {axi} {master};set_interface_property {hps_0_f2h_axi_slave} {EXPORT_OF} {hps_0_f2h_axi_slave_agent.altera_axi_master};add_interface {riscy_core_0_altera_axi4lite_master} {axi4lite} {slave};set_interface_property {riscy_core_0_altera_axi4lite_master} {EXPORT_OF} {riscy_core_0_altera_axi4lite_master_agent.altera_axi_slave};add_interface {pll_0_outclk0} {clock} {slave};set_interface_property {pll_0_outclk0} {EXPORT_OF} {pll_0_outclk0_clock_bridge.in_clk};add_interface {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset} {reset} {slave};set_interface_property {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge_in_reset} {EXPORT_OF} {hps_0_f2h_axi_slave_agent_reset_sink_reset_bridge.in_reset};add_interface {riscy_core_0_reset_sink_reset_bridge_in_reset} {reset} {slave};set_interface_property {riscy_core_0_reset_sink_reset_bridge_in_reset} {EXPORT_OF} {riscy_core_0_reset_sink_reset_bridge.in_reset};set_module_assignment {interconnect_id.hps_0.f2h_axi_slave} {0};set_module_assignment {interconnect_id.riscy_core_0.altera_axi4lite_master} {0};]]></value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -41694,7 +45657,7 @@ parameters are a RESULT of the module parameters. -->
    </assignment>
    <parameter name="associatedClock">
     <type>java.lang.String</type>
-    <value>clk_0_clk</value>
+    <value>pll_0_outclk0</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -42036,7 +45999,7 @@ parameters are a RESULT of the module parameters. -->
    </assignment>
    <parameter name="associatedClock">
     <type>java.lang.String</type>
-    <value>clk_0_clk</value>
+    <value>pll_0_outclk0</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -42263,7 +46226,7 @@ parameters are a RESULT of the module parameters. -->
     <role>rready</role>
    </port>
   </interface>
-  <interface name="clk_0_clk" kind="clock_sink" version="21.1">
+  <interface name="pll_0_outclk0" kind="clock_sink" version="21.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -42302,7 +46265,7 @@ parameters are a RESULT of the module parameters. -->
    <type>clock</type>
    <isStart>false</isStart>
    <port>
-    <name>clk_0_clk_clk</name>
+    <name>pll_0_outclk0_clk</name>
     <direction>Input</direction>
     <width>1</width>
     <role>clk</role>
@@ -42317,7 +46280,7 @@ particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
    <parameter name="associatedClock">
     <type>java.lang.String</type>
-    <value>clk_0_clk</value>
+    <value>pll_0_outclk0</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -42365,7 +46328,7 @@ particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
    <parameter name="associatedClock">
     <type>java.lang.String</type>
-    <value>clk_0_clk</value>
+    <value>pll_0_outclk0</value>
     <derived>false</derived>
     <enabled>true</enabled>
     <visible>true</visible>
@@ -43156,10 +47119,37 @@ parameters are a RESULT of the module parameters. -->
   </interface>
  </module>
  <connection
-   name="clk_0.clk/riscy_core_0.clock"
+   name="clk_0.clk/pll_0.refclk"
    kind="clock"
    version="21.1"
    start="clk_0.clk"
+   end="pll_0.refclk">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>clk_0</startModule>
+  <startConnectionPoint>clk</startConnectionPoint>
+  <endModule>pll_0</endModule>
+  <endConnectionPoint>refclk</endConnectionPoint>
+ </connection>
+ <connection
+   name="pll_0.outclk0/riscy_core_0.clock"
+   kind="clock"
+   version="21.1"
+   start="pll_0.outclk0"
    end="riscy_core_0.clock">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
@@ -43177,16 +47167,16 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
+  <startModule>pll_0</startModule>
+  <startConnectionPoint>outclk0</startConnectionPoint>
   <endModule>riscy_core_0</endModule>
   <endConnectionPoint>clock</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk/hps_0_fpga_interfaces.f2h_axi_clock"
+   name="pll_0.outclk0/hps_0_fpga_interfaces.f2h_axi_clock"
    kind="clock"
    version="21.1"
-   start="clk_0.clk"
+   start="pll_0.outclk0"
    end="hps_0_fpga_interfaces.f2h_axi_clock">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
@@ -43204,16 +47194,16 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
+  <startModule>pll_0</startModule>
+  <startConnectionPoint>outclk0</startConnectionPoint>
   <endModule>hps_0_fpga_interfaces</endModule>
   <endConnectionPoint>f2h_axi_clock</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk/hps_0_fpga_interfaces.h2f_axi_clock"
+   name="pll_0.outclk0/hps_0_fpga_interfaces.h2f_axi_clock"
    kind="clock"
    version="21.1"
-   start="clk_0.clk"
+   start="pll_0.outclk0"
    end="hps_0_fpga_interfaces.h2f_axi_clock">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
@@ -43231,10 +47221,37 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
+  <startModule>pll_0</startModule>
+  <startConnectionPoint>outclk0</startConnectionPoint>
   <endModule>hps_0_fpga_interfaces</endModule>
   <endConnectionPoint>h2f_axi_clock</endConnectionPoint>
+ </connection>
+ <connection
+   name="clk_0.clk_reset/pll_0.reset"
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="pll_0.reset">
+  <parameter name="deviceFamily">
+   <type>java.lang.String</type>
+   <value>UNKNOWN</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <parameter name="generateLegacySim">
+   <type>boolean</type>
+   <value>false</value>
+   <derived>false</derived>
+   <enabled>true</enabled>
+   <visible>true</visible>
+   <valid>true</valid>
+  </parameter>
+  <startModule>clk_0</startModule>
+  <startConnectionPoint>clk_reset</startConnectionPoint>
+  <endModule>pll_0</endModule>
+  <endConnectionPoint>reset</endConnectionPoint>
  </connection>
  <connection
    name="riscy_core_0.altera_axi4lite_master/mm_interconnect_0.riscy_core_0_altera_axi4lite_master"
@@ -43288,11 +47305,11 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>riscy_core_0_altera_axi4lite_master</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk/mm_interconnect_0.clk_0_clk"
+   name="pll_0.outclk0/mm_interconnect_0.pll_0_outclk0"
    kind="clock"
    version="21.1"
-   start="clk_0.clk"
-   end="mm_interconnect_0.clk_0_clk">
+   start="pll_0.outclk0"
+   end="mm_interconnect_0.pll_0_outclk0">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
    <value>UNKNOWN</value>
@@ -43309,10 +47326,10 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
+  <startModule>pll_0</startModule>
+  <startConnectionPoint>outclk0</startConnectionPoint>
   <endModule>mm_interconnect_0</endModule>
-  <endConnectionPoint>clk_0_clk</endConnectionPoint>
+  <endConnectionPoint>pll_0_outclk0</endConnectionPoint>
  </connection>
  <connection
    name="mm_interconnect_0.hps_0_f2h_axi_slave/hps_0_fpga_interfaces.f2h_axi_slave"
@@ -43447,10 +47464,10 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>reset_in0</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk/rst_controller.clk"
+   name="pll_0.outclk0/rst_controller.clk"
    kind="clock"
    version="21.1"
-   start="clk_0.clk"
+   start="pll_0.outclk0"
    end="rst_controller.clk">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
@@ -43468,8 +47485,8 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
+  <startModule>pll_0</startModule>
+  <startConnectionPoint>outclk0</startConnectionPoint>
   <endModule>rst_controller</endModule>
   <endConnectionPoint>clk</endConnectionPoint>
  </connection>
@@ -43528,10 +47545,10 @@ parameters are a RESULT of the module parameters. -->
   <endConnectionPoint>reset_in0</endConnectionPoint>
  </connection>
  <connection
-   name="clk_0.clk/rst_controller_001.clk"
+   name="pll_0.outclk0/rst_controller_001.clk"
    kind="clock"
    version="21.1"
-   start="clk_0.clk"
+   start="pll_0.outclk0"
    end="rst_controller_001.clk">
   <parameter name="deviceFamily">
    <type>java.lang.String</type>
@@ -43549,8 +47566,8 @@ parameters are a RESULT of the module parameters. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <startModule>clk_0</startModule>
-  <startConnectionPoint>clk</startConnectionPoint>
+  <startModule>pll_0</startModule>
+  <startConnectionPoint>outclk0</startConnectionPoint>
   <endModule>rst_controller_001</endModule>
   <endConnectionPoint>clk</endConnectionPoint>
  </connection>
@@ -43611,7 +47628,7 @@ parameters are a RESULT of the module parameters. -->
   <version>21.1</version>
  </plugin>
  <plugin>
-  <instanceCount>2</instanceCount>
+  <instanceCount>3</instanceCount>
   <name>clock_source</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
@@ -43619,7 +47636,7 @@ parameters are a RESULT of the module parameters. -->
   <version>21.1</version>
  </plugin>
  <plugin>
-  <instanceCount>8</instanceCount>
+  <instanceCount>9</instanceCount>
   <name>clock_sink</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
@@ -43668,6 +47685,22 @@ parameters are a RESULT of the module parameters. -->
  </plugin>
  <plugin>
   <instanceCount>1</instanceCount>
+  <name>altera_pll</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IModule</subtype>
+  <displayName>PLL Intel FPGA IP</displayName>
+  <version>21.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>6</instanceCount>
+  <name>reset_sink</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
+  <displayName>Reset Input</displayName>
+  <version>21.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
   <name>riscy_core</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
@@ -43680,14 +47713,6 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>AXI4Lite Master</displayName>
-  <version>21.1</version>
- </plugin>
- <plugin>
-  <instanceCount>5</instanceCount>
-  <name>reset_sink</name>
-  <type>com.altera.entityinterfaces.IElementClass</type>
-  <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
-  <displayName>Reset Input</displayName>
   <version>21.1</version>
  </plugin>
  <plugin>
@@ -43715,11 +47740,19 @@ parameters are a RESULT of the module parameters. -->
   <version>21.1</version>
  </plugin>
  <plugin>
-  <instanceCount>3</instanceCount>
+  <instanceCount>4</instanceCount>
   <name>clock</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IConnection</subtype>
   <displayName>Clock Connection</displayName>
+  <version>21.1</version>
+ </plugin>
+ <plugin>
+  <instanceCount>1</instanceCount>
+  <name>reset</name>
+  <type>com.altera.entityinterfaces.IElementClass</type>
+  <subtype>com.altera.entityinterfaces.IConnection</subtype>
+  <displayName>Reset Connection</displayName>
   <version>21.1</version>
  </plugin>
  <plugin>
@@ -43747,5 +47780,5 @@ parameters are a RESULT of the module parameters. -->
   <version>21.1</version>
  </plugin>
  <reportVersion>21.1 842</reportVersion>
- <uniqueIdentifier>D03C1FE36C3C0000017FD2EADAC1</uniqueIdentifier>
+ <uniqueIdentifier>54BF6460566A0000017FD54572DA</uniqueIdentifier>
 </EnsembleReport>

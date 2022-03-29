@@ -4,7 +4,6 @@ module wb (
 	input	instr_t	instr,
 	input	data_t	alu_result,
 	input	data_t	mem_data,
-	input	data_t	pc_p4,
 	output	data_t	wb_data
 );
 
@@ -37,11 +36,11 @@ module wb (
 			end
 
 			JAL: begin
-				wb_data = pc_p4;
+				wb_data = alu_result;
 			end
 
 			JALR: begin
-				wb_data = pc_p4;
+				wb_data = alu_result;
 			end
 
 			LOAD: begin

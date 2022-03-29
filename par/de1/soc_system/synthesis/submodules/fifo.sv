@@ -33,8 +33,8 @@ output[BUF_WIDTH :0]	fifo_counter;
 logic [DATA_WIDTH-1:0]		buf_out;
 logic 						buf_empty, buf_full, buf_almost_full;
 logic [BUF_WIDTH :0]		fifo_counter;
-logic [BUF_WIDTH-1:0]		rd_ptr, wr_ptr;	// pointer to read and write addresses  
-logic [DATA_WIDTH-1:0]		buf_mem[0 : BUF_SIZE -1]; 
+logic [BUF_WIDTH-1:0]		rd_ptr, wr_ptr;	// pointer to read and write addresses
+logic [DATA_WIDTH-1:0]		buf_mem[0 : BUF_SIZE -1] /* synthesis ramstyle = "logic" */;
 
 always_comb begin
 	buf_empty = (fifo_counter == 0);	// Checking for whether buffer is empty or not
