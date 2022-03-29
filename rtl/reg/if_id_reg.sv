@@ -22,7 +22,7 @@ module if_id_reg (
 	output logic	instr_valid_out
 );
 
-	dffe_wrap #(.WIDTH(XLEN)) pc_p4_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_p4_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -30,7 +30,7 @@ module if_id_reg (
 		.q		(pc_p4_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) pc_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -38,7 +38,7 @@ module if_id_reg (
 		.q		(pc_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) instr_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) instr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -46,7 +46,7 @@ module if_id_reg (
 		.q		(instr_out)
 	);
 
-	dffe_wrap #(.WIDTH(1)) branch_take_reg (
+	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) branch_take_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -54,7 +54,7 @@ module if_id_reg (
 		.q		(branch_take_out)
 	);
 
-	dffe_wrap #(.WIDTH(1)) instr_valid_reg (
+	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) instr_valid_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),

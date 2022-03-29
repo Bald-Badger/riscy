@@ -30,7 +30,7 @@ module mem_wb_reg (
 	output data_t	mem_addr_out
 );
 
-	dffe_wrap #(.WIDTH(XLEN)) instr_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) instr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -38,7 +38,7 @@ module mem_wb_reg (
 		.q		(instr_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) alu_result_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) alu_result_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -46,7 +46,7 @@ module mem_wb_reg (
 		.q		(alu_result_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) mem_data_out_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) mem_data_out_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -54,7 +54,7 @@ module mem_wb_reg (
 		.q		(mem_data_out_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) mem_data_in_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) mem_data_in_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -62,7 +62,7 @@ module mem_wb_reg (
 		.q		(mem_data_in_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) pc_p4_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_p4_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -70,7 +70,7 @@ module mem_wb_reg (
 		.q		(pc_p4_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) pc_nxt_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_nxt_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -79,7 +79,7 @@ module mem_wb_reg (
 	);
 
 
-	dffe_wrap #(.WIDTH(1)) rd_wren_reg (
+	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) rd_wren_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -87,7 +87,7 @@ module mem_wb_reg (
 		.q		(rd_wren_out)
 	);
 
-	dffe_wrap #(.WIDTH(1)) instr_valid_reg (
+	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) instr_valid_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -95,7 +95,7 @@ module mem_wb_reg (
 		.q		(instr_valid_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN)) mem_addr_reg (
+	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) mem_addr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),

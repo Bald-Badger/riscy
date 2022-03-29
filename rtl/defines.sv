@@ -6,8 +6,14 @@ package defines;
 //	generate synthesizable code if set
 	`define		SYNTHESIZE
 
-//	generate Altera-compatable code
-	`define		ALTERA
+// hardware target
+	typedef enum logic[2] {
+		INDEPNDENT,
+		ALTERA,
+		XILINX
+	} target_t;
+
+	localparam	TARGET			= ALTERA;
 
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
