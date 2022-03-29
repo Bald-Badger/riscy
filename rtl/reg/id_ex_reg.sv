@@ -13,7 +13,6 @@ module id_ex_reg (
 	input data_t 	rs2_in,
 	input data_t	imm_in,
 	input data_t	pc_in,
-	input data_t	pc_nxt_in,
 	input logic		branch_taken_in,
 	input logic		instr_valid_in,
 
@@ -23,7 +22,6 @@ module id_ex_reg (
 	output data_t 	rs2_out,
 	output data_t	imm_out,
 	output data_t	pc_out,
-	output data_t	pc_nxt_out,
 	output logic	branch_taken_out,
 	output logic	instr_valid_out
 );
@@ -51,15 +49,6 @@ module id_ex_reg (
 		.d		(flush ? 0 : pc_in),
 		.q		(pc_out)
 	);
-
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_nxt_reg (
-		.clk	(clk),
-		.en		(en),
-		.rst_n	(rst_n),
-		.d		(flush ? 0 : pc_nxt_in),
-		.q		(pc_nxt_out)
-	);
-
 
 	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) rs2_reg (
 		.clk	(clk),

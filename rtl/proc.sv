@@ -32,7 +32,6 @@ module proc (
 	// e.g.		xxx_f => xxx signal in fetch stage
 	// e.g.		xxx_d => xxx signal in decode stafe
 	data_t 		pc_f, pc_d, pc_x, pc_m, pc_w; // program counter of current instruction
-	data_t		pc_nxt_d, pc_nxt_x, pc_nxt_m, pc_nxt_w; // for debug
 	instr_t		instr_f, instr_d, instr_x, instr_m, instr_w;	// instruction in each stage
 	opcode_t	opcode_f, opcode_d, opcode_x, opcode_m, opcode_w;
 	logic		instr_valid_f, instr_valid_d, instr_valid_x, instr_valid_m, instr_valid_w;
@@ -150,7 +149,6 @@ module proc (
 
 		// input
 		.pc				(pc_d),
-		.pc_nxt			(pc_nxt_d),
 		.instr			(instr_d),
 		.wd				(wb_data),
 		.waddr			(rd_addr),
@@ -201,7 +199,6 @@ module proc (
 		.rs1_in				(rs1_d),
 		.rs2_in				(rs2_d_after_fwd),
 		.pc_in				(pc_d),
-		.pc_nxt_in			(pc_nxt_d),
 		.imm_in				(imm_d),
 		.branch_taken_in	(branch_taken_actual_d),
 		.instr_valid_in		(instr_valid_d),
@@ -212,7 +209,6 @@ module proc (
 		.rs2_out			(rs2_x),
 		.pc_out				(pc_x),
 		.imm_out			(imm_x),
-		.pc_nxt_out			(pc_nxt_x),
 		.branch_taken_out	(branch_taken_actual_x),
 		.instr_valid_out	(instr_valid_x)
 	);
@@ -260,7 +256,6 @@ module proc (
 		.alu_result_in	(alu_result_x),
 		.rs2_in			(rs2_x),
 		.pc_in			(pc_x),
-		.pc_nxt_in		(pc_nxt_x),
 		.rd_wren_in		(rd_wren_x),
 		.instr_valid_in	(instr_valid_x),
 
@@ -269,7 +264,6 @@ module proc (
 		.alu_result_out	(alu_result_m),
 		.rs2_out		(rs2_m),
 		.pc_out			(pc_m),
-		.pc_nxt_out		(pc_nxt_m),
 		.rd_wren_out	(rd_wren_m),
 		.instr_valid_out(instr_valid_m)
 	);
@@ -313,7 +307,6 @@ module proc (
 		.mem_data_in_in		(mem_data_in_m),
 		.mem_data_out_in	(mem_data_out_m),
 		.pc_in				(pc_m),
-		.pc_nxt_in			(pc_nxt_m),
 		.rd_wren_in			(rd_wren_m),
 		.instr_valid_in		(instr_valid_m),
 		.mem_addr_in		(mem_addr_m),	// for debug
@@ -324,7 +317,6 @@ module proc (
 		.mem_data_in_out	(mem_data_in_w),
 		.mem_data_out_out	(mem_data_out_w),
 		.pc_out				(pc_w),
-		.pc_nxt_out			(pc_nxt_w),
 		.rd_wren_out		(rd_wren_w),
 		.instr_valid_out	(instr_valid_w),
 		.mem_addr_out		(mem_addr_w)

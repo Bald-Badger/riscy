@@ -13,7 +13,6 @@ module mem_wb_reg (
 	input data_t	mem_data_in_in,
 	input data_t	mem_data_out_in,
 	input data_t	pc_in,
-	input data_t	pc_nxt_in,
 	input logic		rd_wren_in,
 	input logic		instr_valid_in,
 	input data_t	mem_addr_in,
@@ -24,7 +23,6 @@ module mem_wb_reg (
 	output data_t	mem_data_in_out,
 	output data_t	mem_data_out_out,
 	output data_t	pc_out,
-	output data_t	pc_nxt_out,
 	output logic	rd_wren_out,
 	output logic	instr_valid_out,
 	output data_t	mem_addr_out
@@ -69,16 +67,7 @@ module mem_wb_reg (
 		.d		(pc_in),
 		.q		(pc_out)
 	);
-
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_nxt_reg (
-		.clk	(clk),
-		.en		(en),
-		.rst_n	(rst_n),
-		.d		(flush ? 0 : pc_nxt_in),
-		.q		(pc_nxt_out)
-	);
-
-
+	
 	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) rd_wren_reg (
 		.clk	(clk),
 		.en		(en),
