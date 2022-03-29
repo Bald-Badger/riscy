@@ -7,7 +7,7 @@ package defines;
 	`define		SYNTHESIZE
 
 // hardware target
-	typedef enum logic[2] {
+	typedef enum logic [1:0] {
 		INDEPNDENT,
 		ALTERA,
 		XILINX
