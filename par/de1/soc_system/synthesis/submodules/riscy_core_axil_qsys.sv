@@ -13,25 +13,25 @@ module riscy_core_axil_qsys (
 	/*
 	* AXI lite master interfaces
 	*/
-	output	wire [31:0]		awaddr,
-	output	wire [2:0]		awprot,
-	output	wire			awvalid,
-	input	wire			awready,
-	output	wire [31:0]		wdata,
-	output	wire [3:0]		wstrb,
-	output	wire			wvalid,
-	input	wire			wready,
-	input	wire [1:0]		bresp,
-	input	wire			bvalid,
-	output	wire			bready,
-	output	wire [31:0]		araddr,
-	output	wire [2:0]		arprot,
-	output	wire			arvalid,
-	input	wire			arready,
-	input	wire [31:0]		rdata,
-	input	wire [1:0]		rresp,
-	input	wire			rvalid,
-	output	wire			rready
+	output	logic [31:0]	awaddr,
+	output	logic [2:0]		awprot,
+	output	logic			awvalid,
+	input	logic			awready,
+	output	logic [31:0]	wdata,
+	output	logic [3:0]		wstrb,
+	output	logic			wvalid,
+	input	logic			wready,
+	input	logic [1:0]		bresp,
+	input	logic			bvalid,
+	output	logic			bready,
+	output	logic [31:0]	araddr,
+	output	logic [2:0]		arprot,
+	output	logic			arvalid,
+	input	logic			arready,
+	input	logic [31:0]	rdata,
+	input	logic [1:0]		rresp,
+	input	logic			rvalid,
+	output	logic			rready
 );
 
 	axi_lite_interface axil_bus (

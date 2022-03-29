@@ -44,14 +44,32 @@ module pc_adder (
 				NULL;
 	end
 
-	wire [XLEN+1:0] rs_diff_unsign = ({1'b0, op2} - {1'b0, op1}); // 34 bits
-	wire [XLEN:0] rs_diff_sign = $signed(op2) - $signed(op1); // 33 bits
-	wire beq_take	= (rs_diff_sign == 34'b0);				// pass
-	wire bne_take 	= ~beq_take;						// pass
-	wire blt_take 	= $signed(rs_diff_sign[XLEN:0]) > 0;
-	wire bltu_take 	= $signed(rs_diff_unsign[XLEN:0]) > 0;	// pass
-	wire bge_take 	= ~blt_take;
-	wire bgeu_take 	= ~bltu_take;
+/*
+	logic [XLEN+1:0] rs_diff_unsign = ({1'b0, op2} - {1'b0, op1}); // 34 bits
+	logic [XLEN:0] rs_diff_sign = $signed(op2) - $signed(op1); // 33 bits
+	logic beq_take	= (rs_diff_sign == 34'b0);				// pass
+	logic bne_take 	= ~beq_take;						// pass
+	logic blt_take 	= $signed(rs_diff_sign[XLEN:0]) > 0;
+	logic bltu_take 	= $signed(rs_diff_unsign[XLEN:0]) > 0;	// pass
+	logic bge_take 	= ~blt_take;
+	logic bgeu_take 	= ~bltu_take;
+*/
+
+	logic beq_take;
+	logic bne_take;
+	logic blt_take;
+	logic bltu_take;
+	logic bge_take;
+	logic bgeu_take;
+
+	always_comb begin : branck_taken_assign
+		beq_take	= op1 == op2;
+		bne_take	= op1 != op2;
+		blt_take	= $signed(op1) < $signed(op2);
+		bltu_take	= $unsigned(op1) < $unsigned(op2);
+		bge_take 	= $signed(op1) > $signed(op2);
+		bgeu_take	= $unsigned(op1) > $unsigned(op2);
+	end
 
 	always_comb begin
 		branch_taken =	(

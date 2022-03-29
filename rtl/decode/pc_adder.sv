@@ -55,25 +55,33 @@ module pc_adder (
 	logic bgeu_take 	= ~bltu_take;
 */
 
-	logic [XLEN+1:0] rs_diff_unsign = ({1'b0, op2} - {1'b0, op1}); // 34 bits
-	logic [XLEN:0] rs_diff_sign = $signed(op2) - $signed(op1); // 33 bits
-	logic beq_take	= op1 == op2;
-	logic bne_take 	= op1 != op2;
-	logic blt_take 	= $signed(op1) < $signed(op2);
-	logic bltu_take = $unsigned(op1) < $unsigned(op2);
-	logic bge_take 	= $signed(op1) > $signed(op2);
-	logic bgeu_take = $unsigned(op1) > $unsigned(op2);
+	logic beq_take;
+	logic bne_take;
+	logic blt_take;
+	logic bltu_take;
+	logic bge_take;
+	logic bgeu_take;
+
+	always_comb begin : branck_taken_assign
+		beq_take	= op1 == op2;
+		bne_take	= op1 != op2;
+		blt_take	= $signed(op1) < $signed(op2);
+		bltu_take	= $unsigned(op1) < $unsigned(op2);
+		bge_take 	= $signed(op1) > $signed(op2);
+		bgeu_take	= $unsigned(op1) > $unsigned(op2);
+	end
 
 	always_comb begin
-		branch_taken =	(
-						(funct3 == BEQ && beq_take)		? taken :
-						(funct3 == BNE && bne_take) 	? taken :
-						(funct3 == BLT && blt_take) 	? taken :
-						(funct3 == BLTU && bltu_take) 	? taken :
-						(funct3 == BGE && bge_take) 	? taken :
-						(funct3 == BGEU && bgeu_take) 	? taken :
-						not_taken
-					) && (opcode == B);
+		branch_taken =	
+			(
+				(funct3 == BEQ && beq_take)		? taken :
+				(funct3 == BNE && bne_take) 	? taken :
+				(funct3 == BLT && blt_take) 	? taken :
+				(funct3 == BLTU && bltu_take) 	? taken :
+				(funct3 == BGE && bge_take) 	? taken :
+				(funct3 == BGEU && bgeu_take) 	? taken :
+				not_taken
+			) && (opcode == B);
 	end
 
 	/*
@@ -95,7 +103,7 @@ module pc_adder (
 	always_comb begin
 		imm = NULL;
 		unique case (opcode)
-			B:			imm = {{20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0};
+			B:			imm = {{20{instr[31]}}, instr[7], instr[30:25], instr[11:8], 1'b0};
 			JAL:		imm = {{12{instr[31]}}, instr[19:12], instr[20], instr[30:21], 1'b0};
 			JALR:		imm = {{20{instr[31]}}, instr[31:20]};
 			default:	imm	= NULL;
