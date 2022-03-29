@@ -24,6 +24,7 @@ module pc_adder (
 
 	opcode_t opcode;
 	funct3_t funct3;
+	
 	always_comb begin
 		opcode = instr.opcode;
 		funct3 = instr.funct3;
@@ -31,6 +32,24 @@ module pc_adder (
 
 	data_t op1, op2;
 	always_comb begin : branch_forward_mux
+
+		case (fwd_rs1)
+			RS_ID_SEL:	op1 = rs1;
+			EX_ID_SEL:	op1 = ex_data;
+			MEM_ID_SEL:	op1 = mem_data;
+			WB_ID_SEL:	op1 = wb_data;
+			default:	op1 = NULL;
+		endcase
+
+		case (fwd_rs2)
+			RS_ID_SEL:	op2 = rs2;
+			EX_ID_SEL:	op2 = ex_data;
+			MEM_ID_SEL:	op2 = mem_data;
+			WB_ID_SEL:	op2 = wb_data;
+			default:	op2 = NULL;
+		endcase
+
+		/*
 		op1 =	(fwd_rs1 == RS_ID_SEL) 	? rs1 :
 				(fwd_rs1 == EX_ID_SEL) 	? ex_data :
 				(fwd_rs1 == MEM_ID_SEL)	? mem_data :
@@ -42,6 +61,7 @@ module pc_adder (
 				(fwd_rs2 == MEM_ID_SEL)	? mem_data :
 				(fwd_rs2 == WB_ID_SEL) 	? wb_data :
 				NULL;
+		*/
 	end
 
 /*

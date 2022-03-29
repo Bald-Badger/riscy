@@ -43,16 +43,21 @@ module reg_bypass (
 
 
 	// bypass logic
-	wire bypass_rs1 = (rd_wren && rs1_rden) && (rs1_addr == rd_addr);
-	wire bypass_rs2 = (rd_wren && rs2_rden) && (rs2_addr == rd_addr);
+	logic bypass_rs1;
+	logic bypass_rs2;
 
-	assign rs1_data = 	rs1_addr == ZERO	? NULL:
-						bypass_rs1 			? rd_data : 
-						rs1_rden 			? registers[rs1_addr]: 
-						NULL;
-	assign rs2_data = 	rs2_addr == ZERO	? NULL:
-						bypass_rs2 			? rd_data : 
-						rs2_rden 			? registers[rs2_addr]: 
-						NULL;
+always_comb begin
+	bypass_rs1 = (rd_wren && rs1_rden) && (rs1_addr == rd_addr);
+	bypass_rs2 = (rd_wren && rs2_rden) && (rs2_addr == rd_addr);
+
+	rs1_data = 	rs1_addr == ZERO	? NULL:
+				bypass_rs1 			? rd_data : 
+				rs1_rden 			? registers[rs1_addr]: 
+				NULL;
+	rs2_data = 	rs2_addr == ZERO	? NULL:
+				bypass_rs2 			? rd_data : 
+				rs2_rden 			? registers[rs2_addr]: 
+				NULL;
+end
 	
 endmodule : reg_bypass
