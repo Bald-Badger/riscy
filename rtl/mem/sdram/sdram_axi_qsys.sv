@@ -7,8 +7,8 @@ parameter SDRAM_MHZ				= 50,
 parameter SDRAM_ADDR_W			= 25,
 parameter SDRAM_COL_W			= 10,
 parameter SDRAM_READ_LATENCY	= 2,
-parameter MAX_PHY_ADDR			= mem_defines.MAX_PHY_ADDR,
-parameter ADDR_WIDTH			= mem_defines.ADDR_WIDTH
+parameter MAX_PHY_ADDR			= MAX_PHY_ADDR,
+parameter ADDR_WIDTH			= ADDR_WIDTH
 ) (
 	input 						clk,
 	input 						rst,
