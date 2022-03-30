@@ -3,15 +3,22 @@ when en is high, io maps to o
 when en is low, i maps to io and o
 */
 
-module iobuf (
-	input	en,	// 3-State enable input
-	input	i,	// buffer input
-	output	o,	// buffer output
-	inout	io	// buffer inout
+module iobuf # (
+	parameter WIDTH = 1
+) (
+	input					en,	// 3-State enable input
+	input	[WIDTH - 1 : 0] i,	// buffer input
+	output	[WIDTH - 1 : 0] o,	// buffer output
+	inout	[WIDTH - 1 : 0] io	// buffer inout
 );
 
-	bufif0 (io, i, en);
+genvar index;
 
-	buf (o, io);
+generate
+	for (index=0; index < WIDTH; index = index + 1) begin : iobuf_gen
+		bufif0 (io[index], i[index], en);
+		buf (o[index], io[index]);
+	end
+endgenerate
 
-endmodule
+endmodule : iobuf

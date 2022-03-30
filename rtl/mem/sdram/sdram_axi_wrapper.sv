@@ -58,16 +58,13 @@ sdram_axi u_sdram (
 	,.sdram_data_out_en_o	(sdram_data_out_en_w)
 );
 
-genvar i;
-generate
-	for (i=0; i < 16; i = i + 1) begin : iobuf_gen
-		iobuf databuf (
-			.o(sdram_data_in_w[i]),
-			.io(sdram_bus.sdram_dq[i]),
-			.i(sdram_data_out_w[i]),
-			.en(~sdram_data_out_en_w)
-		);
-	end
-endgenerate
+iobuf # (
+	.WIDTH	(16)
+) databuf (
+	.o		(sdram_data_in_w),
+	.io		(sdram_bus.sdram_dq),
+	.i		(sdram_data_out_w),
+	.en		(~sdram_data_out_en_w)
+);
 
 endmodule : sdram_axi_wrapper
