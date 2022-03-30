@@ -85,6 +85,7 @@ module sdram_axi
 //-----------------------------------------------------------------
 // Key Params
 //-----------------------------------------------------------------
+// row_w + col_w + bank_w = arrd_w
 parameter SDRAM_MHZ             = 50;
 parameter SDRAM_ADDR_W          = 24;
 parameter SDRAM_COL_W           = 9;

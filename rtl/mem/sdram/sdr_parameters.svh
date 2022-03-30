@@ -28,9 +28,17 @@
 ****************************************************************************************/
 
     // Timing parameters based on Speed Grade and part type (Y37M)
+
+/* cyclone iv fpga's chip
 `define sg6a
 `define den256Mb
 `define x16
+*/
+
+// DE-1 chip:
+`define sg7e
+`define den512Mb
+`define x8
                                           // SYMBOL UNITS DESCRIPTION
                                           // ------ ----- -----------
 `ifdef sg6a                               //              Timing Parameters for -6A (CL = 3)

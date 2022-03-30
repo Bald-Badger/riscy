@@ -47,7 +47,7 @@ import mem_defines::*;
 
 module sdr (Dq, Addr, Ba, Clk, Cke, Cs_n, Ras_n, Cas_n, We_n, Dqm);
 
-`include "sdr_parameters.h"
+`include "sdr_parameters.svh"
 
     input                         Clk;
     input                         Cke;
