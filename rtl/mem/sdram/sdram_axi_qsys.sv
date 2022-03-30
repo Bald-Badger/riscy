@@ -1,3 +1,6 @@
+import defines::*;
+import mem_defines::*;
+
 module sdram_axi_qsys #(
 	// row_w + col_w + bank_w = addr_w
 parameter SDRAM_MHZ				= 50,
@@ -10,7 +13,7 @@ parameter SDRAM_READ_LATENCY	= 2
 
 	// AXI interface
 	input						axi_awvalid,
-	input	[31:0]				axi_awaddr,
+	input	[ADDR_WIDTH - 1:0]	axi_awaddr,
 	input	[ 3:0]				axi_awid,
 	input	[ 7:0]				axi_awlen,
 	input	[ 1:0]				axi_awburst,
@@ -20,7 +23,7 @@ parameter SDRAM_READ_LATENCY	= 2
 	input						axi_wlast,
 	input						axi_bready,
 	input						axi_arvalid,
-	input	[ 31:0]				axi_araddr,
+	input	[ADDR_WIDTH - 1:0]	axi_araddr,
 	input	[	3:0]			axi_arid,
 	input	[	7:0]			axi_arlen,
 	input	[	1:0]			axi_arburst,

@@ -14,7 +14,7 @@ module riscy_core_axi_qsys (
 	 */
 	output logic [7:0]				awid,
 	output logic [7:0]				wid,
-	output logic [31:0]				awaddr,
+	output logic [ADDR_WIDTH - 1:0]	awaddr,
 	output logic [3:0]				awlen,
 	output logic [2:0]				awsize,
 	output logic [1:0]				awburst,
@@ -38,7 +38,7 @@ module riscy_core_axi_qsys (
 	input  logic					bvalid,
 	output logic					bready,
 	output logic [7:0]				arid,
-	output logic [31:0]				araddr,
+	output logic [ADDR_WIDTH - 1:0]	araddr,
 	output logic [3:0]				arlen,
 	output logic [2:0]				arsize,
 	output logic [1:0]				arburst,
