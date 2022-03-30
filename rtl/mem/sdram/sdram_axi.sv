@@ -85,10 +85,14 @@ module sdram_axi
 //-----------------------------------------------------------------
 // Key Params
 //-----------------------------------------------------------------
-// row_w + col_w + bank_w = arrd_w
+// row_w + col_w + bank_w = addr_w
+// row_w = 13
+// col_w = 10
+// bank_w = 2
+// addr_w = 25
 parameter SDRAM_MHZ             = 50;
-parameter SDRAM_ADDR_W          = 24;
-parameter SDRAM_COL_W           = 9;
+parameter SDRAM_ADDR_W          = 25;
+parameter SDRAM_COL_W           = 10;
 parameter SDRAM_READ_LATENCY    = 2;
 
 //-----------------------------------------------------------------
@@ -189,7 +193,5 @@ u_core
     ,.sdram_data_out_en_o(sdram_data_out_en_o)
     ,.sdram_data_input_i(sdram_data_input_i)
 );
-
-
 
 endmodule

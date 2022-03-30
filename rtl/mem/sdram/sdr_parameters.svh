@@ -38,7 +38,7 @@
 // DE-1 chip:
 `define sg7e
 `define den512Mb
-`define x8
+`define x16
                                           // SYMBOL UNITS DESCRIPTION
                                           // ------ ----- -----------
 `ifdef sg6a                               //              Timing Parameters for -6A (CL = 3)

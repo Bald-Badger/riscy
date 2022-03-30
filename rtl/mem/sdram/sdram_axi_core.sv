@@ -32,8 +32,15 @@
 //                          Generated File
 //-----------------------------------------------------------------
 
-module sdram_axi_core
-(
+module sdram_axi_core # (
+    //-----------------------------------------------------------------
+    // Key Params
+    //-----------------------------------------------------------------
+    parameter SDRAM_MHZ              = 50,
+    parameter SDRAM_ADDR_W           = 24,
+    parameter SDRAM_COL_W            = 9,
+    parameter SDRAM_READ_LATENCY     = 2
+) (
     // Inputs
      input           clk_i
     ,input           rst_i
@@ -61,16 +68,6 @@ module sdram_axi_core
     ,output [ 15:0]  sdram_data_output_o
     ,output          sdram_data_out_en_o
 );
-
-
-
-//-----------------------------------------------------------------
-// Key Params
-//-----------------------------------------------------------------
-parameter SDRAM_MHZ              = 50;
-parameter SDRAM_ADDR_W           = 24;
-parameter SDRAM_COL_W            = 9;
-parameter SDRAM_READ_LATENCY     = 2;
 
 //-----------------------------------------------------------------
 // Defines / Local params
