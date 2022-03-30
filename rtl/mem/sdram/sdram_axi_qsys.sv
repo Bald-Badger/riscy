@@ -37,6 +37,10 @@ parameter SDRAM_READ_LATENCY	= 2
 	output	[ 3:0]				axi_rid,
 	output						axi_rlast,
 
+	// axi signal that are not used
+	input	[ 2:0]				axi_awsize,
+	input	[ 2:0]				axi_arsize,
+
 	// SDRAM interface
 	output						sdram_clk,
 	output						sdram_cke,
