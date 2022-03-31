@@ -4,16 +4,16 @@
 
 import defines::*;
 import axi_defines::*;
+import mem_defines::*;
 
-
-module riscy_core_axil_qsys (
+module riscy_core_axil_qsys  (
 	input logic 					clk,
 	input logic						rst,
 
 	/*
 	* AXI lite master interfaces
 	*/
-	output	logic	[ADDR_WIDTH - 1:0]	awaddr,
+	output	logic	[25:0]				awaddr,
 	output	logic	[2:0]				awprot,
 	output	logic						awvalid,
 	input	logic						awready,
@@ -24,7 +24,7 @@ module riscy_core_axil_qsys (
 	input	logic	[1:0]				bresp,
 	input	logic						bvalid,
 	output	logic						bready,
-	output	logic	[ADDR_WIDTH - 1:0]	araddr,
+	output	logic	[25:0]				araddr,
 	output	logic	[2:0]				arprot,
 	output	logic						arvalid,
 	input	logic						arready,

@@ -21,4 +21,4 @@ generate
 	end
 endgenerate
 
-endmodule : iobuf
+endmodule

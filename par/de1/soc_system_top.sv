@@ -190,8 +190,8 @@ module soc_system_top(
 );
 
 	soc_system soc_system0(
-		.clk_clk						( CLOCK_50 ),
-		.reset_reset_n					( 1'b1 ),
+		.clk_clk						( clk ),
+		.reset_reset_n					( rst_n ),
 				
 		.hps_ddr3_mem_a					( HPS_DDR3_ADDR ),
 		.hps_ddr3_mem_ba				( HPS_DDR3_BA ),
@@ -266,7 +266,36 @@ module soc_system_top(
 		.hps_hps_io_gpio_inst_GPIO48	( HPS_I2C_CONTROL ),
 		.hps_hps_io_gpio_inst_GPIO53	( HPS_LED ),
 		.hps_hps_io_gpio_inst_GPIO54	( HPS_KEY ),
-		.hps_hps_io_gpio_inst_GPIO61	( HPS_GSENSOR_INT )
+		.hps_hps_io_gpio_inst_GPIO61	( HPS_GSENSOR_INT ),
+
+		.sdram_addr						(DRAM_ADDR),
+		.sdram_ba						(DRAM_BA),
+		.sdram_cas_n					(DRAM_CAS_N),
+		.sdram_cke						(DRAM_CKE),
+		.sdram_clk						(DRAM_CLK),
+		.sdram_cs_n						(DRAM_CS_N),
+		.sdram_dq						(DRAM_DQ),
+		.sdram_dqm						({DRAM_UDQM, DRAM_LDQM}),	// im almost sure
+		.sdram_ras_n					(DRAM_RAS_N),
+		.sdram_we_n						(DRAM_WE_N)
+	);
+
+	// system reset module
+	logic	but_rst_n, rst_n;
+	assign	but_rst_n = KEY[3];	// pressed key is 0
+
+	logic	osc_clk, clk;
+	assign	osc_clk = CLOCK_50;
+
+	logic	locked;
+
+	assign	rst_n = (but_rst_n & locked);
+
+	pll	my_pll (
+		.refclk		( osc_clk ),
+		.rst		( but_rst_n ),
+		.outclk_0	( clk ),
+		.locked		( locked )
 	);
 
 	// The following quiet the "no driver" warnings for output
@@ -281,12 +310,6 @@ module soc_system_top(
 	assign AUD_DACDAT = SW[0];
 	assign AUD_DACLRCK = SW[1] ? SW[0] : 1'bZ;
 	assign AUD_XCK = SW[0];		
-
-	assign DRAM_ADDR = { 13{ SW[0] } };
-	assign DRAM_BA = { 2{ SW[0] } };
-	assign DRAM_DQ = SW[1] ? { 16{ SW[0] } } : 16'bZ;
-	assign {DRAM_CAS_N, DRAM_CKE, DRAM_CLK, DRAM_CS_N,
-		DRAM_LDQM, DRAM_RAS_N, DRAM_UDQM, DRAM_WE_N} = { 8{SW[0]} };
 
 	assign FAN_CTRL = SW[0];
 

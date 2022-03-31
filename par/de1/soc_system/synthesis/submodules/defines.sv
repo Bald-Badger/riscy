@@ -3,9 +3,6 @@ package defines;
 `ifndef _defines_sv_
 `define _defines_sv_
 
-//	generate synthesizable code if set
-	`define		SYNTHESIZE
-
 // hardware target
 	typedef enum logic [1:0] {
 		INDEPNDENT,
@@ -19,14 +16,7 @@ package defines;
 	localparam 	XLEN 			= 32;				// RV32
 	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N
 	localparam 	OSC_FREQ 		= 5e7;				// 50Mhz crystal oscillator on FPGA board
-	localparam 	FREQ 			= 1e9;				// targeted core clock from PLL
-
-
-//	core config
-	localparam	MAX_NEST_LOCK	= 8;				// max nested lock aquire length, 
-													// cases that over 2 is very rare
-	localparam	SP_BASE			= 32'h0000_3ffc;	// stack base pointer, init SP to here
-	localparam	GP_BASE			= 32'h0000_1800;	// global pointer, init GP to here
+	localparam 	FREQ 			= OSC_FREQ;			// targeted core clock from PLL
 
 
 // TB config

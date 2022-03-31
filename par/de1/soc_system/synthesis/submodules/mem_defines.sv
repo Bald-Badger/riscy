@@ -29,7 +29,10 @@ import defines::*;
 */
 
 // using RARS default, text at 0x0 memory layout
-localparam	MAX_PHY_ADDR		= 32'h01ff_ffff;	// 32MB
+localparam	MAX_PHY_ADDR		= 32'h03ff_ffff;	// 64MB
+localparam	SP_BASE				= 32'h0000_3ffc;	// stack base pointer, init SP to here
+localparam	GP_BASE				= 32'h0000_1800;	// global pointer, init GP to here
+localparam	ADDR_WIDTH			= $clog2(MAX_PHY_ADDR);	// 26 if 64MB memory space
 
 localparam	MEM_ACCESS_TIMEOUT	= 128;			// 128 cycles
 
@@ -53,6 +56,9 @@ localparam	CLEAN				= 1'b0;
 // atomic operation defines
 localparam	SC_FAIL_ECODE		= 32'b1;	// if sc fail, write this value to rd 
 localparam	SC_SUCCESS_CODE		= NULL;
+
+localparam	MAX_NEST_LOCK	= 8;				// max nested lock aquire length, 
+												// cases that over 2 is very rare
 
 typedef logic [tag_len - 1 : 0]		tag_t;
 typedef logic [index_len - 1 : 0]	index_t;
