@@ -9,15 +9,16 @@ make rbf && make dtb
 git add . && git commit -a
 git push
 
-backup device tree
-cp ./soc_system.dtb ./boot/
-cp ./output_files/soc_system.rbf ./boot/
-
 copy files:
 mount /dev/mmcblk0p1 /mnt
+
 rm -f /mnt/soc_system.rbf && rm -f /mnt/soc_system.dtb && sync
-scp sz3034@micro23.ee.columbia.edu:~/4840/lab3/lab3-hw/output_files/soc_system.rbf /mnt && sync
-scp sz3034@micro23.ee.columbia.edu:~/4840/lab3/lab3-hw/soc_system.dtb /mnt && sync
+
+scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
+
+scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/soc_system.dtb /mnt && sync
+
+reboot -h now
 
 check:
 ls "/proc/device-tree/sopc@0/bridge@0xc0000000/"
