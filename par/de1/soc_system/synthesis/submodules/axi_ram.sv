@@ -87,9 +87,9 @@ module axi_ram #
     input  wire                   s_axi_rready
 );
 
-parameter VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(STRB_WIDTH);
-parameter WORD_WIDTH = STRB_WIDTH;
-parameter WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
+localparam	VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(STRB_WIDTH);
+localparam	WORD_WIDTH = STRB_WIDTH;
+localparam	WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
 
 // bus width assertions
 initial begin

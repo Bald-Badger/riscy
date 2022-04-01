@@ -69,9 +69,9 @@ module axil_ram #
 	input  wire    s_axil_rready
 );
 
-parameter VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(STRB_WIDTH);
-parameter WORD_WIDTH = STRB_WIDTH;
-parameter WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
+localparam	VALID_ADDR_WIDTH = ADDR_WIDTH - $clog2(STRB_WIDTH);
+localparam	WORD_WIDTH = STRB_WIDTH;
+localparam	WORD_SIZE = DATA_WIDTH/WORD_WIDTH;
 
 reg mem_wr_en;
 reg mem_rd_en;
@@ -104,6 +104,7 @@ integer i, j;
 
 integer fp, s;
 
+// synthesis translate_off
 initial begin
 	// two nested loops for smaller number of iterations per loop
 	// workaround for synthesizer complaints about large loop counts
@@ -133,6 +134,7 @@ initial begin
 		end
 	endcase
 end
+// synthesis translate_on
 
 always @* begin
 	mem_wr_en = 1'b0;

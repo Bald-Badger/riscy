@@ -66,17 +66,7 @@ module soc_system (
 	hps_ddr3_mem_odt,
 	hps_ddr3_mem_dm,
 	hps_ddr3_oct_rzqin,
-	reset_reset_n,
-	sdram_addr,
-	sdram_ba,
-	sdram_cas_n,
-	sdram_cke,
-	sdram_clk,
-	sdram_cs_n,
-	sdram_dq,
-	sdram_dqm,
-	sdram_ras_n,
-	sdram_we_n);	
+	reset_reset_n);	
 
 	input		clk_clk;
 	output		hps_hps_io_emac1_inst_TX_CLK;
@@ -145,14 +135,4 @@ module soc_system (
 	output	[3:0]	hps_ddr3_mem_dm;
 	input		hps_ddr3_oct_rzqin;
 	input		reset_reset_n;
-	output	[12:0]	sdram_addr;
-	output	[1:0]	sdram_ba;
-	output		sdram_cas_n;
-	output		sdram_cke;
-	output		sdram_clk;
-	output		sdram_cs_n;
-	inout	[15:0]	sdram_dq;
-	output	[1:0]	sdram_dqm;
-	output		sdram_ras_n;
-	output		sdram_we_n;
 endmodule
