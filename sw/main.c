@@ -26,20 +26,19 @@ int main() {
 		printf( "ERROR: could not open \"/dev/mem\"...\n" );
 		return( 1 );
 	} else {
-		printf("Step 1: successfully opened /dev/mem \n");
-		printf("Step 1: successfully opened /dev/mem \n");
+		// printf("Step 1: successfully opened /dev/mem \n");
 	}
 	
-	printf("begin to mmap...\n");
+	// printf("begin to mmap...\n");
 	virtual_base = mmap( NULL, HW_REGS_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, HW_REGS_BASE );
-	printf("mmap complete\n");
+	// printf("mmap complete\n");
 
 	if( virtual_base == MAP_FAILED ) {
 		printf( "ERROR: mmap() failed...\n" );
 		close( fd );
 		return( 1 );
 	} else {
-		printf("Step 2: successfully mmap\n");
+		// printf("Step 2: successfully mmap\n");
 	}
 	
 	// connected to lw h2f master
