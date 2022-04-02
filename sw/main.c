@@ -36,7 +36,7 @@ int main() {
 	h2p_lw_led_addr=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PIO_LED_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 
 	printf("virtual base is : %p\n", virtual_base);
-	printf("seg VA is : %p\n", virtual_base);
+	printf("seg VA is : %p\n", h2p_lw_led_addr);
 
 	// toggle the LEDs a bit
 
