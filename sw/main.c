@@ -14,7 +14,6 @@ int main() {
 
 	void *virtual_base;
 	int fd;
-	int loop_count;
 	void *h2p_lw_led_addr;
 
 	// map the address space for the LED registers into user space so we can interact with them.
@@ -38,12 +37,12 @@ int main() {
 
 	// toggle the LEDs a bit
 
-	for (uint32_t loop_count = 0; loop_count < 60; loop_count ++) {
+	for (uint32_t i = 0; i < 60; i ++) {
 		
 		// control led
-		*(uint32_t *)h2p_lw_led_addr = loop_count; 
+		*(uint32_t *)h2p_lw_led_addr = i; 
 		usleep( 100*1000 );
-		
+
 	} // while
 	
 
