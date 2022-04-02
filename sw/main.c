@@ -26,7 +26,8 @@ int main() {
 		printf( "ERROR: could not open \"/dev/mem\"...\n" );
 		return( 1 );
 	} else {
-		printf("Step 1: successfully opened /dev/mem\n");
+		printf("Step 1: successfully opened /dev/mem \n");
+		printf("Step 1: successfully opened /dev/mem \n");
 	}
 	
 	printf("begin to mmap...\n");
