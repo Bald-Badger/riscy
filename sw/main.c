@@ -38,7 +38,7 @@ int main() {
 	// toggle the LEDs a bit
 
 	for (uint32_t i = 0; i < 60; i ++) {
-		
+		printf( "looping\n" );
 		// control led
 		*(uint32_t *)h2p_lw_led_addr = i; 
 		usleep( 100*1000 );
