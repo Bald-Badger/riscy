@@ -14,7 +14,7 @@ int main() {
 
 	void *virtual_base;
 	int fd;
-	void *h2p_lw_led_addr;
+	volatile unsigned long *h2p_lw_led_addr=NULL;
 
 	// map the address space for the LED registers into user space so we can interact with them.
 	// we'll actually map in the entire CSR span of the HPS since we want to access various registers within that span
