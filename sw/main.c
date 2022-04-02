@@ -35,16 +35,20 @@ int main() {
 	// connected to lw h2f master
 	h2p_lw_led_addr=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PIO_LED_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 
+	printf("virtual base is : %p\n", virtual_base);
+	printf("seg VA is : %p\n", h2p_lw_led_addr);
+
 	// toggle the LEDs a bit
 
+/*
 	for (uint32_t i = 0; i < 60; i ++) {
 		printf( "looping\n" );
 		// control led
 		*(uint32_t *)h2p_lw_led_addr = i; 
 		usleep( 100*1000 );
 
-	} // while
-	
+	}
+*/
 
 	// clean up our memory mapping and exit
 	
