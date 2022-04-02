@@ -39,8 +39,6 @@ int main() {
 	// toggle the LEDs a bit
 
 	loop_count = 0;
-	led_mask = 0x01;
-	led_direction = 0; // 0: left to right direction
 	while( loop_count < 60 ) {
 		
 		// control led
