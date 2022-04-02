@@ -52,11 +52,12 @@ int main() {
 	while( loop_count < 60 ) {
 		
 		// control led
-		*(uint32_t *)h2p_lw_led_addr = ~led_mask; 
+		*(uint32_t *)h2p_lw_led_addr = ~loop_count; 
 
 		// wait 100ms
 		usleep( 100*1000 );
-		
+
+/*
 		// update led mask
 		if (led_direction == 0){
 			led_mask <<= 1;
@@ -69,7 +70,7 @@ int main() {
 				loop_count++;
 			}
 		}
-		
+*/	
 	} // while
 	
 
