@@ -49,6 +49,9 @@ int main() {
 
 	}
 */
+	printf("cast begin \n");
+	*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
+	printf("cast end \n");
 
 	// clean up our memory mapping and exit
 	
