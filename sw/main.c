@@ -43,6 +43,7 @@ int main() {
 		// control led
 		*(uint32_t *)h2p_lw_led_addr = loop_count; 
 		usleep( 100*1000 );
+		
 	} // while
 	
 
