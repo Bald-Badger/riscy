@@ -1,23 +1,9 @@
-/*
 #include <stdio.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include "hwlib.h"
-#include "socal/socal.h"
-#include "socal/hps.h"
-#include "socal/alt_gpio.h"
-#include "hps_0.h"
-*/
-
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/mman.h>
-#include "include/hwlib.h"
-#include "include/socal.h"
 #include "include/hps.h"
-#include "include/alt_gpio.h"
 #include "hps_0.h"
 
 #define HW_REGS_BASE ( ALT_STM_OFST )
@@ -64,25 +50,8 @@ int main() {
 	while( loop_count < 60 ) {
 		
 		// control led
-		*(uint32_t *)h2p_lw_led_addr = ~loop_count; 
-
-		// wait 100ms
+		*(uint32_t *)h2p_lw_led_addr = loop_count; 
 		usleep( 100*1000 );
-
-/*
-		// update led mask
-		if (led_direction == 0){
-			led_mask <<= 1;
-			if (led_mask == (0x01 << (PIO_LED_DATA_WIDTH-1)))
-				 led_direction = 1;
-		}else{
-			led_mask >>= 1;
-			if (led_mask == 0x01){ 
-				led_direction = 0;
-				loop_count++;
-			}
-		}
-*/	
 	} // while
 	
 
