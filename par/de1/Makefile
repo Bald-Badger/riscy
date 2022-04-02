@@ -234,12 +234,8 @@ clean : quartus-clean qsys-clean dtb-clean preloader-clean \
 project-clean :
 	rm -rf $(QPF) $(QSF) $(SDC)
 
-#qsys-clean :
-#	rm -rf $(SOPCINFO) $(QIP) $(SYSTEM)/ .qsys_edit \
-#	hps_isw_handoff/ hps_sdram_p0_summary.csv
-
 qsys-clean :
-	rm -rf qsys_edit \
+	rm -rf $(SOPCINFO) $(QIP) $(SYSTEM)/ .qsys_edit \
 	hps_isw_handoff/ hps_sdram_p0_summary.csv
 
 quartus-clean :

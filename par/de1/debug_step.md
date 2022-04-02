@@ -20,6 +20,10 @@ scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/output_files/soc_system.rbf /
 
 scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/soc_system.dtb /mnt && sync
 
+scp shuai@192.168.50.45:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
+
+scp shuai@192.168.50.45:~/riscy/par/de1/soc_system.dtb /mnt && sync
+
 reboot -h now
 
 check:
