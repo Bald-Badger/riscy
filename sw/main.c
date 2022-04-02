@@ -39,6 +39,8 @@ int main() {
 	usleep( 100*1000 );
 	printf("seg VA is : %p\n", h2p_lw_led_addr);
 	usleep( 100*1000 );
+	printf("offset is %x", ALT_LWFPGASLVS_OFST);
+	usleep( 100*1000 );
 
 	// toggle the LEDs a bit
 
