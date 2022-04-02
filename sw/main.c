@@ -36,7 +36,9 @@ int main() {
 	h2p_lw_led_addr=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PIO_LED_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 
 	printf("virtual base is : %p\n", virtual_base);
+	usleep( 100*1000 );
 	printf("seg VA is : %p\n", h2p_lw_led_addr);
+	usleep( 100*1000 );
 
 	// toggle the LEDs a bit
 
@@ -50,7 +52,9 @@ int main() {
 	}
 */
 	printf("cast begin \n");
+	usleep( 100*1000 );
 	*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
+	usleep( 100*1000 );
 	printf("cast end \n");
 
 	// clean up our memory mapping and exit
