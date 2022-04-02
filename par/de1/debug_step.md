@@ -1,4 +1,5 @@
 verilator --lint-only <>.sv
+sudo apt install gcc-arm-linux-gnueabihf
 qsys-edit soc_system.qsys
 make quartus
 	check for warning!
