@@ -38,7 +38,7 @@ int main() {
 
 	// toggle the LEDs a bit
 
-	for (int loop_count = 0; loop_count < 60; loop_count ++) {
+	for (uint32_t loop_count = 0; loop_count < 60; loop_count ++) {
 		
 		// control led
 		*(uint32_t *)h2p_lw_led_addr = loop_count; 
