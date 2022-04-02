@@ -1,3 +1,4 @@
+/*
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -6,6 +7,17 @@
 #include "socal/socal.h"
 #include "socal/hps.h"
 #include "socal/alt_gpio.h"
+#include "hps_0.h"
+*/
+
+#include <stdio.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include "include/hwlib.h"
+#include "include/socal.h"
+#include "include/hps.h"
+#include "include/alt_gpio.h"
 #include "hps_0.h"
 
 #define HW_REGS_BASE ( ALT_STM_OFST )
