@@ -58,9 +58,9 @@ module reference_test_axi ();
 	r_t 	reg_wr_addr_dut;
 	data_t	reg_wr_data_dut;
 	always_comb begin : reg_dut_wire_assign
-		reg_wr_en_dut	= proc_dut.proc.rd_wren_w;
-		reg_wr_addr_dut	= proc_dut.proc.rd_addr;
-		reg_wr_data_dut	= proc_dut.proc.wb_data;
+		reg_wr_en_dut	= proc_dut.processor.rd_wren_w;
+		reg_wr_addr_dut	= proc_dut.processor.rd_addr;
+		reg_wr_data_dut	= proc_dut.processor.wb_data;
 	end
 
 	// mem dut wire
@@ -68,13 +68,13 @@ module reference_test_axi ();
 	data_t	mem_wr_data_in_dut, mem_rd_data_out_dut;
 	data_t	mem_access_addr_dut;
 	always_comb begin : mem_dut_wire_assign
-		mem_wr_en_dut		= proc_dut.proc.memory_inst.wren;
-		mem_rd_en_dut		= proc_dut.proc.memory_inst.rden;
-		mem_access_done_dut	= proc_dut.proc.mem_access_done;
-		mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.proc.memory_inst.data_in_final :
-								swap_endian(proc_dut.proc.memory_inst.data_in_final);
-		mem_rd_data_out_dut	= proc_dut.proc.mem_data_out_m;
-		mem_access_addr_dut	= proc_dut.proc.memory_inst.addr;
+		mem_wr_en_dut		= proc_dut.processor.memory_inst.wren;
+		mem_rd_en_dut		= proc_dut.processor.memory_inst.rden;
+		mem_access_done_dut	= proc_dut.processor.mem_access_done;
+		mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor.memory_inst.data_in_final :
+								swap_endian(proc_dut.processor.memory_inst.data_in_final);
+		mem_rd_data_out_dut	= proc_dut.processor.mem_data_out_m;
+		mem_access_addr_dut	= proc_dut.processor.memory_inst.addr;
 	end
 
 	// reg ref wire
@@ -87,7 +87,7 @@ module reference_test_axi ();
 		reg_wr_data_ref		= data_t'(proc_ref.core_ref.rd_val_w);
 	end
 
-	assign ebreak_start		= proc_dut.proc.ebreak_start;
+	assign ebreak_start		= proc_dut.processor.ebreak_start;
 
 	// mem ref wire
 	logic	mem_wr_en_ref, mem_rd_en_ref, mem_access_ack_ref;
@@ -167,18 +167,18 @@ module reference_test_axi ();
 				pc_log_t'(
 					{
 						sim_time:	$time,
-						pc:			proc_dut.proc.pcp4_w - 32'd4
+						pc:			proc_dut.processor.pc_w
 					}
 				)
 			);
-		end else if (pc_log_dut[pc_log_dut.size()-1].pc == (proc_dut.proc.pcp4_w - 32'd4)) begin 
+		end else if (pc_log_dut[pc_log_dut.size()-1].pc == (proc_dut.processor.pc_w)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			pc_log_dut.push_back(
 				pc_log_t'(
 					{
 						sim_time:	$time,
-						pc:			proc_dut.proc.pcp4_w - 32'd4
+						pc:			proc_dut.processor.pc_w
 					}
 				)
 			);
@@ -198,7 +198,7 @@ module reference_test_axi ();
 	always_ff @(posedge clk) begin
 		if (~$isunknown(proc_ref.core_ref.pc_q))
 			push_pc_ref();
-		if (proc_dut.proc.instr_valid_w)
+		if (proc_dut.processor.instr_valid_w)
 			push_pc_dut();
 	end
 
@@ -258,17 +258,17 @@ module reference_test_axi ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			(proc_dut.proc.pcp4_w - 32'd4)
-					//instr:		proc_dut.proc.instr_w
+					pc:			(proc_dut.processor.pc_w)
+					//instr:		proc_dut.processor.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
 				$display(
 					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
-					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.proc.pcp4_w - 32'd4)
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pc_w)
 				);
 			end
-		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.proc.pcp4_w - 32'd4)
+		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.processor.pc_w)
 			/*
 			reg_access_log_dut[reg_access_log_dut.size()-1].rw == WRITE &&
 			reg_access_log_dut[reg_access_log_dut.size()-1].rw_addr == reg_wr_addr_dut &&
@@ -283,14 +283,14 @@ module reference_test_axi ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			proc_dut.proc.pcp4_w - 32'd4
-					//instr:		proc_dut.proc.instr_w
+					pc:			proc_dut.processor.pc_w
+					//instr:		proc_dut.processor.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
 				$display(
 					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
-					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.proc.pcp4_w - 32'd4)
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pc_w)
 				);
 			end
 		end
@@ -369,24 +369,24 @@ module reference_test_axi ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.proc.pcp4_m - 4
-					//instr:		instr_t'(proc_dut.proc.instr_m)
+					pc:			proc_dut.processor.pc_m
+					//instr:		instr_t'(proc_dut.processor.instr_m)
 				})
 			);
 			if (MEM_DEBUG) begin
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.proc.pcp4_m - 4)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.proc.pcp4_m - 4)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end
 			end
-		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.proc.pcp4_m - 4)
+		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.processor.pc_m)
 		/*
 			(
 				mem_wr_en_dut &&
@@ -402,7 +402,7 @@ module reference_test_axi ();
 			)
 		*/
 		) begin 
-			// $display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.proc.pcp4_m - 4));
+			// $display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.processor.pc_m));
 			// do nothing, duplicative entry
 		end else begin
 			mem_access_log_dut.push_back(
@@ -411,20 +411,20 @@ module reference_test_axi ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.proc.pcp4_m - 4
-					//instr:		instr_t'(proc_dut.proc.instr_m)
+					pc:			proc_dut.processor.pc_m
+					//instr:		instr_t'(proc_dut.processor.instr_m)
 				})
 			);
 			if (MEM_DEBUG) begin
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.proc.pcp4_m - 4)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.proc.pcp4_m - 4)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
 					);
 				end
 			end
@@ -638,7 +638,7 @@ module reference_test_axi ();
 	initial begin
 		fork
 			begin
-				wait(proc_dut.proc.sdram_init_done);
+				wait(proc_dut.processor.sdram_init_done);
 				$display("sdram init done");
 			end
 
@@ -729,14 +729,14 @@ module reference_test_axi ();
 
 		if (proc_ref.core_ref.reg_file[10] == 42) begin
 			$display("golden module passed the test");
-			if (proc_dut.proc.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
+			if (proc_dut.processor.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
 				$display("DUT dilivered correct answer, test passed?");
 			end else begin
 				$display("DUT failed the test");
 			end
 		end else begin
 			$display("golden module failed the test! bad test?");
-			if (proc_dut.proc.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
+			if (proc_dut.processor.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
 				$display("WTF this should not happeds");
 			end
 		end

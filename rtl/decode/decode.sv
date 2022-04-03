@@ -41,7 +41,6 @@ module decode (
 		// output
 		.pc_bj			(pc_bj),
 		.pc_sel			(pc_sel),
-		.pc_nxt			(pc_nxt),
 		.branch_taken	(branch_taken)
 	);
 

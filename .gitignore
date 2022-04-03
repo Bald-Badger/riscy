@@ -107,3 +107,6 @@ test_gen/*.out
 .qverify_ui_local_prefs
 .visualizer/
 rtl/tb/clkrst/xgui/clkrst_v1_0.tcl
+
+# env-depedent vscode
+.vscode/
