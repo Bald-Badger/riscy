@@ -52,7 +52,7 @@ int main() {
 
 	printf("touching\n");
 	usleep( 100*1000 );
-	*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
+	*(uint32_t *)virtual_base = (uint32_t)0x12345678;
 	int32_t x = *(uint32_t *)virtual_base;
 	usleep( 100*1000 );
 	printf("touched\n");
