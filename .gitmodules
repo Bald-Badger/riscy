@@ -7,12 +7,6 @@
 [submodule "sim/riscemu"]
 	path = sim/riscemu
 	url = https://github.com/AntonLydike/riscemu.git
-[submodule "sim/rars"]
-	path = sim/rars
-	url = https://github.com/TheThirdOne/rars.git
-[submodule "sim/riscv-tests"]
-	path = sim/riscv-tests
-	url = https://github.com/riscv-software-src/riscv-tests.git
 [submodule "ref/core_uriscv"]
 	path = ref/core_uriscv
 	url = https://github.com/Bald-Badger/core_uriscv.git
