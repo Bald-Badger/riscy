@@ -50,17 +50,9 @@ int main() {
 	usleep( 100*1000 );
 	printf("PA should be: 0xff20_0000 ? \n");
 
-	// toggle the LEDs a bit
-
-/*
-	for (uint32_t i = 0; i < 60; i ++) {
-		printf( "looping\n" );
-		// control led
-		*(uint32_t *)h2p_lw_led_addr = i; 
-		usleep( 100*1000 );
-
-	}
-*/
+	printf("touching\n");
+	int32_t x = *(uint32_t *)virtual_base;
+	printf("touched\n");
 	// uint32_t x = *(uint32_t *)h2p_lw_led_addr;
 	//*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
 
