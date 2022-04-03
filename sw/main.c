@@ -42,9 +42,9 @@ int main() {
 	// connected to lw h2f master
 	h2p_lw_led_addr=virtual_base + ( ( unsigned long  )( ALT_LWFPGASLVS_OFST + PIO_LED_BASE ) & ( unsigned long)( HW_REGS_MASK ) );
 
-	printf("virtual base is : %p\n", virtual_base);
+	printf("virtual base is :    %p\n", virtual_base);
 	usleep( 100*1000 );
-	printf("seg VA is : %p\n", h2p_lw_led_addr);
+	printf("h2p_lw_led_addr is : %p\n", h2p_lw_led_addr);
 	usleep( 100*1000 );
 	printf("offset is %x\n", ALT_LWFPGASLVS_OFST);
 	usleep( 100*1000 );
@@ -52,7 +52,7 @@ int main() {
 
 	printf("touching\n");
 	usleep( 100*1000 );
-	int32_t x = *(uint32_t *)h2p_lw_led_addr;
+	int32_t x = *(uint32_t *)virtual_base;
 	usleep( 100*1000 );
 	printf("touched\n");
 	usleep( 100*1000 );
