@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -39,8 +40,14 @@ int clean () {
 }
 
 void touch () {
-	*(uint32_t *)virtual_base = (uint32_t)0x12345678;
+	uint32_t data = rand();
+	*(uint32_t *)virtual_base = data;
 	int32_t x = *(uint32_t *)virtual_base;
+	if (x == data) {
+		printf("touch success\n");
+	} else {
+		printf("touch fail\n");
+	}
 }
 
 int main () {
