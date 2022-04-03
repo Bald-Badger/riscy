@@ -13,8 +13,16 @@
    {
       datum _sortIndex
       {
-         value = "2";
+         value = "3";
          type = "int";
+      }
+   }
+   element axil_ram_0.altera_axi4lite_slave
+   {
+      datum baseAddress
+      {
+         value = "8192";
+         type = "String";
       }
    }
    element clk_0
@@ -50,7 +58,7 @@
    {
       datum _sortIndex
       {
-         value = "3";
+         value = "2";
          type = "int";
       }
    }
@@ -160,7 +168,7 @@
  <interface name="hps_ddr3" internal="hps_0.memory" type="conduit" dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
  <module name="axil_ram_0" kind="axil_ram" version="1.0" enabled="1">
-  <parameter name="ADDR_WIDTH" value="8" />
+  <parameter name="ADDR_WIDTH" value="10" />
   <parameter name="DATA_WIDTH" value="32" />
   <parameter name="PIPELINE_OUTPUT" value="0" />
  </module>
@@ -738,7 +746,7 @@
    start="hps_0.h2f_lw_axi_master"
    end="axil_ram_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="baseAddress" value="0x2000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
