@@ -52,13 +52,13 @@ int main() {
 
 	printf("touching\n");
 	usleep( 100*1000 );
+	*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
 	int32_t x = *(uint32_t *)virtual_base;
 	usleep( 100*1000 );
 	printf("touched\n");
 	usleep( 100*1000 );
-	// uint32_t x = *(uint32_t *)h2p_lw_led_addr;
-	//*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
 
+	printf("touch result: %x", x);
 	// clean up our memory mapping and exit
 	
 	if( munmap( virtual_base, alloc_mem_size ) != 0 ) {
