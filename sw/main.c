@@ -23,8 +23,15 @@ int main() {
 		printf( "ERROR: could not open \"/dev/mem\"...\n" );
 		return( 1 );
 	}
-	
-	virtual_base = mmap( NULL, HW_REGS_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, HW_REGS_BASE );
+
+	const uint32_t mem_address = 0xff200000;
+	const uint32_t mem_size = 0x100;
+	uint32_t alloc_mem_size, page_mask, page_size;
+	page_size = sysconf(_SC_PAGESIZE);
+	alloc_mem_size = (((mem_size / page_size) + 1) * page_size);
+	page_mask = (page_size - 1);
+	virtual_base = mmap( NULL, alloc_mem_size, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, (mem_address & ~page_mask) );
+	//virtual_base = mmap( NULL, HW_REGS_SPAN, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, HW_REGS_BASE );
 
 	if( virtual_base == MAP_FAILED ) {
 		printf( "ERROR: mmap() failed...\n" );
@@ -41,7 +48,7 @@ int main() {
 	usleep( 100*1000 );
 	printf("offset is %x\n", ALT_LWFPGASLVS_OFST);
 	usleep( 100*1000 );
-	printf("PA should be: 0xff200000 ? \n");
+	printf("PA should be: 0xff20_0000 ? \n");
 
 	// toggle the LEDs a bit
 
