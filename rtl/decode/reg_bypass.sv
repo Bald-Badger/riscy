@@ -1,4 +1,5 @@
 import defines::*;
+import mem_defines::*;
 
 module reg_bypass (
 	input	logic	clk,

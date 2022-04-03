@@ -20,7 +20,6 @@ module fetch_axil (
 	// output
 	output	data_t					pc_out,
 	output	instr_t					instr,
-	output	logic					taken,
 	output	logic					instr_valid,
 
 	// AXI Lite bus interface

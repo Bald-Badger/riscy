@@ -19,7 +19,6 @@ module decode (
 
 	// output
 	output data_t 		pc_bj,
-	output data_t		pc_nxt,
 	output logic 		pc_sel,
 	output data_t 		rs1,
 	output data_t 		rs2,
