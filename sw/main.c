@@ -24,7 +24,7 @@ int main() {
 		return( 1 );
 	}
 
-	const uint32_t mem_address = 0xff200000;
+	const uint32_t mem_address = 0xff201000;
 	const uint32_t mem_size = 0x100;
 	uint32_t alloc_mem_size, page_mask, page_size;
 	page_size = sysconf(_SC_PAGESIZE);
