@@ -41,6 +41,7 @@ int main() {
 	usleep( 100*1000 );
 	printf("offset is %x\n", ALT_LWFPGASLVS_OFST);
 	usleep( 100*1000 );
+	printf("PA should be: 0xff200000 ? \n");
 
 	// toggle the LEDs a bit
 
@@ -53,12 +54,8 @@ int main() {
 
 	}
 */
-	printf("cast begin \n");
-	usleep( 100*1000 );
-	uint32_t x = *(uint32_t *)h2p_lw_led_addr;
+	// uint32_t x = *(uint32_t *)h2p_lw_led_addr;
 	//*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
-	usleep( 100*1000 );
-	printf("cast end \n");
 
 	// clean up our memory mapping and exit
 	
