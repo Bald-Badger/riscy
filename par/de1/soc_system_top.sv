@@ -189,6 +189,17 @@ module soc_system_top(
  output			VGA_VS
 );
 
+	// system reset module
+	logic	but_rst_n, rst_n;
+	assign	but_rst_n = KEY[3];	// pressed key is 0
+
+	logic	osc_clk, clk;
+	assign	osc_clk = CLOCK_50;
+
+	logic	locked;
+
+	assign	rst_n = (but_rst_n & locked);
+
 	soc_system soc_system0(
 		.clk_clk						( clk ),
 		.reset_reset_n					( rst_n ),
@@ -266,14 +277,16 @@ module soc_system_top(
 		.hps_hps_io_gpio_inst_GPIO48	( HPS_I2C_CONTROL ),
 		.hps_hps_io_gpio_inst_GPIO53	( HPS_LED ),
 		.hps_hps_io_gpio_inst_GPIO54	( HPS_KEY ),
-		.hps_hps_io_gpio_inst_GPIO61	( HPS_GSENSOR_INT ),
+		.hps_hps_io_gpio_inst_GPIO61	( HPS_GSENSOR_INT )
 
+/*
 		.hex_hex0						(HEX0),
 		.hex_hex1						(HEX1),
 		.hex_hex2						(HEX2),
 		.hex_hex3						(HEX3),
 		.hex_hex4						(HEX4),
 		.hex_hex5						(HEX5)
+*/
 
 /*
 		.sdram_addr						(DRAM_ADDR),
@@ -289,20 +302,9 @@ module soc_system_top(
 */
 	);
 
-	// system reset module
-	logic	but_rst_n, rst_n;
-	assign	but_rst_n = KEY[3];	// pressed key is 0
-
-	logic	osc_clk, clk;
-	assign	osc_clk = CLOCK_50;
-
-	logic	locked;
-
-	assign	rst_n = (but_rst_n & locked);
-
 	pll	my_pll (
 		.refclk		( osc_clk ),
-		.rst		( but_rst_n ),
+		.rst		( ~but_rst_n ),
 		.outclk_0	( clk ),
 		.locked		( locked )
 	);
@@ -339,7 +341,7 @@ module soc_system_top(
 
 	assign IRDA_TXD = SW[0];
 
-	assign LEDR = { 10{SW[7]} };
+	assign LEDR = { 10{rst_n} };
 
 	assign PS2_CLK = SW[1] ? SW[0] : 1'bZ;
 	assign PS2_CLK2 = SW[1] ? SW[0] : 1'bZ;

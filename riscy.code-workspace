@@ -10,7 +10,9 @@
 			"hwlib.h": "c",
 			"mman.h": "c",
 			"socal.h": "c",
-			"hps.h": "c"
+			"hps.h": "c",
+			"fcntl.h": "c",
+			"stdlib.h": "c"
 		}
 	}
 }

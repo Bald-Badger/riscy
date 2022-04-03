@@ -864,10 +864,11 @@ set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
 set_global_assignment -name ECO_REGENERATE_REPORT ON
 set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name MUX_RESTRUCTURE OFF
+
+set_global_assignment -name SIP_FILE ip/pll/pll.sip
+set_global_assignment -name VERILOG_FILE ip/pll/pll.v -library pll
+set_global_assignment -name QIP_FILE ip/pll/pll.qip
 set_global_assignment -name SYSTEMVERILOG_FILE soc_system_top.sv
 set_global_assignment -name QIP_FILE soc_system/synthesis/soc_system.qip
 set_global_assignment -name SDC_FILE soc_system.sdc
-set_global_assignment -name QIP_FILE ip/pll/pll.qip
-set_global_assignment -name SIP_FILE ip/pll/pll.sip
-
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
