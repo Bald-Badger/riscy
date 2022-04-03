@@ -51,8 +51,11 @@ int main() {
 	printf("PA should be: 0xff20_0000 ? \n");
 
 	printf("touching\n");
-	int32_t x = *(uint32_t *)virtual_base;
+	usleep( 100*1000 );
+	int32_t x = *(uint32_t *)h2p_lw_led_addr;
+	usleep( 100*1000 );
 	printf("touched\n");
+	usleep( 100*1000 );
 	// uint32_t x = *(uint32_t *)h2p_lw_led_addr;
 	//*(uint32_t *)h2p_lw_led_addr = (uint32_t)0x12345678;
 
