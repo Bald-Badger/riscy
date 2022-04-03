@@ -66,7 +66,7 @@ int main() {
 
 	// clean up our memory mapping and exit
 	
-	if( munmap( virtual_base, HW_REGS_SPAN ) != 0 ) {
+	if( munmap( virtual_base, alloc_mem_size ) != 0 ) {
 		printf( "ERROR: munmap() failed...\n" );
 		close( fd );
 		return( 1 );
