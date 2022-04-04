@@ -8,7 +8,7 @@
 void *virtual_base;
 int fd;
 // const uint32_t mem_address = 0xFF203000; // success
-const uint32_t mem_address = 0xFF204000;
+const uint32_t mem_address = 0xFF205000;
 const uint32_t mem_size = 0x100;
 uint32_t alloc_mem_size, page_mask, page_size;
 
