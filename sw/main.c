@@ -42,7 +42,7 @@ void touch () {
 	uint32_t data = rand();
 	*(uint32_t *)virtual_base = data;
 	int32_t x = *(uint32_t *)virtual_base;
-	printf("touching PA: %p\n", *(uint32_t *)mem_address);
+	printf("touching PA: 0x%x\n", mem_address);
 	printf("touching VA: %p\n", virtual_base);
 	usleep( 100*1000 );
 	if (x == data) {
