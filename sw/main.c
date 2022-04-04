@@ -7,7 +7,7 @@
 
 void *virtual_base;
 int fd;
-const uint32_t mem_address = 0xff203000;
+const uint32_t mem_address = 0xFF203000;
 const uint32_t mem_size = 0x100;
 uint32_t alloc_mem_size, page_mask, page_size;
 
@@ -42,6 +42,9 @@ void touch () {
 	uint32_t data = rand();
 	*(uint32_t *)virtual_base = data;
 	int32_t x = *(uint32_t *)virtual_base;
+	printf("touching PA: %p\n", *(uint32_t *)mem_address);
+	printf("touching VA: %p\n", virtual_base);
+	usleep( 100*1000 );
 	if (x == data) {
 		printf("touch success\n");
 	} else {
