@@ -10,7 +10,7 @@ void *virtual_base;
 int fd;
 
 // phy addr of the axi lw-h2f bridge
-const uint32_t	physical_base = ALT_LWFPGASLVS_OFST;
+const uint32_t	physical_base = (const uint32_t)ALT_LWFPGASLVS_OFST;
 
 // memory offset if the axi slave from the base of lw axi hwf beridge
 const uint32_t 	offset = 0x1000;
