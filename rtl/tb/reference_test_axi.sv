@@ -2,6 +2,8 @@
 
 import defines::*;
 
+//`define AXIL	// generate AXIL interface insteaf AXI
+
 module reference_test_axi ();
 	localparam REG_DEBUG = DISABLE;
 	localparam MEM_DEBUG = DISABLE;
@@ -19,6 +21,24 @@ module reference_test_axi ();
 		.rst_n	(rst_n)
 	);
 
+`ifdef AXIL
+	axi_lite_interface ram_bus (
+		.clk	(clk),
+		.rst	(~rst_n)
+	);
+
+	proc_axil proc_dut (
+		.clk			(clk),
+		.rst_n			(rst_n),
+		.axil_bus_master(ram_bus)
+	);
+
+	axil_ram_sv_wrapper ram (
+		.clk			(clk),
+		.rst			(~rst_n),
+		.axil_bus		(ram_bus)
+	);
+`else
 	axi_interface ram_bus (
 		.clk	(clk),
 		.rst	(~rst_n)
@@ -35,6 +55,7 @@ module reference_test_axi ();
 		.rst			(~rst_n),
 		.axi_bus		(ram_bus)
 	);
+`endif
 
 	ref_hier proc_ref (
 		.clk				(clk),
@@ -671,7 +692,7 @@ module reference_test_axi ();
 			// wait for timeout
 			begin
 				repeat(TB_TIMEOUT) @(posedge clk);
-				$display("TB timeout!");
+				$display("TB timeout, stop logging");
 				// $stop();
 			end
 		join_any
@@ -684,7 +705,7 @@ module reference_test_axi ();
 		
 		// write log into log file
 		write_log();
-
+/*
 		while (
 			(reg_access_log_ref.size() > 0) ||
 			(mem_access_log_ref.size() > 0)
@@ -726,6 +747,7 @@ module reference_test_axi ();
 			$display("all log match, test passed");
 			$fwrite(fd, "success");
 		end
+*/
 
 		if (proc_ref.core_ref.reg_file[10] == 42) begin
 			$display("golden module passed the test");
