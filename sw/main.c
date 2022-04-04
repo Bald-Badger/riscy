@@ -13,7 +13,7 @@ int fd;
 const uint32_t physical_base = (unsigned int) ALT_LWFPGASLVS_OFST;
 
 // memory offset if the axi slave from the base of lw axi hwf beridge
-uint32_t 	offset = 0x2000;
+uint32_t 	offset = 0x3000;
 
 // phy addr of the device in /dev/mem
 // updated in init();
