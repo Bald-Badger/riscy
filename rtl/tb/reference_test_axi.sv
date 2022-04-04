@@ -672,7 +672,7 @@ module reference_test_axi ();
 			begin
 				repeat(TB_TIMEOUT) @(posedge clk);
 				$display("TB timeout!");
-				$stop();
+				// $stop();
 			end
 		join_any
 		disable fork;	// disable the fork wither both core finish running or timeout
@@ -703,7 +703,7 @@ module reference_test_axi ();
 			end
 
 			iter++;
-			if (iter > 1000000) begin
+			if (iter > 100000) begin
 				$display("log access overflow, stopping");
 				$stop();
 			end
