@@ -2,7 +2,7 @@
 
 import defines::*;
 
-`define AXIL	// generate AXIL interface insteaf AXI
+//`define AXIL	// generate AXIL interface insteaf AXI
 
 module reference_test_axi ();
 	localparam REG_DEBUG = DISABLE;
@@ -578,10 +578,11 @@ module reference_test_axi ();
 		$display("sim finished, writing csv log file...\n");
 
 		f = $fopen("reg_ref.csv","w");
-		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		$fwrite(f, "\"field\", \"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
 		for (wli = 0; wli < reg_access_log_ref.size(); wli++) begin
-			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%d\" \n",
-			reg_access_log_ref[wli].sim_time,
+			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"%d\" \n",
+			"reg",
+			reg_access_log_ref[wli].sim_time >> 3,
 			reg_access_log_ref[wli].pc,
 			reg_access_log_ref[wli].rw == READ ? "read" : "write",
 			reg_access_log_ref[wli].rw_data,
@@ -590,10 +591,11 @@ module reference_test_axi ();
 		$fclose(f);
 
 		f = $fopen("reg_dut.csv","w");
-		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		$fwrite(f, "\"field\", \"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
 		for (wli = 0; wli < reg_access_log_dut.size(); wli++) begin
-			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%d\" \n",
-			reg_access_log_dut[wli].sim_time,
+			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"%d\" \n",
+			"reg",
+			reg_access_log_dut[wli].sim_time >> 3,
 			reg_access_log_dut[wli].pc,
 			reg_access_log_dut[wli].rw == READ ? "read" : "write",
 			reg_access_log_dut[wli].rw_data,
@@ -602,10 +604,11 @@ module reference_test_axi ();
 		$fclose(f);
 
 		f = $fopen("mem_ref.csv","w");
-		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		$fwrite(f, "\"field\", \"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
 		for (wli = 0; wli < mem_access_log_ref.size(); wli++) begin
-			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%h\" \n",
-			mem_access_log_ref[wli].sim_time,
+			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"0x%h\" \n",
+			"mem",
+			mem_access_log_ref[wli].sim_time >> 3,
 			mem_access_log_ref[wli].pc,
 			mem_access_log_ref[wli].rw == READ ? "read" : "write",
 			mem_access_log_ref[wli].rw_data,
@@ -614,10 +617,11 @@ module reference_test_axi ();
 		$fclose(f);
 
 		f = $fopen("mem_dut.csv","w");
-		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		$fwrite(f, "\"field\", \"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
 		for (wli = 0; wli < mem_access_log_dut.size(); wli++) begin
-			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%h\" \n",
-			mem_access_log_dut[wli].sim_time,
+			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"0x%h\" \n",
+			"mem",
+			mem_access_log_dut[wli].sim_time >> 3,
 			mem_access_log_dut[wli].pc,
 			mem_access_log_dut[wli].rw == READ ? "read" : "write",
 			mem_access_log_dut[wli].rw_data,
@@ -626,22 +630,23 @@ module reference_test_axi ();
 		$fclose(f);
 
 		f = $fopen("pc_ref.csv","w");
-		$fwrite(f, "\"time\", \"pc\", \"pc_int\" \n");
+		$fwrite(f, "\"field\", \"time\", \"pc\" \n");
 		for (wli = 0; wli < pc_log_ref.size(); wli++) begin
-			$fwrite(f, "\"%t\", \"%h\", \"%d\" \n",
-			pc_log_ref[wli].sim_time,
-			pc_log_ref[wli].pc,
+			$fwrite(f, "\"%s\", \"%t\", \"%h\" \n",
+			"pc",
+			pc_log_ref[wli].sim_time >> 3,
 			pc_log_ref[wli].pc);
 		end
 		$fclose(f);
 
 		f = $fopen("pc_dut.csv","w");
-		$fwrite(f, "\"time\", \"pc\", \"pc_int\" \n");
+		$fwrite(f, "\"field\", \"time\", \"pc\" \n");
 		for (wli = 0; wli < pc_log_dut.size(); wli++) begin
-			$fwrite(f, "\"%t\", \"%h\", \"%d\" \n",
-			pc_log_dut[wli].sim_time,
-			pc_log_dut[wli].pc,
-			pc_log_dut[wli].pc);		end
+			$fwrite(f, "\"%s\", \"%t\", \"%h\" \n",
+			"pc",
+			pc_log_dut[wli].sim_time >> 3,
+			pc_log_dut[wli].pc);		
+		end
 		$fclose(f);
 	endtask
 
