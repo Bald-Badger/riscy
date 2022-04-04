@@ -9,7 +9,39 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
-   element axil_ram_0
+   element axi_ram_no_pipe
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+   }
+   element axi_ram_no_pipe.altera_axi4_slave
+   {
+      datum baseAddress
+      {
+         value = "16384";
+         type = "String";
+      }
+   }
+   element axi_ram_pipe
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
+   element axi_ram_pipe.altera_axi4_slave
+   {
+      datum baseAddress
+      {
+         value = "20480";
+         type = "String";
+      }
+   }
+   element axil_ram_no_pipe
    {
       datum _sortIndex
       {
@@ -17,11 +49,27 @@
          type = "int";
       }
    }
-   element axil_ram_0.altera_axi4lite_slave
+   element axil_ram_no_pipe.altera_axi4lite_slave
    {
       datum baseAddress
       {
          value = "8192";
+         type = "String";
+      }
+   }
+   element axil_ram_pipe
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+   }
+   element axil_ram_pipe.altera_axi4lite_slave
+   {
+      datum baseAddress
+      {
+         value = "12288";
          type = "String";
       }
    }
@@ -144,7 +192,7 @@
    }
 }
 ]]></parameter>
- <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
+ <parameter name="clockCrossingAdapter" value="AUTO" />
  <parameter name="device" value="5CSEMA5F31C6" />
  <parameter name="deviceFamily" value="Cyclone V" />
  <parameter name="deviceSpeedGrade" value="6" />
@@ -167,10 +215,27 @@
  <interface name="hps" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="hps_ddr3" internal="hps_0.memory" type="conduit" dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
- <module name="axil_ram_0" kind="axil_ram" version="1.0" enabled="1">
+ <module name="axi_ram_no_pipe" kind="axi_ram" version="1.0" enabled="1">
+  <parameter name="ADDR_WIDTH" value="10" />
+  <parameter name="DATA_WIDTH" value="32" />
+  <parameter name="ID_WIDTH" value="12" />
+  <parameter name="PIPELINE_OUTPUT" value="0" />
+ </module>
+ <module name="axi_ram_pipe" kind="axi_ram" version="1.0" enabled="1">
+  <parameter name="ADDR_WIDTH" value="10" />
+  <parameter name="DATA_WIDTH" value="32" />
+  <parameter name="ID_WIDTH" value="12" />
+  <parameter name="PIPELINE_OUTPUT" value="1" />
+ </module>
+ <module name="axil_ram_no_pipe" kind="axil_ram" version="1.0" enabled="1">
   <parameter name="ADDR_WIDTH" value="10" />
   <parameter name="DATA_WIDTH" value="32" />
   <parameter name="PIPELINE_OUTPUT" value="0" />
+ </module>
+ <module name="axil_ram_pipe" kind="axil_ram" version="1.0" enabled="1">
+  <parameter name="ADDR_WIDTH" value="10" />
+  <parameter name="DATA_WIDTH" value="32" />
+  <parameter name="PIPELINE_OUTPUT" value="1" />
  </module>
  <module name="clk_0" kind="clock_source" version="21.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
@@ -744,9 +809,36 @@
    kind="avalon"
    version="21.1"
    start="hps_0.h2f_lw_axi_master"
-   end="axil_ram_0.altera_axi4lite_slave">
+   end="axi_ram_no_pipe.altera_axi4_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x4000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="21.1"
+   start="hps_0.h2f_lw_axi_master"
+   end="axi_ram_pipe.altera_axi4_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x5000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="21.1"
+   start="hps_0.h2f_lw_axi_master"
+   end="axil_ram_no_pipe.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x2000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="21.1"
+   start="hps_0.h2f_lw_axi_master"
+   end="axil_ram_pipe.altera_axi4lite_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x3000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -763,7 +855,26 @@
    version="21.1"
    start="clk_0.clk"
    end="onchip_memory2_0.clk1" />
- <connection kind="clock" version="21.1" start="clk_0.clk" end="axil_ram_0.clock" />
+ <connection
+   kind="clock"
+   version="21.1"
+   start="clk_0.clk"
+   end="axil_ram_no_pipe.clock" />
+ <connection
+   kind="clock"
+   version="21.1"
+   start="clk_0.clk"
+   end="axil_ram_pipe.clock" />
+ <connection
+   kind="clock"
+   version="21.1"
+   start="clk_0.clk"
+   end="axi_ram_no_pipe.clock" />
+ <connection
+   kind="clock"
+   version="21.1"
+   start="clk_0.clk"
+   end="axi_ram_pipe.clock" />
  <connection
    kind="clock"
    version="21.1"
@@ -788,8 +899,23 @@
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="axil_ram_0.reset_sink" />
- <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+   end="axil_ram_no_pipe.reset_sink" />
+ <connection
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="axil_ram_pipe.reset_sink" />
+ <connection
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="axi_ram_no_pipe.reset_sink" />
+ <connection
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="axi_ram_pipe.reset_sink" />
+ <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="AUTO" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
