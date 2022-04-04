@@ -16,7 +16,7 @@ const uint32_t	physical_base = (const uint32_t)ALT_LWFPGASLVS_OFST;
 const uint32_t 	offset = 0x1000;
 
 // phy addr of the device in /dev/mem
-const uint32_t	mem_address = physical_base + offset;
+uint32_t	mem_address = physical_base + offset;
 
 // mem size of the device
 const uint32_t	mem_size = 0x100;
