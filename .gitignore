@@ -67,14 +67,14 @@ smoke/
 modelsim/
 .idea/
 PLLJ_PLLSPE_INFO.txt
+
+# ignore simulation files
 transcript
 vsim.wlf
 *.mpf
 *.mti
 *.xml
-
 vsim_stacktrace.vstf
-
 transcript.txt
 *.qpg
 *.qtl
@@ -87,20 +87,21 @@ instr.ver
 instr.mif
 *.vstf
 *.mpf_new
-*.log
+sim/*.log
+sim/*.csv
 *.component.xml
 *.cnx
+sim/*.cfg
+sim/*.bin
 
 # test_gen
 sim/test_gen/test
 sim/test_gen/*.bin
-sim/*.bin
 sim/test_gen/*.mif
 sim/test_gen/*.mc
 sim/test_gen/*.header
 sim/test_gen/*.section
 sim/test_gen/*.cfg
-sim/*.cfg
 test_gen/*.out
 
 # formal

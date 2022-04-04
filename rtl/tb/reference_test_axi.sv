@@ -2,7 +2,7 @@
 
 import defines::*;
 
-//`define AXIL	// generate AXIL interface insteaf AXI
+`define AXIL	// generate AXIL interface insteaf AXI
 
 module reference_test_axi ();
 	localparam REG_DEBUG = DISABLE;
@@ -209,7 +209,7 @@ module reference_test_axi ();
 	function void compare_pc_log();
 		for (integer i = 0; i < ( (pc_log_ref.size() > pc_log_dut.size()) ? pc_log_dut.size() : pc_log_ref.size() ); i++ ) begin
 			if (pc_log_ref[i].pc != pc_log_dut[i].pc) begin
-				$display("PC mismatch found at the #%d instr", i + 1);
+				// $display("PC mismatch found at the #%d instr", i + 1);
 				return;
 			end
 		end
@@ -484,35 +484,40 @@ module reference_test_axi ();
 		assert	(reg_access_log_ref[0].rw == reg_access_log_dut[0].rw) 
 		else begin
 			error = 1;
+			/*
 			$display("REG RW mismatch at dut time = %t, dut pc = %h, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
 			reg_access_log_dut[0].sim_time,
 			reg_access_log_dut[0].pc,
 			reg_access_log_ref[0].pc, 
 			reg_access_log_ref[0].rw ? "WRITE" : "READ", 
-			reg_access_log_dut[0].rw ? "WRITE" : "READ"
-			);
+			reg_access_log_dut[0].rw ? "WRITE" : "READ");
+			*/
 		end
 
 		assert	(reg_access_log_ref[0].rw_addr == reg_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
+			/*
 			$display("REG RW_ADDR mismatch at dut time = %t, dut pc = %h, ref pc = %h, expecting addr is %d, dut addr is %d", 
 			reg_access_log_dut[0].sim_time, 
 			reg_access_log_dut[0].pc,
 			reg_access_log_ref[0].pc, 
 			reg_access_log_ref[0].rw_addr, 
 			reg_access_log_dut[0].rw_addr);
+			*/
 		end
 
 		assert	(reg_access_log_ref[0].rw_data == reg_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
+			/*
 			$display("REG RW_DATA mismatch at dut time = %t, dut pc = %h, ref pc = %h, expecting data is %h, dut data is %h", 
 			reg_access_log_dut[0].sim_time,
 			reg_access_log_dut[0].pc, 
 			reg_access_log_ref[0].pc, 
 			reg_access_log_ref[0].rw_data, 
 			reg_access_log_dut[0].rw_data);
+			*/
 		end
 
 		//$display("poped reg log at pc=%d", reg_access_log_ref[0].pc);
@@ -525,39 +530,42 @@ module reference_test_axi ();
 		assert	(mem_access_log_ref[0].rw == mem_access_log_dut[0].rw) 
 		else begin
 			error = 1;
+			/*
 			$display("MEM RW mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting rw mode is %s, dut rw mode is %s", 
 			mem_access_log_dut[0].sim_time, 
 			mem_access_log_ref[0].sim_time,
 			mem_access_log_ref[0].pc, 
 			mem_access_log_ref[0].rw ? "WRITE" : "READ", 
-			mem_access_log_dut[0].rw ? "WRITE" : "READ"
-			);
+			mem_access_log_dut[0].rw ? "WRITE" : "READ");
+			*/
 		end
 
 		assert	(mem_access_log_ref[0].rw_addr == mem_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
+			/*
 			$display("MEM %s RW_ADDR mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
 			mem_access_log_ref[0].rw ? "WRITE" : "READ",
 			mem_access_log_dut[0].sim_time, 
 			mem_access_log_ref[0].sim_time, 
 			mem_access_log_ref[0].pc, 
 			mem_access_log_ref[0].rw_addr, 
-			mem_access_log_dut[0].rw_addr
-			);
+			mem_access_log_dut[0].rw_addr);
+			*/
 		end
 
 		assert	(mem_access_log_ref[0].rw_data == mem_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
+			/*
 			$display("MEM %s RW_DATA mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting data is %h, dut data is %h", 
 			mem_access_log_ref[0].rw ? "WRITE" : "READ",
 			mem_access_log_dut[0].sim_time, 
 			mem_access_log_ref[0].sim_time, 
 			mem_access_log_ref[0].pc, 
 			mem_access_log_ref[0].rw_data, 
-			mem_access_log_dut[0].rw_data
-			);
+			mem_access_log_dut[0].rw_data);
+			*/
 		end
 
 		//$display("poped mem log at pc=%d", mem_access_log_ref[0].pc);
@@ -565,6 +573,77 @@ module reference_test_axi ();
 		mem_access_log_dut.pop_front();
 	endtask
 
+	task write_csv ();
+		integer wli, f;	// write log index, file number
+		$display("sim finished, writing csv log file...\n");
+
+		f = $fopen("reg_ref.csv","w");
+		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		for (wli = 0; wli < reg_access_log_ref.size(); wli++) begin
+			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%d\" \n",
+			reg_access_log_ref[wli].sim_time,
+			reg_access_log_ref[wli].pc,
+			reg_access_log_ref[wli].rw == READ ? "read" : "write",
+			reg_access_log_ref[wli].rw_data,
+			reg_access_log_ref[wli].rw_addr);
+		end
+		$fclose(f);
+
+		f = $fopen("reg_dut.csv","w");
+		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		for (wli = 0; wli < reg_access_log_dut.size(); wli++) begin
+			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%d\" \n",
+			reg_access_log_dut[wli].sim_time,
+			reg_access_log_dut[wli].pc,
+			reg_access_log_dut[wli].rw == READ ? "read" : "write",
+			reg_access_log_dut[wli].rw_data,
+			reg_access_log_dut[wli].rw_addr);
+		end
+		$fclose(f);
+
+		f = $fopen("mem_ref.csv","w");
+		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		for (wli = 0; wli < mem_access_log_ref.size(); wli++) begin
+			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%h\" \n",
+			mem_access_log_ref[wli].sim_time,
+			mem_access_log_ref[wli].pc,
+			mem_access_log_ref[wli].rw == READ ? "read" : "write",
+			mem_access_log_ref[wli].rw_data,
+			mem_access_log_ref[wli].rw_addr);
+		end
+		$fclose(f);
+
+		f = $fopen("mem_dut.csv","w");
+		$fwrite(f, "\"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
+		for (wli = 0; wli < mem_access_log_dut.size(); wli++) begin
+			$fwrite(f, "\"%t\", \"%h\", \"%s\", \"%h\", \"%h\" \n",
+			mem_access_log_dut[wli].sim_time,
+			mem_access_log_dut[wli].pc,
+			mem_access_log_dut[wli].rw == READ ? "read" : "write",
+			mem_access_log_dut[wli].rw_data,
+			mem_access_log_dut[wli].rw_addr);
+		end
+		$fclose(f);
+
+		f = $fopen("pc_ref.csv","w");
+		$fwrite(f, "\"time\", \"pc\", \"pc_int\" \n");
+		for (wli = 0; wli < pc_log_ref.size(); wli++) begin
+			$fwrite(f, "\"%t\", \"%h\", \"%d\" \n",
+			pc_log_ref[wli].sim_time,
+			pc_log_ref[wli].pc,
+			pc_log_ref[wli].pc);
+		end
+		$fclose(f);
+
+		f = $fopen("pc_dut.csv","w");
+		$fwrite(f, "\"time\", \"pc\", \"pc_int\" \n");
+		for (wli = 0; wli < pc_log_dut.size(); wli++) begin
+			$fwrite(f, "\"%t\", \"%h\", \"%d\" \n",
+			pc_log_dut[wli].sim_time,
+			pc_log_dut[wli].pc,
+			pc_log_dut[wli].pc);		end
+		$fclose(f);
+	endtask
 
 	task write_log();
 		integer wli, f;	// write log index, file number
@@ -652,7 +731,6 @@ module reference_test_axi ();
 			$fwrite(f, "%h - %d @ t = %t\n", pc_log_dut[wli].pc, pc_log_dut[wli].pc, pc_log_dut[wli].sim_time);
 		end
 		$fclose(f);
-
 	endtask
 
 
@@ -704,8 +782,8 @@ module reference_test_axi ();
 		$display("mem access count: ref: %d, dut: %d", mem_access_log_ref.size(), mem_access_log_dut.size());
 		
 		// write log into log file
-		write_log();
-/*
+		write_csv();
+
 		while (
 			(reg_access_log_ref.size() > 0) ||
 			(mem_access_log_ref.size() > 0)
@@ -747,7 +825,6 @@ module reference_test_axi ();
 			$display("all log match, test passed");
 			$fwrite(fd, "success");
 		end
-*/
 
 		if (proc_ref.core_ref.reg_file[10] == 42) begin
 			$display("golden module passed the test");

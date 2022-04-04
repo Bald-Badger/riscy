@@ -11,7 +11,7 @@ module axil_ram_sv_wrapper #
     // Width of wstrb (width of data bus in words)
     parameter STRB_WIDTH = (DATA_WIDTH/8),
     // Extra pipeline register on output
-    parameter PIPELINE_OUTPUT = 0
+    parameter PIPELINE_OUTPUT = 1
 ) (
 	input logic clk,
 	input logic rst,
