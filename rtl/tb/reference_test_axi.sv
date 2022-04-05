@@ -575,14 +575,14 @@ module reference_test_axi ();
 
 	task write_csv ();
 		integer wli, f;	// write log index, file number
-		$display("sim finished, writing csv log file...\n");
+		$display("sim finished, writing csv log file...");
 
 		f = $fopen("reg_ref.csv","w");
 		$fwrite(f, "\"field\", \"time\", \"pc\", \"rw\", \"data\", \"addr\" \n");
 		for (wli = 0; wli < reg_access_log_ref.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"%d\" \n",
 			"reg",
-			reg_access_log_ref[wli].sim_time >> 3,
+			reg_access_log_ref[wli].sim_time /1000,
 			reg_access_log_ref[wli].pc,
 			reg_access_log_ref[wli].rw == READ ? "read" : "write",
 			reg_access_log_ref[wli].rw_data,
@@ -595,7 +595,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < reg_access_log_dut.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"%d\" \n",
 			"reg",
-			reg_access_log_dut[wli].sim_time >> 3,
+			reg_access_log_dut[wli].sim_time /1000,
 			reg_access_log_dut[wli].pc,
 			reg_access_log_dut[wli].rw == READ ? "read" : "write",
 			reg_access_log_dut[wli].rw_data,
@@ -608,7 +608,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < mem_access_log_ref.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"0x%h\" \n",
 			"mem",
-			mem_access_log_ref[wli].sim_time >> 3,
+			mem_access_log_ref[wli].sim_time /1000,
 			mem_access_log_ref[wli].pc,
 			mem_access_log_ref[wli].rw == READ ? "read" : "write",
 			mem_access_log_ref[wli].rw_data,
@@ -621,7 +621,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < mem_access_log_dut.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"0x%h\" \n",
 			"mem",
-			mem_access_log_dut[wli].sim_time >> 3,
+			mem_access_log_dut[wli].sim_time /1000,
 			mem_access_log_dut[wli].pc,
 			mem_access_log_dut[wli].rw == READ ? "read" : "write",
 			mem_access_log_dut[wli].rw_data,
@@ -634,7 +634,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < pc_log_ref.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"%h\" \n",
 			"pc",
-			pc_log_ref[wli].sim_time >> 3,
+			pc_log_ref[wli].sim_time /1000,
 			pc_log_ref[wli].pc);
 		end
 		$fclose(f);
@@ -644,7 +644,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < pc_log_dut.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"%h\" \n",
 			"pc",
-			pc_log_dut[wli].sim_time >> 3,
+			pc_log_dut[wli].sim_time /1000,
 			pc_log_dut[wli].pc);		
 		end
 		$fclose(f);
@@ -652,7 +652,7 @@ module reference_test_axi ();
 
 	task write_log();
 		integer wli, f;	// write log index, file number
-		$display("sim finished, writing log file...\n");
+		$display("sim finished, writing log file...");
 		f = $fopen("reg_ref.log","w");
 		for (wli = 0; wli < reg_access_log_ref.size(); wli++) begin
 			if (reg_access_log_ref[wli].rw == READ) begin
@@ -788,6 +788,7 @@ module reference_test_axi ();
 		
 		// write log into log file
 		write_csv();
+		write_log();
 
 		while (
 			(reg_access_log_ref.size() > 0) ||

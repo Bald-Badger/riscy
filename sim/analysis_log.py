@@ -96,9 +96,6 @@ def compare_reg_log(reg_dut_arr, reg_ref_arr):
 	for i in range(l):
 		err = 0
 		type = ""
-		if (reg_dut_arr[i]["pc"] != reg_ref_arr[i]["pc"]):
-			err = 1
-			type = "pc"
 		if (reg_dut_arr[i]["rw"] != reg_ref_arr[i]["rw"]):
 			err = 1
 			type = "rw"
@@ -109,7 +106,9 @@ def compare_reg_log(reg_dut_arr, reg_ref_arr):
 			err = 1
 			type = "addr"
 		if err:
-			print("reg mismatch found at index {}, type: {}".format(i, type))
+			print("reg mismatch found at index {}, type: {}, dut time: {}, ref time: {}".format(
+				i, type, int(reg_dut_arr[i]["time"]), int(reg_ref_arr[i]["time"])
+			))
 			return
 	if err == 0:
 		if dut_len == ref_len:
@@ -120,7 +119,7 @@ def compare_reg_log(reg_dut_arr, reg_ref_arr):
 
 def compare_pc_log(pc_dut_arr, pc_ref_arr):
 	dut_len = len(pc_dut_arr)
-	ref_len = len(pc_ref_arr)
+	ref_len = len(pc_ref_arr) - 1 # ref module will exe one more instr after halt
 	if dut_len != ref_len:
 		print("pc log len mismatch")
 	l = min([dut_len, ref_len])
