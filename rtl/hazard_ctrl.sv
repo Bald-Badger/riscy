@@ -273,7 +273,7 @@ module hazard_ctrl (
 
 	always_comb begin : flush_assign
 		if (load_hazard_1) begin
-			flush_pc = (~data_mem_stall) ? ((jump_d || branch_d) && instr_valid_d) : DISABLE;
+			flush_pc = DISABLE;
 		end else if (load_hazard_2) begin
 			flush_pc = (~data_mem_stall) ? ((jump_d || branch_d) && instr_valid_d) : DISABLE;
 		end else

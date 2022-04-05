@@ -2,7 +2,7 @@
 
 import defines::*;
 
-//`define AXIL	// generate AXIL interface insteaf AXI
+`define AXIL	// generate AXIL interface insteaf AXI
 
 module reference_test_axi ();
 	localparam REG_DEBUG = DISABLE;
@@ -582,7 +582,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < reg_access_log_ref.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"%d\" \n",
 			"reg",
-			reg_access_log_ref[wli].sim_time /1000,
+			reg_access_log_ref[wli].sim_time / 1000,
 			reg_access_log_ref[wli].pc,
 			reg_access_log_ref[wli].rw == READ ? "read" : "write",
 			reg_access_log_ref[wli].rw_data,
@@ -595,7 +595,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < reg_access_log_dut.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"%d\" \n",
 			"reg",
-			reg_access_log_dut[wli].sim_time /1000,
+			reg_access_log_dut[wli].sim_time / 1000,
 			reg_access_log_dut[wli].pc,
 			reg_access_log_dut[wli].rw == READ ? "read" : "write",
 			reg_access_log_dut[wli].rw_data,
@@ -608,7 +608,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < mem_access_log_ref.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"0x%h\" \n",
 			"mem",
-			mem_access_log_ref[wli].sim_time /1000,
+			mem_access_log_ref[wli].sim_time / 1000,
 			mem_access_log_ref[wli].pc,
 			mem_access_log_ref[wli].rw == READ ? "read" : "write",
 			mem_access_log_ref[wli].rw_data,
@@ -621,7 +621,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < mem_access_log_dut.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"0x%h\", \"%s\", \"0x%h\", \"0x%h\" \n",
 			"mem",
-			mem_access_log_dut[wli].sim_time /1000,
+			mem_access_log_dut[wli].sim_time / 1000,
 			mem_access_log_dut[wli].pc,
 			mem_access_log_dut[wli].rw == READ ? "read" : "write",
 			mem_access_log_dut[wli].rw_data,
@@ -634,7 +634,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < pc_log_ref.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"%h\" \n",
 			"pc",
-			pc_log_ref[wli].sim_time /1000,
+			pc_log_ref[wli].sim_time / 1000,
 			pc_log_ref[wli].pc);
 		end
 		$fclose(f);
@@ -644,7 +644,7 @@ module reference_test_axi ();
 		for (wli = 0; wli < pc_log_dut.size(); wli++) begin
 			$fwrite(f, "\"%s\", \"%t\", \"%h\" \n",
 			"pc",
-			pc_log_dut[wli].sim_time /1000,
+			pc_log_dut[wli].sim_time / 1000,
 			pc_log_dut[wli].pc);		
 		end
 		$fclose(f);

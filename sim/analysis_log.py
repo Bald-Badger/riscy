@@ -66,18 +66,22 @@ def compare_mem_log(mem_dut_arr, mem_ref_arr):
 		print("mem log len mismatch")
 	l = min([dut_len, ref_len])
 	err = 0
+	type = ""
 	for i in range(l):
 		err = 0
-		if (mem_dut_arr[i]["pc"] != mem_ref_arr[i]["pc"]):
-			err = 1
 		if (mem_dut_arr[i]["rw"] != mem_ref_arr[i]["rw"]):
 			err = 1
+			type = "rw"
 		if (mem_dut_arr[i]["data"] != mem_ref_arr[i]["data"]):
 			err = 1
+			type = "data"
 		if (mem_dut_arr[i]["addr "] != mem_ref_arr[i]["addr "]):
 			err = 1
+			type = "addr"
 		if err:
-			print("mem mismatch found at index {}".format(i))
+			print("mem mismatch found at index {}, type: {}, dut time: {}, ref time: {}, ref pc: {}".format(
+				i, type, int(mem_dut_arr[i]["time"]), int(mem_ref_arr[i]["time"]), hex(mem_ref_arr[i]["pc"])
+			))
 			return
 	if err == 0:
 		if dut_len == ref_len:
@@ -106,8 +110,8 @@ def compare_reg_log(reg_dut_arr, reg_ref_arr):
 			err = 1
 			type = "addr"
 		if err:
-			print("reg mismatch found at index {}, type: {}, dut time: {}, ref time: {}".format(
-				i, type, int(reg_dut_arr[i]["time"]), int(reg_ref_arr[i]["time"])
+			print("reg mismatch found at index {}, type: {}, dut time: {}, ref time: {}, ref pc: {}".format(
+				i, type, int(reg_dut_arr[i]["time"]), int(reg_ref_arr[i]["time"]), hex(reg_ref_arr[i]["pc"])
 			))
 			return
 	if err == 0:
@@ -129,7 +133,7 @@ def compare_pc_log(pc_dut_arr, pc_ref_arr):
 		if (pc_dut_arr[i]["pc "] != pc_ref_arr[i]["pc "]):
 			err = 1
 		if err:
-			print("pc mismatch found at index {}".format(i))
+			print("pc mismatch found at index {}, dut time: {}".format(i, pc_dut_arr[i]["time"]))
 			return
 	if err == 0:
 		if dut_len == ref_len:
