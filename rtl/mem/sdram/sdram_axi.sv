@@ -65,7 +65,7 @@ parameter SDRAM_READ_LATENCY    = 2
 
     // Outputs
     ,output          inport_awready_o
-    ,output  logic   inport_wready_o
+    ,output          inport_wready_o
     ,output          inport_bvalid_o
     ,output [  1:0]  inport_bresp_o
     ,output [  3:0]  inport_bid_o
@@ -101,12 +101,14 @@ wire [  7:0]  ram_len_w;
 wire          ram_ack_w;
 wire          ram_error_w;
 
-logic inport_wready_o_ff;
-always_ff @(posedge clk_i or posedge rst_i) begin : delay_wready
+reg inport_wready_o_ff;
+wire inport_wready_o_ff_wire;
+assign inport_wready_o = inport_wready_o_ff;
+always @(posedge clk_i or posedge rst_i) begin : delay_wready
     if (rst_i)
-        inport_wready_o <= 0;
+        inport_wready_o_ff <= 0;
     else
-        inport_wready_o <= inport_wready_o_ff;
+        inport_wready_o_ff <= inport_wready_o_ff_wire;
 end
 
 sdram_axi_pmem
@@ -133,7 +135,7 @@ u_axi
     .axi_arburst_i(inport_arburst_i),
     .axi_rready_i(inport_rready_i),
     .axi_awready_o(inport_awready_o),
-    .axi_wready_o(inport_wready_o_ff),
+    .axi_wready_o(inport_wready_o_ff_wire),
     .axi_bvalid_o(inport_bvalid_o),
     .axi_bresp_o(inport_bresp_o),
     .axi_bid_o(inport_bid_o),
