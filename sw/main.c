@@ -14,7 +14,7 @@ const uint32_t h2f_lw_base = (unsigned int) ALT_LWFPGASLVS_OFST;
 const uint32_t h2f_base = (unsigned int) 0xC0000000;
 
 // memory offset if the axi slave from the base of lw axi hwf beridge
-uint32_t 	offset = 0x10000;
+uint32_t 	offset = 0x4000000;
 
 // phy addr of the device in /dev/mem
 // updated in init();
@@ -26,7 +26,7 @@ uint32_t	mem_size = 0x400;
 uint32_t alloc_mem_size, page_mask, page_size;
 
 int init () {
-	mem_address = h2f_lw_base + offset;
+	mem_address = h2f_base + offset;
 	if( ( fd = open( "/dev/mem", ( O_RDWR | O_SYNC ) ) ) == -1 ) {
 		printf( "ERROR: could not open \"/dev/mem\"...\n" );
 		return( -1 );
