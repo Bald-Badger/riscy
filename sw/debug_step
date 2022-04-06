@@ -21,19 +21,12 @@ scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/soc_system.dtb /mnt && sync
 
 reboot -h now
 
+sw:
+make clean && make && make clean && git add . && git commit -m "bruh" && git push
+
+fpga:
+cd ~/riscy && git pull && cp ~/riscy/sw/main.c ~/sw/ && cd ~/sw && make clean && make
+
 check:
 ls "/proc/device-tree/sopc@0/bridge@0xc0000000/"
 cat "/proc/device-tree/sopc@0/bridge@0xc0000000/vga@0x100000000/compatible"
-
-run user:
-cd ~/lab3/lab3-sw
-git pull
-make
-rmmod vga_ball
-insmod vga_ball.ko
-lsmod
-./hello
-
-make && rmmod vga_ball && insmod vga_ball.ko && ./hello
-
-cd ~/lab3/lab3-sw && git pull && make && rmmod vga_ball && insmod vga_ball.ko && ./hello

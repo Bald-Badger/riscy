@@ -61,18 +61,23 @@ module sdram_axi_qsys #(
 	inout	[15: 0]				sdram_dq
 );
 
-	wire [ 15:0]				sdram_datan_w;
-	wire [ 15:0]				sdram_dataut_w;
-	wire						sdram_dataut_en_w;
+	wire [ 15:0]				sdram_data_in_w;
+	wire [ 15:0]				sdram_data_out_w;
+	wire						sdram_data_out_en_w;
 
+/*
 	iobuf # (
 		.WIDTH					(16)
 	) databuf (
-		.o						(sdram_datan_w),
+		.o						(sdram_data_in_w),
 		.io						(sdram_dq),
-		.i						(sdram_dataut_w),
-		.en						(~sdram_dataut_en_w)
+		.i						(sdram_data_out_w),
+		.en						(~sdram_data_out_en_w)
 	);
+*/
+
+    assign sdram_dq   = sdram_data_out_en_w ? sdram_data_out_w : 16'bz;
+    assign sdram_data_in_w = sdram_dq;
 
 	sdram_axi # (
 		.SDRAM_MHZ				(SDRAM_MHZ),
@@ -122,9 +127,9 @@ module sdram_axi_qsys #(
 		,.sdram_dqm_o			(sdram_dqm)
 		,.sdram_addr_o			(sdram_addr)
 		,.sdram_ba_o			(sdram_ba)
-		,.sdram_data_input_i	(sdram_datan_w)
-		,.sdram_data_output_o	(sdram_dataut_w)
-		,.sdram_data_out_en_o	(sdram_dataut_en_w)
+		,.sdram_data_input_i	(sdram_data_in_w)
+		,.sdram_data_output_o	(sdram_data_out_w)
+		,.sdram_data_out_en_o	(sdram_data_out_en_w)
 	);
 
 endmodule : sdram_axi_qsys
