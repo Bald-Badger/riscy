@@ -55,8 +55,8 @@ int clean () {
 
 void touch () {
 	uint32_t data = rand();
-	*(uint32_t *)virtual_base = data;
-	int32_t x = *(uint32_t *)virtual_base;
+	*((uint32_t *)virtual_base + 0x300) = data;
+	int32_t x = *((uint32_t *)virtual_base + 0x300);
 	printf("touching PA: 0x%x\n", mem_address);
 	printf("touching VA: %p\n", virtual_base);
 	usleep( 100*1000 );
