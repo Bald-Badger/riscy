@@ -26,7 +26,7 @@ module sdram_wb_axil # (
 		parameter	SDRAM_TARGET          = "ALTERA"
 ) (
 	input					clk,
-	input					rst
+	input					rst,
 
 	// AXIL interface
 	input	wire			i_axi_awvalid,
