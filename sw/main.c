@@ -14,7 +14,7 @@ const uint32_t h2f_lw_base = (unsigned int) ALT_LWFPGASLVS_OFST;
 const uint32_t h2f_base = (unsigned int) 0xC0000000;
 
 // memory offset if the axi slave from the base of lw axi hwf beridge
-uint32_t 	offset = 0x4000000;
+uint32_t 	offset = 0x0000000;
 
 // phy addr of the device in /dev/mem
 // updated in init();
