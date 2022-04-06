@@ -10,22 +10,23 @@ void *virtual_base;
 int fd;
 
 // phy addr of the axi lw-h2f bridge
-const uint32_t physical_base = (unsigned int) ALT_LWFPGASLVS_OFST;
+const uint32_t h2f_lw_base = (unsigned int) ALT_LWFPGASLVS_OFST;
+const uint32_t h2f_base = (unsigned int) 0xC0000000;
 
 // memory offset if the axi slave from the base of lw axi hwf beridge
-uint32_t 	offset = 0x3000;
+uint32_t 	offset = 0x10000;
 
 // phy addr of the device in /dev/mem
 // updated in init();
 uint32_t	mem_address;
 
 // mem size of the device
-uint32_t	mem_size = 0x100;
+uint32_t	mem_size = 0x400;
 
 uint32_t alloc_mem_size, page_mask, page_size;
 
 int init () {
-	mem_address = physical_base + offset;
+	mem_address = h2f_lw_base + offset;
 	if( ( fd = open( "/dev/mem", ( O_RDWR | O_SYNC ) ) ) == -1 ) {
 		printf( "ERROR: could not open \"/dev/mem\"...\n" );
 		return( -1 );
