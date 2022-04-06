@@ -58,13 +58,13 @@ sdram_axi u_sdram (
 	,.sdram_data_out_en_o	(sdram_data_out_en_w)
 );
 
-iobuf # (
-	.WIDTH	(16)
-) databuf (
-	.o		(sdram_data_in_w),
-	.io		(sdram_bus.sdram_dq),
-	.i		(sdram_data_out_w),
-	.en		(~sdram_data_out_en_w)
-);
+	iobuf # (
+		.WIDTH					(16)
+	) databuf (
+		.o						(sdram_data_in_w),
+		.io						(sdram_bus.sdram_dq),
+		.i						(sdram_data_out_w),
+		.en						(~sdram_data_out_en_w)
+	);
 
 endmodule : sdram_axi_wrapper

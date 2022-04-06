@@ -65,7 +65,6 @@ module sdram_axi_qsys #(
 	wire [ 15:0]				sdram_data_out_w;
 	wire						sdram_data_out_en_w;
 
-/*
 	iobuf # (
 		.WIDTH					(16)
 	) databuf (
@@ -74,10 +73,6 @@ module sdram_axi_qsys #(
 		.i						(sdram_data_out_w),
 		.en						(~sdram_data_out_en_w)
 	);
-*/
-
-    assign sdram_dq   = sdram_data_out_en_w ? sdram_data_out_w : 16'bz;
-    assign sdram_data_in_w = sdram_dq;
 
 	sdram_axi # (
 		.SDRAM_MHZ				(SDRAM_MHZ),
