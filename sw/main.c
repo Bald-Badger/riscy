@@ -22,7 +22,7 @@ uint32_t 	offset = 0x0000000;
 uint32_t	mem_address;
 
 // mem size of the device
-uint32_t	mem_size = 0xffffff;
+uint32_t	mem_size = 0x3ffffff;
 
 uint32_t alloc_mem_size, page_mask, page_size;
 
