@@ -67,8 +67,8 @@ void touch () {
 	printf("touching PA: %p\n", (void*)(mem_address + off));
 	printf("touching VA: %p\n", virtual_base + off);
 	usleep(100);
-	//write_sdram((virtual_base + off), data);
-	*((uint32_t *)virtual_base + off) = data;
+	write_sdram((virtual_base + off), data);
+	//*((uint32_t *)virtual_base + off) = data;
 	usleep(100);
 	//int32_t x = *((uint32_t *)virtual_base + off);
 	return;
