@@ -62,15 +62,10 @@ void write_sdram (uint32_t* addr, uint32_t data) {
 	*addr = data;
 }
 
+// off in word, not byte
 int touch (uint32_t off) {
 	uint32_t data = rand();
-	// printf("touching PA: %p\n", (void*)(mem_address));
-	// printf("touching VA: %p\n", virtual_base);
-	// usleep(100);
 	write_sdram(((uint32_t *)virtual_base) + off, data);
-	//*((uint32_t *)virtual_base) = data;
-	//usleep(100);
-	//uint32_t x = *((uint32_t *)virtual_base);
 	uint32_t x = read_sdram(((uint32_t *)virtual_base) + off);
 	if (x == data) {
 		printf("touche PA %p success \n", (void*)(mem_address) + (off * 4));
@@ -94,7 +89,7 @@ int main () {
 	init();
 	//touch_body(0xffffff, 0x400);
 	int i;
-	for (i = 0xc0fff000 / 4; ; i ++) {
+	for (i = 0xfffff0; i > 0; i ++) {
 		touch(i);
 	}
 	clean();
