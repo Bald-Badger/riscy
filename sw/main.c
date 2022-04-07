@@ -73,7 +73,7 @@ void touch () {
 	uint32_t rddata = read(addr);
 	if (rddata == data) {
 		printf("data match\n");
-	} else begin {
+	} else {
 		printf("data mismatch\n");
 	}
 }
