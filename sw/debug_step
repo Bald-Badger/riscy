@@ -1,3 +1,5 @@
+git clone -b De1-Migrate https://github.com/Bald-Badger/riscy.git
+
 verilator --lint-only vga_ball.sv
 qsys-edit soc_system.qsys
 make quartus
