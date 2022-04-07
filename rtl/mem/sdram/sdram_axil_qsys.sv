@@ -17,7 +17,7 @@ module sdram_axil_qsys (
 	input  wire [2:0]	s_axil_arprot,
 	input  wire			s_axil_arvalid,
 	output wire			s_axil_arready,
-	output wire [32:0]	s_axil_rdata,
+	output wire [31:0]	s_axil_rdata,
 	output wire [1:0]	s_axil_rresp,
 	output wire			s_axil_rvalid,
 	input  wire			s_axil_rready,
