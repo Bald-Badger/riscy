@@ -54,7 +54,7 @@ int clean () {
 }
 
 uint32_t read_sdram (uint32_t * addr) {
-	return *addr;
+	return *((uint32_t *)addr);
 }
 
 void write_sdram (uint32_t* addr, uint32_t data) {
@@ -68,8 +68,9 @@ void touch () {
 	usleep(100);
 	write_sdram((uint32_t *)virtual_base, data);
 	//*((uint32_t *)virtual_base) = data;
-	usleep(100);
-	//uint32_t x = *((uint32_t *)virtual_base);
+	//usleep(100);
+	uint32_t x = *((uint32_t *)virtual_base);
+	printf("touche: %x\n", x);
 	return;
 }
 

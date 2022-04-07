@@ -7,31 +7,31 @@ import axi_defines::*;
 import mem_defines::*;
 
 module riscy_core_axil_qsys  (
-	input logic 					clk,
-	input logic						rst,
+	input	logic 					clk,
+	input	logic					rst,
 
 	/*
-	* AXI lite master interfaces
+	* AXI lite master interface
 	*/
-	output	logic	[25:0]				awaddr,
-	output	logic	[2:0]				awprot,
-	output	logic						awvalid,
-	input	logic						awready,
-	output	logic	[31:0]				wdata,
-	output	logic	[3:0]				wstrb,
-	output	logic						wvalid,
-	input	logic						wready,
-	input	logic	[1:0]				bresp,
-	input	logic						bvalid,
-	output	logic						bready,
-	output	logic	[25:0]				araddr,
-	output	logic	[2:0]				arprot,
-	output	logic						arvalid,
-	input	logic						arready,
-	input	logic	[31:0]				rdata,
-	input	logic	[1:0]				rresp,
-	input	logic						rvalid,
-	output	logic						rready
+	output	logic	[25:0]			awaddr,
+	output	logic	[2:0]			awprot,
+	output	logic					awvalid,
+	input	logic					awready,
+	output	logic	[31:0]			wdata,
+	output	logic	[3:0]			wstrb,
+	output	logic					wvalid,
+	input	logic					wready,
+	input	logic	[1:0]			bresp,
+	input	logic					bvalid,
+	output	logic					bready,
+	output	logic	[25:0]			araddr,
+	output	logic	[2:0]			arprot,
+	output	logic					arvalid,
+	input	logic					arready,
+	input	logic	[31:0]			rdata,
+	input	logic	[1:0]			rresp,
+	input	logic					rvalid,
+	output	logic					rready
 );
 
 	axi_lite_interface axil_bus (

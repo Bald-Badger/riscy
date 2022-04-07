@@ -30,7 +30,7 @@
 //	
 //							web: http://www.terasic.com/	
 //							email: support@terasic.com
-module soc_system_top(
+module soc_system_top (
 				
  ///////// ADC /////////
  inout 			ADC_CS_N,
@@ -189,16 +189,11 @@ module soc_system_top(
  output			VGA_VS
 );
 
-	// system reset module
+	// wire define
 	logic	but_rst_n, rst_n;
-	assign	but_rst_n = KEY[3];	// pressed key is 0
-
 	logic	osc_clk, clk;
-	assign	osc_clk = CLOCK_50;
-
 	logic	locked;
 
-	assign	rst_n = (but_rst_n & locked);
 
 	soc_system soc_system0(
 		.clk_clk						( clk ),
@@ -288,7 +283,6 @@ module soc_system_top(
 		.hex_hex5						(HEX5)
 */
 
-
 		.sdram_addr						(DRAM_ADDR),
 		.sdram_ba						(DRAM_BA),
 		.sdram_cas_n					(DRAM_CAS_N),
@@ -296,7 +290,7 @@ module soc_system_top(
 		.sdram_clk						(DRAM_CLK),
 		.sdram_cs_n						(DRAM_CS_N),
 		.sdram_dq						(DRAM_DQ),
-		.sdram_dqm						({DRAM_UDQM, DRAM_LDQM}),	// im almost sure
+		.sdram_dqm						({DRAM_UDQM, DRAM_LDQM}),
 		.sdram_ras_n					(DRAM_RAS_N),
 		.sdram_we_n						(DRAM_WE_N)
 
@@ -308,6 +302,39 @@ module soc_system_top(
 		.outclk_0						( clk ),
 		.locked							( locked )
 	);
+
+	logic [3:0] key_dbc;	// debounced key
+
+	genvar dbcr_gen;
+	generate
+		for (dbcr_gen = 0; dbcr_gen < 4; dbcr_gen++) begin : debouncer_gen_loop
+			debouncer dbc_gen (
+				.clk	(osc_clk),
+				.in		(KEY[dbcr_gen]),
+				.out	(key_dbc[dbcr_gen]),
+				.edj	(),
+				.rise	(),
+				.fall	()
+			);
+		end
+	endgenerate
+
+	always_comb begin : ctrl_sig_assign
+		but_rst_n = key_dbc[3];	// pressed key is 0
+		osc_clk = CLOCK_50;
+		rst_n = (but_rst_n & locked);
+	end
+
+	assign LEDR[0] = KEY[3];
+	assign LEDR[1] = key_dbc[3];
+	assign LEDR[2] = locked;
+	assign LEDR[3] = rst_n;
+	assign LEDR[4] = but_rst_n;
+	assign LEDR[5] = 1'b0;
+	assign LEDR[6] = 1'b0;
+	assign LEDR[7] = 1'b0;
+	assign LEDR[8] = 1'b0;
+	assign LEDR[9] = 1'b0;
 
 	// The following quiet the "no driver" warnings for output
 	// pins and should be removed if you use any of these peripherals
@@ -341,7 +368,7 @@ module soc_system_top(
 
 	assign IRDA_TXD = SW[0];
 
-	assign LEDR = { 10{rst_n} };
+	// assign LEDR = { 10{rst_n} };
 
 	assign PS2_CLK = SW[1] ? SW[0] : 1'bZ;
 	assign PS2_CLK2 = SW[1] ? SW[0] : 1'bZ;
@@ -354,4 +381,4 @@ module soc_system_top(
 	assign {VGA_BLANK_N, VGA_CLK,
 		VGA_HS, VGA_SYNC_N, VGA_VS} = { 5{ SW[0] } };
 
-endmodule
+endmodule : soc_system_top

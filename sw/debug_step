@@ -18,8 +18,11 @@ cp ./output_files/soc_system.rbf ./boot/
 copy files:
 mount /dev/mmcblk0p1 /mnt
 rm -f /mnt/soc_system.rbf && rm -f /mnt/soc_system.dtb && sync
-scp sz3034@micro28.ee.columbia.edu:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
-scp sz3034@micro28.ee.columbia.edu:~/riscy/par/de1/soc_system.dtb /mnt && sync
+scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
+scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/soc_system.dtb /mnt && sync
+
+scp shuai@192.168.50.45:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
+scp shuai@192.168.50.45:~/riscy/par/de1/soc_system.dtb /mnt && sync
 
 reboot -h now
 

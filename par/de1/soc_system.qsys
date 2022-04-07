@@ -22,22 +22,6 @@
          type = "boolean";
       }
    }
-   element heavy_ram_large
-   {
-      datum _sortIndex
-      {
-         value = "3";
-         type = "int";
-      }
-   }
-   element heavy_ram_large.altera_axi4_slave
-   {
-      datum baseAddress
-      {
-         value = "67108864";
-         type = "String";
-      }
-   }
    element hps_0
    {
       datum _sortIndex
@@ -177,12 +161,6 @@
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
- </module>
- <module name="heavy_ram_large" kind="axi_ram" version="1.0" enabled="1">
-  <parameter name="ADDR_WIDTH" value="14" />
-  <parameter name="DATA_WIDTH" value="32" />
-  <parameter name="ID_WIDTH" value="12" />
-  <parameter name="PIPELINE_OUTPUT" value="0" />
  </module>
  <module name="hps_0" kind="altera_hps" version="21.1" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
@@ -723,25 +701,11 @@
    kind="avalon"
    version="21.1"
    start="hps_0.h2f_axi_master"
-   end="heavy_ram_large.altera_axi4_slave">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04000000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="21.1"
-   start="hps_0.h2f_axi_master"
    end="sdram_controller_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
- <connection
-   kind="clock"
-   version="21.1"
-   start="clk_0.clk"
-   end="heavy_ram_large.clock" />
  <connection
    kind="clock"
    version="21.1"
@@ -762,11 +726,6 @@
    version="21.1"
    start="clk_0.clk"
    end="hps_0.h2f_lw_axi_clock" />
- <connection
-   kind="reset"
-   version="21.1"
-   start="clk_0.clk_reset"
-   end="heavy_ram_large.reset_sink" />
  <connection
    kind="reset"
    version="21.1"
