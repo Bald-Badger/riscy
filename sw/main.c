@@ -68,7 +68,7 @@ int touch (uint32_t off) {
 	write_sdram(((uint32_t *)virtual_base) + off, data);
 	uint32_t x = read_sdram(((uint32_t *)virtual_base) + off);
 	if (x == data) {
-		printf("touche PA %p success \n", (void*)(mem_address) + (off * 4));
+		printf("touche word off: %x, PA %p success \n", off, (void*)(mem_address) + (off * 4));
 		return 0;
 	} else {
 		printf("touche PA %p fail \n", (void*)(mem_address) + (off * 4));
@@ -87,7 +87,7 @@ void touch_body (int base, int limit, int gran) {
 
 int main () {
 	init();
-	touch_body (0, 0x3ffffff, 0x200);
+	touch_body (0, 0x3ffffff, 0x400);
 	clean();
 	return( 0 );
 }
