@@ -54,36 +54,12 @@
          type = "String";
       }
    }
-   element light_ram_large
-   {
-      datum _sortIndex
-      {
-         value = "4";
-         type = "int";
-      }
-   }
-   element light_ram_large.altera_axi4_slave
-   {
-      datum baseAddress
-      {
-         value = "65536";
-         type = "String";
-      }
-   }
-   element sdram_controller_0
+   element sdram_controller_axil_0
    {
       datum _sortIndex
       {
          value = "2";
          type = "int";
-      }
-   }
-   element sdram_controller_0.altera_axi4_slave
-   {
-      datum baseAddress
-      {
-         value = "0";
-         type = "String";
       }
    }
    element soc_system
@@ -193,7 +169,7 @@
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
  <interface
    name="sdram"
-   internal="sdram_controller_0.sdram"
+   internal="sdram_controller_axil_0.sdram"
    type="conduit"
    dir="end" />
  <module name="clk_0" kind="clock_source" version="21.1" enabled="1">
@@ -738,31 +714,11 @@
   <parameter name="usb_mp_clk_div" value="0" />
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
- <module name="light_ram_large" kind="axi_ram" version="1.0" enabled="1">
-  <parameter name="ADDR_WIDTH" value="14" />
-  <parameter name="DATA_WIDTH" value="32" />
-  <parameter name="ID_WIDTH" value="12" />
-  <parameter name="PIPELINE_OUTPUT" value="0" />
- </module>
  <module
-   name="sdram_controller_0"
-   kind="sdram_controller"
+   name="sdram_controller_axil_0"
+   kind="sdram_controller_axil"
    version="1.0"
-   enabled="1">
-  <parameter name="SDRAM_ADDR_W" value="25" />
-  <parameter name="SDRAM_COL_W" value="10" />
-  <parameter name="SDRAM_MHZ" value="50" />
-  <parameter name="SDRAM_READ_LATENCY" value="2" />
- </module>
- <connection
-   kind="avalon"
-   version="21.1"
-   start="hps_0.h2f_axi_master"
-   end="sdram_controller_0.altera_axi4_slave">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
+   enabled="1" />
  <connection
    kind="avalon"
    version="21.1"
@@ -775,10 +731,10 @@
  <connection
    kind="avalon"
    version="21.1"
-   start="hps_0.h2f_lw_axi_master"
-   end="light_ram_large.altera_axi4_slave">
+   start="hps_0.h2f_axi_master"
+   end="sdram_controller_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00010000" />
+  <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -790,12 +746,7 @@
    kind="clock"
    version="21.1"
    start="clk_0.clk"
-   end="light_ram_large.clock" />
- <connection
-   kind="clock"
-   version="21.1"
-   start="clk_0.clk"
-   end="sdram_controller_0.clock" />
+   end="sdram_controller_axil_0.clock" />
  <connection
    kind="clock"
    version="21.1"
@@ -815,17 +766,12 @@
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="sdram_controller_0.reset_sink" />
- <connection
-   kind="reset"
-   version="21.1"
-   start="clk_0.clk_reset"
    end="heavy_ram_large.reset_sink" />
  <connection
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="light_ram_large.reset_sink" />
+   end="sdram_controller_axil_0.reset_sink" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="AUTO" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
