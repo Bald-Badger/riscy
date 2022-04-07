@@ -35,7 +35,7 @@ int init () {
 	page_size = sysconf(_SC_PAGESIZE);
 	alloc_mem_size = (((mem_size / page_size) + 1) * page_size);
 	page_mask = (page_size - 1);
-	virtual_base = mmap( NULL, alloc_mem_size, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, (mem_address & ~page_mask) );
+	virtual_base = mmap( NULL, alloc_mem_size * 2, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, (mem_address & ~page_mask) );
 	if( virtual_base == MAP_FAILED ) {
 		printf( "ERROR: mmap() failed...\n" );
 		close( fd );
