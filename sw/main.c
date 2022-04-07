@@ -92,7 +92,7 @@ void touch_body (int limit) {
 
 int main () {
 	init();
-	touch(0);
+	touch_body(0xfff);
 	clean();
 	return( 0 );
 }
