@@ -69,7 +69,7 @@ void touch () {
 	write_sdram((uint32_t *)virtual_base, data);
 	//*((uint32_t *)virtual_base) = data;
 	usleep(100);
-	//int32_t x = *((uint32_t *)virtual_base);
+	//uint32_t x = *((uint32_t *)virtual_base);
 	return;
 }
 

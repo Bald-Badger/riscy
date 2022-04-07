@@ -56,7 +56,7 @@ module sdram_axil_qsys (
 		.axi_arlen(0),
 		.axi_arburst(2'b00),
 		.axi_rready(s_axil_rready),
-		.axi_awready(s_axi_awready),
+		.axi_awready(s_axil_awready),
 		.axi_wready(s_axil_wready),
 		.axi_bvalid(s_axil_bvalid),
 		.axi_bresp(s_axil_bresp),

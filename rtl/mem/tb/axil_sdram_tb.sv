@@ -29,7 +29,6 @@ module axil_sdram_tb ();
 		rst_n = 1;
 	end
 
-
 	axi_lite_interface axil_sdram (
 		.clk	(clk),
 		.rst	(~rst_n)
@@ -114,7 +113,7 @@ task init();
 	rd		= 0;
 	valid	= 0;
 	iter	= 0;
-	#200000000;
+	#20000;
 endtask 
 
 // test that write then read at inedx0 tag0 way0;
