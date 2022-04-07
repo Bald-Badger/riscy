@@ -94,7 +94,7 @@ int main () {
 	init();
 	//touch_body(0xffffff, 0x400);
 	int i;
-	for (i = 0xc0fff000; ; i ++) {
+	for (i = 0xc0fff000 / 4; ; i ++) {
 		touch(i);
 	}
 	clean();
