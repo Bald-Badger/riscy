@@ -77,21 +77,17 @@ int touch (uint32_t off) {
 }
 
 
-// touch sdram, limit in word instead of byte
-void touch_body (int limit, int gran) {
+// touch sdram, all in word, not byte
+void touch_body (int base, int limit, int gran) {
 	int i;
-	for (i = 0; i < limit; i += gran) {
+	for (i = base; i < limit; i += gran) {
 		touch(i);
 	}
 } 
 
 int main () {
 	init();
-	//touch_body(0xffffff, 0x400);
-	int i;
-	for (i = 0xfffff0; i > 0; i ++) {
-		touch(i);
-	}
+	touch_body (0, 0x3ffffff, 0x200);
 	clean();
 	return( 0 );
 }
