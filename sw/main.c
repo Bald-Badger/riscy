@@ -61,22 +61,37 @@ void write_sdram (uint32_t* addr, uint32_t data) {
 	*addr = data;
 }
 
-void touch () {
-	uint32_t data = 0x12345678;
-	printf("touching PA: %p\n", (void*)(mem_address));
-	printf("touching VA: %p\n", virtual_base);
-	usleep(100);
-	write_sdram((uint32_t *)virtual_base, data);
+int touch (uint32_t off) {
+	uint32_t data = rand();
+	// printf("touching PA: %p\n", (void*)(mem_address));
+	// printf("touching VA: %p\n", virtual_base);
+	// usleep(100);
+	write_sdram(((uint32_t *)virtual_base) + off, data);
 	//*((uint32_t *)virtual_base) = data;
 	//usleep(100);
-	uint32_t x = *((uint32_t *)virtual_base);
-	printf("touche: %x\n", x);
-	return;
+	//uint32_t x = *((uint32_t *)virtual_base);
+	uint32_t x = read_sdram(((uint32_t *)virtual_base) + off);
+	if (x == data) {
+		printf("touche PA %p success \n", (void*)(mem_address) + (off * 4));
+		return 0;
+	} else {
+		printf("touche PA %p fail \n", (void*)(mem_address) + (off * 4));
+		return -1;
+	}
 }
+
+
+// touch sdram, limit in word instead of byte
+void touch_body (int limit) {
+	int i;
+	for (i = 0; i < limit; i++) {
+		touch(i);
+	}
+} 
 
 int main () {
 	init();
-	touch();
+	touch(0);
 	clean();
 	return( 0 );
 }

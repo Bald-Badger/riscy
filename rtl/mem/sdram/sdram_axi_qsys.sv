@@ -3,14 +3,13 @@
 // synopsys translate_on
 
 import defines::*;
-import mem_defines::*;
 
 module sdram_axi_qsys #(
 	// row_w + col_w + bank_w = addr_w
 	parameter	SDRAM_MHZ			= 50,
 	parameter	SDRAM_ADDR_W		= 25,
 	parameter	SDRAM_COL_W			= 10,
-	parameter	SDRAM_READ_LATENCY	= 2
+	parameter	SDRAM_READ_LATENCY	= 3
 ) (
 	input 						clk,
 	input 						rst,

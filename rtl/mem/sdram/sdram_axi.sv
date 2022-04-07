@@ -40,7 +40,7 @@ module sdram_axi #(
 parameter SDRAM_MHZ             = 50,
 parameter SDRAM_ADDR_W          = 25,
 parameter SDRAM_COL_W           = 10,
-parameter SDRAM_READ_LATENCY    = 2
+parameter SDRAM_READ_LATENCY    = 3
 ) (
     // Inputs
      input           clk_i
@@ -103,7 +103,7 @@ wire          ram_error_w;
 
 reg inport_wready_o_ff;
 wire inport_wready_o_ff_wire;
-assign inport_wready_o = inport_wready_o_ff;
+// assign inport_wready_o = inport_wready_o_ff;
 always @(posedge clk_i or posedge rst_i) begin : delay_wready
     if (rst_i)
         inport_wready_o_ff <= 0;
@@ -135,7 +135,7 @@ u_axi
     .axi_arburst_i(inport_arburst_i),
     .axi_rready_i(inport_rready_i),
     .axi_awready_o(inport_awready_o),
-    .axi_wready_o(inport_wready_o_ff_wire),
+    .axi_wready_o(inport_wready_o),
     .axi_bvalid_o(inport_bvalid_o),
     .axi_bresp_o(inport_bresp_o),
     .axi_bid_o(inport_bid_o),

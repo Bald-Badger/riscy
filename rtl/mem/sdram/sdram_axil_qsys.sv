@@ -1,4 +1,10 @@
-module sdram_axil_qsys (
+module sdram_axil_qsys # (
+	// row_w + col_w + bank_w = addr_w
+	parameter	SDRAM_MHZ			= 50,
+	parameter	SDRAM_ADDR_W		= 25,
+	parameter	SDRAM_COL_W			= 10,
+	parameter	SDRAM_READ_LATENCY	= 3
+) (
 	input				clk,
 	input				rst,
 
@@ -35,54 +41,60 @@ module sdram_axil_qsys (
 	inout	[15: 0]		sdram_dq
 );
 
-	sdram_axi_qsys sdram_ctrl (
-		.clk			(clk),
-		.rst			(rst),
+	sdram_axi_qsys # (
+		// row_w + col_w + bank_w = addr_w
+		.SDRAM_MHZ			(SDRAM_MHZ),
+		.SDRAM_ADDR_W		(SDRAM_ADDR_W),
+		.SDRAM_COL_W		(SDRAM_COL_W),
+		.SDRAM_READ_LATENCY	(SDRAM_READ_LATENCY)
+	) sdram_ctrl (
+		.clk				(clk),
+		.rst				(rst),
 
 		// AXI interface
-		.axi_awvalid(s_axil_awvalid),
-		.axi_awaddr(s_axil_awaddr),
-		.axi_awid(0),
-		.axi_awlen(0),
-		.axi_awburst(2'b00),
-		.axi_wvalid(s_axil_wvalid),
-		.axi_wdata(s_axil_wdata),
-		.axi_wstrb(s_axil_wstrb),
-		.axi_wlast(1'b1),
-		.axi_bready(s_axil_bready),
-		.axi_arvalid(s_axil_arvalid),
-		.axi_araddr(s_axil_araddr),
-		.axi_arid(0),
-		.axi_arlen(0),
-		.axi_arburst(2'b00),
-		.axi_rready(s_axil_rready),
-		.axi_awready(s_axil_awready),
-		.axi_wready(s_axil_wready),
-		.axi_bvalid(s_axil_bvalid),
-		.axi_bresp(s_axil_bresp),
-		.axi_bid(),
-		.axi_arready(s_axil_arready),
-		.axi_rvalid(s_axil_rvalid),
-		.axi_rdata(s_axil_rdata),
-		.axi_rresp(s_axil_rresp),
-		.axi_rid(),
-		.axi_rlast(),
+		.axi_awvalid		(s_axil_awvalid),
+		.axi_awaddr			(s_axil_awaddr),
+		.axi_awid			(0),
+		.axi_awlen			(0),
+		.axi_awburst		(2'b00),
+		.axi_wvalid			(s_axil_wvalid),
+		.axi_wdata			(s_axil_wdata),
+		.axi_wstrb			(s_axil_wstrb),
+		.axi_wlast			(1'b1),
+		.axi_bready			(s_axil_bready),
+		.axi_arvalid		(s_axil_arvalid),
+		.axi_araddr			(s_axil_araddr),
+		.axi_arid			(0),
+		.axi_arlen			(0),
+		.axi_arburst		(2'b00),
+		.axi_rready			(s_axil_rready),
+		.axi_awready		(s_axil_awready),
+		.axi_wready			(s_axil_wready),
+		.axi_bvalid			(s_axil_bvalid),
+		.axi_bresp			(s_axil_bresp),
+		.axi_bid			(),
+		.axi_arready		(s_axil_arready),
+		.axi_rvalid			(s_axil_rvalid),
+		.axi_rdata			(s_axil_rdata),
+		.axi_rresp			(s_axil_rresp),
+		.axi_rid			(),
+		.axi_rlast			(),
 
-			// axi signal that are not used
-		.axi_awsize(3'b010),
-		.axi_arsize(3'b010),
+		// axi signal that are not used
+		.axi_awsize			(3'b010),
+		.axi_arsize			(3'b010),
 
-			// SDRAM interface
-		.sdram_clk(sdram_clk),
-		.sdram_cke(sdram_cke),
-		.sdram_dqm(sdram_dqm),
-		.sdram_cas_n(sdram_cas_n),
-		.sdram_ras_n(sdram_ras_n),
-		.sdram_we_n(sdram_we_n),
-		.sdram_cs_n(sdram_cs_n),
-		.sdram_ba(sdram_ba),
-		.sdram_addr(sdram_addr),
-		.sdram_dq(sdram_dq)
+		// SDRAM interface
+		.sdram_clk			(sdram_clk),
+		.sdram_cke			(sdram_cke),
+		.sdram_dqm			(sdram_dqm),
+		.sdram_cas_n		(sdram_cas_n),
+		.sdram_ras_n		(sdram_ras_n),
+		.sdram_we_n			(sdram_we_n),
+		.sdram_cs_n			(sdram_cs_n),
+		.sdram_ba			(sdram_ba),
+		.sdram_addr			(sdram_addr),
+		.sdram_dq			(sdram_dq)
 	);
 	
-endmodule
+endmodule : sdram_axil_qsys

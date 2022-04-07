@@ -126,6 +126,14 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="AUTO" />
@@ -696,7 +704,12 @@
    name="sdram_controller_axil_0"
    kind="sdram_controller_axil"
    version="1.0"
-   enabled="1" />
+   enabled="1">
+  <parameter name="SDRAM_ADDR_W" value="25" />
+  <parameter name="SDRAM_COL_W" value="10" />
+  <parameter name="SDRAM_MHZ" value="50" />
+  <parameter name="SDRAM_READ_LATENCY" value="3" />
+ </module>
  <connection
    kind="avalon"
    version="21.1"
