@@ -53,17 +53,28 @@ int clean () {
 	return (0);
 }
 
+uint32_t read (uint32_t * addr) {
+	return *((uint32_t *)addr);
+}
+
+void write (uint32_t* addr, uint32_t data) {
+	*((uint32_t *)addr) = data;
+}
+
 void touch () {
-	uint32_t data = rand();
-	*((uint32_t *)virtual_base + 0x300) = data;
-	int32_t x = *((uint32_t *)virtual_base + 0x300);
-	printf("touching PA: 0x%x\n", mem_address);
-	printf("touching VA: %p\n", virtual_base);
-	usleep( 100*1000 );
-	if (x == data) {
-		printf("touch success\n");
-	} else {
-		printf("touch fail\n");
+	uint32_t data = 0x12345678;
+	uint32_t* addr_base = ((uint32_t *)mem_address);
+	uint32_t off = 0x0;
+	uint32_t* addr = addr_base + off;
+	printf ("writing to addr: %p ...\n", addr);
+	write(addr, data);
+	usleep(1000);
+	printf ("reading from addr: %p ...\n", addr);
+	uint32_t rddata = read(addr);
+	if (rddata == data) {
+		printf("data match\n");
+	} else begin {
+		printf("data mismatch\n");
 	}
 }
 
