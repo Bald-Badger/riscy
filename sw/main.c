@@ -63,19 +63,14 @@ void write_sdram (uint32_t* addr, uint32_t data) {
 
 void touch () {
 	uint32_t data = 0x12345678;
-	uint32_t* addr_base = ((uint32_t *)mem_address);
+	uint32_t* addr_base = ((uint32_t *)virtual_base);
 	uint32_t off = 0x0;
 	uint32_t* addr = addr_base + off;
-	printf ("writing to addr: %p ...\n", addr);
+	printf ("writing to addr: %p ...\n", mem_address + off);
 	write_sdram(addr, data);
 	usleep(1000);
-	printf ("reading from addr: %p ...\n", addr);
+	printf ("reading from addr: %p ...\n", mem_address + off);
 	uint32_t rddata = read_sdram(addr);
-	if (rddata == data) {
-		printf("data match\n");
-	} else {
-		printf("data mismatch\n");
-	}
 }
 
 int main () {
