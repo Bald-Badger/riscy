@@ -53,11 +53,11 @@ int clean () {
 	return (0);
 }
 
-uint32_t read (uint32_t * addr) {
+uint32_t read_sdram (uint32_t * addr) {
 	return *((uint32_t *)addr);
 }
 
-void write (uint32_t* addr, uint32_t data) {
+void write_sdram (uint32_t* addr, uint32_t data) {
 	*((uint32_t *)addr) = data;
 }
 
@@ -67,10 +67,10 @@ void touch () {
 	uint32_t off = 0x0;
 	uint32_t* addr = addr_base + off;
 	printf ("writing to addr: %p ...\n", addr);
-	write(addr, data);
+	write_sdram(addr, data);
 	usleep(1000);
 	printf ("reading from addr: %p ...\n", addr);
-	uint32_t rddata = read(addr);
+	uint32_t rddata = read_sdram(addr);
 	if (rddata == data) {
 		printf("data match\n");
 	} else {
