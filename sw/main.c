@@ -62,15 +62,12 @@ void write_sdram (uint32_t* addr, uint32_t data) {
 }
 
 void touch () {
-	uint32_t data = 0x12345678;
-	uint32_t* addr_base = ((uint32_t *)virtual_base);
-	uint32_t off = 0x0;
-	uint32_t* addr = addr_base + off;
-	printf ("writing to addr: %p ...\n", mem_address + off);
-	write_sdram(addr, data);
-	usleep(1000);
-	printf ("reading from addr: %p ...\n", mem_address + off);
-	uint32_t rddata = read_sdram(addr);
+	uint32_t data = rand();
+	uint32_t off = 0;
+	printf("touching PA: 0x%x\n", mem_address + off);
+	printf("touching VA: %p\n", virtual_base + off);
+	*((uint32_t *)virtual_base + off) = data;
+	int32_t x = *((uint32_t *)virtual_base + off);
 }
 
 int main () {
