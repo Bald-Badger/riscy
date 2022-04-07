@@ -54,7 +54,7 @@ int clean () {
 }
 
 uint32_t read_sdram (uint32_t * addr) {
-	return *((uint32_t *)addr);
+	return *addr;
 }
 
 void write_sdram (uint32_t* addr, uint32_t data) {
