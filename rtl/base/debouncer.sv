@@ -2,11 +2,11 @@
 
 module debouncer
 #(
-	parameter MAX_COUNT = 16
+	parameter MAX_COUNT = 1000000	// around 0.02s
 )
 (
 	input logic clk,
-	input logic in,		// Synchronous and noisy input.
+	input logic in,		// Asynchronous and noisy input.
 	output logic out,	// Debounced and filtered output.
 	output logic edj,	// Goes high for 1 clk cycle on either edge of output. Note: used "edj" because "edge" is a keyword.
 	output logic rise,	// Goes high for 1 clk cycle on the rising edge of output.
