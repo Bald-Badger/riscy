@@ -146,6 +146,7 @@ void boot_load (char* filename) {
 	printf("bootloader start, boot sector size: %d words\n", size_word);
 	uint32_t* instr_arr = malloc(size_word * sizeof(uint32_t));
 	FILE* file_ptr;
+	file_ptr = fopen("instr.bin","rb");
 	fread(instr_arr, sizeof(instr_arr), 1, file_ptr);
 	fclose(file_ptr);
 	printf("%x\n", instr_arr[0]);
