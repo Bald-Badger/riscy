@@ -114,11 +114,20 @@ int clean_seg (void* vp_base) {
 	return unmap_addr (vp_base, seg_size_byte);
 }
 
-void set_seg (uint32_t vp, int index, int number) {
+void set_seg_single (uint32_t vp, int index, uint32_t number) {
 	vp = (uint32_t)vp & seg_addr_mask;
 	uint32_t hex_seg_digit = number & seg_data_mask;
 	vp = (uint32_t)vp + (index << 2);
 	*(uint32_t*)vp = hex_seg_digit;
+}
+
+void set_seg (uint32_t vp, uint32_t number) {
+	int i;
+	for (i = 0; i < 6; i++) {
+		set_seg_single (vp, i, number);
+		number = number >> 2;
+	}
+	return;
 }
 
 
@@ -127,9 +136,8 @@ int main () {
 	//touch_sdram(sdram_vp, 0xffffff);
 	//clean_sdram(sdram_vp);
 
-	void* seg_vp = init_seg();
-	set_seg (seg_vp, 1, 0xC);
+	void* seg_vp = (void*)(init_seg());
+	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
-
 	return( 0 );
 }
