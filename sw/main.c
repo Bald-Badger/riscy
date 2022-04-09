@@ -34,7 +34,7 @@ int init () {
 		return( -1 );
 	}
 	page_size = sysconf(_SC_PAGESIZE);
-	alloc_mem_size = (((mem_size / page_size) + 1) * page_size);
+	alloc_mem_size = (((sdram_size_byte / page_size) + 1) * page_size);
 	page_mask = (page_size - 1);
 	virtual_base = mmap( NULL, alloc_mem_size, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd, (mem_address & ~page_mask) );
 	if( virtual_base == MAP_FAILED ) {
@@ -88,7 +88,7 @@ void touch_body (int base, int limit, int gran) {
 
 int main () {
 	init();
-	touch_body (0xfffc00, 0x3ffffff, 0x1);
+	touch(0);
 	clean();
 	return( 0 );
 }
