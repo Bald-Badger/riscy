@@ -133,7 +133,7 @@ void set_seg (void* vp, uint32_t number) {
 
 int main () {
 	void* sdram_vp = init_sdram();
-	touch_sdram(sdram_vp, 0x0fff);
+	touch_sdram(sdram_vp, 0x0fffff);
 	clean_sdram(sdram_vp);
 
 	//void* seg_vp = (void*)(init_seg());
