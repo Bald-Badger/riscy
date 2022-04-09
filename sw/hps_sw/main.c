@@ -137,21 +137,26 @@ void set_seg (void* vp, uint32_t number) {
 	return;
 }
 
+void dump_binary () {
 
-int main () {
+}
 
 
+void smoke_test () {
 	void* sdram_vp = init_sdram();
-	// touch_sdram(sdram_vp, 0x3fffff);	// biggest
 	touch_sdram(sdram_vp, 0xffffff);
-	// touch_sdram_range(sdram_vp, 0x3fff00, 0x1);
 	clean_sdram(sdram_vp);
-
-	
 
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
-	return( 0 );
+}
 
+
+int main () {
+	uint32_t instr_arr[1000];
+	FILE* ptr;
+	ptr = open("instr.bin","rb");
+	fread(instr_arr, sizeof(instr_arr), 1, ptr);
+	printf("instr: %x/n", instr_arr[0]);
 }
