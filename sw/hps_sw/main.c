@@ -160,8 +160,20 @@ void boot_load (char* filename) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
 	}
 
+	// read sdram to check data corruption
+	uint32_t sanity_check;
+	for (i = 0; i < instr_size_word; i++) {
+		sanity_check = read_sdram(sdram_vp + i);
+		if (sanity_check != instr_arr[i]) {
+			printf("data mismatch at word %x",i);
+		}
+	}
+
 	// unmap sdram from our memory space
 	clean_sdram(sdram_vp);
+
+	// free allocated pointers
+	free(instr_arr);
 }
 
 
