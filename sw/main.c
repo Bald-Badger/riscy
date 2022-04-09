@@ -125,7 +125,7 @@ void set_seg (void* vp, uint32_t number) {
 	int i;
 	for (i = 0; i < 6; i++) {
 		set_seg_single (vp, i, number);
-		number = number >> 1;
+		number = number >> 4;
 	}
 	return;
 }
