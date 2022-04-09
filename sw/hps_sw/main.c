@@ -139,19 +139,25 @@ void set_seg (void* vp, uint32_t number) {
 }
 
 void boot_load (char* filename) {
+	// prep work, accocate memory
 	struct stat st;
 	stat(filename, &st);
-	size_t size_word;
-	size_word = (st.st_size) >> 2;
-	printf("bootloader start, boot sector size: %d words\n", size_word);
-	uint32_t* instr_arr = malloc(size_word * sizeof(uint32_t));
+	size_t instr_size_word;
+	instr_size_word = (st.st_size) >> 2;
+	printf("bootloader start, boot sector size: %d words\n", instr_size_word);
+	uint32_t* instr_arr = malloc(instr_size_word * sizeof(uint32_t));
 	FILE* file_ptr;
 	file_ptr = fopen("instr.bin","rb");
 	fread(instr_arr, sizeof(instr_arr), 1, file_ptr);
 	fclose(file_ptr);
+
+	// map sdram into our own memory space
+	uint32_t* sdram_vp = (uint32_t*)init_sdram();
+
+	// write the data into sdram
 	int i;
-	for (i = 0; i < 500; i++) {
-		printf("%x\n", instr_arr[i]);
+	for (i = 0; i < instr_size_word; i++) {
+		write_sdram(sdram_vp + i, instr_arr[i]);
 	}
 }
 
