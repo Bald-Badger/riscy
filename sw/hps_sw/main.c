@@ -85,7 +85,6 @@ uint32_t read_sdram (uint32_t * addr) {
 }
 
 void write_sdram (uint32_t* addr, uint32_t data) {
-	printf ("writing %x\n", data);
 	*addr = data;
 }
 
