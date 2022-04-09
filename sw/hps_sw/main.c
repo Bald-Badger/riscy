@@ -171,7 +171,7 @@ void boot_load (char* filename) {
 	fread(instr_arr_byte, st.st_size, 1, file_ptr);
 	fclose(file_ptr);
 
-
+	usleep(100);
 
 	for (i = 0; i < 20; i++) {
 		printf("%x\n", instr_arr[i]);
