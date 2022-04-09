@@ -27,7 +27,7 @@ scp shuai@192.168.50.45:~/riscy/par/de1/soc_system.dtb /mnt && sync
 reboot -h now
 
 sw:
-make clean && make && make clean && git add ./. && git commit -m "sanity check" && git push
+make clean && make && make clean && git add ./. && git commit -m "vibe check" && git push
 
 fpga:
 cd ~/riscy && git pull && cp ~/riscy/sw/hps_sw/main.c ~/sw/hps_sw/ && cd ~/sw/hps_sw && make clean && make && sync
