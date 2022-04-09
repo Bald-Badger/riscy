@@ -8,7 +8,7 @@
 
 // global define
 #define h2f_lw_base ALT_LWFPGASLVS_OFST
-#define h2f_base 0xC0000000
+#define h2f_base 0xC0000000U
 //const uint32_t h2f_lw_base = (unsigned int) ALT_LWFPGASLVS_OFST;
 //const uint32_t h2f_base = (unsigned int) 0xC0000000;
 
