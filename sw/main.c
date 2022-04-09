@@ -7,8 +7,10 @@
 #include "include/hps.h"
 
 // global define
-const uint32_t h2f_lw_base = (unsigned int) ALT_LWFPGASLVS_OFST;
-const uint32_t h2f_base = (unsigned int) 0xC0000000;
+#define h2f_lw_base ALT_LWFPGASLVS_OFST
+#define h2f_base 0xC0000000
+//const uint32_t h2f_lw_base = (unsigned int) ALT_LWFPGASLVS_OFST;
+//const uint32_t h2f_base = (unsigned int) 0xC0000000;
 
 // sdram define
 const uint32_t sdram_range		= 0x03ffffff;	// 0x0 - 0x3ffffff
@@ -36,7 +38,7 @@ void* map_addr (int pa_base, int size_byte) {
 
 	// get page size in byte
 	page_size = sysconf(_SC_PAGESIZE);
-	
+
 	// in number of allocated page
 	uint32_t alloc_mem_size = (((size_byte / page_size) + 1) * page_size);
 	page_mask = (page_size - 1);
