@@ -27,7 +27,7 @@ uint32_t	sdram_size_word =  0xffffff;
 
 uint32_t alloc_mem_size, page_mask, page_size;
 
-int init () {
+int init_sdram() {
 	mem_address = h2f_base + offset;
 	if( ( fd = open( "/dev/mem", ( O_RDWR | O_SYNC ) ) ) == -1 ) {
 		printf( "ERROR: could not open \"/dev/mem\"...\n" );
@@ -45,7 +45,7 @@ int init () {
 	return (0);
 }
 
-int clean () {
+int clean_sdram () {
 	if( munmap( virtual_base, alloc_mem_size ) != 0 ) {
 		printf( "ERROR: munmap() failed...\n" );
 		close( fd );
@@ -64,7 +64,7 @@ void write_sdram (uint32_t* addr, uint32_t data) {
 }
 
 // off in word, not byte
-int touch (uint32_t off) {
+int touch_sdram (uint32_t off) {
 	uint32_t data = rand();
 	write_sdram(((uint32_t *)virtual_base) + off, data);
 	uint32_t x = read_sdram(((uint32_t *)virtual_base) + off);
@@ -82,13 +82,13 @@ int touch (uint32_t off) {
 void touch_body (int base, int limit, int gran) {
 	int i;
 	for (i = base; i < limit; i += gran) {
-		touch(i);
+		touch_sdram(i);
 	}
 } 
 
 int main () {
-	init();
-	touch(0);
-	clean();
+	init_sdram();
+	touch_sdram(0xffffff);
+	clean_sdram();
 	return( 0 );
 }

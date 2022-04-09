@@ -27,7 +27,7 @@ scp shuai@192.168.50.45:~/riscy/par/de1/soc_system.dtb /mnt && sync
 reboot -h now
 
 sw:
-make clean && make && make clean && git add . && git commit -m "bruh" && git push
+make clean && make && make clean && git add ./. && git commit -m "bruh" && git push
 
 fpga:
 cd ~/riscy && git pull && cp ~/riscy/sw/main.c ~/sw/ && cd ~/sw && make clean && make && sync
