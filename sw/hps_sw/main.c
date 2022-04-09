@@ -151,11 +151,25 @@ void boot_load (char* filename) {
 	fread(instr_arr, sizeof(instr_arr), 1, file_ptr);
 	fclose(file_ptr);
 
+	// swap the endianess of each instruction as we are using big endian for now
+	int i;
+	uint32_t instr_big;
+	uint32_t instr_little;
+	for (i = 0; i < instr_size_word; i++) {
+		instr_little = instr_arr[i];
+		instr_big =	((instr_little>>24)&0xff) |			// move byte 3 to byte 0
+					((instr_little<<8)&0xff0000) |		// move byte 1 to byte 2
+					((instr_little>>8)&0xff00) |		// move byte 2 to byte 1
+					((instr_little<<24)&0xff000000);	// byte 0 to byte 3
+		instr_arr[i] = instr_big;
+	}
+
 	// map sdram into our own memory space
 	uint32_t* sdram_vp = (uint32_t*)init_sdram();
 
+
 	// write the data into sdram
-	int i;
+	
 	for (i = 0; i < instr_size_word; i++) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
 	}
