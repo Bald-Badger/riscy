@@ -20,6 +20,11 @@ package defines;
 	} boot_type_t;
 	localparam	[1:0] BOOT_TYPE = FPGA_BOOT;
 
+	// byte-varient endianess
+	localparam LITTLE_ENDIAN	= 1'b0;
+	localparam BIG_ENDIAN		= 1'b1;
+	localparam ENDIANESS		= BIG_ENDIAN;
+
 	localparam	[31:0] ENTRY_PC = 32'hF8;	// read from /sim/test_gen/boot.cfg
 
 //	ISA define
@@ -50,11 +55,6 @@ package defines;
 
 //	debug log option
 	localparam	TOP_DEBUG		= ENABLE;
-
-	// byte-varient endianess
-	localparam LITTLE_ENDIAN	= 1'b0;
-	localparam BIG_ENDIAN		= 1'b1;
-	localparam ENDIANESS		= BIG_ENDIAN;
 
 
 	// sopported extension

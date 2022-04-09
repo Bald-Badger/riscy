@@ -11,14 +11,15 @@ module reference_test_axi ();
 	integer error;
 	int fd;
 
-	logic clk, rst_n, ebreak_start;
+	logic clk, rst_n, ebreak_start, go;
 
 	logic ref_halt, ref_halt_wait;
 	logic kill_ref;
 
 	clkrst #(.FREQ(FREQ)) clkrst_inst(
 		.clk	(clk),
-		.rst_n	(rst_n)
+		.rst_n	(rst_n),
+		.go		(go)
 	);
 
 `ifdef AXIL
@@ -30,6 +31,7 @@ module reference_test_axi ();
 	proc_axil proc_dut (
 		.clk			(clk),
 		.rst_n			(rst_n),
+		.go				(go),
 		.axil_bus_master(ram_bus)
 	);
 
@@ -38,7 +40,9 @@ module reference_test_axi ();
 		.rst			(~rst_n),
 		.axil_bus		(ram_bus)
 	);
+	
 `else
+
 	axi_interface ram_bus (
 		.clk	(clk),
 		.rst	(~rst_n)
@@ -47,6 +51,7 @@ module reference_test_axi ();
 	proc_axi proc_dut (
 		.clk			(clk),
 		.rst_n			(rst_n),
+		.go				(go),
 		.axi_bus_master	(ram_bus)
 	);
 
@@ -108,7 +113,7 @@ module reference_test_axi ();
 		reg_wr_data_ref		= data_t'(proc_ref.core_ref.rd_val_w);
 	end
 
-	assign ebreak_start		= proc_dut.processor.ebreak_start;
+	assign ebreak_start		= proc_dut.processor.instr_w.opcode == SYS;
 
 	// mem ref wire
 	logic	mem_wr_en_ref, mem_rd_en_ref, mem_access_ack_ref;
@@ -857,18 +862,24 @@ module clkrst #(
 	FREQ = FREQ
 ) (
 	output logic clk,
-	output logic rst_n
+	output logic rst_n,
+	output logic go
 );
 
 	localparam period = 1e12/FREQ;	// in ps
 	localparam half_period = period/2;
 
 	initial begin
-		clk = 1'b0;
-		rst_n = 1'b0;
+		clk		= 1'b0;
+		rst_n	= 1'b0;
+		go		= 1'b0;
 		repeat(5) @(negedge clk);
 		#100;
-		rst_n = 1'b1;
+		rst_n	= 1'b1;
+		repeat(233) @(negedge clk);
+		go		= 1'b1;
+		@(negedge clk);
+		go		= 1'b0;
 	end
 
 	always #half_period begin

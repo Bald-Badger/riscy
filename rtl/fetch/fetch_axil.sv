@@ -36,8 +36,6 @@ module fetch_axil (
 
 	state_t state, nxt_state;
 
-	initial state = DEBUG;
-
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)
 			state <= DEBUG;

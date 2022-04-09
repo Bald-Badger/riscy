@@ -10,6 +10,7 @@ import axi_defines::*;
 module proc_axi (
 	input	logic 		clk,					// clock from PLL, frequency is defines::FREQ
 	input	logic 		rst_n,					// global reset
+	input	logic		go,
 
 	axi_interface	axi_bus_master
 );
@@ -59,6 +60,7 @@ module proc_axi (
 	proc processor (
 		.clk			(clk),
 		.rst_n			(rst_n),
+		.go				(go),
 		.data_bus		(data_bus_lite),
 		.instr_bus		(instr_bus_lite)
 	);
