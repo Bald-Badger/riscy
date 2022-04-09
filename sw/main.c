@@ -148,10 +148,10 @@ int main () {
 	clean_sdram(sdram_vp);
 
 	
-/*
+
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
 	return( 0 );
-*/
+
 }
