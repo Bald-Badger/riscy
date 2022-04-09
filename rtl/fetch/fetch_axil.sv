@@ -36,6 +36,8 @@ module fetch_axil (
 
 	state_t state, nxt_state;
 
+	initial state = DEBUG;
+
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)
 			state <= DEBUG;
@@ -93,7 +95,7 @@ module fetch_axil (
 			$display("DUT: boot mode: RARS");
 			$display("DUT: booting from pc = %h", 0);
 		end else if (BOOT_TYPE == FPGA_BOOT) begin
-			boot_pc[0] = 32'b0;
+			boot_pc[0] = ENTRY_PC;
 		end
 	end
 
@@ -214,15 +216,11 @@ module fetch_axil (
 
 
 	always_comb begin : switch_endian
-		if (BOOT_TYPE == BINARY_BOOT) begin
-			instr_switch =	(ENDIANESS == BIG_ENDIAN) ? instr_t'(instr_fifo_out.instr) : 
-					instr_t'(swap_endian(data_t'(instr_fifo_out.instr)));
-		end else if (BOOT_TYPE == RARS_BOOT) begin
+		if (BOOT_TYPE == RARS_BOOT) begin
 			instr_switch = instr_t'(instr_fifo_out.instr);
-		end else if (BOOT_TYPE == FPGA_BOOT) begin
-			instr_switch = NULL;
 		end else begin
-			instr_switch = NULL;
+			instr_switch =	(ENDIANESS == BIG_ENDIAN) ? instr_t'(instr_fifo_out.instr) : 
+				instr_t'(swap_endian(data_t'(instr_fifo_out.instr)));
 		end
 	end
 

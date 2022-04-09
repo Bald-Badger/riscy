@@ -79,7 +79,7 @@ module axi_crossbar_2x1 #
     parameter M00_BASE_ADDR = 0,
     // Master interface address widths
     // M_REGIONS concatenated fields of 32 bits
-    parameter M00_ADDR_WIDTH = {M_REGIONS{32'd24}},
+    parameter M00_ADDR_WIDTH = 32'd32,
     // Read connections between interfaces
     // S_COUNT bits
     parameter M00_CONNECT_READ = 2'b11,

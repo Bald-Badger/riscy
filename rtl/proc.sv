@@ -10,14 +10,13 @@ import axi_defines::*;
 module proc (
 	input	logic 		clk,		// clock from PLL, frequency is defines::FREQ
 	input	logic 		rst_n,		// global reset
-	input	logic		go,			// is the core is plused, then resume
+	input	logic		go,			// is the fetch unit is plused, then resume
 
 	axi_lite_interface	data_bus,
 	axi_lite_interface	instr_bus				
 );
 	// sdram init done signal;
 	logic		sdram_init_done, sdram_init_done_async;
-	logic		ebreak_start;
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n)
 			sdram_init_done <= 1'b0;
@@ -65,11 +64,7 @@ module proc (
 				flush_if_id, flush_id_ex,
 				flush_ex_mem, flush_mem_wb;
 
-	// ebreak
-	logic		ebreak_return;	// wait for debugger return executation to core
-	assign		ebreak_return = 1'b0;	// disable debugger return
-
-	// memory access done flag
+	// data memory access done flag, high for one cycle
 	logic		mem_access_done;
 
 	// global data wire
@@ -80,6 +75,8 @@ module proc (
 	data_t		ex_ex_fwd_data;		// fwd data from mem stage to exe stage
 	data_t		mem_ex_fwd_data;	// fwd data from wb stage to exe stage
 	data_t		mem_mem_fwd_data;	// fwd data from wb stage to mem stage
+
+	// TODO: define control signal: mem_read instead of opcode == load
 	always_comb begin : fwd_data_assign
 		ex_ex_fwd_data = (instr_m.opcode == LOAD) ? mem_data_out_m : alu_result_m;
 		mem_ex_fwd_data = wb_data;
@@ -375,12 +372,6 @@ module proc (
 		.flush_ex_mem		(flush_ex_mem),
 		.flush_mem_wb		(flush_mem_wb)
 	);
-
-
-// TODO: resume pipeline after ebreak return
-always_comb begin : ebreak_assign
-	ebreak_start = instr_w.opcode == SYS;
-end
 
 always_comb begin
 	opcode_f = instr_f.opcode;

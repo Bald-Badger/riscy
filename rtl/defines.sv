@@ -12,6 +12,16 @@ package defines;
 
 	localparam [1:0]	TARGET	= ALTERA;
 
+	// boot options
+	typedef enum logic[1:0] {
+		BINARY_BOOT,	// boot from a bin file generated from gcc
+		RARS_BOOT,		// boot from a rars compiled mif file
+		FPGA_BOOT		// boot on FPGA, no jokes here
+	} boot_type_t;
+	localparam	[1:0] BOOT_TYPE = FPGA_BOOT;
+
+	localparam	[31:0] ENTRY_PC = 32'hF8;	// read from /sim/test_gen/boot.cfg
+
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
 	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N
@@ -44,7 +54,7 @@ package defines;
 	// byte-varient endianess
 	localparam LITTLE_ENDIAN	= 1'b0;
 	localparam BIG_ENDIAN		= 1'b1;
-	localparam ENDIANESS		= BIG_ENDIAN;	// as commonly used in modern computer system
+	localparam ENDIANESS		= BIG_ENDIAN;
 
 
 	// sopported extension
@@ -58,15 +68,6 @@ package defines;
 	localparam	Q_SUPPORT		= FALSE;	// Quad-Precision FP, should not implement
 	localparam	C_SUPPORT		= FALSE;	// Compressed Instructions, should not implement
 	localparam	CSR_SUPPORT		= FALSE;	// Control and status register, required for xv6
-
-
-	// boot options
-	typedef enum logic[1:0] {
-		BINARY_BOOT,	// boot from a bin file generated from gcc
-		RARS_BOOT,		// boot from a rars compiled mif file
-		FPGA_BOOT		// boot on FPGA, no jokes here
-	} boot_type_t;
-	localparam	[1:0] BOOT_TYPE = FPGA_BOOT;
 
 
 	// branch predictor
@@ -98,12 +99,12 @@ package defines;
 
 
 // basic data type define
-	typedef logic [XLEN-1:0]	data_t;
-	typedef logic [7:0]			byte_t;
-	typedef logic [15:0]		half_word_t;
-	typedef logic [2:0] 		funct3_t;
-	typedef logic [6:0] 		funct7_t;
-	typedef logic [11:0]		imm_t;		// only for I type instruction
+	typedef logic [XLEN-1:0]		data_t;
+	typedef logic [7:0]				byte_t;
+	typedef logic [(XLEN/2-1):0]	half_word_t;
+	typedef logic [2:0] 			funct3_t;
+	typedef logic [6:0] 			funct7_t;
+	typedef logic [11:0]			imm_t;		// only for I type instruction
 
 
 	typedef struct packed {
