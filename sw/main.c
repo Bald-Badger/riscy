@@ -104,8 +104,8 @@ int touch_sdram (void* base, uint32_t off) {
 
 void touch_sdram_range (void* base, int start, int step) {
 	int i;
-	for (i = 0; i > -1; i+= step) {
-		touch_sdram(base, start + step * i);
+	for (i = 0; i > -1; i += step) {
+		touch_sdram(base, start + (step * i));
 	}
 }
 
@@ -143,7 +143,7 @@ int main () {
 
 	void* sdram_vp = init_sdram();
 	// touch_sdram(sdram_vp, 1);
-	touch_sdram_range(sdram_vp, 0x200000, 0x1000);
+	touch_sdram_range(sdram_vp, 0x200000, 0x100);
 	clean_sdram(sdram_vp);
 
 	
