@@ -149,7 +149,10 @@ void boot_load (char* filename) {
 	file_ptr = fopen("instr.bin","rb");
 	fread(instr_arr, sizeof(instr_arr), 1, file_ptr);
 	fclose(file_ptr);
-	printf("%x\n", instr_arr[0]);
+	int i;
+	for (i = 0; i < 500; i++) {
+		printf("%x\n", instr_arr[i]);
+	}
 }
 
 
