@@ -85,6 +85,7 @@ uint32_t read_sdram (uint32_t * addr) {
 }
 
 void write_sdram (uint32_t* addr, uint32_t data) {
+	printf ("writing %x\n", data);
 	*addr = data;
 }
 
@@ -170,7 +171,13 @@ void boot_load (char* filename) {
 
 	// write the data into sdram
 	
+	/*
 	for (i = 0; i < instr_size_word; i++) {
+		write_sdram(sdram_vp + i, instr_arr[i]);
+	}
+	*/
+
+	for (i = 0; i < 20; i++) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
 	}
 
