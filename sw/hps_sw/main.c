@@ -159,7 +159,7 @@ void boot_load (char* filename) {
 	fread(instr_arr, st.st_size, 1, file_ptr);
 	printf("sanity check, printed data should not be 0 nor -1\n");
 	printf("%x\n", instr_arr[0]);
-	printf("%x\n", instr_arr[0xF8/4]);
+	printf("%x\n", instr_arr[(0xF8)/4]);
 	fclose(file_ptr);
 
 	// swap the endianess of each instruction as we are using big endian for now
@@ -196,7 +196,7 @@ void boot_load (char* filename) {
 	int err = 0;
 	printf("sanity check, printed data should not be 0 nor -1\n");
 	printf("%x\n", instr_arr[0]);
-	printf("%x\n", instr_arr[0xF8/4]);
+	printf("%x\n", instr_arr[(0xF8)/4]);
 	for (i = 0; i < instr_size_word; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
