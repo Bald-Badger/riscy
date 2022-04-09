@@ -179,7 +179,7 @@ void boot_load (char* filename) {
 	int err = 0;
 	printf("sanity check, printed data should not be 0 nor -1\n");
 	printf("%x\n", instr_arr[0]);
-	printf("%x\n", instr_arr[0xF8 >> 2]);
+	printf("%x\n", instr_arr[0xF8/4]);
 	for (i = 0; i < instr_size_word; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
