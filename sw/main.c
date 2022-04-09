@@ -53,7 +53,9 @@ int init_sdram() {
 		close( fd_sdram );
 		return( -1 );
 	}
-	
+
+	close( fd_sdram );
+
 	return (0);
 }
 
@@ -63,7 +65,7 @@ int clean_sdram () {
 		close( fd_sdram );
 		return( -1 );
 	}
-	close( fd_sdram );
+	// close( fd_sdram );
 	return (0);
 }
 
