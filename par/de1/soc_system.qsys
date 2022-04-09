@@ -46,6 +46,30 @@
          type = "int";
       }
    }
+   element sdram_controller_axil_0.altera_axi4lite_slave
+   {
+      datum baseAddress
+      {
+         value = "0";
+         type = "String";
+      }
+   }
+   element seg_axil_0
+   {
+      datum _sortIndex
+      {
+         value = "3";
+         type = "int";
+      }
+   }
+   element seg_axil_0.altera_axi4lite_slave
+   {
+      datum baseAddress
+      {
+         value = "67108864";
+         type = "String";
+      }
+   }
    element soc_system
    {
       datum _originalDeviceFamily
@@ -156,6 +180,7 @@
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
  <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
+ <interface name="hex" internal="seg_axil_0.hex" type="conduit" dir="end" />
  <interface name="hps" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="hps_ddr3" internal="hps_0.memory" type="conduit" dir="end" />
  <interface name="reset" internal="clk_0.clk_in_reset" type="reset" dir="end" />
@@ -710,6 +735,7 @@
   <parameter name="SDRAM_MHZ" value="50" />
   <parameter name="SDRAM_READ_LATENCY" value="3" />
  </module>
+ <module name="seg_axil_0" kind="seg_axil" version="1.0" enabled="1" />
  <connection
    kind="avalon"
    version="21.1"
@@ -720,10 +746,20 @@
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
+   kind="avalon"
+   version="21.1"
+   start="hps_0.h2f_axi_master"
+   end="seg_axil_0.altera_axi4lite_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04000000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
    kind="clock"
    version="21.1"
    start="clk_0.clk"
    end="sdram_controller_axil_0.clock" />
+ <connection kind="clock" version="21.1" start="clk_0.clk" end="seg_axil_0.clock" />
  <connection
    kind="clock"
    version="21.1"
@@ -744,6 +780,11 @@
    version="21.1"
    start="clk_0.clk_reset"
    end="sdram_controller_axil_0.reset_sink" />
+ <connection
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="seg_axil_0.reset_sink" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="AUTO" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

@@ -274,25 +274,23 @@ module soc_system_top (
 		.hps_hps_io_gpio_inst_GPIO54	( HPS_KEY ),
 		.hps_hps_io_gpio_inst_GPIO61	( HPS_GSENSOR_INT ),
 
-/*
-		.hex_hex0						(HEX0),
-		.hex_hex1						(HEX1),
-		.hex_hex2						(HEX2),
-		.hex_hex3						(HEX3),
-		.hex_hex4						(HEX4),
-		.hex_hex5						(HEX5)
-*/
+		.hex_hex0						( HEX0 ),
+		.hex_hex1						( HEX1 ),
+		.hex_hex2						( HEX2 ),
+		.hex_hex3						( HEX3 ),
+		.hex_hex4						( HEX4 ),
+		.hex_hex5						( HEX5 ),
 
-		.sdram_addr						(DRAM_ADDR),
-		.sdram_ba						(DRAM_BA),
-		.sdram_cas_n					(DRAM_CAS_N),
-		.sdram_cke						(DRAM_CKE),
-		.sdram_clk						(DRAM_CLK),
-		.sdram_cs_n						(DRAM_CS_N),
-		.sdram_dq						(DRAM_DQ),
-		.sdram_dqm						({DRAM_UDQM, DRAM_LDQM}),
-		.sdram_ras_n					(DRAM_RAS_N),
-		.sdram_we_n						(DRAM_WE_N)
+		.sdram_addr						( DRAM_ADDR ),
+		.sdram_ba						( DRAM_BA ),
+		.sdram_cas_n					( DRAM_CAS_N ),
+		.sdram_cke						( DRAM_CKE ),
+		.sdram_clk						( DRAM_CLK ),
+		.sdram_cs_n						( DRAM_CS_N ),
+		.sdram_dq						( DRAM_DQ ),
+		.sdram_dqm						( {DRAM_UDQM, DRAM_LDQM} ),
+		.sdram_ras_n					( DRAM_RAS_N ),
+		.sdram_we_n						( DRAM_WE_N )
 
 	);
 
@@ -325,11 +323,11 @@ module soc_system_top (
 		rst_n = (but_rst_n & locked);
 	end
 
-	assign LEDR[0] = KEY[3];
-	assign LEDR[1] = key_dbc[3];
-	assign LEDR[2] = locked;
-	assign LEDR[3] = rst_n;
-	assign LEDR[4] = but_rst_n;
+	assign LEDR[0] = rst_n;
+	assign LEDR[1] = 1'b0;
+	assign LEDR[2] = 1'b0;
+	assign LEDR[3] = 1'b0;
+	assign LEDR[4] = 1'b0;
 	assign LEDR[5] = 1'b0;
 	assign LEDR[6] = 1'b0;
 	assign LEDR[7] = 1'b0;
@@ -357,18 +355,16 @@ module soc_system_top (
 	assign GPIO_0 = SW[1] ? { 36{ SW[0] } } : 36'bZ;
 	assign GPIO_1 = SW[1] ? { 36{ SW[0] } } : 36'bZ;
 
-
+/*
 	assign HEX0 = { 7{ SW[1] } };
 	assign HEX1 = { 7{ SW[2] } };
 	assign HEX2 = { 7{ SW[3] } };
 	assign HEX3 = { 7{ SW[4] } };
 	assign HEX4 = { 7{ SW[5] } };
 	assign HEX5 = { 7{ SW[6] } };
-
+*/
 
 	assign IRDA_TXD = SW[0];
-
-	// assign LEDR = { 10{rst_n} };
 
 	assign PS2_CLK = SW[1] ? SW[0] : 1'bZ;
 	assign PS2_CLK2 = SW[1] ? SW[0] : 1'bZ;

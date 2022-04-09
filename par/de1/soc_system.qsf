@@ -866,7 +866,7 @@ set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name MUX_RESTRUCTURE OFF
 
 set_global_assignment -name ENABLE_SIGNALTAP ON
-set_global_assignment -name USE_SIGNALTAP_FILE sdram_axi.stp
+set_global_assignment -name USE_SIGNALTAP_FILE seg_axil.stp
 set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id auto_signaltap_0
@@ -879,17 +879,10 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -s
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id auto_signaltap_0
@@ -898,216 +891,14 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_PIPELINE=
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_PIPELINE=0" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=0" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=2" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|clk" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_arvalid" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awvalid" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[10]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[11]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[12]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[13]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[14]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[15]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[16]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[17]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[18]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[19]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[20]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[21]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[22]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[23]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[24]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[25]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[3]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[4]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[5]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[6]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[7]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[8]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_araddr[9]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_arprot[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_arprot[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_arprot[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_arready" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_arvalid" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[10]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[11]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[12]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[13]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[14]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[15]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[16]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[17]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[18]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[19]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[20]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[21]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[22]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[23]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[24]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[48] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[25]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[49] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[50] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[3]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[51] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[4]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[52] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[5]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[53] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[6]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[54] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[7]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[55] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[8]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[56] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awaddr[9]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[57] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awprot[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[58] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awprot[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[59] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awprot[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[60] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awready" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[61] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_awvalid" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[62] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_bready" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[63] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_bresp[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[64] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_bresp[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[65] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_bvalid" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[66] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[67] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[10]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[68] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[11]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[69] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[12]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[70] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[13]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[71] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[14]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[72] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[15]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[73] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[16]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[74] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[17]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[75] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[18]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[76] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[19]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[77] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[78] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[20]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[79] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[21]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[80] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[22]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[81] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[23]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[82] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[24]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[83] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[25]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[84] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[26]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[85] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[27]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[86] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[28]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[87] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[29]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[88] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[89] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[30]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[90] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[31]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[91] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[3]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[92] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[4]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[93] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[5]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[94] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[6]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[95] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[7]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[96] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[8]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[97] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rdata[9]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[98] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rready" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[99] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rresp[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[100] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rresp[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[101] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_rvalid" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[102] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[103] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[10]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[104] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[11]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[105] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[12]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[106] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[13]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[107] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[14]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[108] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[15]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[109] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[16]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[110] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[17]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[111] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[18]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[112] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[19]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[113] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[114] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[20]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[115] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[21]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[116] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[22]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[117] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[23]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[118] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[24]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[119] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[25]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[120] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[26]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[121] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[27]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[122] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[28]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[123] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[29]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[124] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[125] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[30]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[126] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[31]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[127] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[3]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[128] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[4]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[129] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[5]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[130] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[6]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[131] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[7]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[132] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[8]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[133] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wdata[9]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[134] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wready" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[135] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wstrb[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[136] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wstrb[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[137] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wstrb[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[138] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wstrb[3]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[139] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|s_axil_wvalid" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[140] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[141] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[10]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[142] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[11]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[143] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[12]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[144] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[145] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[146] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[3]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[147] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[4]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[148] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[5]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[149] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[6]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[150] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[7]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[151] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[8]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[152] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_addr[9]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[153] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_ba[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[154] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_ba[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[155] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_cas_n" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[156] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_cke" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[157] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_clk" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[158] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_cs_n" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[159] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[160] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[10]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[161] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[11]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[162] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[12]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[163] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[13]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[164] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[14]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[165] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[15]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[166] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[167] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[2]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[168] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[3]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[169] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[4]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[170] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[5]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[171] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[6]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[172] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[7]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[173] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[8]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[174] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dq[9]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[175] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dqm[0]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[176] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_dqm[1]" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[177] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_ras_n" -section_id auto_signaltap_0
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[178] -to "soc_system:soc_system0|sdram_axil_qsys:sdram_controller_axil_0|sdram_we_n" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=179" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=179" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=128" -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=128" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=000000000000000000000" -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=21" -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=sld_reserved_soc_system_auto_signaltap_0_1_7649," -section_id auto_signaltap_0
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=1" -section_id auto_signaltap_0
 set_global_assignment -name SYSTEMVERILOG_FILE ../../rtl/base/debouncer.sv
 set_global_assignment -name SIP_FILE ip/pll/pll.sip
 set_global_assignment -name VERILOG_FILE ip/pll/pll.v -library pll
@@ -1116,5 +907,166 @@ set_global_assignment -name SYSTEMVERILOG_FILE soc_system_top.sv
 set_global_assignment -name QIP_FILE soc_system/synthesis/soc_system.qip
 set_global_assignment -name SDC_FILE soc_system.sdc
 set_global_assignment -name SIGNALTAP_FILE sdram_axi.stp
+set_global_assignment -name SIGNALTAP_FILE seg_axil.stp
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "soc_system:soc_system0|seg_axil:seg_axil_0|clk" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=1" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=25" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=256" -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=256" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awvalid_i" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_araddr_i[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_araddr_i[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_araddr_i[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_araddr_i[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_araddr_i[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_arprot_i[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_arprot_i[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_arprot_i[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_arready_o" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_arvalid_i" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awaddr_i[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awaddr_i[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awaddr_i[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awaddr_i[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awaddr_i[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awprot_i[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awprot_i[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awprot_i[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awready_o" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_awvalid_i" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_bready_i" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_bresp_o[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_bresp_o[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_bvalid_o" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[16]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[17]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[18]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[19]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[20]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[21]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[22]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[23]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[24]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[25]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[26]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[27]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[28]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[29]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[30]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[48] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[31]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[49] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[50] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[51] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[52] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[53] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[54] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[55] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rdata_o[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[56] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rready_i" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[57] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rresp_o[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[58] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rresp_o[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[59] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_rvalid_o" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[60] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[61] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[10]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[62] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[11]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[63] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[12]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[64] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[13]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[65] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[14]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[66] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[15]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[67] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[16]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[68] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[17]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[69] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[18]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[70] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[19]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[71] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[72] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[20]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[73] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[21]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[74] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[22]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[75] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[23]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[76] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[24]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[77] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[25]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[78] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[26]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[79] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[27]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[80] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[28]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[81] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[29]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[82] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[83] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[30]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[84] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[31]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[85] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[86] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[4]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[87] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[5]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[88] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[6]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[89] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[7]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[90] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[8]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[91] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wdata_i[9]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[92] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wready_o" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[93] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wstrb_i[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[94] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wstrb_i[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[95] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wstrb_i[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[96] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wstrb_i[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[97] -to "soc_system:soc_system0|seg_axil:seg_axil_0|cfg_wvalid_i" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[98] -to "soc_system:soc_system0|seg_axil:seg_axil_0|data_latch[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[99] -to "soc_system:soc_system0|seg_axil:seg_axil_0|data_latch[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[100] -to "soc_system:soc_system0|seg_axil:seg_axil_0|data_latch[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[101] -to "soc_system:soc_system0|seg_axil:seg_axil_0|data_latch[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[102] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[0][0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[103] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[0][1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[104] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[0][2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[105] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[0][3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[106] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[1][0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[107] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[1][1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[108] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[1][2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[109] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[1][3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[110] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[2][0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[111] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[2][1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[112] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[2][2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[113] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[2][3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[114] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[3][0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[115] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[3][1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[116] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[3][2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[117] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[3][3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[118] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[4][0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[119] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[4][1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[120] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[4][2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[121] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[4][3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[122] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[5][0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[123] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[5][1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[124] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[5][2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[125] -to "soc_system:soc_system0|seg_axil:seg_axil_0|seg_mem[5][3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[126] -to "soc_system:soc_system0|seg_axil:seg_axil_0|wr_addr_latch[0]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[127] -to "soc_system:soc_system0|seg_axil:seg_axil_0|wr_addr_latch[1]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[128] -to "soc_system:soc_system0|seg_axil:seg_axil_0|wr_addr_latch[2]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[129] -to "soc_system:soc_system0|seg_axil:seg_axil_0|wr_addr_latch[3]" -section_id auto_signaltap_0
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[130] -to "soc_system:soc_system0|seg_axil:seg_axil_0|wr_addr_latch[4]" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=131" -section_id auto_signaltap_0
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=131" -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name SLD_FILE db/sdram_axi_auto_stripped.stp
+set_global_assignment -name SLD_FILE db/seg_axil_auto_stripped.stp
