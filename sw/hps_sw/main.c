@@ -138,8 +138,16 @@ void set_seg (void* vp, uint32_t number) {
 	return;
 }
 
+uint32_t swap_endian (uint32_t in) {
+	return 	((in>>24)&0xff) |			// move byte 3 to byte 0
+			((in<<8)&0xff0000) |		// move byte 1 to byte 2
+			((in>>8)&0xff00) |		// move byte 2 to byte 1
+			((in<<24)&0xff000000);
+}
+
 void boot_load (char* filename) {
 	// prep work, accocate memory
+	int i;
 	FILE* file_ptr;
 	file_ptr = fopen(filename,"rb");
 	if (!file_ptr) {
@@ -161,22 +169,16 @@ void boot_load (char* filename) {
 	uint32_t* instr_arr = (uint32_t*)instr_arr_byte;
 
 	fread(instr_arr_byte, st.st_size, 1, file_ptr);
-	printf("sanity check, printed data should not be 0 nor -1\n");
-	printf("%x\n", instr_arr[0]);
-	printf("%x\n", instr_arr[62]);
 	fclose(file_ptr);
 
+	for (i = 0; i < 20; i++) {
+		printf("%x\n", instr_arr_byte[i]);
+	}
+
 	// swap the endianess of each instruction as we are using big endian for now
-	int i;
-	uint32_t instr_big;
-	uint32_t instr_little;
+	
 	for (i = 0; i < instr_size_word; i++) {
-		instr_little = instr_arr[i];
-		instr_big =	((instr_little>>24)&0xff) |			// move byte 3 to byte 0
-					((instr_little<<8)&0xff0000) |		// move byte 1 to byte 2
-					((instr_little>>8)&0xff00) |		// move byte 2 to byte 1
-					((instr_little<<24)&0xff000000);	// byte 0 to byte 3
-		instr_arr[i] = instr_big;
+		instr_arr[i] = swap_endian(instr_arr[i]);
 	}
 
 	// map sdram into our own memory space
@@ -191,14 +193,11 @@ void boot_load (char* filename) {
 	// read sdram to check data corruption
 	uint32_t sanity_check;
 	int err = 0;
-	printf("sanity check, printed data should not be 0 nor -1\n");
-	printf("%x\n", instr_arr[0]);
-	printf("%x\n", instr_arr[62]);
 	for (i = 0; i < instr_size_word; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
 			if (err == 0) {
-				printf("data mismatch at word %x\n",i);
+				printf("data mismatch at word %d\n",i);
 				printf("bootload failed\n");
 				err = 1;
 			}
