@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <sys/stat.h>
 #include "include/hps.h"
 
 // global define
@@ -137,8 +138,12 @@ void set_seg (void* vp, uint32_t number) {
 	return;
 }
 
-void dump_binary () {
-
+void boot_load (char* filename) {
+	struct stat st;
+	stat(filename, &st);
+	size_t size;
+	size = st.st_size;
+	printf("bootloader start, boot sector size: %d words", size);
 }
 
 
@@ -152,8 +157,7 @@ void smoke_test () {
 	clean_seg(seg_vp);
 }
 
-
-int main () {
+/*
 	uint32_t instr_arr[1000];
 	FILE* ptr;
 	ptr = fopen("instr.bin","rb");
@@ -162,4 +166,8 @@ int main () {
 	for (i = 0; i < 10; i++) {
 		printf("%x\n", instr_arr[i]);
 	}
+*/
+
+int main () {
+	boot_load("instr.bin");
 }
