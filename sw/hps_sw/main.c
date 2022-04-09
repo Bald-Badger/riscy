@@ -171,14 +171,6 @@ void boot_load (char* filename) {
 	fread(instr_arr_byte, st.st_size, 1, file_ptr);
 	fclose(file_ptr);
 
-	for (i = 0; i < 20; i++) {
-		// printf("%x\n", instr_arr_byte[i]);
-	}
-
-	for (i = 0; i < 20; i++) {
-		printf("%x\n", instr_arr[i]);
-	}
-
 	// swap the endianess of each instruction as we are using big endian for now
 	
 	for (i = 0; i < instr_size_word; i++) {
