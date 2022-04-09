@@ -114,14 +114,14 @@ int clean_seg (void* vp_base) {
 	return unmap_addr (vp_base, seg_size_byte);
 }
 
-void set_seg_single (uint32_t vp, int index, uint32_t number) {
-	vp = (uint32_t)vp & seg_addr_mask;
+void set_seg_single (void* vp, int index, uint32_t number) {
+	vp = (void*)((uint32_t)vp & seg_addr_mask);
 	uint32_t hex_seg_digit = number & seg_data_mask;
-	vp = (uint32_t)vp + (index << 2);
+	vp = (void*)((uint32_t)vp + (index << 2));
 	*(uint32_t*)vp = hex_seg_digit;
 }
 
-void set_seg (uint32_t vp, uint32_t number) {
+void set_seg (void* vp, uint32_t number) {
 	int i;
 	for (i = 0; i < 6; i++) {
 		set_seg_single (vp, i, number);
