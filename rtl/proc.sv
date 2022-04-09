@@ -8,8 +8,9 @@ import defines::*;
 import axi_defines::*;
 
 module proc (
-	input	logic 		clk,					// clock from PLL, frequency is defines::FREQ
-	input	logic 		rst_n,					// global reset
+	input	logic 		clk,		// clock from PLL, frequency is defines::FREQ
+	input	logic 		rst_n,		// global reset
+	input	logic		go,			// is the core is plused, then resume
 
 	axi_lite_interface	data_bus,
 	axi_lite_interface	instr_bus				
@@ -97,7 +98,7 @@ module proc (
 		.pc_sel			(pc_sel),
 		.stall			(stall_pc),
 		.flush			(flush_pc),
-		.go				(init_done),
+		.go				(go),
 		.instr_w		(instr_w),
 
 		// output

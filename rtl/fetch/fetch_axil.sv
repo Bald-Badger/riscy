@@ -83,7 +83,6 @@ module fetch_axil (
 	end
 
 
-// synopsys translate_off
 	initial begin
 		if (BOOT_TYPE == BINARY_BOOT) begin
 			$readmemh("boot.cfg", boot_pc);
@@ -93,9 +92,10 @@ module fetch_axil (
 			boot_pc[0] = 32'b0;
 			$display("DUT: boot mode: RARS");
 			$display("DUT: booting from pc = %h", 0);
+		end else if (BOOT_TYPE == FPGA_BOOT) begin
+			boot_pc[0] = 32'b0;
 		end
 	end
-// synopsys translate_on
 
 
 	data_t pc_nxt, pc_bj_ff;
@@ -219,6 +219,8 @@ module fetch_axil (
 					instr_t'(swap_endian(data_t'(instr_fifo_out.instr)));
 		end else if (BOOT_TYPE == RARS_BOOT) begin
 			instr_switch = instr_t'(instr_fifo_out.instr);
+		end else if (BOOT_TYPE == FPGA_BOOT) begin
+			instr_switch = NULL;
 		end else begin
 			instr_switch = NULL;
 		end
@@ -228,7 +230,6 @@ module fetch_axil (
 	always_comb begin
 		instr = instr_valid ? instr_switch : NOP;
 		pc_out = instr_valid ? instr_fifo_out.pc : NULL;
-		//pc_p4_out = pc_out + 32'd4;
 	end
 
 

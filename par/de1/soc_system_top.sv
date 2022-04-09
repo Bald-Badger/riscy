@@ -193,11 +193,14 @@ module soc_system_top (
 	logic	but_rst_n, rst_n;
 	logic	osc_clk, clk;
 	logic	locked;
+	logic	go;
 
 
 	soc_system soc_system0(
 		.clk_clk						( clk ),
 		.reset_reset_n					( rst_n ),
+		// .go_go							( go ),,
+		.go_go							( 1'b0 ),
 				
 		.hps_ddr3_mem_a					( HPS_DDR3_ADDR ),
 		.hps_ddr3_mem_ba				( HPS_DDR3_BA ),
@@ -312,15 +315,15 @@ module soc_system_top (
 				.out	(key_dbc[dbcr_gen]),
 				.edj	(),
 				.rise	(),
-				.fall	()
+				.fall	(go)
 			);
 		end
 	endgenerate
 
 	always_comb begin : ctrl_sig_assign
-		but_rst_n = key_dbc[3];	// pressed key is 0
-		osc_clk = CLOCK_50;
-		rst_n = (but_rst_n & locked);
+		but_rst_n	= key_dbc[3];	// pressed key is 0
+		osc_clk		= CLOCK_50;
+		rst_n		= (but_rst_n & locked);
 	end
 
 	assign LEDR[0] = rst_n;

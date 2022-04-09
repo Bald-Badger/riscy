@@ -44,7 +44,7 @@ package defines;
 	// byte-varient endianess
 	localparam LITTLE_ENDIAN	= 1'b0;
 	localparam BIG_ENDIAN		= 1'b1;
-	localparam ENDIANESS		= LITTLE_ENDIAN;	// as commonly used in modern computer system
+	localparam ENDIANESS		= BIG_ENDIAN;	// as commonly used in modern computer system
 
 
 	// sopported extension
@@ -63,9 +63,10 @@ package defines;
 	// boot options
 	typedef enum logic[1:0] {
 		BINARY_BOOT,	// boot from a bin file generated from gcc
-		RARS_BOOT		// boot from a rars compiled mif file
+		RARS_BOOT,		// boot from a rars compiled mif file
+		FPGA_BOOT		// boot on FPGA, no jokes here
 	} boot_type_t;
-	localparam	[1:0] BOOT_TYPE = BINARY_BOOT;
+	localparam	[1:0] BOOT_TYPE = FPGA_BOOT;
 
 
 	// branch predictor

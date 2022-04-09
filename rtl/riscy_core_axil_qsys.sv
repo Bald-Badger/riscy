@@ -9,11 +9,12 @@ import mem_defines::*;
 module riscy_core_axil_qsys  (
 	input	logic 					clk,
 	input	logic					rst,
+	input	logic					go,
 
 	/*
 	* AXI lite master interface
 	*/
-	output	logic	[25:0]			awaddr,
+	output	logic	[31:0]			awaddr,
 	output	logic	[2:0]			awprot,
 	output	logic					awvalid,
 	input	logic					awready,
@@ -24,7 +25,7 @@ module riscy_core_axil_qsys  (
 	input	logic	[1:0]			bresp,
 	input	logic					bvalid,
 	output	logic					bready,
-	output	logic	[25:0]			araddr,
+	output	logic	[31:0]			araddr,
 	output	logic	[2:0]			arprot,
 	output	logic					arvalid,
 	input	logic					arready,
@@ -42,6 +43,7 @@ module riscy_core_axil_qsys  (
 	proc_axil proc (
 		.clk					(clk),
 		.rst_n					(~rst),
+		.go						(go),
 		.axil_bus_master		(axil_bus)
 	);
 

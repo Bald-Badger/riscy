@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2021 Alex Forencich
+Copyright (c) 2020 Alex Forencich
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -29,83 +29,19 @@ THE SOFTWARE.
 `default_nettype none
 
 /*
- * AXI4 lite 2x1 crossbar (wrapper)
+ * AXI4 lite 2x1 interconnect (wrapper)
  */
-module axil_crossbar_2x1 #
+module axil_interconnect_2x1 #
 (
-    // Width of data bus in bits
     parameter DATA_WIDTH = 32,
-    // Width of address bus in bits
-    parameter ADDR_WIDTH = 32,
-    // Width of wstrb (width of data bus in words)
+    parameter ADDR_WIDTH = 16,
     parameter STRB_WIDTH = (DATA_WIDTH/8),
-    // Number of concurrent operations
-    parameter S00_ACCEPT = 16,
-    // Number of concurrent operations
-    parameter S01_ACCEPT = 16,
-    // Number of regions per master interface
     parameter M_REGIONS = 1,
-    // Master interface base addresses
-    // M_REGIONS concatenated fields of ADDR_WIDTH bits
     parameter M00_BASE_ADDR = 0,
-    // Master interface address widths
-    // M_REGIONS concatenated fields of 32 bits
-    parameter M00_ADDR_WIDTH = 32'd32,
-    // Read connections between interfaces
-    // S_COUNT bits
+    parameter M00_ADDR_WIDTH = {M_REGIONS{32'd24}},
     parameter M00_CONNECT_READ = 2'b11,
-    // Write connections between interfaces
-    // S_COUNT bits
     parameter M00_CONNECT_WRITE = 2'b11,
-    // Number of concurrent operations for each master interface
-    parameter M00_ISSUE = 16,
-    // Secure master (fail operations based on awprot/arprot)
-    parameter M00_SECURE = 0,
-    // Slave interface AW channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S00_AW_REG_TYPE = 0,
-    // Slave interface W channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S00_W_REG_TYPE = 0,
-    // Slave interface B channel register type (output)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S00_B_REG_TYPE = 1,
-    // Slave interface AR channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S00_AR_REG_TYPE = 0,
-    // Slave interface R channel register type (output)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S00_R_REG_TYPE = 2,
-    // Slave interface AW channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S01_AW_REG_TYPE = 0,
-    // Slave interface W channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S01_W_REG_TYPE = 0,
-    // Slave interface B channel register type (output)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S01_B_REG_TYPE = 1,
-    // Slave interface AR channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S01_AR_REG_TYPE = 0,
-    // Slave interface R channel register type (output)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter S01_R_REG_TYPE = 2,
-    // Master interface AW channel register type (output)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter M00_AW_REG_TYPE = 1,
-    // Master interface W channel register type (output)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter M00_W_REG_TYPE = 2,
-    // Master interface B channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter M00_B_REG_TYPE = 0,
-    // Master interface AR channel register type (output)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter M00_AR_REG_TYPE = 1,
-    // Master interface R channel register type (input)
-    // 0 to bypass, 1 for simple buffer, 2 for skid buffer
-    parameter M00_R_REG_TYPE = 0
+    parameter M00_SECURE = 1'b0
 )
 (
     input  wire                     clk,
@@ -194,44 +130,24 @@ function [S_COUNT-1:0] w_s(input [S_COUNT-1:0] val);
     w_s = val;
 endfunction
 
-function [31:0] w_32(input [31:0] val);
-    w_32 = val;
-endfunction
-
-function [1:0] w_2(input [1:0] val);
-    w_2 = val;
-endfunction
-
 function w_1(input val);
     w_1 = val;
 endfunction
 
-axil_crossbar #(
+axil_interconnect #(
     .S_COUNT(S_COUNT),
     .M_COUNT(M_COUNT),
     .DATA_WIDTH(DATA_WIDTH),
     .ADDR_WIDTH(ADDR_WIDTH),
     .STRB_WIDTH(STRB_WIDTH),
-    .S_ACCEPT({ w_32(S01_ACCEPT), w_32(S00_ACCEPT) }),
     .M_REGIONS(M_REGIONS),
     .M_BASE_ADDR({ w_a_r(M00_BASE_ADDR) }),
     .M_ADDR_WIDTH({ w_32_r(M00_ADDR_WIDTH) }),
     .M_CONNECT_READ({ w_s(M00_CONNECT_READ) }),
     .M_CONNECT_WRITE({ w_s(M00_CONNECT_WRITE) }),
-    .M_ISSUE({ w_32(M00_ISSUE) }),
-    .M_SECURE({ w_1(M00_SECURE) }),
-    .S_AR_REG_TYPE({ w_2(S01_AR_REG_TYPE), w_2(S00_AR_REG_TYPE) }),
-    .S_R_REG_TYPE({ w_2(S01_R_REG_TYPE), w_2(S00_R_REG_TYPE) }),
-    .S_AW_REG_TYPE({ w_2(S01_AW_REG_TYPE), w_2(S00_AW_REG_TYPE) }),
-    .S_W_REG_TYPE({ w_2(S01_W_REG_TYPE), w_2(S00_W_REG_TYPE) }),
-    .S_B_REG_TYPE({ w_2(S01_B_REG_TYPE), w_2(S00_B_REG_TYPE) }),
-    .M_AR_REG_TYPE({ w_2(M00_AR_REG_TYPE) }),
-    .M_R_REG_TYPE({ w_2(M00_R_REG_TYPE) }),
-    .M_AW_REG_TYPE({ w_2(M00_AW_REG_TYPE) }),
-    .M_W_REG_TYPE({ w_2(M00_W_REG_TYPE) }),
-    .M_B_REG_TYPE({ w_2(M00_B_REG_TYPE) })
+    .M_SECURE({ w_1(M00_SECURE) })
 )
-axil_crossbar_inst (
+axil_interconnect_inst (
     .clk(clk),
     .rst(rst),
     .s_axil_awaddr({ s01_axil_awaddr, s00_axil_awaddr }),
