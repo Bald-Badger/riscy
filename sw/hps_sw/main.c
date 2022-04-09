@@ -159,7 +159,7 @@ int main () {
 	ptr = fopen("instr.bin","rb");
 	fread(instr_arr, sizeof(instr_arr), 1, ptr);
 	int i;
-	for (i = 0; i < 500; i++) {
+	for (i = 0; i < 10; i++) {
 		printf("%x\n", instr_arr[i]);
 	}
 }
