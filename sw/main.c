@@ -132,12 +132,14 @@ void set_seg (void* vp, uint32_t number) {
 
 
 int main () {
+	/*
 	void* sdram_vp = init_sdram();
-	touch_sdram(sdram_vp, 0x0800000 - 1);
+	touch_sdram(sdram_vp, 0x0400000 - 1);
 	clean_sdram(sdram_vp);
+	*/
 
-	//void* seg_vp = (void*)(init_seg());
-	//set_seg (seg_vp, 0x00123456);
-	//clean_seg(seg_vp);
+	void* seg_vp = (void*)(init_seg());
+	set_seg (seg_vp, 0x00123456);
+	clean_seg(seg_vp);
 	return( 0 );
 }
