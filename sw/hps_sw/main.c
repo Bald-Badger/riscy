@@ -195,7 +195,7 @@ void boot_load (char* filename) {
 	// read sdram to check data corruption
 	uint32_t sanity_check;
 	int err = 0;
-	for (i = 0; i < instr_size_word - 1; i++) {
+	for (i = 0; i < instr_size_word; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
 			if (err == 0) {
