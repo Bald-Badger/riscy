@@ -149,7 +149,10 @@ void boot_load (char* filename) {
 	uint32_t* instr_arr = malloc(instr_size_word * sizeof(uint32_t));
 	FILE* file_ptr;
 	file_ptr = fopen("instr.bin","rb");
-	fread(instr_arr, sizeof(instr_arr), instr_size_word, file_ptr);
+	fread(instr_arr, sizeof(instr_arr), 1, file_ptr);
+	printf("sanity check, printed data should not be 0 nor -1\n");
+	printf("%x\n", instr_arr[0]);
+	printf("%x\n", instr_arr[0xF8/4]);
 	fclose(file_ptr);
 
 	// swap the endianess of each instruction as we are using big endian for now
