@@ -142,8 +142,9 @@ int main () {
 
 
 	void* sdram_vp = init_sdram();
-	// touch_sdram(sdram_vp, 1);
-	touch_sdram_range(sdram_vp, 0x3fff00, 0x1);
+	// touch_sdram(sdram_vp, 0x3fffff);	// biggest
+	touch_sdram(sdram_vp, 0x3fffff);
+	// touch_sdram_range(sdram_vp, 0x3fff00, 0x1);
 	clean_sdram(sdram_vp);
 
 	
