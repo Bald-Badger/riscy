@@ -140,15 +140,23 @@ void set_seg (void* vp, uint32_t number) {
 
 void boot_load (char* filename) {
 	// prep work, accocate memory
+	FILE* file_ptr;
+	file_ptr = fopen(filename,"rb");
+	if (!file_ptr) {
+		perror("fopen");
+		exit(EXIT_FAILURE);
+	}
+
 	struct stat st;
-	stat(filename, &st);
+    if (stat(filename, &st) == -1) {
+        perror("stat");
+        exit(EXIT_FAILURE);
+    }
 	size_t instr_size_word;
 	instr_size_word = (st.st_size) >> 2;
 	printf("bootloader start, boot sector size: %d words\n", instr_size_word);
 	uint32_t* instr_arr = malloc(instr_size_word * sizeof(uint32_t));
-	FILE* file_ptr;
-	file_ptr = fopen("instr.bin","rb");
-	fread(instr_arr, sizeof(instr_arr), 1, file_ptr);
+	fread(instr_arr, st.st_size, 1, file_ptr);
 	printf("sanity check, printed data should not be 0 nor -1\n");
 	printf("%x\n", instr_arr[0]);
 	printf("%x\n", instr_arr[0xF8/4]);
