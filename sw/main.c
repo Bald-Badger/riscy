@@ -25,24 +25,35 @@ uint32_t	alloc_mem_size_sdram;// page-aligned sdram memory size
 
 
 // 7-seg display define
+const uint32_t seg_range		= 0x0000001f;	// 0x0 - 0x1f
+const uint32_t offset_seg		= 0x04000000;	// offset from bridge
+const uint32_t seg_size_byte	= 0x00000020;	// 32 bytes
+const uint32_t seg_size_word	= 0x00000008;	// 8 words (6 needed)
+uint32_t	seg_pa_base;	// PA of seg from HPS's perspective
+void*		virtual_base_seg;	// VA of seg from user's perspective
+uint32_t	alloc_mem_size_seg;// page-aligned seg memory size 
 
 
 int init_sdram() {
 	uint32_t page_mask, page_size;
 	sdram_pa_base = h2f_base + offset_sdram;
+
 	if( ( fd_sdram = open( "/dev/mem", ( O_RDWR | O_SYNC ) ) ) == -1 ) {
 		printf( "ERROR: could not open \"/dev/mem\"...\n" );
 		return( -1 );
 	}
+
 	page_size = sysconf(_SC_PAGESIZE);
 	alloc_mem_size_sdram = (((sdram_size_byte / page_size) + 1) * page_size);
 	page_mask = (page_size - 1);
 	virtual_base_sdram = mmap( NULL, alloc_mem_size_sdram, ( PROT_READ | PROT_WRITE ), MAP_SHARED, fd_sdram, (sdram_pa_base & ~page_mask) );
+	
 	if( virtual_base_sdram == MAP_FAILED ) {
 		printf( "ERROR: mmap() failed...\n" );
 		close( fd_sdram );
 		return( -1 );
 	}
+	
 	return (0);
 }
 
@@ -70,7 +81,7 @@ int touch_sdram (uint32_t off) {
 	write_sdram(((uint32_t *)virtual_base_sdram) + off, data);
 	uint32_t x = read_sdram(((uint32_t *)virtual_base_sdram) + off);
 	if (x == data) {
-		printf("touche word off: %x, PA %x success \n", off, (sdram_pa_base) + (off * 4));
+		printf("touche word off: %x, PA: %x success \n", off, (sdram_pa_base) + (off * 4));
 		return 0;
 	} else {
 		printf("touche PA %x fail \n", (sdram_pa_base) + (off * 4));
