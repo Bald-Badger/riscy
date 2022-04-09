@@ -162,10 +162,16 @@ void boot_load (char* filename) {
 
 	// read sdram to check data corruption
 	uint32_t sanity_check;
+	int err = 0;
 	for (i = 0; i < instr_size_word; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
-			printf("data mismatch at word %x",i);
+			if (err == 0) {
+				printf("data mismatch at word %x\n",i);
+				printf("bootload failed\n");
+				err = 1;
+			}
+			
 		}
 	}
 
@@ -174,6 +180,11 @@ void boot_load (char* filename) {
 
 	// free allocated pointers
 	free(instr_arr);
+
+	// display message;
+	if (err == 0) {
+		printf("bootload success\n");
+	}
 }
 
 
