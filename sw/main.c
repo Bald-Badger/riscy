@@ -15,7 +15,6 @@ const uint32_t sdram_range		= 0x03ffffff;	// 0x0 - 0x3ffffff
 const uint32_t offset_sdram		= 0x00000000;	// offset from bridge
 const uint32_t sdram_size_byte	= 0x04000000;	// 512Mb
 const uint32_t sdram_size_word	= 0x01000000;	// 64MB
-int sdram_pa_base	= h2f_base + offset_sdram;	// PA of sdram from HPS's perspective
 
 
 // 7-seg display define
@@ -59,6 +58,7 @@ void* map_addr (int pa_base, int size_byte) {
 }
 
 void* init_sdram() {
+	uint32_t sdram_pa_base	= h2f_base + offset_sdram;	// PA of sdram from HPS's perspective
 	return map_addr (sdram_pa_base, sdram_size_byte);
 }
 
@@ -87,6 +87,7 @@ int touch_sdram (void* base, uint32_t off) {
 	uint32_t data = rand();
 	write_sdram(((uint32_t *)base) + off, data);
 	uint32_t x = read_sdram(((uint32_t *)base) + off);
+	uint32_t sdram_pa_base	= h2f_base + offset_sdram;	// PA of sdram from HPS's perspective
 	if (x == data) {
 		printf("touche word off: %x, PA: %x success \n", off, (sdram_pa_base) + (off * 4));
 		return 0;
