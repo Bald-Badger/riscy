@@ -156,7 +156,7 @@ void smoke_test () {
 int main () {
 	uint32_t instr_arr[1000];
 	FILE* ptr;
-	ptr = open("instr.bin","rb");
+	ptr = fopen("instr.bin","rb");
 	fread(instr_arr, sizeof(instr_arr), 1, ptr);
 	printf("instr: %x/n", instr_arr[0]);
 }
