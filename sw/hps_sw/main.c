@@ -159,6 +159,9 @@ void boot_load (char* filename) {
 	for (i = 0; i < instr_size_word; i++) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
 	}
+
+	// unmap sdram from our memory space
+	clean_sdram(sdram_vp);
 }
 
 
