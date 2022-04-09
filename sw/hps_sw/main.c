@@ -153,7 +153,7 @@ void boot_load (char* filename) {
         exit(EXIT_FAILURE);
     }
 
-	size_t instr_size_word;
+	uint32_t instr_size_word;
 	instr_size_word = (st.st_size) >> 2;
 	printf("bootloader start, boot sector size: %d words\n", instr_size_word);
 
@@ -184,14 +184,7 @@ void boot_load (char* filename) {
 
 
 	// write the data into sdram
-	
-	/*
 	for (i = 0; i < instr_size_word; i++) {
-		write_sdram(sdram_vp + i, instr_arr[i]);
-	}
-	*/
-
-	for (i = 0; i < 20; i++) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
 	}
 
