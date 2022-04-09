@@ -172,7 +172,11 @@ void boot_load (char* filename) {
 	fclose(file_ptr);
 
 	for (i = 0; i < 20; i++) {
-		printf("%x\n", instr_arr_byte[i]);
+		// printf("%x\n", instr_arr_byte[i]);
+	}
+
+	for (i = 0; i < 20; i++) {
+		printf("%x\n", instr_arr[i]);
 	}
 
 	// swap the endianess of each instruction as we are using big endian for now
@@ -193,7 +197,7 @@ void boot_load (char* filename) {
 	// read sdram to check data corruption
 	uint32_t sanity_check;
 	int err = 0;
-	for (i = 0; i < instr_size_word; i++) {
+	for (i = 0; i < instr_size_word - 1; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
 			if (err == 0) {
