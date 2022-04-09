@@ -30,7 +30,7 @@ sw:
 make clean && make && make clean && git add ./. && git commit -m "sanity check" && git push
 
 fpga:
-cd ~/riscy && git pull && cp ~/riscy/sw/main.c ~/sw/ && cd ~/sw && make clean && make && sync
+cd ~/riscy && git pull && cp ~/riscy/sw/hps_sw/main.c ~/sw/hps_sw/ && cd ~/sw/hps_sw && make clean && make && sync
 
 check:
 ls "/proc/device-tree/sopc@0/bridge@0xc0000000/"

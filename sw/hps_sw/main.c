@@ -158,5 +158,8 @@ int main () {
 	FILE* ptr;
 	ptr = fopen("instr.bin","rb");
 	fread(instr_arr, sizeof(instr_arr), 1, ptr);
-	printf("instr: %x/n", instr_arr[0]);
+	int i;
+	for (i = 0; i < 500; i++) {
+		printf("%x\n", instr_arr[i]);
+	}
 }
