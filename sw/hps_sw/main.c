@@ -141,9 +141,9 @@ void set_seg (void* vp, uint32_t number) {
 void boot_load (char* filename) {
 	struct stat st;
 	stat(filename, &st);
-	size_t size;
-	size = st.st_size;
-	printf("bootloader start, boot sector size: %d words", size);
+	size_t size_word;
+	size_word = (st.st_size) >> 2;
+	printf("bootloader start, boot sector size: %d words\n", size_word);
 }
 
 
