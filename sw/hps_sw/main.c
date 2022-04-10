@@ -244,13 +244,12 @@ void sanity_test() {
 void sdram_random_rw_test (int iter) {
 	int i;
 	uint32_t data;
-	uint32_t addr;
 	uint32_t result;
 	void* sdram_vp = init_sdram();
 	for (i = 0; i < iter; i++) {
 		data = rand();
 		write_sdram((uint32_t*)(sdram_vp + i*4), data);
-		result = read_sdram((uint32_t*)(sdram_vp + addr));
+		result = read_sdram((uint32_t*)(sdram_vp + i*4));
 		if (data != result) {
 			printf("sdram random rw test failed at iter %d\n", i);
 			printf("expecting %x, get %x\n", data, result);
