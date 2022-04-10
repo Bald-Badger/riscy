@@ -79,7 +79,7 @@ void* init_sdram() {
 }
 
 int clean_sdram (void* vp_base) {
-	return unmap_addr (vp_base, sdram_size_byte);
+	return unmap_addr (vp_base, 0x10000);
 }
 
 uint32_t read_sdram (uint32_t * addr) {
