@@ -197,6 +197,7 @@ void boot_load (char* filename, int swap) {
 	// write the data into sdram
 	for (i = 0; i < instr_size_word; i++) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
+		usleep(10);
 	}
 
 	// read sdram to check data corruption
