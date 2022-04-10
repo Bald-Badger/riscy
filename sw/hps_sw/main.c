@@ -253,7 +253,7 @@ void sdram_random_rw_test (int iter) {
 		if (data != result) {
 			printf("sdram random rw test failed at iter %d\n", i);
 			printf("expecting %x, get %x\n", data, result);
-			break;
+			//break;
 		}
 	}
 	clean_sdram(sdram_vp);
@@ -263,5 +263,5 @@ void sdram_random_rw_test (int iter) {
 int main () {
 	//sanity_test();
 	//boot_load("instr.bin", 0);
-	sdram_random_rw_test(1000);
+	sdram_random_rw_test(10);
 }
