@@ -243,5 +243,5 @@ void sanity_test() {
 
 int main () {
 	sanity_test();
-	boot_load("instr.bin", 1);
+	boot_load("instr.bin", 0);
 }
