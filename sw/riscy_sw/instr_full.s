@@ -81,40 +81,40 @@ Disassembly of section .text:
    10190:	00112623          	sw	ra,12(sp)
    10194:	00812423          	sw	s0,8(sp)
    10198:	01010413          	addi	s0,sp,16
-   1019c:	00f00593          	li	a1,15
-   101a0:	00100513          	li	a0,1
-   101a4:	040000ef          	jal	ra,101e4 <set_seg_single>
-   101a8:	01c000ef          	jal	ra,101c4 <halt_riscy>
-   101ac:	00000793          	li	a5,0
-   101b0:	00078513          	mv	a0,a5
-   101b4:	00c12083          	lw	ra,12(sp)
-   101b8:	00812403          	lw	s0,8(sp)
-   101bc:	01010113          	addi	sp,sp,16
-   101c0:	00008067          	ret
+   1019c:	123457b7          	lui	a5,0x12345
+   101a0:	67878593          	addi	a1,a5,1656 # 12345678 <__global_pointer$+0x12333858>
+   101a4:	00100513          	li	a0,1
+   101a8:	040000ef          	jal	ra,101e8 <set_seg_single>
+   101ac:	01c000ef          	jal	ra,101c8 <halt_riscy>
+   101b0:	00000793          	li	a5,0
+   101b4:	00078513          	mv	a0,a5
+   101b8:	00c12083          	lw	ra,12(sp)
+   101bc:	00812403          	lw	s0,8(sp)
+   101c0:	01010113          	addi	sp,sp,16
+   101c4:	00008067          	ret
 
-000101c4 <halt_riscy>:
-   101c4:	ff010113          	addi	sp,sp,-16
-   101c8:	00812623          	sw	s0,12(sp)
-   101cc:	01010413          	addi	s0,sp,16
-   101d0:	00000073          	ecall
-   101d4:	00000013          	nop
-   101d8:	00c12403          	lw	s0,12(sp)
-   101dc:	01010113          	addi	sp,sp,16
-   101e0:	00008067          	ret
+000101c8 <halt_riscy>:
+   101c8:	ff010113          	addi	sp,sp,-16
+   101cc:	00812623          	sw	s0,12(sp)
+   101d0:	01010413          	addi	s0,sp,16
+   101d4:	00000073          	ecall
+   101d8:	00000013          	nop
+   101dc:	00c12403          	lw	s0,12(sp)
+   101e0:	01010113          	addi	sp,sp,16
+   101e4:	00008067          	ret
 
-000101e4 <set_seg_single>:
-   101e4:	fd010113          	addi	sp,sp,-48
-   101e8:	02812623          	sw	s0,44(sp)
-   101ec:	03010413          	addi	s0,sp,48
-   101f0:	fca42e23          	sw	a0,-36(s0)
-   101f4:	fcb42c23          	sw	a1,-40(s0)
-   101f8:	fdc42783          	lw	a5,-36(s0)
-   101fc:	00279713          	slli	a4,a5,0x2
-   10200:	040007b7          	lui	a5,0x4000
-   10204:	00f707b3          	add	a5,a4,a5
-   10208:	fef42623          	sw	a5,-20(s0)
-   1020c:	fd842783          	lw	a5,-40(s0)
-   10210:	00f7f793          	andi	a5,a5,15
+000101e8 <set_seg_single>:
+   101e8:	fd010113          	addi	sp,sp,-48
+   101ec:	02812623          	sw	s0,44(sp)
+   101f0:	03010413          	addi	s0,sp,48
+   101f4:	fca42e23          	sw	a0,-36(s0)
+   101f8:	fcb42c23          	sw	a1,-40(s0)
+   101fc:	fdc42783          	lw	a5,-36(s0)
+   10200:	00279713          	slli	a4,a5,0x2
+   10204:	040007b7          	lui	a5,0x4000
+   10208:	00f707b3          	add	a5,a4,a5
+   1020c:	fef42623          	sw	a5,-20(s0)
+   10210:	fd842783          	lw	a5,-40(s0)
    10214:	fef42423          	sw	a5,-24(s0)
    10218:	fec42783          	lw	a5,-20(s0)
    1021c:	fe842703          	lw	a4,-24(s0)
@@ -338,7 +338,7 @@ Disassembly of section .text:
    10554:	00271813          	slli	a6,a4,0x2
    10558:	02050663          	beqz	a0,10584 <__register_exitproc+0x48>
    1055c:	01078333          	add	t1,a5,a6
-   10560:	08c32423          	sw	a2,136(t1) # 10208 <set_seg_single+0x24>
+   10560:	08c32423          	sw	a2,136(t1) # 10208 <set_seg_single+0x20>
    10564:	1887a883          	lw	a7,392(a5)
    10568:	00100613          	li	a2,1
    1056c:	00e61633          	sll	a2,a2,a4

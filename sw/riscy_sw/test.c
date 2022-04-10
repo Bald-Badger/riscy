@@ -5,7 +5,7 @@
 
 
 int main() {
-	set_seg_single(1, 0xF);
+	set_seg_single(1, 0x12345678);
 	halt_riscy();
 }
 
@@ -17,7 +17,7 @@ void halt_riscy() {
 }
 
 void set_seg_single (int index, int number) {
-	uint32_t* seg_va = ((uint32_t*)SEG_BASE + index);
-	uint32_t hex_seg_digit = number & SEG_DATA_MASK;
-	*(uint32_t*)seg_va = hex_seg_digit;
+	uint32_t* seg_pa = ((uint32_t*)SEG_BASE + index);
+	uint32_t hex_seg_digit = number;
+	*(uint32_t*)seg_pa = hex_seg_digit;
 }

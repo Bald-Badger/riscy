@@ -12,7 +12,8 @@ main:
 	sw	ra,12(sp)
 	sw	s0,8(sp)
 	addi	s0,sp,16
-	li	a1,15
+	li	a5,305418240
+	addi	a1,a5,1656
 	li	a0,1
 	call	set_seg_single
 	call	halt_riscy
@@ -63,7 +64,6 @@ set_seg_single:
 	add	a5,a4,a5
 	sw	a5,-20(s0)
 	lw	a5,-40(s0)
-	andi	a5,a5,15
 	sw	a5,-24(s0)
 	lw	a5,-20(s0)
 	lw	a4,-24(s0)
