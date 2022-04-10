@@ -248,9 +248,8 @@ void sdram_random_rw_test (int iter) {
 	uint32_t result;
 	void* sdram_vp = init_sdram();
 	for (i = 0; i < iter; i++) {
-		addr = (uint32_t* )(rand() & sdram_addr_mask);
 		data = rand();
-		write_sdram((uint32_t*)(sdram_vp + addr), data);
+		write_sdram((uint32_t*)(sdram_vp + i*4), data);
 		result = read_sdram((uint32_t*)(sdram_vp + addr));
 		if (data != result) {
 			printf("sdram random rw test failed at iter %d\n", i);
