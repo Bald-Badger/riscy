@@ -13,6 +13,7 @@ const uint32_t h2f_base = (unsigned int) 0xC0000000;
 
 // sdram define
 const uint32_t sdram_range		= 0x03FFFFFF;	// 0x0 - 0x3ffffff
+const uint32_t sdram_addr_mask	= 0x03FFFFFC;	// word-aligned access
 const uint32_t offset_sdram		= 0x00000000;	// offset from bridge
 const uint32_t sdram_size_byte	= 0x04000000;	// 512Mb
 const uint32_t sdram_size_word	= 0x01000000;	// 64MB
@@ -197,7 +198,7 @@ void boot_load (char* filename, int swap) {
 	// write the data into sdram
 	for (i = 0; i < instr_size_word; i++) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
-		usleep(10);
+		usleep(1);
 	}
 
 	// read sdram to check data corruption
@@ -238,6 +239,23 @@ void sanity_test() {
 	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
 	printf("sanity test end\n");
+}
+
+void sdram_random_rw_test (int iter) {
+	int i;
+	uint32_t data;
+	uint32_t addr;
+	uint32_t result;
+	void* sdram_vp = init_sdram();
+	for (i = 0; i < iter; i++) {
+		addr = (uint32_t* )(rand() & sdram_addr_mask);
+		data = rand();
+		write_sdram((uint32_t*)(sdram_vp + addr), data);
+		result = read_sdram((uint32_t*)(sdram_vp + addr));
+		if (data != result) {
+			printf("sdram random rw test failed at iter %d\n", i);
+		}
+	}
 }
 
 
