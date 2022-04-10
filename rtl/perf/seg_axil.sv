@@ -181,13 +181,13 @@ module seg_axil (
 	logic	[3:0]	seg_data, data_latch;
 	assign	seg_data = cfg_wdata_i[3:0];
 
-	always_latch begin
+	always_ff @( posedge clk ) begin
 		if (write_addr_handshake)
-			wr_addr_latch = seg_address;
+			wr_addr_latch <= seg_address;
 		if (write_data_handshake)
-			data_latch = seg_data;
+			data_latch <= seg_data;
 		if (read_addr_handshake);
-			rd_addr_latch = cfg_araddr_i[4:0];
+			rd_addr_latch <= cfg_araddr_i[4:0];
 	end
 
 	integer i;

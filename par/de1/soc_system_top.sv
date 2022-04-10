@@ -287,8 +287,9 @@ module soc_system_top (
 		.hex_hex2						( HEX2 ),
 		.hex_hex3						( HEX3 ),
 		.hex_hex4						( HEX4 ),
-		.hex_hex5						( HEX5 ),
+		.hex_hex5						( HEX5 )
 
+		/*
 		.sdram_addr						( DRAM_ADDR ),
 		.sdram_ba						( DRAM_BA ),
 		.sdram_cas_n					( DRAM_CAS_N ),
@@ -299,6 +300,7 @@ module soc_system_top (
 		.sdram_dqm						( {DRAM_UDQM, DRAM_LDQM} ),
 		.sdram_ras_n					( DRAM_RAS_N ),
 		.sdram_we_n						( DRAM_WE_N )
+		*/
 
 	);
 

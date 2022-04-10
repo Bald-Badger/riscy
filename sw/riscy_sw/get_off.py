@@ -63,6 +63,7 @@ def get_main_offset():
     print(f"text addr: {text_addr}")
     boot_offset = main_addr - text_addr
     print(f"boot offset: {int(boot_offset/4)} words")
+    print("boot binary offset: {0:b}".format(boot_offset))
     fp = open("boot.cfg", 'w')
     fp.write(format(boot_offset, "x"))
     fp.close()

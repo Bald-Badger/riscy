@@ -5,12 +5,12 @@
 
 
 int main() {
-	set_seg_single(0, 0xf);
-	set_seg_single(1, 0xe);
-	set_seg_single(2, 0xd);
-	set_seg_single(3, 0xc);
-	set_seg_single(4, 0xb);
-	set_seg_single(5, 0xa);
+	set_seg_single(0, 0x1);
+	set_seg_single(1, 0x2);
+	set_seg_single(2, 0x3);
+	set_seg_single(3, 0x4);
+	set_seg_single(4, 0x5);
+	set_seg_single(5, 0x6);
 	halt_riscy();
 }
 
@@ -22,7 +22,7 @@ void halt_riscy() {
 }
 
 void set_seg_single (int index, int number) {
-	uint32_t* seg_pa = ((uint32_t*)SEG_BASE + index);
+	uint32_t* seg_pa = (uint32_t*)((void*)SEG_BASE + index * 4);
 	uint32_t hex_seg_digit = number;
 	*(uint32_t*)seg_pa = hex_seg_digit;
 }
