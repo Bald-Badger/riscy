@@ -173,16 +173,21 @@ void boot_load (char* filename, int swap) {
 
 	usleep(100);
 
-	for (i = 0; i < 20; i++) {
+	for (i = 0; i < 5; i++) {
 		printf("%x\n", instr_arr[i]);
 	}
 
 	// swap the endianess of each instruction as we are using big endian for now
 	
 	if (swap) {
+		printf("swapping endianess...\n");
 		for (i = 0; i < instr_size_word; i++) {
 			instr_arr[i] = swap_endian(instr_arr[i]);
 		}
+	}
+
+	for (i = 0; i < 5; i++) {
+		printf("%x\n", instr_arr[i]);
 	}
 
 	// map sdram into our own memory space
