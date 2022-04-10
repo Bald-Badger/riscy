@@ -172,12 +172,6 @@ void boot_load (char* filename, int swap) {
 	fread(instr_arr_byte, st.st_size, 1, file_ptr);
 	fclose(file_ptr);
 
-	usleep(100);
-
-	for (i = 0; i < 8; i++) {
-		printf("%x\n", instr_arr[i]);
-	}
-
 	// swap the endianess of each instruction as we are using big endian for now
 	
 	if (swap) {
