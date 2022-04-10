@@ -145,7 +145,7 @@ uint32_t swap_endian (uint32_t in) {
 			((in<<24)&0xff000000);
 }
 
-void boot_load (char* filename) {
+void boot_load (char* filename, int swap) {
 	// prep work, accocate memory
 	int i;
 	FILE* file_ptr;
@@ -179,8 +179,10 @@ void boot_load (char* filename) {
 
 	// swap the endianess of each instruction as we are using big endian for now
 	
-	for (i = 0; i < instr_size_word; i++) {
-		instr_arr[i] = swap_endian(instr_arr[i]);
+	if (swap) {
+		for (i = 0; i < instr_size_word; i++) {
+			instr_arr[i] = swap_endian(instr_arr[i]);
+		}
 	}
 
 	// map sdram into our own memory space
@@ -195,7 +197,7 @@ void boot_load (char* filename) {
 	// read sdram to check data corruption
 	uint32_t sanity_check;
 	int err = 0;
-	for (i = 0; i < instr_size_word; i++) {
+	for (i = 0; i < instr_size_word - 1; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
 			if (err == 0) {
@@ -220,7 +222,8 @@ void boot_load (char* filename) {
 }
 
 
-void smoke_test () {
+void sanity_test() {
+	printf("sanity test begin, shouldn't receive error\n");
 	void* sdram_vp = init_sdram();
 	touch_sdram(sdram_vp, 0xffffff);
 	clean_sdram(sdram_vp);
@@ -228,19 +231,11 @@ void smoke_test () {
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
+	printf("sanity test end\n");
 }
 
-/*
-	uint32_t instr_arr[1000];
-	FILE* ptr;
-	ptr = fopen("instr.bin","rb");
-	fread(instr_arr, sizeof(instr_arr), 1, ptr);
-	int i;
-	for (i = 0; i < 10; i++) {
-		printf("%x\n", instr_arr[i]);
-	}
-*/
 
 int main () {
-	boot_load("instr.bin");
+	sanity_test();
+	boot_load("instr.bin", 1);
 }
