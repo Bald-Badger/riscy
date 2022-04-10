@@ -207,7 +207,6 @@ void boot_load (char* filename, int swap) {
 		if (sanity_check != instr_arr[i]) {
 			//if (err == 0) {
 				printf("data mismatch at word %d\n",i);
-				printf("bootload failed\n");
 				err = 1;
 			//}
 			
