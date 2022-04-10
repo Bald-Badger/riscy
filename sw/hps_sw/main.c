@@ -166,6 +166,8 @@ void boot_load (char* filename, int swap) {
 	instr_size_word = (st.st_size) >> 2;
 	printf("bootloader start, boot sector size: %d words\n", instr_size_word);
 
+	usleep(100);
+
 	char* instr_arr_byte = malloc(st.st_size);
 	uint32_t* instr_arr = (uint32_t*)instr_arr_byte;
 
@@ -179,10 +181,6 @@ void boot_load (char* filename, int swap) {
 		for (i = 0; i < instr_size_word; i++) {
 			instr_arr[i] = swap_endian(instr_arr[i]);
 		}
-	}
-
-	for (i = 0; i < 8; i++) {
-		printf("%x\n", instr_arr[i]);
 	}
 
 	// map sdram into our own memory space
