@@ -184,16 +184,22 @@ void boot_load (char* filename, int swap) {
 	}
 
 	// map sdram into our own memory space
+	printf("mapping shared memory space...\n");
+	usleep(100);
 	uint32_t* sdram_vp = (uint32_t*)init_sdram();
 
 
 	// write the data into sdram
+	printf("bootloading in progress...\n");
+	usleep(100);
 	for (i = 0; i < instr_size_word; i++) {
 		write_sdram(sdram_vp + i, instr_arr[i]);
 		usleep(1);
 	}
 
 	// read sdram to check data corruption
+	printf("performing sanity check...\n");
+	usleep(100);
 	uint32_t sanity_check;
 	int err = 0;
 	for (i = 0; i < instr_size_word - 1; i++) {
@@ -209,6 +215,8 @@ void boot_load (char* filename, int swap) {
 	}
 
 	// unmap sdram from our memory space
+	printf("bootloading complete, cheaning up the mess...\n");
+	usleep(100);
 	clean_sdram(sdram_vp);
 
 	// free allocated pointers
