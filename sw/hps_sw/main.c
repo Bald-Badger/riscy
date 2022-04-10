@@ -205,11 +205,11 @@ void boot_load (char* filename, int swap) {
 	for (i = 0; i < instr_size_word - 1; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
-			if (err == 0) {
+			//if (err == 0) {
 				printf("data mismatch at word %d\n",i);
 				printf("expecting: %x, get: %x", instr_arr[i], sanity_check);
 				err = 1;
-			}
+			//}
 			
 		}
 	}
