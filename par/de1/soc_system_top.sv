@@ -199,8 +199,7 @@ module soc_system_top (
 	soc_system soc_system0(
 		.clk_clk						( clk ),
 		.reset_reset_n					( rst_n ),
-		// .go_go							( go ),,
-		.go_go							( 1'b0 ),
+		.go_go							( go ),
 				
 		.hps_ddr3_mem_a					( HPS_DDR3_ADDR ),
 		.hps_ddr3_mem_ba				( HPS_DDR3_BA ),
@@ -301,10 +300,14 @@ module soc_system_top (
 		.refclk							( osc_clk ),
 		.rst							( ~but_rst_n ),
 		.outclk_0						( clk ),
+		.outclk_1						(),
 		.locked							( locked )
 	);
 
 	logic [3:0] key_dbc;	// debounced key
+	logic [3:0] key_edg;	// debounced key
+	logic [3:0] key_rise;	// debounced key
+	logic [3:0] key_fall;	// debounced key
 
 	genvar dbcr_gen;
 	generate
@@ -313,9 +316,9 @@ module soc_system_top (
 				.clk	(osc_clk),
 				.in		(KEY[dbcr_gen]),
 				.out	(key_dbc[dbcr_gen]),
-				.edj	(),
-				.rise	(),
-				.fall	(go)
+				.edj	(key_edg[dbcr_gen]),
+				.rise	(key_rise[dbcr_gen]),
+				.fall	(key_fall[dbcr_gen])
 			);
 		end
 	endgenerate
@@ -324,6 +327,7 @@ module soc_system_top (
 		but_rst_n	= key_dbc[3];	// pressed key is 0
 		osc_clk		= CLOCK_50;
 		rst_n		= (but_rst_n & locked);
+		go			= key_fall[0];
 	end
 
 	assign LEDR[0] = rst_n;

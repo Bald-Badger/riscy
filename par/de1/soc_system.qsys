@@ -174,6 +174,46 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="AUTO" />
@@ -217,6 +257,7 @@
    enabled="1">
   <parameter name="ADDR_WIDTH" value="30" />
   <parameter name="DATA_WIDTH" value="32" />
+  <parameter name="M00_ADDR_WIDTH" value="32" />
   <parameter name="M00_AR_REG_TYPE" value="1" />
   <parameter name="M00_AW_REG_TYPE" value="1" />
   <parameter name="M00_BASE_ADDR" value="0" />

@@ -12,7 +12,7 @@
 # or its authorized distributors. Please refer to the applicable 
 # agreement for further details.
 
-# ACDS 21.1 842 linux 2022.03.31.00:26:06
+# ACDS 21.1 842 linux 2022.04.09.23:34:00
 
 # ----------------------------------------
 # ncsim - auto-generated simulation script
@@ -106,12 +106,12 @@
 # within the Quartus project, and generate a unified
 # script which supports all the Altera IP within the design.
 # ----------------------------------------
-# ACDS 21.1 842 linux 2022.03.31.00:26:06
+# ACDS 21.1 842 linux 2022.04.09.23:34:00
 # ----------------------------------------
 # initialize variables
 TOP_LEVEL_NAME="pll"
 QSYS_SIMDIR="./../"
-QUARTUS_INSTALL_DIR="/tools/intel/intelFPGA/21.1/quartus/"
+QUARTUS_INSTALL_DIR="/home/shuai/intelFPGA_lite/21.1/quartus/"
 SKIP_FILE_COPY=0
 SKIP_DEV_COM=0
 SKIP_COM=0

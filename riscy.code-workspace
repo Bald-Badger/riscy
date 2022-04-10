@@ -12,7 +12,18 @@
 			"socal.h": "c",
 			"hps.h": "c",
 			"fcntl.h": "c",
-			"stdlib.h": "c"
+			"stdlib.h": "c",
+			"array": "c",
+			"bitset": "c",
+			"string_view": "c",
+			"initializer_list": "c",
+			"ranges": "c",
+			"span": "c",
+			"regex": "c",
+			"utility": "c",
+			"valarray": "c",
+			"charconv": "c",
+			"ratio": "c"
 		}
 	}
 }

@@ -102,7 +102,12 @@ sim/test_gen/*.mc
 sim/test_gen/*.header
 sim/test_gen/*.section
 sim/test_gen/*.cfg
-test_gen/*.out
+sim/test_gen/*.out
+
+# fpga test program
+sw/riscy/*.header
+sw/riscy/*.section
+sw/riscy/*.out
 
 # formal
 .qverify_ui_local_prefs
