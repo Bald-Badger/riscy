@@ -254,6 +254,7 @@ void sdram_random_rw_test (int iter) {
 		result = read_sdram((uint32_t*)(sdram_vp + addr));
 		if (data != result) {
 			printf("sdram random rw test failed at iter %d\n", i);
+			printf("expecting %x, get %x\n", data, result);
 			break;
 		}
 	}
