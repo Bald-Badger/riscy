@@ -5,7 +5,12 @@
 
 
 int main() {
-	set_seg_single(1, 0x12345678);
+	set_seg_single(0, 0xf);
+	set_seg_single(1, 0xe);
+	set_seg_single(2, 0xd);
+	set_seg_single(3, 0xc);
+	set_seg_single(4, 0xb);
+	set_seg_single(5, 0xa);
 	halt_riscy();
 }
 

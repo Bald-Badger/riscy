@@ -11,6 +11,7 @@ module proc_axil (
 	input	logic 		clk,					// clock from PLL, frequency is defines::FREQ
 	input	logic 		rst_n,					// global reset
 	input	logic		go,
+	input	logic [9:0]	boot_pc,
 
 	axi_lite_interface	axil_bus_master
 );
@@ -37,6 +38,7 @@ module proc_axil (
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.go				(go),
+		.boot_pc		(boot_pc),
 		.data_bus		(data_bus_lite),
 		.instr_bus		(instr_bus_lite)
 	);

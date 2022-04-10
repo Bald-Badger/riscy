@@ -214,6 +214,14 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
 }
 ]]></parameter>
  <parameter name="clockCrossingAdapter" value="AUTO" />
@@ -235,12 +243,13 @@
  <parameter name="timeStamp" value="0" />
  <parameter name="useTestBenchNamingPattern" value="false" />
  <instanceScript></instanceScript>
- <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
  <interface
-   name="go"
-   internal="riscy_core_0.conduit_end"
+   name="boot_pc"
+   internal="riscy_core_0.boot_pc"
    type="conduit"
    dir="end" />
+ <interface name="clk" internal="clk_0.clk_in" type="clock" dir="end" />
+ <interface name="go" internal="riscy_core_0.go" type="conduit" dir="end" />
  <interface name="hex" internal="seg_axil_0.hex" type="conduit" dir="end" />
  <interface name="hps" internal="hps_0.hps_io" type="conduit" dir="end" />
  <interface name="hps_ddr3" internal="hps_0.memory" type="conduit" dir="end" />
@@ -282,13 +291,13 @@
   <parameter name="S01_R_REG_TYPE" value="2" />
   <parameter name="S01_W_REG_TYPE" value="0" />
  </module>
- <module name="clk_0" kind="clock_source" version="21.1" enabled="1">
+ <module name="clk_0" kind="clock_source" version="19.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
   <parameter name="inputClockFrequency" value="0" />
   <parameter name="resetSynchronousEdges" value="NONE" />
  </module>
- <module name="hps_0" kind="altera_hps" version="21.1" enabled="1">
+ <module name="hps_0" kind="altera_hps" version="19.1" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
   <parameter name="ABS_RAM_MEM_INIT_FILENAME" value="meminit" />
   <parameter name="ACV_PHY_CLK_ADD_FR_PHASE" value="0.0" />
@@ -832,7 +841,7 @@
  <module name="seg_axil_0" kind="seg_axil" version="1.0" enabled="1" />
  <connection
    kind="avalon"
-   version="21.1"
+   version="19.1"
    start="axil_crossbar_2x1_0.altera_axi4lite_master"
    end="sdram_controller_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -841,7 +850,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="21.1"
+   version="19.1"
    start="axil_crossbar_2x1_0.altera_axi4lite_master"
    end="seg_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -850,7 +859,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="21.1"
+   version="19.1"
    start="riscy_core_0.altera_axi4lite_master"
    end="axil_crossbar_2x1_0.altera_axi4lite_slave_1">
   <parameter name="arbitrationPriority" value="1" />
@@ -859,7 +868,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="21.1"
+   version="19.1"
    start="hps_0.h2f_axi_master"
    end="axil_crossbar_2x1_0.altera_axi4lite_slave_0">
   <parameter name="arbitrationPriority" value="1" />
@@ -868,53 +877,53 @@
  </connection>
  <connection
    kind="clock"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk"
    end="sdram_controller_axil_0.clock" />
- <connection kind="clock" version="21.1" start="clk_0.clk" end="seg_axil_0.clock" />
+ <connection kind="clock" version="19.1" start="clk_0.clk" end="seg_axil_0.clock" />
  <connection
    kind="clock"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk"
    end="riscy_core_0.clock" />
  <connection
    kind="clock"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk"
    end="axil_crossbar_2x1_0.clock" />
  <connection
    kind="clock"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk"
    end="hps_0.f2h_axi_clock" />
  <connection
    kind="clock"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk"
    end="hps_0.h2f_axi_clock" />
  <connection
    kind="clock"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk"
    end="hps_0.h2f_lw_axi_clock" />
  <connection
    kind="reset"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk_reset"
    end="sdram_controller_axil_0.reset_sink" />
  <connection
    kind="reset"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk_reset"
    end="seg_axil_0.reset_sink" />
  <connection
    kind="reset"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk_reset"
    end="riscy_core_0.reset_sink" />
  <connection
    kind="reset"
-   version="21.1"
+   version="19.1"
    start="clk_0.clk_reset"
    end="axil_crossbar_2x1_0.reset_sink" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="AUTO" />

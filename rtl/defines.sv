@@ -25,8 +25,6 @@ package defines;
 	localparam BIG_ENDIAN		= 1'b1;
 	localparam ENDIANESS		= BIG_ENDIAN;
 
-	localparam	[31:0] ENTRY_PC = 32'hF8;	// read from /sim/test_gen/boot.cfg
-
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
 	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N

@@ -195,11 +195,17 @@ module soc_system_top (
 	logic	locked;
 	logic	go;
 
+	logic [3:0] key_dbc;	// debounced key
+	logic [3:0] key_edg;	// debounced key
+	logic [3:0] key_rise;	// debounced key
+	logic [3:0] key_fall;	// debounced key
+
 
 	soc_system soc_system0(
 		.clk_clk						( clk ),
 		.reset_reset_n					( rst_n ),
 		.go_go							( go ),
+		.boot_pc_boot_pc				( SW ),
 				
 		.hps_ddr3_mem_a					( HPS_DDR3_ADDR ),
 		.hps_ddr3_mem_ba				( HPS_DDR3_BA ),
@@ -303,11 +309,6 @@ module soc_system_top (
 		.outclk_1						(),
 		.locked							( locked )
 	);
-
-	logic [3:0] key_dbc;	// debounced key
-	logic [3:0] key_edg;	// debounced key
-	logic [3:0] key_rise;	// debounced key
-	logic [3:0] key_fall;	// debounced key
 
 	genvar dbcr_gen;
 	generate

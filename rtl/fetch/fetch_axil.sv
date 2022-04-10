@@ -15,6 +15,7 @@ module fetch_axil (
 	input 	logic					stall,
 	input	logic					flush,
 	input	logic					go,
+	input	logic [9:0]				boot_pc_extrn,
 	input	instr_t					instr_w,
 
 	// output
@@ -93,7 +94,7 @@ module fetch_axil (
 			$display("DUT: boot mode: RARS");
 			$display("DUT: booting from pc = %h", 0);
 		end else if (BOOT_TYPE == FPGA_BOOT) begin
-			boot_pc[0] = ENTRY_PC;
+			boot_pc[0] = boot_pc_extrn;
 		end
 	end
 
