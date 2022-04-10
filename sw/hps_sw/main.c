@@ -75,7 +75,7 @@ int unmap_addr (void* vp_base, u_int32_t unmap_size_byte) {
 void* init_sdram() {
 	uint32_t sdram_pa_base	= h2f_base + offset_sdram;	// PA of sdram from HPS's perspective
 	// return map_addr (sdram_pa_base, sdram_size_byte);
-	return map_addr (sdram_pa_base, 0x40000);
+	return map_addr (sdram_pa_base, 0x10000);
 }
 
 int clean_sdram (void* vp_base) {
@@ -203,7 +203,7 @@ void boot_load (char* filename, int swap) {
 	usleep(100);
 	uint32_t sanity_check;
 	int err = 0;
-	for (i = 0; i < instr_size_word - 1; i++) {
+	for (i = 0; i < instr_size_word; i++) {
 		sanity_check = read_sdram(sdram_vp + i);
 		if (sanity_check != instr_arr[i]) {
 			//if (err == 0) {
