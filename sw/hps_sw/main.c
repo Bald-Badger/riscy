@@ -74,7 +74,8 @@ int unmap_addr (void* vp_base, u_int32_t unmap_size_byte) {
 
 void* init_sdram() {
 	uint32_t sdram_pa_base	= h2f_base + offset_sdram;	// PA of sdram from HPS's perspective
-	return map_addr (sdram_pa_base, sdram_size_byte);
+	// return map_addr (sdram_pa_base, sdram_size_byte);
+	return map_addr (sdram_pa_base, 0x40000);
 }
 
 int clean_sdram (void* vp_base) {
