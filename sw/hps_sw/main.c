@@ -173,7 +173,7 @@ void boot_load (char* filename, int swap) {
 	fclose(file_ptr);
 
 	// swap the endianess of each instruction as we are using big endian for now
-	
+
 	if (swap) {
 		printf("swapping endianess...\n");
 		for (i = 0; i < instr_size_word; i++) {
@@ -223,16 +223,16 @@ void boot_load (char* filename, int swap) {
 }
 
 
-void sanity_test() {
-	printf("sanity test begin, shouldn't receive error\n");
-	void* sdram_vp = init_sdram();
-	touch_sdram(sdram_vp, 0xffffff);
-	clean_sdram(sdram_vp);
-
+void sanity_test_seg() {
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
-	printf("sanity test end\n");
+}
+
+void sanity_test_sdram() {
+	void* sdram_vp = init_sdram();
+	touch_sdram(sdram_vp, 0xffffff);
+	clean_sdram(sdram_vp);
 }
 
 void sdram_random_rw_test (int iter) {
@@ -255,7 +255,7 @@ void sdram_random_rw_test (int iter) {
 
 
 int main () {
-	sanity_test();
+	sanity_test_seg();
 	boot_load("instr.bin", 0);
 	//sdram_random_rw_test(10);
 }
