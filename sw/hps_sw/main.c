@@ -173,7 +173,7 @@ void boot_load (char* filename, int swap) {
 
 	usleep(100);
 
-	for (i = 0; i < 7; i++) {
+	for (i = 0; i < 8; i++) {
 		printf("%x\n", instr_arr[i]);
 	}
 
@@ -186,7 +186,7 @@ void boot_load (char* filename, int swap) {
 		}
 	}
 
-	for (i = 0; i < 7; i++) {
+	for (i = 0; i < 8; i++) {
 		printf("%x\n", instr_arr[i]);
 	}
 
