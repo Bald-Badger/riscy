@@ -14,7 +14,7 @@
 # -D: defines a macro to be used by the preprocessor
 
 GCC = riscv64-unknown-elf-gcc
-CFLAGS = -Wall -O0 -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
+CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
 
 GCC_X86 = gcc
 CFLAGS_X86 = -Wall
