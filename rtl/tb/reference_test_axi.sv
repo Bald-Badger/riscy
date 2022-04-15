@@ -15,12 +15,19 @@ module reference_test_axi ();
 
 	logic ref_halt, ref_halt_wait;
 	logic kill_ref;
+	logic [XLEN-1:0] boot_pc [0:0];
 
 	clkrst #(.FREQ(FREQ)) clkrst_inst(
 		.clk	(clk),
 		.rst_n	(rst_n),
 		.go		(go)
 	);
+
+	initial begin
+		$readmemh("boot.cfg", boot_pc);
+		$display("DUT: boot mode: binary");
+		$display("DUT: booting from pc = %h", boot_pc[0]);
+	end
 
 `ifdef AXIL
 	axi_lite_interface ram_bus (
@@ -32,6 +39,7 @@ module reference_test_axi ();
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.go				(go),
+		.boot_pc		(boot_pc[0][9:0]),
 		.axil_bus_master(ram_bus)
 	);
 

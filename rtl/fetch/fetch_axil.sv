@@ -61,7 +61,6 @@ module fetch_axil (
 	logic ifu_valid;
 
 	// pc control logic
-	logic[XLEN-1:0] boot_pc [0:0];
 	data_t pc, pc_p4;
 
 	assign pc_p4 = pc + 32'd4;
@@ -81,21 +80,6 @@ module fetch_axil (
 			pc_en <= CLEAR;
 		else
 			pc_en <= pc_en;
-	end
-
-
-	initial begin
-		if (BOOT_TYPE == BINARY_BOOT) begin
-			$readmemh("boot.cfg", boot_pc);
-			$display("DUT: boot mode: binary");
-			$display("DUT: booting from pc = %h", boot_pc[0]);
-		end else if (BOOT_TYPE == RARS_BOOT) begin
-			boot_pc[0] = 32'b0;
-			$display("DUT: boot mode: RARS");
-			$display("DUT: booting from pc = %h", 0);
-		end else if (BOOT_TYPE == FPGA_BOOT) begin
-			boot_pc[0] = boot_pc_extrn;
-		end
 	end
 
 
@@ -135,7 +119,6 @@ module fetch_axil (
 	end
 
 
-	// TODO: assert flush && pc_sel
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n) begin
 			pc <= boot_pc_extrn;
