@@ -8,7 +8,7 @@
 #endif
 
 int main() {
-	int n = 100;
+	int n = 10;
 	int arr[n];
 	int sorted[n];
 
