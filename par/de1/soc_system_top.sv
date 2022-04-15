@@ -200,6 +200,8 @@ module soc_system_top (
 	logic [3:0] key_rise;	// debounced key
 	logic [3:0] key_fall;	// debounced key
 
+	logic	uart_tx, uart_rx;
+
 
 	soc_system soc_system0(
 		.clk_clk						( clk ),
@@ -230,48 +232,48 @@ module soc_system_top (
 		.hps_hps_io_emac1_inst_TXD2		( HPS_ENET_TX_DATA[2] ),
 		.hps_hps_io_emac1_inst_TXD3		( HPS_ENET_TX_DATA[3] ),
 		.hps_hps_io_emac1_inst_RXD0		( HPS_ENET_RX_DATA[0] ),
-		.hps_hps_io_emac1_inst_MDIO		( HPS_ENET_MDIO	),
-		.hps_hps_io_emac1_inst_MDC		( HPS_ENET_MDC	),
+		.hps_hps_io_emac1_inst_MDIO		( HPS_ENET_MDIO ),
+		.hps_hps_io_emac1_inst_MDC		( HPS_ENET_MDC ),
 		.hps_hps_io_emac1_inst_RX_CTL	( HPS_ENET_RX_DV ),
 		.hps_hps_io_emac1_inst_TX_CTL	( HPS_ENET_TX_EN ),
 		.hps_hps_io_emac1_inst_RX_CLK	( HPS_ENET_RX_CLK ),
-		.hps_hps_io_emac1_inst_RXD1		( HPS_ENET_RX_DATA[1]	),
-		.hps_hps_io_emac1_inst_RXD2		( HPS_ENET_RX_DATA[2]	),
-		.hps_hps_io_emac1_inst_RXD3		( HPS_ENET_RX_DATA[3]	),
+		.hps_hps_io_emac1_inst_RXD1		( HPS_ENET_RX_DATA[1] ),
+		.hps_hps_io_emac1_inst_RXD2		( HPS_ENET_RX_DATA[2] ),
+		.hps_hps_io_emac1_inst_RXD3		( HPS_ENET_RX_DATA[3] ),
 					
-		.hps_hps_io_sdio_inst_CMD		( HPS_SD_CMD			),
-		.hps_hps_io_sdio_inst_D0		( HPS_SD_DATA[0]		),
-		.hps_hps_io_sdio_inst_D1		( HPS_SD_DATA[1]		),
-		.hps_hps_io_sdio_inst_CLK		( HPS_SD_CLK			),
-		.hps_hps_io_sdio_inst_D2		( HPS_SD_DATA[2]		),
-		.hps_hps_io_sdio_inst_D3		( HPS_SD_DATA[3]		),
+		.hps_hps_io_sdio_inst_CMD		( HPS_SD_CMD ),
+		.hps_hps_io_sdio_inst_D0		( HPS_SD_DATA[0] ),
+		.hps_hps_io_sdio_inst_D1		( HPS_SD_DATA[1] ),
+		.hps_hps_io_sdio_inst_CLK		( HPS_SD_CLK ),
+		.hps_hps_io_sdio_inst_D2		( HPS_SD_DATA[2] ),
+		.hps_hps_io_sdio_inst_D3		( HPS_SD_DATA[3] ),
 		
-		.hps_hps_io_usb1_inst_D0		( HPS_USB_DATA[0]		),
-		.hps_hps_io_usb1_inst_D1		( HPS_USB_DATA[1]		),
-		.hps_hps_io_usb1_inst_D2		( HPS_USB_DATA[2]		),
-		.hps_hps_io_usb1_inst_D3		( HPS_USB_DATA[3]		),
-		.hps_hps_io_usb1_inst_D4		( HPS_USB_DATA[4]		),
-		.hps_hps_io_usb1_inst_D5		( HPS_USB_DATA[5]		),
-		.hps_hps_io_usb1_inst_D6		( HPS_USB_DATA[6]		),
-		.hps_hps_io_usb1_inst_D7		( HPS_USB_DATA[7]		),
-		.hps_hps_io_usb1_inst_CLK		( HPS_USB_CLKOUT		),
-		.hps_hps_io_usb1_inst_STP		( HPS_USB_STP			),
-		.hps_hps_io_usb1_inst_DIR		( HPS_USB_DIR			),
-		.hps_hps_io_usb1_inst_NXT		( HPS_USB_NXT			),
+		.hps_hps_io_usb1_inst_D0		( HPS_USB_DATA[0] ),
+		.hps_hps_io_usb1_inst_D1		( HPS_USB_DATA[1] ),
+		.hps_hps_io_usb1_inst_D2		( HPS_USB_DATA[2] ),
+		.hps_hps_io_usb1_inst_D3		( HPS_USB_DATA[3] ),
+		.hps_hps_io_usb1_inst_D4		( HPS_USB_DATA[4] ),
+		.hps_hps_io_usb1_inst_D5		( HPS_USB_DATA[5] ),
+		.hps_hps_io_usb1_inst_D6		( HPS_USB_DATA[6] ),
+		.hps_hps_io_usb1_inst_D7		( HPS_USB_DATA[7] ),
+		.hps_hps_io_usb1_inst_CLK		( HPS_USB_CLKOUT ),
+		.hps_hps_io_usb1_inst_STP		( HPS_USB_STP ),
+		.hps_hps_io_usb1_inst_DIR		( HPS_USB_DIR ),
+		.hps_hps_io_usb1_inst_NXT		( HPS_USB_NXT ),
 		
-		.hps_hps_io_spim1_inst_CLK		( HPS_SPIM_CLK	),
+		.hps_hps_io_spim1_inst_CLK		( HPS_SPIM_CLK ),
 		.hps_hps_io_spim1_inst_MOSI		( HPS_SPIM_MOSI ),
 		.hps_hps_io_spim1_inst_MISO		( HPS_SPIM_MISO ),
-		.hps_hps_io_spim1_inst_SS0		( HPS_SPIM_SS	),
+		.hps_hps_io_spim1_inst_SS0		( HPS_SPIM_SS ),
 		
-		.hps_hps_io_uart0_inst_RX		( HPS_UART_RX		),
-		.hps_hps_io_uart0_inst_TX		( HPS_UART_TX		),
+		.hps_hps_io_uart0_inst_RX		( HPS_UART_RX ),
+		.hps_hps_io_uart0_inst_TX		( HPS_UART_TX ),
 		
-		.hps_hps_io_i2c0_inst_SDA		( HPS_I2C1_SDAT		),
-		.hps_hps_io_i2c0_inst_SCL		( HPS_I2C1_SCLK		),
+		.hps_hps_io_i2c0_inst_SDA		( HPS_I2C1_SDAT ),
+		.hps_hps_io_i2c0_inst_SCL		( HPS_I2C1_SCLK ),
 		
-		.hps_hps_io_i2c1_inst_SDA		( HPS_I2C2_SDAT		),
-		.hps_hps_io_i2c1_inst_SCL		( HPS_I2C2_SCLK		),
+		.hps_hps_io_i2c1_inst_SDA		( HPS_I2C2_SDAT ),
+		.hps_hps_io_i2c1_inst_SCL		( HPS_I2C2_SCLK ),
 		
 		.hps_hps_io_gpio_inst_GPIO09	( HPS_CONV_USB_N ),
 		.hps_hps_io_gpio_inst_GPIO35	( HPS_ENET_INT_N ),
@@ -282,14 +284,15 @@ module soc_system_top (
 		.hps_hps_io_gpio_inst_GPIO54	( HPS_KEY ),
 		.hps_hps_io_gpio_inst_GPIO61	( HPS_GSENSOR_INT ),
 
+		// 7-seg LEDs
 		.hex_hex0						( HEX0 ),
 		.hex_hex1						( HEX1 ),
 		.hex_hex2						( HEX2 ),
 		.hex_hex3						( HEX3 ),
 		.hex_hex4						( HEX4 ),
-		.hex_hex5						( HEX5 )
+		.hex_hex5						( HEX5 ),
 
-		/*
+		// 64MB SDRAM
 		.sdram_addr						( DRAM_ADDR ),
 		.sdram_ba						( DRAM_BA ),
 		.sdram_cas_n					( DRAM_CAS_N ),
@@ -299,11 +302,15 @@ module soc_system_top (
 		.sdram_dq						( DRAM_DQ ),
 		.sdram_dqm						( {DRAM_UDQM, DRAM_LDQM} ),
 		.sdram_ras_n					( DRAM_RAS_N ),
-		.sdram_we_n						( DRAM_WE_N )
-		*/
+		.sdram_we_n						( DRAM_WE_N ),
 
+		// UART, connected to GPIO
+		.uart_rx						(uart_rx),
+		.uart_tx						(uart_tx)
 	);
 
+
+	// PLL module
 	pll	my_pll (
 		.refclk							( osc_clk ),
 		.rst							( ~but_rst_n ),
@@ -312,6 +319,8 @@ module soc_system_top (
 		.locked							( locked )
 	);
 
+
+	// debounce the 4 input keys
 	genvar dbcr_gen;
 	generate
 		for (dbcr_gen = 0; dbcr_gen < 4; dbcr_gen++) begin : debouncer_gen_loop
@@ -326,12 +335,23 @@ module soc_system_top (
 		end
 	endgenerate
 
+
 	always_comb begin : ctrl_sig_assign
 		but_rst_n	= key_dbc[3];	// pressed key is 0
 		osc_clk		= CLOCK_50;
 		rst_n		= (but_rst_n & locked);
 		go			= key_fall[0];
 	end
+
+
+	always_comb begin : gpio_0_connect
+		GPIO_0 = 36'bZ;
+	end
+	
+
+	assign uart_rx		= GPIO_1[26];
+	assign GPIO_1[27]	= uart_tx;
+
 
 	assign LEDR[0] = rst_n;
 	assign LEDR[1] = 1'b0;
@@ -361,18 +381,6 @@ module soc_system_top (
 
 	assign FPGA_I2C_SCLK = SW[0];
 	assign FPGA_I2C_SDAT = SW[1] ? SW[0] : 1'bZ;
-
-	assign GPIO_0 = SW[1] ? { 36{ SW[0] } } : 36'bZ;
-	assign GPIO_1 = SW[1] ? { 36{ SW[0] } } : 36'bZ;
-
-/*
-	assign HEX0 = { 7{ SW[1] } };
-	assign HEX1 = { 7{ SW[2] } };
-	assign HEX2 = { 7{ SW[3] } };
-	assign HEX3 = { 7{ SW[4] } };
-	assign HEX4 = { 7{ SW[5] } };
-	assign HEX5 = { 7{ SW[6] } };
-*/
 
 	assign IRDA_TXD = SW[0];
 

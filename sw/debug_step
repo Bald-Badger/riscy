@@ -1,5 +1,5 @@
 git clone -b De1-Migrate https://github.com/Bald-Badger/riscy.git
-128.59.65.194
+ssh -C -L 5910:localhost:5901 sz3034@micro23.ee.columbia.edu
 verilator --lint-only vga_ball.sv
 qsys-edit soc_system.qsys
 make quartus
