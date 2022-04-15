@@ -4,7 +4,9 @@
 import defines::*;
 import axi_defines::*;
 
-module fetch_axil (
+module fetch_axil # (
+	parameter INSTR_QUE_ADDR_WIDTH = 4
+) (
 	// general input
 	input	logic					clk, 
 	input	logic					rst_n,
@@ -43,8 +45,6 @@ module fetch_axil (
 		else
 			state <= nxt_state;
 	end
-
-	localparam INSTR_QUE_ADDR_WIDTH = 4;
 
 	typedef struct packed {
 		data_t	instr;
@@ -136,13 +136,31 @@ module fetch_axil (
 	data_t instr_mem_sys;
 	data_t instr_plain;
 	data_t instr_switch;	// switch endianess
+	logic instr_valid_early;
 	assign instr_plain = data_t'(instr_mem_sys);
 	assign instr_fifo_in = instr_queue_entry_t'({instr_mem_sys, pc});
 	// BUG: assert ecall = instr_d == ecall
 	assign ecall = (instr_plain == ECALL);
 	assign ecall_clear = (data_t'(instr_w) == ECALL);
-	assign instr_valid = ((~buf_empty) && (~stall) && (~flush) && (~flush_flag) && (~flush_flag_delay));
+	assign instr_valid_early = ((~buf_empty) && (~stall) && (~flush) && (~flush_flag) && (~flush_flag_delay));
 	// end instruction wires
+
+	data_t instr_debug;
+	assign instr_debug = data_t'(instr);
+
+	// delay instr_valid for one cycle because fifo have 1 cycle read delay
+	always_ff @( posedge clk, negedge rst_n ) begin
+		if (~rst_n)
+			instr_valid <= 1'b0;
+		else if (flush)
+			instr_valid <= 1'b0;
+		else if (flush_flag_delay)
+			instr_valid <= 1'b0;
+		else if (stall)
+			instr_valid <=instr_valid;
+		else
+			instr_valid <= instr_valid_early;
+	end
 
 
 	always_comb begin
