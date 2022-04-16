@@ -4,61 +4,64 @@ import axi_defines::*;
 
 
 module uart_axil #(
-	parameter	CLK_FREQ = 5e7,
-	parameter	UART_BPS = 9600,
-	parameter	FIFO_WIDTH_TX = 10,	// FIFO depth = 2^WIDTH
-	parameter	FIFO_WIDTH_RX = 5
+	parameter	CLK_FREQ 				= 5e7,
+	parameter	UART_BPS				= 9600,
+	parameter	FIFO_WIDTH_TX			= 10,	// FIFO depth = 2^WIDTH
+	parameter	FIFO_WIDTH_RX			= 5,
+	localparam	ADDR_WIDTH				= 4
 ) (
 	// Inputs
-	input			clk,
-	input			rst,
+	input	logic						clk,
+	input	logic						rst,
 
-	// axi
-	input			cfg_awvalid_i,
-	input	[3:0]	cfg_awaddr_i,
-	input			cfg_wvalid_i,
-	input	[31:0]	cfg_wdata_i,
-	input	[ 3:0]	cfg_wstrb_i,
-	input			cfg_bready_i,
-	input			cfg_arvalid_i,
-	input	[3:0]	cfg_araddr_i,
-	input			cfg_rready_i,
+	// axi-lite
+	input	logic						awvalid_i,
+	input	logic	[ADDR_WIDTH - 1:0]	awaddr_i,
+	input	logic						wvalid_i,
+	input	logic	[31:0]				wdata_i,
+	input	logic	[ 3:0]				wstrb_i,
+	input	logic						bready_i,
+	input	logic						arvalid_i,
+	input	logic	[ADDR_WIDTH - 1:0]	araddr_i,
+	input	logic						rready_i,
 
 	// Outputs
-	output			cfg_awready_o,
-	output			cfg_wready_o,
-	output			cfg_bvalid_o,
-	output	[1:0]	cfg_bresp_o,
-	output			cfg_arready_o,
-	output			cfg_rvalid_o,
-	output	[31:0]	cfg_rdata_o,
-	output	[ 1:0]	cfg_rresp_o,
+	output	logic						awready_o,
+	output	logic						wready_o,
+	output	logic						bvalid_o,
+	output	logic	[1:0]				bresp_o,
+	output	logic						arready_o,
+	output	logic						rvalid_o,
+	output	logic	[31:0]				rdata_o,
+	output	logic	[ 1:0]				rresp_o,
 
 	// unused AXI signal
-	input	[ 2:0]	cfg_awprot_i,
-	input	[ 2:0]	cfg_arprot_i,
+	input	logic	[ 2:0]				awprot_i,
+	input	logic	[ 2:0]				arprot_i,
 
 	// UART TX/RX
-	input	logic	uart_rx,
-	output	logic	uart_tx
+	input	logic						uart_rx,
+	output	logic						uart_tx
 );
 
 	// UART module wire
-	logic uart_send_data, rx_done, tx_done
-	logic [7:0] tx_data, rx_data;
+	logic			uart_send_data, rx_done, tx_done;
+	logic	[7:0]	tx_data, rx_data;
 
+	// SIMP bus wire
+	logic	[31:0]	simp_addr;
+	logic	[31:0]	simp_data_in;
+	logic			simp_wr;
+	logic			simp_rd;
+	logic			simp_valid;
+	logic	[ 3:0]	simp_be;
 
-	// five channels' handshake
-	logic read_addr_handshake, read_data_handshake;
-	logic write_addr_handshake, write_data_handshake, write_resp_handshake;
+	logic	[31:0]	simp_data_out;
+	logic			simp_done;
 
-	always_comb begin
-		read_addr_handshake = cfg_arready_o && cfg_arvalid_i;
-		read_data_handshake = cfg_rready_i && cfg_rvalid_o;
-		write_addr_handshake = cfg_awready_o && cfg_awvalid_i;
-		write_data_handshake = cfg_wready_o && cfg_wvalid_i;
-		write_resp_handshake = cfg_bready_i && cfg_bvalid_o;
-	end
+	logic			simp_done_tx, simp_done_rx;
+	assign			simp_done_rx = 1'b0;
+	assign			simp_done = simp_done_tx || simp_done_rx;
 
 
 	// TX side logic
@@ -83,36 +86,112 @@ module uart_axil #(
 	);
 
 	typedef enum logic [1:0] {
-		IDLE_TX,
-		TX
-	} UART_TX_STATE_T;
-	UART_TX_STATE_T state_tx, nxt_state_tx;
+		IDLE_FIFO_TX,
+		WRITE_FIFO_TX,
+		READ_FIFO_TX
+	} uart_tx_fifo_state_t;
+	uart_tx_fifo_state_t state_fifo_tx, nxt_state_fifo_tx;
 
 	always_ff @( posedge clk, posedge rst ) begin
 		if (rst)
-			state_tx <= IDLE_TX
+			state_fifo_tx <= IDLE_FIFO_TX;
 		else
-			state_tx <= nxt_state_tx;
+			state_fifo_tx <= nxt_state_fifo_tx;
 	end
 
 
-	always_comb begin : uart_tx_fsm
+	always_comb begin : uart_tx_fifo_state_fsm
+		nxt_state_fifo_tx	= IDLE_FIFO_TX;
+		fifo_in_tx		= 8'b0;
+		fifo_wr_en_tx	= 1'b0;
+		simp_done_tx	= 1'b0;
 
-		unique case (state_tx)
-			IDLE_TX: 	begin
+		unique case (state_fifo_tx)
 
+			IDLE_FIFO_TX: 	begin
+				if (simp_wr && simp_valid) begin
+					nxt_state_fifo_tx = WRITE_FIFO_TX;
+				end else if (simp_rd && simp_valid) begin
+					nxt_state_fifo_tx = READ_FIFO_TX;
+				end else begin
+					// reserved, do nothing for now
+					nxt_state_fifo_tx = IDLE_FIFO_TX;
+				end
 			end
 
-			TX:			begin
-				
+			WRITE_FIFO_TX:	begin
+				fifo_in_tx = simp_data_in[7:0];
+				fifo_wr_en_tx = ENABLE;
+				nxt_state_fifo_tx = IDLE_FIFO_TX;
+				simp_done_tx = DONE;
+			end
+
+			READ_FIFO_TX:	begin
+				simp_done_tx = DONE;
+				nxt_state_fifo_tx = IDLE_FIFO_TX;
 			end
 
 			default:	begin
-				
+				nxt_state_fifo_tx	= IDLE_FIFO_TX;
+				fifo_in_tx		= 8'b0;
+				fifo_wr_en_tx	= 1'b0;
+				simp_done_tx	= 1'b0;
 			end
 		endcase
 
 	end
+
+	typedef enum logic [1:0] {
+		IDLE_TX,
+		WAIT_LOAD_TX,
+		TRANSMIT_TX
+	} uart_tx_state_t;
+	uart_tx_state_t state_uart_tx, nxt_state_uart_tx;
+	
+	always_ff @( posedge clk or posedge rst) begin
+		if (rst)
+			state_uart_tx <= IDLE_TX;
+		else
+			state_uart_tx <= nxt_state_uart_tx;
+	end
+
+	always_comb begin : uart_tx_state_fsm
+		nxt_state_uart_tx	= IDLE_TX;
+		tx_data				= fifo_out_tx;
+		fifo_rd_en_tx		= DISABLE;
+		uart_send_data		= DISABLE;
+		unique case (state_uart_tx)
+			IDLE_TX:		begin
+				if (~fifo_empty_tx) begin
+					nxt_state_uart_tx	= WAIT_LOAD_TX;
+					fifo_rd_en_tx		= ENABLE;
+				end else begin
+					nxt_state_uart_tx	= IDLE_TX;
+				end
+			end
+
+			WAIT_LOAD_TX:	begin
+				nxt_state_uart_tx		= TRANSMIT_TX;
+				uart_send_data			= ENABLE;
+			end
+
+			TRANSMIT_TX:	begin
+				if (tx_done) begin
+					nxt_state_uart_tx	= IDLE_TX;
+				end else begin
+					nxt_state_uart_tx	= TRANSMIT_TX;
+				end
+			end
+
+			default:		begin
+				nxt_state_uart_tx	= IDLE_TX;
+				tx_data				= fifo_out_tx;
+				fifo_rd_en_tx		= DISABLE;
+				uart_send_data		= DISABLE;
+			end
+		endcase
+	end
+
 
 	uart # (
 		.CLK_FREQ	(CLK_FREQ),
@@ -130,6 +209,15 @@ module uart_axil #(
 		.rx_done	(rx_done),
 		.tx_done	(tx_done),
 		.rx_data	(rx_data)
+	);
+
+
+	// connect everything with same name
+	axil2simp #(
+		.ADDR_WIDTH	(ADDR_WIDTH)
+	) axil_to_simp_bridge 
+	(
+		 .*
 	);
 	
 

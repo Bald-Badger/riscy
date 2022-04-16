@@ -28,30 +28,32 @@ must not read-when-write
 slave must finally assert done regardless of r/w success
 */
 
-module axil2simp (
+module axil2simp # (
+	parameter	ADDR_WIDTH = 16
+) (
 	// Inputs
-	input 	logic			clk,
-	input 	logic			rst,
+	input 	logic						clk,
+	input 	logic						rst,
 
 	// axi
-	input 	logic			awvalid_i,
-	input 	logic	[4:0]	awaddr_i,
-	input 	logic			wvalid_i,
-	input 	logic	[31:0]	wdata_i,
-	input 	logic	[ 3:0]	wstrb_i,
-	input 	logic			bready_i,
-	input 	logic			arvalid_i,
-	input 	logic	[4:0]	araddr_i,
-	input 	logic			rready_i,
+	input 	logic						awvalid_i,
+	input 	logic	[ADDR_WIDTH - 1:0]	awaddr_i,
+	input 	logic						wvalid_i,
+	input 	logic	[31:0]				wdata_i,
+	input 	logic	[ 3:0]				wstrb_i,
+	input 	logic						bready_i,
+	input 	logic						arvalid_i,
+	input 	logic	[ADDR_WIDTH - 1:0]	araddr_i,
+	input 	logic						rready_i,
 
-	output	logic			awready_o,
-	output	logic			wready_o,
-	output	logic			bvalid_o,
-	output	logic	[1:0]	bresp_o,
-	output	logic			arready_o,
-	output	logic			rvalid_o,
-	output	logic	[31:0]	rdata_o,
-	output	logic	[ 1:0]	rresp_o,
+	output	logic						awready_o,
+	output	logic						wready_o,
+	output	logic						bvalid_o,
+	output	logic	[1:0]				bresp_o,
+	output	logic						arready_o,
+	output	logic						rvalid_o,
+	output	logic	[31:0]				rdata_o,
+	output	logic	[ 1:0]				rresp_o,
 
 	// unused AXI signal
 	input 	logic	[ 2:0]	awprot_i,
@@ -71,7 +73,6 @@ module axil2simp (
 
 	typedef enum logic[2:0] {
 		IDLE,
-		W_ADDR,
 		W_DATA,
 		W_RESP,
 		W_SIMP,
@@ -103,12 +104,11 @@ module axil2simp (
 	assign simp_handshake = simp_valid && simp_done;
 
 	data_t simp_addr_reg;
-	data_t simp_data_in_reg;
 
 	always_ff @( posedge clk ) begin
 		if (read_addr_handshake)
 			simp_addr_reg <= araddr_i;
-		else if (write_addr_handshake) be
+		else if (write_addr_handshake)
 			simp_addr_reg <= awaddr_i;
 		else
 			simp_addr_reg <= simp_addr_reg;
@@ -116,24 +116,23 @@ module axil2simp (
 
 	always_ff @( posedge clk ) begin
 		if (write_data_handshake)
-			simp_data_in_reg <= wdata_i;
+			simp_data_in <= wdata_i;
 		else
-			simp_data_in_reg <= simp_data_in_reg;
+			simp_data_in <= simp_data_in;
 	end
 
 	always_comb begin : fsm
 		nxt_state		= IDLE;
-		awready_o	= 1'b0;
-		wready_o	= 1'b0;
-		bvalid_o	= INVALID;
-		bresp_o		= RESP_OKAY;
-		arready_o	= 1'b0;
-		rvalid_o	= INVALID;
-		rdata_o		= NULL;
-		rresp_o		= RESP_OKAY;
+		awready_o		= 1'b0;
+		wready_o		= 1'b0;
+		bvalid_o		= INVALID;
+		bresp_o			= RESP_OKAY;
+		arready_o		= 1'b0;
+		rvalid_o		= INVALID;
+		rdata_o			= NULL;
+		rresp_o			= RESP_OKAY;
 
 		simp_addr		= NULL;
-		simp_data_in	= NULL;
 		simp_wr			= DISABLE;
 		simp_rd			= DISABLE;
 		simp_valid		= VALID;

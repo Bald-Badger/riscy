@@ -17,7 +17,7 @@ module reference_test_axi ();
 	logic kill_ref;
 	logic [XLEN-1:0] boot_pc [0:0];
 
-	clkrst #(.FREQ(FREQ)) clkrst_inst(
+	clkrst #(.FREQ(FREQ)) clkrst_inst (
 		.clk	(clk),
 		.rst_n	(rst_n),
 		.go		(go)

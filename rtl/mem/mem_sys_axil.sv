@@ -5,7 +5,7 @@ import mem_defines::*;
 import axi_defines::*;
 
 module mem_sys_axil #(
-	parameter WIDTH = XLEN
+	localparam WIDTH = XLEN
 ) (
 	input	logic					clk,
 	input	logic					rst_n,

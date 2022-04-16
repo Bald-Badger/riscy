@@ -11,9 +11,9 @@ module fifo
 	input	logic						clk, 
 	input	logic						rst, 
 	input	logic	[DATA_WIDTH-1:0]	buf_in, 
-	output	logic	[DATA_WIDTH-1:0]	buf_out, 
 	input	logic						wr_en, 
 	input	logic						rd_en,
+	output	logic	[DATA_WIDTH-1:0]	buf_out, 
 	output	logic						buf_empty, 
 	output	logic						buf_full, 
 	output	logic						buf_almost_full,
@@ -49,6 +49,9 @@ always_ff @(posedge clk) begin
 end
 
 
+// seriously, don't touch
+// my other logic expects 1 cycle delay
+// my other logic expects buf_out holds until next read
 always_ff @( posedge clk or posedge rst) begin
 	if( rst )
 		buf_out <= 0;		//On reset output of buffer is all 0.

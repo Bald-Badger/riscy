@@ -51,7 +51,8 @@ module uart_rx # (
 		else begin
 			if(start_flag)
 				rx_flag <= 1'b1;
-			else if((rx_cnt == 4'd9)&&(clk_cnt == BPS_CNT/2))
+			// else if((rx_cnt == 4'd9)&&(clk_cnt == BPS_CNT/2))
+			else if((rx_cnt == 4'd9)&&(clk_cnt == BPS_CNT - 9))
 				rx_flag <= 1'b0; // stop rx when the counter reached its half
 			else
 				rx_flag <= rx_flag;

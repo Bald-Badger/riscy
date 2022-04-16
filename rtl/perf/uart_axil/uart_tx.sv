@@ -12,7 +12,8 @@ module uart_tx # (
 );
 
 
-	localparam BPS_CNT  = CLK_FREQ / UART_BPS;
+	logic[19:0] BPS_CNT;
+	assign BPS_CNT = CLK_FREQ / UART_BPS;
 
 
 	//reg define
@@ -68,7 +69,7 @@ module uart_tx # (
 				tx_flag	<= 1'b1;
 				tx_data	<= uart_din;
 		// bug: this stop flag should work, but original code use BPS_CNT / 2
-		end else if ((tx_cnt == 4'd9)&&(clk_cnt == BPS_CNT - 1)) begin 
+		end else if ((tx_cnt == 4'd9)&&(clk_cnt == BPS_CNT - 9)) begin 
 				tx_flag	<= 1'b0;
 				tx_data	<= 8'd0;
 		end else begin
