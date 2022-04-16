@@ -243,6 +243,7 @@ void sanity_test_seg() {
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
+	usleep(100);
 }
 
 void sdram_range_test() {
@@ -302,12 +303,14 @@ void uart_put_str (char* str, int len) {
 
 void sanity_test_uart() {
 	char greeting[] = "Hello RISCY\n";
-	uart_put_str(greeting, strlen(greeting));
+	printf("%s\n", greeting);
+	// uart_put_str(greeting, strlen(greeting));
+	usleep(100);
 }
 
 
 int main () {
-	sanity_test_sdram();
+	// sanity_test_sdram();
 	sanity_test_seg();
 	sanity_test_uart();
 	boot_load("instr.bin", 0);
