@@ -264,12 +264,5 @@ module fetch_axil # (
 		.buf_almost_full	(buf_almost_full),
 		.fifo_counter		(fifo_counter)
 	);
-
-
-	// not implemented yet
-	branch_predict branch_predictor (
-		.instr	(instr),
-		.taken	(taken)
-	);
 	
 endmodule : fetch_axil

@@ -8,7 +8,7 @@ module uart_axil #(
 	parameter	UART_BPS				= 9600,
 	parameter	FIFO_WIDTH_TX			= 10,	// FIFO depth = 2^WIDTH
 	parameter	FIFO_WIDTH_RX			= 5,
-	localparam	ADDR_WIDTH				= 4
+	parameter	ADDR_WIDTH				= 4
 ) (
 	// Inputs
 	input	logic						clk,

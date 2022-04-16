@@ -18,12 +18,12 @@ package defines;
 		RARS_BOOT,		// boot from a rars compiled mif file
 		FPGA_BOOT		// boot on FPGA, no jokes here
 	} boot_type_t;
-	localparam	[1:0] BOOT_TYPE = BINARY_BOOT;
+	localparam	[1:0] BOOT_TYPE = FPGA_BOOT;
 
 	// byte-varient endianess
 	localparam LITTLE_ENDIAN	= 1'b0;
 	localparam BIG_ENDIAN		= 1'b1;
-	localparam ENDIANESS		= LITTLE_ENDIAN;
+	localparam ENDIANESS		= BIG_ENDIAN;
 
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32

@@ -5,7 +5,8 @@ import mem_defines::*;
 import axi_defines::*;
 
 module mem_sys_axil #(
-	localparam WIDTH = XLEN
+	parameter ADDR_WIDTH = XLEN,
+	parameter DATA_WIDTH = XLEN
 ) (
 	input	logic					clk,
 	input	logic					rst_n,
@@ -21,27 +22,27 @@ module mem_sys_axil #(
 	output	logic					done,
 
 	// AXI-Lite master interface
-	output	logic 					m_axil_clk,		// bus clock
-	output	logic 					m_axil_rst,		// bus reset, active high
-	output	logic [WIDTH-1:0]		m_axil_awaddr,	// Write address
-	output	logic [2:0]				m_axil_awprot,	// Write protection level, see axi_defines.sv
-	output	logic					m_axil_awvalid,	// Write address valid, signaling valid write address and control information.
-	input	logic					m_axil_awready,	// Write address ready (from slave), ready to accept an address and associated control signals
-	output	logic [WIDTH-1:0]		m_axil_wdata,	// Write data
-	output	logic [WIDTH/8-1:0]		m_axil_wstrb,	// Write data strobe (byte select)
-	output	logic					m_axil_wvalid,	// Write data valid, write data and strobes are available
-	input	logic					m_axil_wready,	// Write data ready, slave can accept the write data
-	input	logic [1:0]				m_axil_bresp,	// Write response (from slave)
-	input	logic					m_axil_bvalid,	// Write response valid, signaling a valid write response
-	output	logic					m_axil_bready,	// Write response ready (from master) can accept a write response
-	output	logic [WIDTH-1:0]		m_axil_araddr,	// Read address
-	output	logic [2:0]				m_axil_arprot,	// Read protection level, see axi_defines.sv
-	output	logic					m_axil_arvalid,	// Read address valid,  signaling valid read address and control information
-	input	logic					m_axil_arready,	// Read address ready (from slave), ready to accept an address and associated control signals
-	input	logic [WIDTH-1:0]		m_axil_rdata,	// Read data
-	input	logic [1:0]				m_axil_rresp,	// Read response (from slave)
-	input	logic					m_axil_rvalid,	// Read response valid, the channel is signaling the required read data
-	output	logic					m_axil_rready	// Read response ready (from master), can accept the read data and response information
+	output	logic 						m_axil_clk,		// bus clock
+	output	logic 						m_axil_rst,		// bus reset, active high
+	output	logic [ADDR_WIDTH - 1:0]	m_axil_awaddr,	// Write address
+	output	logic [2:0]					m_axil_awprot,	// Write protection level, see axi_defines.sv
+	output	logic						m_axil_awvalid,	// Write address valid, signaling valid write address and control information.
+	input	logic						m_axil_awready,	// Write address ready (from slave), ready to accept an address and associated control signals
+	output	logic [DATA_WIDTH-1:0]		m_axil_wdata,	// Write data
+	output	logic [(DATA_WIDTH/8)-1:0]	m_axil_wstrb,	// Write data strobe (byte select)
+	output	logic						m_axil_wvalid,	// Write data valid, write data and strobes are available
+	input	logic						m_axil_wready,	// Write data ready, slave can accept the write data
+	input	logic [1:0]					m_axil_bresp,	// Write response (from slave)
+	input	logic						m_axil_bvalid,	// Write response valid, signaling a valid write response
+	output	logic						m_axil_bready,	// Write response ready (from master) can accept a write response
+	output	logic [ADDR_WIDTH - 1:0]	m_axil_araddr,	// Read address
+	output	logic [2:0]					m_axil_arprot,	// Read protection level, see axi_defines.sv
+	output	logic						m_axil_arvalid,	// Read address valid,  signaling valid read address and control information
+	input	logic						m_axil_arready,	// Read address ready (from slave), ready to accept an address and associated control signals
+	input	logic [DATA_WIDTH-1:0]		m_axil_rdata,	// Read data
+	input	logic [1:0]					m_axil_rresp,	// Read response (from slave)
+	input	logic						m_axil_rvalid,	// Read response valid, the channel is signaling the required read data
+	output	logic						m_axil_rready	// Read response ready (from master), can accept the read data and response information
 	// end AXI-Lite master interface
 );
 
