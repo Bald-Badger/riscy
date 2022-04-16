@@ -296,7 +296,7 @@ void uart_put_str (char* str, int len) {
 		c = str[i];
 		char_byte = (uint8_t) c;
 		char_word = ((uint32_t) char_byte) & uart_data_mask;
-		*(uart_vp + i) = char_word;
+		*(uart_vp) = char_word;
 	}
 	clean_uart(uart_vp);
 }
@@ -304,7 +304,7 @@ void uart_put_str (char* str, int len) {
 void sanity_test_uart() {
 	char greeting[] = "Hello RISCY\n";
 	printf("performing uart serial test...\n");
-	printf("check serial for valid output\n");
+	printf("check serial for valid output\n\n");
 	uart_put_str(greeting, strlen(greeting));
 	usleep(100);
 }
