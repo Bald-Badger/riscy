@@ -262,7 +262,7 @@ void sdram_random_rw_test (int iter) {
 
 
 int main () {
+	sdram_random_rw_test(10);
 	sanity_test_seg();
 	boot_load("instr.bin", 0);
-	//sdram_random_rw_test(10);
 }
