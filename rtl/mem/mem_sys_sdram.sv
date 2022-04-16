@@ -3,9 +3,7 @@
 import defines::*;
 import mem_defines::*;
 
-
-
-module mem_sys (
+module mem_sys_sdram (
 	input	logic			clk_50m,
 	input	logic			clk_100m,
 	input	logic			clk_100m_shift,
@@ -660,4 +658,4 @@ always_ff @(negedge clk_50m) begin : checks
 end
 // synthesis translate_on
 
-endmodule: mem_sys
+endmodule: mem_sys_sdram

@@ -126,30 +126,32 @@ module seg_axil (
 						cfg_rdata_o = {{28'b0}, {seg_mem[0]}};
 					end
 
-					SEG_H0_OFF:	begin
+					SEG_H1_OFF:	begin
 						cfg_rdata_o = {{28'b0}, {seg_mem[1]}};
 					end
 
-					SEG_H0_OFF:	begin
+					SEG_H2_OFF:	begin
 						cfg_rdata_o = {{28'b0}, {seg_mem[2]}};
 					end
 
-					SEG_H0_OFF:	begin
+					SEG_H3_OFF:	begin
 						cfg_rdata_o = {{28'b0}, {seg_mem[3]}};
 					end
 
-					SEG_H0_OFF:	begin
+					SEG_H4_OFF:	begin
 						cfg_rdata_o = {{28'b0}, {seg_mem[4]}};
 					end
 
-					SEG_H0_OFF:	begin
+					SEG_H5_OFF:	begin
 						cfg_rdata_o = {{28'b0}, {seg_mem[5]}};
 					end
 
 					default:	begin
 						cfg_rdata_o = NULL;
 					end
+
 				endcase
+
 				if (read_data_handshake) begin
 					nxt_state = IDLE;
 				end else begin

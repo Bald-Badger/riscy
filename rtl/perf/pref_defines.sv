@@ -7,11 +7,10 @@ import mem_defines::*;
 
 
 localparam	H2F_BASE	= 32'hFC00_0000;
-localparam	H2F_LW_BASE	= 32'hFF20_0000;
+localparam	H2F_LW_BASE	= 32'hFF20_0000;	// not used for now
 
 
 //////////////////// 7 seg defines ////////////////////
-/* WRITE ONLY */
 
 localparam	SEG_BASE		= 32'h0;	// offset from bridge base
 
@@ -32,8 +31,20 @@ localparam	SEG_H3_ADDR		= SEG_BASE + SEG_H3_OFF;
 localparam	SEG_H4_ADDR		= SEG_BASE + SEG_H4_OFF;
 localparam	SEG_H5_ADDR		= SEG_BASE + SEG_H5_OFF;
 
-//////////import defines::*;
-import mem_defines::*;////////////////////////////////////////////
+//////////////////////////////////////////////////////
+
+
+//////////////////// UART defines ////////////////////
+
+localparam	UART_BASE		= 32'h0;
+
+// write to here will write one byte of data to transmit fifo
+// read from here will load one byte of data from receive fifo
+localparam	UART_DATA_OFF	= 32'h0;
+
+//////////////////////////////////////////////////////
+
 
 `endif
+
 endpackage : pref_defines

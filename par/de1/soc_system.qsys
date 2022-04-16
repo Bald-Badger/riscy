@@ -214,12 +214,44 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element uart_axil_0
    {
       datum _sortIndex
       {
          value = "6";
          type = "int";
+      }
+   }
+   element uart_axil_0.altera_axi4lite_slave_1
+   {
+      datum baseAddress
+      {
+         value = "67174400";
+         type = "String";
       }
    }
 }
@@ -848,18 +880,18 @@
    kind="avalon"
    version="19.1"
    start="axil_crossbar_2x1_0.altera_axi4lite_master"
-   end="seg_axil_0.altera_axi4lite_slave">
+   end="sdram_controller_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x04000000" />
+  <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
    kind="avalon"
    version="19.1"
    start="axil_crossbar_2x1_0.altera_axi4lite_master"
-   end="sdram_controller_axil_0.altera_axi4lite_slave">
+   end="seg_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="baseAddress" value="0x04000000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
@@ -869,6 +901,15 @@
    end="axil_crossbar_2x1_0.altera_axi4lite_slave_1">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection
+   kind="avalon"
+   version="19.1"
+   start="axil_crossbar_2x1_0.altera_axi4lite_master"
+   end="uart_axil_0.altera_axi4lite_slave_1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x04010000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection
