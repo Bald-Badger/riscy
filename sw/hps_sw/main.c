@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
@@ -8,24 +9,32 @@
 #include "include/hps.h"
 
 // global define
-const uint32_t h2f_lw_base = (unsigned int) ALT_LWFPGASLVS_OFST;
-const uint32_t h2f_base = (unsigned int) 0xC0000000;
+const uint32_t h2f_lw_base		= (unsigned int) ALT_LWFPGASLVS_OFST;
+const uint32_t h2f_base			= (unsigned int) 0xC0000000;
 
 // sdram define
 const uint32_t sdram_range		= 0x03FFFFFF;	// 0x0 - 0x3ffffff
 const uint32_t sdram_addr_mask	= 0x03FFFFFC;	// word-aligned access
-const uint32_t offset_sdram		= 0x00000000;	// offset from bridge
+const uint32_t sdram_offset		= 0x00000000;	// offset from bridge
 const uint32_t sdram_size_byte	= 0x04000000;	// 512Mb
 const uint32_t sdram_size_word	= 0x01000000;	// 64MB
 
 
 // 7-seg display define
 const uint32_t seg_range		= 0x0000001F;	// 0x0 - 0x1f
-const uint32_t offset_seg		= 0x04000000;	// offset from bridge
+const uint32_t seg_offset		= 0x04000000;	// offset from bridge
 const uint32_t seg_size_byte	= 0x00000020;	// 32 bytes
 const uint32_t seg_size_word	= 0x00000008;	// 8 words (6 needed)
 const uint32_t seg_addr_mask	= 0xFFFFFFFC;	// word-align
 const uint32_t seg_data_mask	= 0x0000000F;	// only first byte valid
+
+
+// uart serial define
+const uint32_t uart_range		= 0x0000001F;
+const uint32_t uart_offset		= 0x04010000;
+const uint32_t uart_size_byte	= 0x00000020;
+const uint32_t uart_size_word	= 0x00000008;
+const uint32_t uart_data_mask	= 0x000000FF;
 
 
 void* map_addr (int pa_base, int size_byte) {
@@ -61,6 +70,7 @@ void* map_addr (int pa_base, int size_byte) {
 	return (return_va);
 }
 
+
 int unmap_addr (void* vp_base, u_int32_t unmap_size_byte) {
 	if( munmap( vp_base, unmap_size_byte ) != 0 ) {
 		printf( "ERROR: munmap() failed...\n" );
@@ -71,9 +81,8 @@ int unmap_addr (void* vp_base, u_int32_t unmap_size_byte) {
 
 
 // SDRAM controlling functions
-
 void* init_sdram() {
-	uint32_t sdram_pa_base	= h2f_base + offset_sdram;	// PA of sdram from HPS's perspective
+	uint32_t sdram_pa_base	= h2f_base + sdram_offset;	// PA of sdram from HPS's perspective
 	// return map_addr (sdram_pa_base, sdram_size_byte);
 	return map_addr (sdram_pa_base, 0x10000);
 }
@@ -95,7 +104,7 @@ int touch_sdram (void* base, uint32_t off) {
 	uint32_t data = rand();
 	write_sdram(((uint32_t *)base) + off, data);
 	uint32_t x = read_sdram(((uint32_t *)base) + off);
-	uint32_t sdram_pa_base	= h2f_base + offset_sdram;	// PA of sdram from HPS's perspective
+	uint32_t sdram_pa_base	= h2f_base + sdram_offset;	// PA of sdram from HPS's perspective
 	if (x == data) {
 		printf("touche word off: %x, PA: %x success \n", off, (sdram_pa_base) + (off * 4));
 		return 0;
@@ -116,7 +125,7 @@ void touch_sdram_range (void* base, int start, int step) {
 // 7-Seg controlling functions
 
 void* init_seg() {
-	uint32_t seg_pa_base = h2f_base + offset_seg;	// PA of sdram from HPS's perspective
+	uint32_t seg_pa_base = h2f_base + seg_offset;	// PA of sdram from HPS's perspective
 	return map_addr (seg_pa_base, seg_size_byte);
 }
 
@@ -236,11 +245,12 @@ void sanity_test_seg() {
 	clean_seg(seg_vp);
 }
 
-void sanity_test_sdram() {
+void sdram_range_test() {
 	void* sdram_vp = init_sdram();
 	touch_sdram(sdram_vp, 0xffffff);
 	clean_sdram(sdram_vp);
 }
+
 
 void sdram_random_rw_test (int iter) {
 	int i;
@@ -261,8 +271,44 @@ void sdram_random_rw_test (int iter) {
 }
 
 
+void sanity_test_sdram() {
+	sdram_range_test();
+	sdram_random_rw_test(1000);
+}
+
+void* init_uart() {
+	uint32_t uart_pa_base = h2f_base + uart_offset;	// PA of sdram from HPS's perspective
+	return map_addr (uart_pa_base, uart_size_byte);
+}
+
+int clean_uart(void* vp_base) {
+	return unmap_addr (vp_base, uart_size_byte);
+}
+
+void uart_put_str (char* str, int len) {
+	int i;
+	char c;
+	uint8_t char_byte;
+	uint32_t char_word;
+	uint32_t* uart_vp = (uint32_t*)init_uart();
+	for (i = 0; i < len; i++) {
+		c = str[i];
+		char_byte = (uint8_t) c;
+		char_word = ((uint32_t) char_byte) & uart_data_mask;
+		*(uart_vp + i) = char_word;
+	}
+	clean_uart(uart_vp);
+}
+
+void sanity_test_uart() {
+	char greeting[] = "Hello RISCY\n";
+	uart_put_str(greeting, strlen(greeting));
+}
+
+
 int main () {
-	sdram_random_rw_test(10);
+	sanity_test_sdram();
 	sanity_test_seg();
+	sanity_test_uart();
 	boot_load("instr.bin", 0);
 }
