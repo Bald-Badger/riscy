@@ -312,7 +312,7 @@ void sanity_test_uart() {
 
 int main () {
 	// sanity_test_sdram();
-	sanity_test_seg();
+	// sanity_test_seg();
 	sanity_test_uart();
-	boot_load("instr.bin", 0);
+	// boot_load("instr.bin", 0);
 }
