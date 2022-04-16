@@ -11,6 +11,8 @@ int main() {
 	set_seg_single(3, 0x4);
 	set_seg_single(4, 0x5);
 	set_seg_single(5, 0x6);
+	char* hello = "hello risc-v";
+	uart_write_char (hello);
 	halt_riscy();
 }
 
@@ -25,4 +27,12 @@ void set_seg_single (int index, int number) {
 	uint32_t* seg_pa = (uint32_t*)((void*)SEG_BASE + index * 4);
 	uint32_t hex_seg_digit = number;
 	*(uint32_t*)seg_pa = hex_seg_digit;
+}
+
+void uart_write_char (char* c) {
+	char uart_char = *c;
+	uint8_t char_int_8 = (uint8_t)uart_char;
+	uint16_t char_int_32 = (uint32_t)char_int_8;
+	uint32_t* uart_pa = (uint32_t*)((void*)UART_BASE);
+	*(uint32_t*)uart_pa = char_int_32;
 }
