@@ -252,7 +252,7 @@ void sanity_test_seg() {
 
 void sdram_range_test() {
 	void* sdram_vp = init_sdram();
-	touch_sdram(sdram_vp, 0xffffff);
+	touch_sdram(sdram_vp, 0x3FFFFC);
 	clean_sdram(sdram_vp);
 }
 
@@ -278,7 +278,7 @@ void sdram_random_rw_test (int iter) {
 
 void sanity_test_sdram() {
 	printf("starting sdram sanity test...\n");
-	usleep(100);
+	usleep(1000);
 	sdram_range_test();
 	sdram_random_rw_test(1000);
 }
@@ -319,7 +319,7 @@ void sanity_test_uart() {
 int main () {
 	printf("starting RISCY bootloading process...\n");
 	usleep(1000);
-	//sanity_test_sdram();
+	sanity_test_sdram();
 	sanity_test_seg();
 	sanity_test_uart();
 	//boot_load("./test.elf", 0);
