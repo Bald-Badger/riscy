@@ -242,6 +242,7 @@ void boot_load (char* filename, int swap) {
 
 
 void sanity_test_seg() {
+	printf("starting 7seg test, seg should should non-zero numver");
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
 	clean_seg(seg_vp);
@@ -275,6 +276,7 @@ void sdram_random_rw_test (int iter) {
 
 
 void sanity_test_sdram() {
+	printf("starting sdram sanity test...");
 	sdram_range_test();
 	sdram_random_rw_test(1000);
 }
