@@ -85,8 +85,7 @@ int unmap_addr (void* vp_base, u_int32_t unmap_size_byte) {
 // SDRAM controlling functions
 void* init_sdram() {
 	uint32_t sdram_pa_base	= h2f_base + sdram_offset;	// PA of sdram from HPS's perspective
-	// return map_addr (sdram_pa_base, sdram_size_byte);
-	return map_addr (sdram_pa_base, 0x10000);
+	return map_addr (sdram_pa_base, sdram_size_byte);
 }
 
 int clean_sdram (void* vp_base) {
@@ -252,7 +251,7 @@ void sanity_test_seg() {
 
 void sdram_range_test() {
 	void* sdram_vp = init_sdram();
-	touch_sdram(sdram_vp, 0x3FFFFC);
+	touch_sdram(sdram_vp, 0x3FFFFF);
 	clean_sdram(sdram_vp);
 }
 
