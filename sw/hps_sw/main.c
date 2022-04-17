@@ -317,6 +317,8 @@ void sanity_test_uart() {
 
 
 int main () {
+	printf("starting RISCY bootloading process...");
+	usleep(1000);
 	sanity_test_sdram();
 	sanity_test_seg();
 	sanity_test_uart();
