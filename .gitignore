@@ -103,6 +103,7 @@ sim/test_gen/*.header
 sim/test_gen/*.section
 sim/test_gen/*.cfg
 sim/test_gen/*.out
+sim/test_gen/*.elf
 
 # fpga test program
 sw/riscy/*.header

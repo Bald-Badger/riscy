@@ -9,7 +9,14 @@ def get_entry_addr(filename="./test.header"):
 	for line in lines:
 		temp_line = line.split(":")
 		header_dict[temp_line[0]] = temp_line[1]
-	return int(header_dict["Entry point address"], 16)
+	entry_addr = int(header_dict["Entry point address"], 16)
+	elf_va_offset = 0x10000
+	print("entry point is base : 0x10000, offset: ",(entry_addr - elf_va_offset))
+	print("binary offset: {0:b}".format(entry_addr - elf_va_offset))
+	fp = open("boot.cfg", 'w')
+	fp.write(format(entry_addr - elf_va_offset, "x"))
+	fp.close()
+	return entry_addr
 
 
 def get_text_addr(filename="./test.section"):
@@ -56,7 +63,8 @@ def get_enrty_point_offset():
 	fp.close()
 
 
-def get_main_offset():
+# offset fron text base
+def get_main_offset_old():
 	main_addr = get_main_addr()
 	print(f"main_addr: {main_addr}")
 	text_addr = get_text_addr()
@@ -67,6 +75,21 @@ def get_main_offset():
 	fp = open("boot.cfg", 'w')
 	fp.write(format(boot_offset, "x"))
 	fp.close()
+
+
+# offset from start of ELF file in
+def get_main_offset():
+	main_addr = get_main_addr()
+	print(f"main_addr: {main_addr}")
+	base_addr = 0x10000
+	print(f"base addr: {base_addr}")
+	boot_offset = main_addr - base_addr
+	print(f"boot offset: {int(boot_offset/4)} words")
+	print("boot_offset: {0:b} byte".format(boot_offset >> 2))
+	fp = open("boot.cfg", 'w')
+	fp.write(format(boot_offset >> 2, "x"))
+	fp.close()
+
 
 
 if __name__ == '__main__':

@@ -43,6 +43,7 @@ asm:
 # build the compiled and linked elf file	
 elf: asm
 	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET)
+	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET).elf
 
 # extract the executable binary from elf
 bin: elf
@@ -95,4 +96,4 @@ x86: clean
 
 # delete all but .c, .h file
 clean:
-	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg ./*.out
+	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg ./*.out ./*.elf
