@@ -93,6 +93,7 @@ sim/*.csv
 *.cnx
 sim/*.cfg
 sim/*.bin
+sim/*.elf
 
 # test_gen
 sim/test_gen/test
