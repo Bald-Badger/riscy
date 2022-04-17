@@ -302,10 +302,10 @@ void uart_put_str (char* str, int len) {
 }
 
 void sanity_test_uart() {
-	char greeting[] = "Hello RISCY\n";
+	char greeting[15] = "Hello RISCY\n";
 	printf("performing uart serial test...\n");
 	printf("check serial for valid output\n\n");
-	uart_put_str(greeting, strlen(greeting));
+	uart_put_str(greeting, 15);
 	usleep(100);
 }
 
