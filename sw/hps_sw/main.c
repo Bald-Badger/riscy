@@ -12,6 +12,8 @@
 const uint32_t h2f_lw_base		= (unsigned int) ALT_LWFPGASLVS_OFST;
 const uint32_t h2f_base			= (unsigned int) 0xC0000000;
 
+const uint32_t elf_load_offset	= 0x00004000;	// in words (4 byte)	
+
 // sdram define
 const uint32_t sdram_range		= 0x03FFFFFF;	// 0x0 - 0x3ffffff
 const uint32_t sdram_addr_mask	= 0x03FFFFFC;	// word-aligned access
@@ -203,7 +205,7 @@ void boot_load (char* filename, int swap) {
 	printf("bootloading in progress...\n");
 	usleep(100);
 	for (i = 0; i < instr_size_word; i++) {
-		write_sdram(sdram_vp + i, instr_arr[i]);
+		write_sdram(sdram_vp + i + elf_load_offset, instr_arr[i]);
 		usleep(1);
 	}
 
@@ -213,10 +215,10 @@ void boot_load (char* filename, int swap) {
 	uint32_t sanity_check;
 	int err = 0;
 	for (i = 0; i < instr_size_word; i++) {
-		sanity_check = read_sdram(sdram_vp + i);
+		sanity_check = read_sdram(sdram_vp + i + elf_load_offset);
 		if (sanity_check != instr_arr[i]) {
 			//if (err == 0) {
-				printf("data mismatch at word %d\n",i);
+				printf("data mismatch at word %d\n",(i));
 				printf("expecting: %x, get: %x\n\n", instr_arr[i], sanity_check);
 				err = 1;
 			//}
@@ -311,8 +313,8 @@ void sanity_test_uart() {
 
 
 int main () {
-	// sanity_test_sdram();
-	// sanity_test_seg();
+	sanity_test_sdram();
+	sanity_test_seg();
 	sanity_test_uart();
-	// boot_load("instr.bin", 0);
+	boot_load("./test.elf", 0);
 }
