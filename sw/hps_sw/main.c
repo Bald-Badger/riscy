@@ -242,7 +242,7 @@ void boot_load (char* filename, int swap) {
 
 
 void sanity_test_seg() {
-	printf("starting 7seg test, seg should should non-zero numver\n");
+	printf("starting 7seg test, seg should show non-zero number\n");
 	usleep(100);
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
@@ -321,6 +321,6 @@ int main () {
 	usleep(1000);
 	//sanity_test_sdram();
 	sanity_test_seg();
-	//sanity_test_uart();
+	sanity_test_uart();
 	//boot_load("./test.elf", 0);
 }
