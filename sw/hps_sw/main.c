@@ -242,7 +242,7 @@ void boot_load (char* filename, int swap) {
 
 
 void sanity_test_seg() {
-	printf("starting 7seg test, seg should should non-zero numver");
+	printf("starting 7seg test, seg should should non-zero numver\n");
 	usleep(100);
 	void* seg_vp = (void*)(init_seg());
 	set_seg (seg_vp, 0x00123456);
@@ -277,7 +277,7 @@ void sdram_random_rw_test (int iter) {
 
 
 void sanity_test_sdram() {
-	printf("starting sdram sanity test...");
+	printf("starting sdram sanity test...\n");
 	usleep(100);
 	sdram_range_test();
 	sdram_random_rw_test(1000);
@@ -317,10 +317,10 @@ void sanity_test_uart() {
 
 
 int main () {
-	printf("starting RISCY bootloading process...");
+	printf("starting RISCY bootloading process...\n");
 	usleep(1000);
-	sanity_test_sdram();
-	sanity_test_seg();
-	sanity_test_uart();
-	boot_load("./test.elf", 0);
+	//sanity_test_sdram();
+	//sanity_test_seg();
+	//sanity_test_uart();
+	//boot_load("./test.elf", 0);
 }
