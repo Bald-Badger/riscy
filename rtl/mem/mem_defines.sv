@@ -30,8 +30,8 @@ import defines::*;
 
 // using RARS default, text at 0x0 memory layout
 localparam	MAX_PHY_ADDR		= 32'h03ff_ffff;	// 64MB, for TB use only
-localparam	SP_BASE				= 32'h0000_3ffc;	// stack base pointer, init SP to here
-localparam	GP_BASE				= 32'h0000_1800;	// global pointer, init GP to here
+localparam	SP_BASE				= 32'h01ff_fffc;	// stack base pointer, init SP to here
+localparam	GP_BASE				= 32'h0100_0800;	// global pointer, init GP to here
 
 localparam	MEM_ACCESS_TIMEOUT	= 128;			// 128 cycles
 

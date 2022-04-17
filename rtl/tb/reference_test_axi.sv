@@ -26,7 +26,7 @@ module reference_test_axi ();
 	initial begin
 		$readmemh("boot.cfg", boot_pc);
 		$display("DUT: boot mode: binary");
-		$display("DUT: booting from pc = %h", boot_pc[0]);
+		$display("DUT: booting from pc = %h", boot_pc[0] * 4 + 32'h10000);
 	end
 
 `ifdef AXIL
@@ -39,11 +39,13 @@ module reference_test_axi ();
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.go				(go),
-		.boot_pc		(boot_pc[0][9:0]),
+		.boot_pc		(boot_pc[0]),
 		.axil_bus_master(ram_bus)
 	);
 
-	axil_ram_sv_wrapper ram (
+	axil_ram_sv_wrapper # (
+		.ADDR_WIDTH		(26)
+	) ram (
 		.clk			(clk),
 		.rst			(~rst_n),
 		.axil_bus		(ram_bus)
@@ -63,7 +65,9 @@ module reference_test_axi ();
 		.axi_bus_master	(ram_bus)
 	);
 
-	axi_ram_sv_wrapper ram (
+	axi_ram_sv_wrapper # (
+		.ADDR_WIDTH		(26)
+	) ram (
 		.clk			(clk),
 		.rst			(~rst_n),
 		.axi_bus		(ram_bus)

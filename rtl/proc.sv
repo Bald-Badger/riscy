@@ -11,7 +11,7 @@ module proc (
 	input	logic 		clk,		// clock from PLL, frequency is defines::FREQ
 	input	logic 		rst_n,		// global reset
 	input	logic		go,			// is the fetch unit is plused, then resume
-	input	logic [9:0]	boot_pc,
+	input	logic [9:0]	boot_pc,	// actually boot_pc / 4
 
 	axi_lite_interface	data_bus,
 	axi_lite_interface	instr_bus				

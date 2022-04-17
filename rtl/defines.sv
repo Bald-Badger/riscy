@@ -18,12 +18,12 @@ package defines;
 		RARS_BOOT,		// boot from a rars compiled mif file
 		FPGA_BOOT		// boot on FPGA, no jokes here
 	} boot_type_t;
-	localparam	[1:0] BOOT_TYPE = FPGA_BOOT;
+	localparam	[1:0] BOOT_TYPE = BINARY_BOOT;
 
 	// byte-varient endianess
 	localparam LITTLE_ENDIAN	= 1'b0;
 	localparam BIG_ENDIAN		= 1'b1;
-	localparam ENDIANESS		= BIG_ENDIAN;
+	localparam ENDIANESS		= LITTLE_ENDIAN;
 
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
@@ -169,7 +169,7 @@ package defines;
 
 	// U type have no funct3 
 	//localparam	[2:0]	LUI		=	3'b000;	// rd <= {imm, 12'b0}
-	//localparam	[2:0]	AUIPC	=	3'b000;	// pc, rd <= (pc_of_auipc + {imm, 12'b0})
+	//localparam	[2:0]	AUIPC	=	3'b000;	// rd <= (pc_of_auipc + {imm, 12'b0})
 
 	// J type have no funct3
 	//localparam	[2:0]	JAL		=	3'b000;	// jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm << 1)
