@@ -320,7 +320,7 @@ int main () {
 	printf("starting RISCY bootloading process...\n");
 	usleep(1000);
 	//sanity_test_sdram();
-	//sanity_test_seg();
+	sanity_test_seg();
 	//sanity_test_uart();
 	//boot_load("./test.elf", 0);
 }
