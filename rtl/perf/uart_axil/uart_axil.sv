@@ -217,7 +217,7 @@ module uart_axil #(
 		.ADDR_WIDTH	(ADDR_WIDTH)
 	) axil_to_simp_bridge 
 	(
-		 .*
+		.*
 	);
 	
 

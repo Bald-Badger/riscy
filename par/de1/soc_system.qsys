@@ -238,6 +238,22 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element uart_axil_0
    {
       datum _sortIndex
@@ -877,7 +893,7 @@
   <parameter name="CLK_FREQ" value="50000000" />
   <parameter name="FIFO_WIDTH_RX" value="5" />
   <parameter name="FIFO_WIDTH_TX" value="10" />
-  <parameter name="UART_BPS" value="9600" />
+  <parameter name="UART_BPS" value="115200" />
  </module>
  <connection
    kind="avalon"

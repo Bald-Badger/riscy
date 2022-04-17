@@ -68,8 +68,8 @@ module uart_tx # (
 		end else if (en_flag) begin
 				tx_flag	<= 1'b1;
 				tx_data	<= uart_din;
-		// bug: this stop flag should work, but original code use BPS_CNT / 2
-		end else if ((tx_cnt == 4'd9)&&(clk_cnt == BPS_CNT - 9)) begin 
+		// bug:	this stop flag should work, but original code use BPS_CNT / 2
+		end else if ((tx_cnt == 4'd10)&&(clk_cnt == BPS_CNT - 9)) begin 
 				tx_flag	<= 1'b0;
 				tx_data	<= 8'd0;
 		end else begin
@@ -106,22 +106,23 @@ module uart_tx # (
 			TX <= 1'b1;
 		end else if (tx_flag) begin
 			case(tx_cnt)
-				4'd0: TX <= 1'b0;		// start bit
-				4'd1: TX <= tx_data[0];	// LSB
-				4'd2: TX <= tx_data[1];
-				4'd3: TX <= tx_data[2];
-				4'd4: TX <= tx_data[3];
-				4'd5: TX <= tx_data[4];
-				4'd6: TX <= tx_data[5];
-				4'd7: TX <= tx_data[6];
-				4'd8: TX <= tx_data[7];	// MSB
-				4'd9: TX <= 1'b1;		// stop bit
-				default: ;
+				4'd0:	TX <= 1'b0;		// start bit
+				4'd1:	TX <= tx_data[0];	// LSB
+				4'd2:	TX <= tx_data[1];
+				4'd3:	TX <= tx_data[2];
+				4'd4:	TX <= tx_data[3];
+				4'd5:	TX <= tx_data[4];
+				4'd6:	TX <= tx_data[5];
+				4'd7:	TX <= tx_data[6];
+				4'd8:	TX <= tx_data[7];	// MSB
+				4'd9:	TX <= 1'b1;		// stop bit
+				4'd10:	TX <= 1'b1;		// extra stop bit for resting
+				default:;
 			endcase
 		end else begin
 			TX <= 1'b1;	// HIGH when IDLE
 		end
 	end
 
-endmodule : uart_tx
+endmodule :	uart_tx
 	 
