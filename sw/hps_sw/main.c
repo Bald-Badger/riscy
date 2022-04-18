@@ -145,6 +145,12 @@ int clean_seg (void* vp_base) {
 }
 
 void set_seg_single (void* vp, int index, uint32_t number) {
+	uint32_t hex_seg_digit = number & seg_data_mask;
+	#ifdef RISCY_LITTLE_ENDIAN
+		hex_seg_digit = swap_endian(hex_seg_digit);
+	#endif
+	*((uint32_t*)vp+index) = hex_seg_digit;
+	/*
 	vp = (void*)((uint32_t)vp & seg_addr_mask);
 	uint32_t hex_seg_digit = number & seg_data_mask;
 	#ifdef RISCY_LITTLE_ENDIAN
@@ -152,6 +158,7 @@ void set_seg_single (void* vp, int index, uint32_t number) {
 	#endif
 	vp = (void*)((uint32_t)vp + (index << 2));
 	*(uint32_t*)vp = hex_seg_digit;
+	*/
 }
 
 void set_seg (void* vp, uint32_t number) {
