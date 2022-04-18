@@ -321,5 +321,5 @@ int main () {
 	sanity_test_sdram();
 	sanity_test_seg();
 	sanity_test_uart();
-	boot_load("./test.elf", 0);
+	boot_load("./test.elf", 1);
 }
