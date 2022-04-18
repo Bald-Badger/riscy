@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include "include/hps.h"
 
+#define LITTLE_ENDIAN
+
 // global define
 const uint32_t h2f_lw_base		= (unsigned int) ALT_LWFPGASLVS_OFST;
 const uint32_t h2f_base			= (unsigned int) 0xC0000000;
@@ -37,6 +39,14 @@ const uint32_t uart_offset		= 0x04010000;
 const uint32_t uart_size_byte	= 0x00000020;
 const uint32_t uart_size_word	= 0x00000008;
 const uint32_t uart_data_mask	= 0x000000FF;
+
+
+uint32_t swap_endian (uint32_t in) {
+	return 	((in>>24)&0xff) |			// move byte 3 to byte 0
+			((in<<8)&0xff0000) |		// move byte 1 to byte 2
+			((in>>8)&0xff00) |		// move byte 2 to byte 1
+			((in<<24)&0xff000000);
+}
 
 
 void* map_addr (int pa_base, int size_byte) {
@@ -137,6 +147,9 @@ int clean_seg (void* vp_base) {
 void set_seg_single (void* vp, int index, uint32_t number) {
 	vp = (void*)((uint32_t)vp & seg_addr_mask);
 	uint32_t hex_seg_digit = number & seg_data_mask;
+	#ifdef LITTLE_ENDIAN
+		hex_seg_digit = swap_endian(hex_seg_digit);
+	#endif
 	vp = (void*)((uint32_t)vp + (index << 2));
 	*(uint32_t*)vp = hex_seg_digit;
 }
@@ -148,13 +161,6 @@ void set_seg (void* vp, uint32_t number) {
 		number = number >> 4;
 	}
 	return;
-}
-
-uint32_t swap_endian (uint32_t in) {
-	return 	((in>>24)&0xff) |			// move byte 3 to byte 0
-			((in<<8)&0xff0000) |		// move byte 1 to byte 2
-			((in>>8)&0xff00) |		// move byte 2 to byte 1
-			((in<<24)&0xff000000);
 }
 
 void boot_load (char* filename, int swap) {
@@ -301,6 +307,9 @@ void uart_put_str (char* str, int len) {
 		c = str[i];
 		char_byte = (uint8_t) c;
 		char_word = ((uint32_t) char_byte) & uart_data_mask;
+		#ifdef LITTLE_ENDIAN
+		char_word = swap_endian(char_word);
+		#endif
 		*(uart_vp) = char_word;
 	}
 	clean_uart(uart_vp);
