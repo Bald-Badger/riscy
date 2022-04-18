@@ -145,7 +145,7 @@ int clean_seg (void* vp_base) {
 }
 
 void set_seg_single (void* vp, int index, uint32_t number) {
-	vp = (void*)((int)vp & seg_addr_mask);
+	vp = (void*)((uint32_t)vp & seg_addr_mask);
 	uint32_t hex_seg_digit = number & seg_data_mask;
 	#ifdef LITTLE_ENDIAN
 		hex_seg_digit = swap_endian(hex_seg_digit);
