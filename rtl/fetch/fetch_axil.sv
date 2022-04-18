@@ -216,12 +216,8 @@ module fetch_axil # (
 
 
 	always_comb begin : switch_endian
-		if (BOOT_TYPE == RARS_BOOT) begin
-			instr_switch = instr_t'(instr_fifo_out.instr);
-		end else begin
-			instr_switch =	(ENDIANESS == BIG_ENDIAN) ? instr_t'(instr_fifo_out.instr) : 
-				instr_t'(swap_endian(data_t'(instr_fifo_out.instr)));
-		end
+		instr_switch =	(ENDIANESS == BIG_ENDIAN) ? instr_t'(instr_fifo_out.instr) : 
+			instr_t'(swap_endian(data_t'(instr_fifo_out.instr)));
 	end
 
 

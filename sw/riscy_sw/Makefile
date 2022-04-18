@@ -43,6 +43,7 @@ asm:
 # build the compiled and linked elf file	
 elf: asm
 	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET)
+	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET).elf
 
 # extract the executable binary from elf
 bin: elf

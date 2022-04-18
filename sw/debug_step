@@ -29,7 +29,7 @@ make clean && make && make clean && git add ./. && git commit -m "vibe check" &&
 fpga:
 cd ~/riscy && git pull && cp ~/riscy/sw/hps_sw/main.c ~/sw/hps_sw/ && cd ~/sw/hps_sw && make clean && make && sync
 
-scp shuai@192.168.50.45:~/riscy/sw/riscy_sw/instr.bin ~/sw/hps_sw/ && sync
+scp shuai@192.168.50.45:~/riscy/sw/riscy_sw/test.elf ~/sw/hps_sw/ && sync
 
 check:
 ls "/proc/device-tree/sopc@0/bridge@0xc0000000/"

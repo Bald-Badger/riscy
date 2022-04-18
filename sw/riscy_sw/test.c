@@ -5,15 +5,14 @@
 
 
 int main() {
+	char hellostr[16] = "0123456789abcdef";
+	uart_write_string(hellostr, 16);
 	set_seg_single(0, 0x1);
 	set_seg_single(1, 0x2);
 	set_seg_single(2, 0x3);
 	set_seg_single(3, 0x4);
 	set_seg_single(4, 0x5);
 	set_seg_single(5, 0x6);
-	char hello = 'f';
-	char hellostr[15] = "Hello RISC-V\r\n";
-	uart_write_string(hellostr);
 	halt_riscy();
 }
 
@@ -30,18 +29,11 @@ void set_seg_single (int index, int number) {
 	*(uint32_t*)seg_pa = hex_seg_digit;
 }
 
-void uart_write_char (char c) {
-	uint8_t char_int_8 = (uint8_t)c;
-	uint16_t char_int_32 = ((uint32_t)char_int_8) & UART_DATA_MASK;
-	uint32_t* uart_pa = (uint32_t*)((void*)UART_BASE);
-	*uart_pa = char_int_32;
-}
-
-void uart_write_string (char* c) {
+void uart_write_string (char* c, int strlen) {
 	int i = 0;
-	while (c[i] != '\0')
-	{
-		uart_write_char(c[i]);
+	for (i = 0; i < strlen; i++){
+		uint32_t char_int_32 = ((uint32_t)c[i]) & UART_DATA_MASK;
+		*((uint32_t*)UART_BASE) = char_int_32;
 		i++;
 	}
 }

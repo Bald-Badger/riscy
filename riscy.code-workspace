@@ -23,7 +23,9 @@
 			"utility": "c",
 			"valarray": "c",
 			"charconv": "c",
-			"ratio": "c"
+			"ratio": "c",
+			"chrono": "c",
+			"variant": "c"
 		}
 	}
 }

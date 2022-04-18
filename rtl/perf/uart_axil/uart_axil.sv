@@ -120,7 +120,7 @@ module uart_axil #(
 			end
 
 			WRITE_FIFO_TX:	begin
-				fifo_in_tx = simp_data_in[7:0];
+				fifo_in_tx = (ENDIANESS == BIG_ENDIAN) ? simp_data_in[7:0] : simp_data_in[31:24];
 				fifo_wr_en_tx = ENABLE;
 				nxt_state_fifo_tx = IDLE_FIFO_TX;
 				simp_done_tx = DONE;
