@@ -306,7 +306,9 @@ module soc_system_top (
 
 		// UART, connected to GPIO
 		.uart_rx						(uart_rx),
-		.uart_tx						(uart_tx)
+		.uart_tx						(uart_tx),
+		.uart_cts						(uart_cts),	// high: master cannot take input
+		.uart_rts						(uart_rts)	// high: we cannot take input
 	);
 
 
@@ -349,8 +351,13 @@ module soc_system_top (
 	end
 	
 
-	assign uart_rx		= GPIO_1[26];
-	assign GPIO_1[27]	= uart_tx;
+	always_comb begin : uart_signal_assign
+		GPIO_1[1]	= GND;			// connect to master GND
+		uart_rx		= GPIO_1[3];	// connect to master tx
+		GPIO_1[5]	= uart_tx;		// connect to master rx
+		uart_cts	= GPIO_1[7];	// connect to master rts
+		GPIO_1[9]	= uart_rts;		// connect to master cts
+	end
 
 
 	assign LEDR[0] = rst_n;

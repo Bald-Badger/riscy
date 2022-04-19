@@ -41,8 +41,12 @@ module uart_axil #(
 
 	// UART TX/RX
 	input	logic						uart_rx,
-	output	logic						uart_tx
+	output	logic						uart_tx,
+	input	logic						uart_cts,	// high: master cannot take input
+	output	logic						uart_rts	// high: we cannot take input
 );
+
+	assign uart_rts = 1'b0;	// disable flow control for now
 
 	// UART module wire
 	logic			uart_send_data, rx_done, tx_done;
