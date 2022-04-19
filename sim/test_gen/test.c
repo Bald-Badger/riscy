@@ -10,11 +10,12 @@
 
 int main() {
 
+/*
 	int a = 2 + 3;
 	if (a != 5) {goto FAIL;}
 	goto PASS;
+*/
 
-/*
 	char kotoba[15] = "0123456789\r\n";
 	
 	if (kotoba[0] != '0') {goto FAIL;}
@@ -28,7 +29,7 @@ int main() {
 	if (kotoba[8] != '8') {goto FAIL;}
 	if (kotoba[9] != '9') {goto FAIL;}
 	goto PASS;
-*/
+
 
 	FAIL:
 		#ifdef TB
