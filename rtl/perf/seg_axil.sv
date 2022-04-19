@@ -4,41 +4,41 @@ import axi_defines::*;
 
 module seg_axil (
 	// Inputs
-	input			clk,
-	input			rst,
+	input	logic			clk,
+	input	logic			rst,
 
-	// axi
-	input			cfg_awvalid_i,
-	input	[4:0]	cfg_awaddr_i,
-	input			cfg_wvalid_i,
-	input	[31:0]	cfg_wdata_i,
-	input	[ 3:0]	cfg_wstrb_i,
-	input			cfg_bready_i,
-	input			cfg_arvalid_i,
-	input	[4:0]	cfg_araddr_i,
-	input			cfg_rready_i,
+	// AXI inputs
+	input	logic			cfg_awvalid_i,
+	input	logic	[4:0]	cfg_awaddr_i,
+	input	logic			cfg_wvalid_i,
+	input	logic	[31:0]	cfg_wdata_i,
+	input	logic	[ 3:0]	cfg_wstrb_i,
+	input	logic			cfg_bready_i,
+	input	logic			cfg_arvalid_i,
+	input	logic	[4:0]	cfg_araddr_i,
+	input	logic			cfg_rready_i,
 
 	// Outputs
-	output			cfg_awready_o,
-	output			cfg_wready_o,
-	output			cfg_bvalid_o,
-	output	[1:0]	cfg_bresp_o,
-	output			cfg_arready_o,
-	output			cfg_rvalid_o,
-	output	[31:0]	cfg_rdata_o,
-	output	[ 1:0]	cfg_rresp_o,
+	output	logic			cfg_awready_o,
+	output	logic			cfg_wready_o,
+	output	logic			cfg_bvalid_o,
+	output	logic	[1:0]	cfg_bresp_o,
+	output	logic			cfg_arready_o,
+	output	logic			cfg_rvalid_o,
+	output	logic	[31:0]	cfg_rdata_o,
+	output	logic	[ 1:0]	cfg_rresp_o,
 
 	// unused AXI signal
-	input	[ 2:0]	cfg_awprot_i,
-	input	[ 2:0]	cfg_arprot_i,
+	input	logic	[ 2:0]	cfg_awprot_i,
+	input	logic	[ 2:0]	cfg_arprot_i,
 
 	// 7-Seg output
-	output	[6:0]	hex0,
-	output	[6:0]	hex1,
-	output	[6:0]	hex2,
-	output	[6:0]	hex3,
-	output	[6:0]	hex4,
-	output	[6:0]	hex5
+	output	logic	[6:0]	hex0,
+	output	logic	[6:0]	hex1,
+	output	logic	[6:0]	hex2,
+	output	logic	[6:0]	hex3,
+	output	logic	[6:0]	hex4,
+	output	logic	[6:0]	hex5
 );
 
 	typedef enum logic[2:0] {
@@ -58,6 +58,15 @@ module seg_axil (
 		else
 			state <= nxt_state;
 	end
+
+	// (* RAM_STYLE="logic" *)
+	logic	[3:0]	seg_mem [0:5];
+
+	logic	[4:0]	seg_address, wr_addr_latch, rd_addr_latch;
+	assign	seg_address = cfg_awaddr_i[4:0] & SEG_ADDR_MASK;
+
+	logic	[3:0]	seg_data, data_latch;
+	assign	seg_data = (ENDIANESS == BIG_ENDIAN) ? cfg_wdata_i[3:0] : cfg_wdata_i[27:24];
 
 	// five channels' handshake
 	logic read_addr_handshake, read_data_handshake;
@@ -173,15 +182,6 @@ module seg_axil (
 
 		endcase
 	end
-
-	// (* RAM_STYLE="logic" *)
-	logic	[3:0]	seg_mem [0:5];
-
-	logic	[4:0]	seg_address, wr_addr_latch, rd_addr_latch;
-	assign	seg_address = cfg_awaddr_i[4:0] & SEG_ADDR_MASK;
-
-	logic	[3:0]	seg_data, data_latch;
-	assign	seg_data = (ENDIANESS == BIG_ENDIAN) ? cfg_wdata_i[3:0] : cfg_wdata_i[27:24];
 
 
 	always_ff @( posedge clk ) begin

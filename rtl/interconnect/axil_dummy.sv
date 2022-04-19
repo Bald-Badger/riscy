@@ -2,7 +2,7 @@ import defines::*;
 import axi_defines::*;
 
 module axil_dummy_master (
-	axi_lite_interface.axil_master	m00
+	axil_interface.axil_master	m00
 );
 
 	always_comb begin : dummy_master_signal
@@ -23,7 +23,7 @@ endmodule : axil_dummy_master
 
 
 module axil_dummy_slave (
-	axi_lite_interface.axil_slave	s00
+	axil_interface.axil_slave	s00
 );
 
 	always_comb begin : dummy_slave_signal

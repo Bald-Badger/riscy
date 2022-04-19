@@ -42,7 +42,7 @@ module reference_test_axi ();
 	axil_interface s02_bus();
 	axil_interface s03_bus();
 
-	axil_interface m01_bus();
+	axil_interface seg_bus();
 	axil_interface m02_bus();
 	axil_interface m03_bus();
 	axil_interface m04_bus();
@@ -52,7 +52,7 @@ module reference_test_axi ();
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.go				(go),
-		.boot_pc		(boot_pc[0]),
+		.boot_pc		(boot_pc[0][9:0]),
 		
 		.data_bus		(data_bus),
 		.instr_bus		(instr_bus)
@@ -69,7 +69,11 @@ module reference_test_axi ();
 	axil_dummy_master dummy_master_02 (s02_bus);
 	axil_dummy_master dummy_master_03 (s03_bus);
 
-	axil_dummy_slave dummy_slave_01 (m01_bus);
+	seg_axil_wrapper dummy_seg_display (
+		.clk	(clk),
+		.rst	(rst),
+		.s00	(seg_bus)
+	);
 	axil_dummy_slave dummy_slave_02 (m02_bus);
 	axil_dummy_slave dummy_slave_03 (m03_bus);
 	axil_dummy_slave dummy_slave_04 (m04_bus);
@@ -79,22 +83,22 @@ module reference_test_axi ();
 		.ADDR_WIDTH			(XLEN),
 
 		.M00_BASE_ADDR		(32'h0),
-		.M00_ADDR_WIDTH		(M00_ADDR_WIDTH),
+		.M00_ADDR_WIDTH		(32'd26),
 
-		.M01_BASE_ADDR		(M01_BASE_ADDR),
-		.M01_ADDR_WIDTH		(M01_ADDR_WIDTH),
+		.M01_BASE_ADDR		(32'h400_0000),
+		.M01_ADDR_WIDTH		(32'd5),
 
-		.M02_BASE_ADDR		(M02_BASE_ADDR),
-		.M02_ADDR_WIDTH		(M02_ADDR_WIDTH),
+		.M02_BASE_ADDR		(32'h0401_0000),
+		.M02_ADDR_WIDTH		(32'd5),
 
-		.M03_BASE_ADDR		(M03_BASE_ADDR),
-		.M03_ADDR_WIDTH		(M03_ADDR_WIDTH),
+		.M03_BASE_ADDR		(32'h8000_0000),
+		.M03_ADDR_WIDTH		(32'd0),
 
-		.M04_BASE_ADDR		(M04_BASE_ADDR),
-		.M04_ADDR_WIDTH		(M04_ADDR_WIDTH),
+		.M04_BASE_ADDR		(32'h8100_0000),
+		.M04_ADDR_WIDTH		(32'd0),
 
-		.M05_BASE_ADDR		(M05_BASE_ADDR),
-		.M05_ADDR_WIDTH		(M05_ADDR_WIDTH)
+		.M05_BASE_ADDR		(32'h8200_0000),
+		.M05_ADDR_WIDTH		(32'd0)
 	) interconnect_4x6 (
 		.clk				(clk),
 		.rst				(rst),
@@ -105,7 +109,7 @@ module reference_test_axi ();
 		.s03				(s03_bus),
 
 		.m00				(ram_bus),
-		.m01				(m01_bus),
+		.m01				(seg_bus),
 		.m02				(m02_bus),
 		.m03				(m03_bus),
 		.m04				(m04_bus),
