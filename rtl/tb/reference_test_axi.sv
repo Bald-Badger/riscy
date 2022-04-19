@@ -3,8 +3,8 @@
 import defines::*;
 import mem_defines::*;
 import axi_defines::*;
+import pref_defines::*;
 
-`define AXIL	// generate AXIL interface insteaf AXI
 
 module reference_test_axi ();
 	localparam REG_DEBUG = DISABLE;
@@ -13,7 +13,8 @@ module reference_test_axi ();
 	integer error;
 	int fd;
 
-	logic clk, rst_n, ebreak_start, go;
+	logic clk, rst_n, ebreak_start, go, rst;
+	assign rst = ~rst_n;
 
 	logic ref_halt, ref_halt_wait;
 	logic kill_ref;
@@ -31,51 +32,90 @@ module reference_test_axi ();
 		$display("DUT: booting from pc = %h", boot_pc[0] * 4 + 32'h10000);
 	end
 
-`ifdef AXIL
-	axil_interface ram_bus ();
 
-	proc_axil proc_dut (
+	axil_interface instr_bus();		// S00
+	axil_interface data_bus();		// S01
+
+	axil_interface ram_bus();		// M00
+
+	// unused placeholder dummy
+	axil_interface s02_bus();
+	axil_interface s03_bus();
+
+	axil_interface m01_bus();
+	axil_interface m02_bus();
+	axil_interface m03_bus();
+	axil_interface m04_bus();
+	axil_interface m05_bus();
+
+	proc processor (
 		.clk			(clk),
 		.rst_n			(rst_n),
 		.go				(go),
 		.boot_pc		(boot_pc[0]),
-		.axil_bus_master(ram_bus)
+		
+		.data_bus		(data_bus),
+		.instr_bus		(instr_bus)
 	);
 
 	axil_ram_sv_wrapper # (
 		.ADDR_WIDTH		(26)
 	) ram (
 		.clk			(clk),
-		.rst			(~rst_n),
+		.rst			(rst),
 		.axil_bus		(ram_bus)
 	);
+
+	axil_dummy_master dummy_master_02 (s02_bus);
+	axil_dummy_master dummy_master_03 (s03_bus);
+
+	axil_dummy_slave dummy_slave_01 (m01_bus);
+	axil_dummy_slave dummy_slave_02 (m02_bus);
+	axil_dummy_slave dummy_slave_03 (m03_bus);
+	axil_dummy_slave dummy_slave_04 (m04_bus);
+	axil_dummy_slave dummy_slave_05 (m05_bus);
+
+	axil_interconnect_4x6_wrapper # (
+		.ADDR_WIDTH			(XLEN),
+
+		.M00_BASE_ADDR		(32'h0),
+		.M00_ADDR_WIDTH		(M00_ADDR_WIDTH),
+
+		.M01_BASE_ADDR		(M01_BASE_ADDR),
+		.M01_ADDR_WIDTH		(M01_ADDR_WIDTH),
+
+		.M02_BASE_ADDR		(M02_BASE_ADDR),
+		.M02_ADDR_WIDTH		(M02_ADDR_WIDTH),
+
+		.M03_BASE_ADDR		(M03_BASE_ADDR),
+		.M03_ADDR_WIDTH		(M03_ADDR_WIDTH),
+
+		.M04_BASE_ADDR		(M04_BASE_ADDR),
+		.M04_ADDR_WIDTH		(M04_ADDR_WIDTH),
+
+		.M05_BASE_ADDR		(M05_BASE_ADDR),
+		.M05_ADDR_WIDTH		(M05_ADDR_WIDTH)
+	) interconnect_4x6 (
+		.clk				(clk),
+		.rst				(rst),
+
+		.s00				(instr_bus),
+		.s01				(data_bus),
+		.s02				(s02_bus),
+		.s03				(s03_bus),
+
+		.m00				(ram_bus),
+		.m01				(m01_bus),
+		.m02				(m02_bus),
+		.m03				(m03_bus),
+		.m04				(m04_bus),
+		.m05				(m05_bus)
+	);
 	
-`else
-
-	axi_interface ram_bus (
-		.clk	(clk),
-		.rst	(~rst_n)
-	);
-
-	proc_axi proc_dut (
-		.clk			(clk),
-		.rst_n			(rst_n),
-		.go				(go),
-		.axi_bus_master	(ram_bus)
-	);
-
-	axi_ram_sv_wrapper # (
-		.ADDR_WIDTH		(26)
-	) ram (
-		.clk			(clk),
-		.rst			(~rst_n),
-		.axi_bus		(ram_bus)
-	);
-`endif
 
 	ref_hier proc_ref (
 		.clk				(clk),
-		.rst				(~rst_n),
+		.rst				(rst),
 		.kill				(kill_ref)
 	);
 
@@ -95,9 +135,9 @@ module reference_test_axi ();
 	r_t 	reg_wr_addr_dut;
 	data_t	reg_wr_data_dut;
 	always_comb begin : reg_dut_wire_assign
-		reg_wr_en_dut	= proc_dut.processor.rd_wren_w;
-		reg_wr_addr_dut	= proc_dut.processor.rd_addr;
-		reg_wr_data_dut	= proc_dut.processor.wb_data;
+		reg_wr_en_dut	= processor.rd_wren_w;
+		reg_wr_addr_dut	= processor.rd_addr;
+		reg_wr_data_dut	= processor.wb_data;
 	end
 
 	// mem dut wire
@@ -105,14 +145,14 @@ module reference_test_axi ();
 	data_t	mem_wr_data_in_dut, mem_rd_data_out_dut;
 	data_t	mem_access_addr_dut;
 	always_comb begin : mem_dut_wire_assign
-		mem_wr_en_dut		= proc_dut.processor.memory_inst.wren;
-		mem_rd_en_dut		= proc_dut.processor.memory_inst.rden;
-		mem_access_done_dut	= proc_dut.processor.mem_access_done;
-		mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor.memory_inst.data_in_final :
-								swap_endian(proc_dut.processor.memory_inst.data_in_final);
-		mem_rd_data_out_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor.memory_inst.memory_system.m_axil_rdata : 
-								swap_endian(proc_dut.processor.memory_inst.memory_system.m_axil_rdata);
-		mem_access_addr_dut	= proc_dut.processor.memory_inst.addr & word_align_mask;
+		mem_wr_en_dut		= processor.memory_inst.wren;
+		mem_rd_en_dut		= processor.memory_inst.rden;
+		mem_access_done_dut	= processor.mem_access_done;
+		mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? processor.memory_inst.data_in_final :
+								swap_endian(processor.memory_inst.data_in_final);
+		mem_rd_data_out_dut	= (ENDIANESS == BIG_ENDIAN) ? processor.memory_inst.memory_system.m_axil_rdata : 
+								swap_endian(processor.memory_inst.memory_system.m_axil_rdata);
+		mem_access_addr_dut	= processor.memory_inst.addr & word_align_mask;
 	end
 
 	// reg ref wire
@@ -125,7 +165,7 @@ module reference_test_axi ();
 		reg_wr_data_ref		= data_t'(proc_ref.core_ref.rd_val_w);
 	end
 
-	assign ebreak_start		= proc_dut.processor.instr_w.opcode == SYS;
+	assign ebreak_start		= processor.instr_w.opcode == SYS;
 
 	// mem ref wire
 	logic	mem_wr_en_ref, mem_rd_en_ref, mem_access_ack_ref;
@@ -205,18 +245,18 @@ module reference_test_axi ();
 				pc_log_t'(
 					{
 						sim_time:	$time,
-						pc:			proc_dut.processor.pc_w
+						pc:			processor.pc_w
 					}
 				)
 			);
-		end else if (pc_log_dut[pc_log_dut.size()-1].pc == (proc_dut.processor.pc_w)) begin 
+		end else if (pc_log_dut[pc_log_dut.size()-1].pc == (processor.pc_w)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			pc_log_dut.push_back(
 				pc_log_t'(
 					{
 						sim_time:	$time,
-						pc:			proc_dut.processor.pc_w
+						pc:			processor.pc_w
 					}
 				)
 			);
@@ -236,7 +276,7 @@ module reference_test_axi ();
 	always_ff @(posedge clk) begin
 		if (~$isunknown(proc_ref.core_ref.pc_q))
 			push_pc_ref();
-		if (proc_dut.processor.instr_valid_w)
+		if (processor.instr_valid_w)
 			push_pc_dut();
 	end
 
@@ -290,16 +330,16 @@ module reference_test_axi ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			(proc_dut.processor.pc_w)
+					pc:			(processor.pc_w)
 				})
 			);
 			if (REG_DEBUG) begin
 				$display(
 					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
-					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pc_w)
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (processor.pc_w)
 				);
 			end
-		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.processor.pc_w)) begin 
+		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (processor.pc_w)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			reg_access_log_dut.push_back(
@@ -308,14 +348,14 @@ module reference_test_axi ();
 					rw_addr:	reg_wr_addr_dut,
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor.pc_w
-					//instr:		proc_dut.processor.instr_w
+					pc:			processor.pc_w
+					//instr:		processor.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
 				$display(
 					"debug: DUT REG WRITE %h, to X%d at time=%t with pc=%h",
-					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pc_w)
+					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (processor.pc_w)
 				);
 			end
 		end
@@ -379,24 +419,24 @@ module reference_test_axi ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor.pc_m
-					//instr:		instr_t'(proc_dut.processor.instr_m)
+					pc:			processor.pc_m
+					//instr:		instr_t'(processor.instr_m)
 				})
 			);
 			if (MEM_DEBUG) begin
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (processor.pc_m)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (processor.pc_m)
 					);
 				end
 			end
-		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.processor.pc_m)) begin 
+		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (processor.pc_m)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			mem_access_log_dut.push_back(
@@ -405,20 +445,20 @@ module reference_test_axi ();
 					rw_addr:	mem_access_addr_dut,
 					rw_data:	mem_wr_en_dut ? mem_wr_data_in_dut : mem_rd_data_out_dut,
 					sim_time:	$time,
-					pc:			proc_dut.processor.pc_m
-					//instr:		instr_t'(proc_dut.processor.instr_m)
+					pc:			processor.pc_m
+					//instr:		instr_t'(processor.instr_m)
 				})
 			);
 			if (MEM_DEBUG) begin
 				if (mem_wr_en_dut) begin
 					$display(
 						"debug: DUT MEM WRITE %h, to   %h at time=%t with pc=%h",
-						mem_wr_data_in_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
+						mem_wr_data_in_dut, mem_access_addr_dut, $time, (processor.pc_m)
 					);
 				end else begin
 					$display(
 						"debug: DUT MEM READ  %h, from %h at time=%t with pc=%h",
-						mem_rd_data_out_dut, mem_access_addr_dut, $time, (proc_dut.processor.pc_m)
+						mem_rd_data_out_dut, mem_access_addr_dut, $time, (processor.pc_m)
 					);
 				end
 			end
@@ -664,7 +704,7 @@ module reference_test_axi ();
 	initial begin
 		fork
 			begin
-				wait(proc_dut.processor.sdram_init_done);
+				wait(processor.sdram_init_done);
 				$display("sdram init done");
 			end
 
@@ -757,14 +797,14 @@ module reference_test_axi ();
 
 		if (proc_ref.core_ref.reg_file[10] == 42) begin
 			$display("golden module passed the test");
-			if (proc_dut.processor.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
+			if (processor.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
 				$display("DUT dilivered correct answer, test passed?");
 			end else begin
 				$display("DUT failed the test");
 			end
 		end else begin
 			$display("golden module failed the test! bad test?");
-			if (proc_dut.processor.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
+			if (processor.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
 				$display("WTF this should not happeds");
 			end
 		end

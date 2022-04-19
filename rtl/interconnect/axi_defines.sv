@@ -1,18 +1,6 @@
 package axi_defines;
 import defines::*;
 
-/*
-to connect lite to full axi, set:
-
-AWID = 0 // X
-AWBURST= 1 // INCR
-AWLEN = 0 // SINGLE
-WLAST = 1 // SINGLE
-ARID = 0 // X
-ARBURST = 1 // INCR
-ARLEN = 0 // SINGLE
-*/
-
 `ifndef _axi_defines_
 `define _axi_defines_
 

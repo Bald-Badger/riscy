@@ -7,7 +7,9 @@
 import defines::*;
 import axi_defines::*;
 
-module proc (
+module proc # (
+	
+) (
 	input	logic 		clk,		// clock from PLL, frequency is defines::FREQ
 	input	logic 		rst_n,		// global reset
 	input	logic		go,			// is the fetch unit is plused, then resume
