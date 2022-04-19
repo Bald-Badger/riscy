@@ -66,17 +66,26 @@ module reference_test_axi ();
 		.axil_bus		(ram_bus)
 	);
 
+	logic [3:0] s0, s1, s2, s3, s4, s5;
 	seg_axil_wrapper dummy_seg_display (
 		.clk	(clk),
 		.rst	(rst),
 		.s00	(seg_bus)
 	);
+	always_comb begin : seg_peek
+		s0 = dummy_seg_display.segs.seg_mem[0];
+		s1 = dummy_seg_display.segs.seg_mem[1];
+		s2 = dummy_seg_display.segs.seg_mem[2];
+		s3 = dummy_seg_display.segs.seg_mem[3];
+		s4 = dummy_seg_display.segs.seg_mem[4];
+		s5 = dummy_seg_display.segs.seg_mem[5];
+	end
 
 	logic riscy_uart_rx;
 	logic riscy_uart_tx;
 	logic riscy_uart_cts;
 	logic riscy_uart_rts;
-	byte  uart_char;
+	logic [7:0] uart_char;
 	uart_axil_wrapper # (
 		.UART_BPS	(UART_BPS)
 	) dummy_uart_slave (
@@ -98,6 +107,9 @@ module reference_test_axi ();
 		.RX			(riscy_uart_tx),
 		.char		(uart_char)
 	);
+
+	assign riscy_uart_rx = 1'b1;
+	assign riscy_uart_cts = 1'b0;
 
 	axil_dummy_master dummy_master_02 (s02_bus);
 	axil_dummy_master dummy_master_03 (s03_bus);

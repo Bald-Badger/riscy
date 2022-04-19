@@ -11,7 +11,8 @@ module uart_rx # (
 );
 
 
-	localparam BPS_CNT  = CLK_FREQ / UART_BPS;
+	logic[19:0] BPS_CNT;
+	assign BPS_CNT = CLK_FREQ / UART_BPS;
 
 
 	//reg define

@@ -435,7 +435,7 @@ module memory (
 		else $error("read and write mem at same access");
 	///////////////////////////////////////
 
-
+/*
 	//// assume all access are below max physical memory ////
 	always_comb begin
 		max_phy_access = $signed(addr) >= $signed(MAX_PHY_ADDR);
@@ -450,5 +450,5 @@ module memory (
 	assert property (memory_max_phy_access)
 		else $error("access exceed physical memory boundary");
 	///////////////////////////////////////////////////////
-
+*/
 endmodule : memory

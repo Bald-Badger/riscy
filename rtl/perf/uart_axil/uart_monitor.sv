@@ -28,7 +28,9 @@ module uart_monitor # (
 	) myRX (
 		.clk		(clk),
 		.rst_n		(~rst),
-		.RX			(RX)
+		.RX			(RX),
+		.uart_done	(done),
+		.uart_data	(data)
 	);
 	
 endmodule : uart_monitor
