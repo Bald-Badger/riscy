@@ -35,7 +35,7 @@ localparam	SEG_H5_ADDR		= SEG_BASE + SEG_H5_OFF;
 
 
 //////////////////// UART defines ////////////////////
-
+localparam	UART_BPS		= 115200;
 localparam	UART_BASE		= 32'h0;
 
 // write to here will write one byte of data to transmit fifo

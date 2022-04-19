@@ -43,7 +43,7 @@ module reference_test_axi ();
 	axil_interface s03_bus();
 
 	axil_interface seg_bus();
-	axil_interface m02_bus();
+	axil_interface uart_bus();
 	axil_interface m03_bus();
 	axil_interface m04_bus();
 	axil_interface m05_bus();
@@ -66,15 +66,43 @@ module reference_test_axi ();
 		.axil_bus		(ram_bus)
 	);
 
-	axil_dummy_master dummy_master_02 (s02_bus);
-	axil_dummy_master dummy_master_03 (s03_bus);
-
 	seg_axil_wrapper dummy_seg_display (
 		.clk	(clk),
 		.rst	(rst),
 		.s00	(seg_bus)
 	);
-	axil_dummy_slave dummy_slave_02 (m02_bus);
+
+	logic riscy_uart_rx;
+	logic riscy_uart_tx;
+	logic riscy_uart_cts;
+	logic riscy_uart_rts;
+	byte  uart_char;
+	uart_axil_wrapper # (
+		.UART_BPS	(UART_BPS)
+	) dummy_uart_slave (
+		.clk		(clk),
+		.rst		(rst),
+		.s00		(uart_bus),
+		.uart_rx	(riscy_uart_rx),
+		.uart_tx	(riscy_uart_tx),
+		.uart_cts	(riscy_uart_cts),
+		.uart_rts	(riscy_uart_rts)
+	);
+
+	uart_monitor # (
+		.CLK_FREQ	(FREQ),
+		.UART_BPS	(UART_BPS)
+	) my_uart_monitor (
+		.clk		(clk),
+		.rst		(rst),
+		.RX			(riscy_uart_tx),
+		.char		(uart_char)
+	);
+
+	axil_dummy_master dummy_master_02 (s02_bus);
+	axil_dummy_master dummy_master_03 (s03_bus);
+
+
 	axil_dummy_slave dummy_slave_03 (m03_bus);
 	axil_dummy_slave dummy_slave_04 (m04_bus);
 	axil_dummy_slave dummy_slave_05 (m05_bus);
@@ -110,7 +138,7 @@ module reference_test_axi ();
 
 		.m00				(ram_bus),
 		.m01				(seg_bus),
-		.m02				(m02_bus),
+		.m02				(uart_bus),
 		.m03				(m03_bus),
 		.m04				(m04_bus),
 		.m05				(m05_bus)
