@@ -8,22 +8,20 @@ module mem_sys_axil #(
 	parameter ADDR_WIDTH = XLEN,
 	parameter DATA_WIDTH = XLEN
 ) (
-	input	logic					clk,
-	input	logic					rst_n,
+	input	logic						clk,
+	input	logic						rst_n,
 
-	input	cache_addr_t			addr,			// still 32 bits
-	input	data_t					data_in,
-	input	logic					wr,
-	input	logic					rd,
-	input	logic					valid,
-	input	logic					[BYTES-1:0] be,	// for write only
+	input	cache_addr_t				addr,			// still 32 bits
+	input	data_t						data_in,
+	input	logic						wr,
+	input	logic						rd,
+	input	logic						valid,
+	input	logic						[BYTES-1:0] be,	// for write only
 	
-	output	data_t					data_out,
-	output	logic					done,
+	output	data_t						data_out,
+	output	logic						done,
 
 	// AXI-Lite master interface
-	output	logic 						m_axil_clk,		// bus clock
-	output	logic 						m_axil_rst,		// bus reset, active high
 	output	logic [ADDR_WIDTH - 1:0]	m_axil_awaddr,	// Write address
 	output	logic [2:0]					m_axil_awprot,	// Write protection level, see axi_defines.sv
 	output	logic						m_axil_awvalid,	// Write address valid, signaling valid write address and control information.
@@ -50,8 +48,6 @@ module mem_sys_axil #(
 	assign rst = ~rst_n;
 
 	logic rden, wren;
-	//assign rdrn = rd;
-	//assign wren = wr;
 	assign rden = rd && valid;
 	assign wren = wr && valid;
 
@@ -95,10 +91,6 @@ module mem_sys_axil #(
 		done			= 1'b0;
 		nxt_state		= IDLE;
 
-		// general
-		m_axil_clk		= clk;
-		m_axil_rst		= ~rst_n;
-
 		// write
 		m_axil_awaddr	= NULL;
 		m_axil_awprot	= basic_awport;
@@ -131,7 +123,7 @@ module mem_sys_axil #(
 			IDLE: begin
 				if (rden) begin
 					m_axil_rready	= READY;
-					m_axil_araddr	= addr;
+					m_axil_araddr	= addr & word_align_mask;
 					m_axil_arvalid	= VALID;
 					if (read_handshake == 2'b00) begin
 						nxt_state		= R_ADDR;
@@ -151,7 +143,7 @@ module mem_sys_axil #(
 						data_out		= NULL;
 					end
 				end else if (wren) begin
-					m_axil_awaddr	= addr;
+					m_axil_awaddr	= addr & word_align_mask;
 					m_axil_awvalid	= VALID;
 					m_axil_wdata	= data_in;
 					m_axil_wvalid	= VALID;
@@ -178,7 +170,7 @@ module mem_sys_axil #(
 
 			R_ADDR: begin
 				m_axil_rready	= READY;
-				m_axil_araddr	= addr;
+				m_axil_araddr	= addr & word_align_mask;
 				m_axil_arvalid	= VALID;
 				if (read_handshake == 2'b00) begin
 					nxt_state	= R_ADDR;
@@ -217,7 +209,7 @@ module mem_sys_axil #(
 			end
 
 			W_ADDR: begin
-				m_axil_awaddr	= addr;
+				m_axil_awaddr	= addr & word_align_mask;
 				m_axil_awvalid	= VALID;
 				m_axil_wdata	= data_in;
 				m_axil_wvalid	= VALID;
@@ -303,8 +295,8 @@ module mem_sys_axil #(
 
 	/////////// read handshake ///////////
 	property read_handshake_success;
-		disable iff (m_axil_rst)
-		@(posedge m_axil_clk) read_addr_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] read_data_handshake;
+		disable iff (rst)
+		@(posedge clk) read_addr_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] read_data_handshake;
 	endproperty
 
 	assert property(read_handshake_success)
@@ -314,8 +306,8 @@ module mem_sys_axil #(
 
 	/////////// write handshake ///////////
 	property write_addr_handshake_success;
-		disable iff (m_axil_rst)
-		@(posedge m_axil_clk) write_addr_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] write_resp_handshake;
+		disable iff (rst)
+		@(posedge clk) write_addr_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] write_resp_handshake;
 	endproperty
 
 	assert property(write_addr_handshake_success)
@@ -323,8 +315,8 @@ module mem_sys_axil #(
 
 
 	property write_data_handshake_success;
-		disable iff (m_axil_rst)
-		@(posedge m_axil_clk) write_data_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] write_resp_handshake;
+		disable iff (rst)
+		@(posedge clk) write_data_handshake |=> ##[0 : MEM_ACCESS_TIMEOUT] write_resp_handshake;
 	endproperty
 
 	assert property(write_data_handshake_success)

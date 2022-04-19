@@ -52,6 +52,8 @@ localparam  sdram_access_len	= 10'd8;	// 8 16-bit word each access
 localparam	DIRTY				= 1'b1;
 localparam	CLEAN				= 1'b0;
 
+localparam	word_align_mask		= 32'hffff_fffc;
+
 // atomic operation defines
 localparam	SC_FAIL_ECODE		= 32'b1;	// if sc fail, write this value to rd 
 localparam	SC_SUCCESS_CODE		= NULL;

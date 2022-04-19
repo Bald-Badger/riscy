@@ -13,18 +13,12 @@ module proc_axil (
 	input	logic		go,
 	input	logic [9:0]	boot_pc,
 
-	axi_lite_interface	axil_bus_master
+	axil_interface.axil_master	axil_bus_master
 );
 
-	axi_lite_interface data_bus_lite (
-		.clk	(clk),
-		.rst	(~rst_n)
-	);
+	axil_interface data_bus_lite ();
 
-	axi_lite_interface instr_bus_lite (
-		.clk	(clk),
-		.rst	(~rst_n)
-	);
+	axil_interface instr_bus_lite ();
 	
 	axil_crossbar_2x1_wrapper cross_bar (
 		.clk	(clk),

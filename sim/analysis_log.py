@@ -144,11 +144,7 @@ def compare_pc_log(pc_dut_arr, pc_ref_arr):
 
 def main():
 	log = (mem_dut_arr, mem_ref_arr, reg_dut_arr, reg_ref_arr, pc_dut_arr, pc_ref_arr) = load_files()
-	for i in range (len(log)):
-		print(log[i][0])
 	log = sanitize(log)
-	for i in range (len(log)):
-		print(log[i][0])
 	compare_mem_log(mem_dut_arr, mem_ref_arr)
 	compare_reg_log(reg_dut_arr, reg_ref_arr)
 	compare_pc_log(pc_dut_arr, pc_ref_arr)

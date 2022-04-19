@@ -26,7 +26,7 @@ module fetch_axil # (
 	output	logic					instr_valid,
 
 	// AXI Lite bus interface
-	axi_lite_interface				axil_bus
+	axil_interface.axil_master		axil_bus
 );
 
 	// state explained in latter FSM logic

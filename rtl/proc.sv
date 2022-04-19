@@ -13,8 +13,8 @@ module proc (
 	input	logic		go,			// is the fetch unit is plused, then resume
 	input	logic [9:0]	boot_pc,	// actually boot_pc / 4
 
-	axi_lite_interface	data_bus,
-	axi_lite_interface	instr_bus				
+	axil_interface.axil_master	data_bus,
+	axil_interface.axil_master	instr_bus				
 );
 	// sdram init done signal;
 	logic		sdram_init_done, sdram_init_done_async;

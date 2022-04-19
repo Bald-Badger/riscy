@@ -36,40 +36,37 @@ module riscy_core_axil_qsys  (
 	output	logic				rready
 );
 
-	axi_lite_interface axil_bus (
-		.clk					(clk),
-		.rst					(rst)
-	);
+	axil_interface axil_bus ();
 
 	proc_axil proc (
 		.clk					(clk),
 		.rst_n					(~rst),
 		.go						(go),
 		.boot_pc				(boot_pc),
-		.axil_bus_master		(axil_bus)
+		.axil_bus_master		(axil_bus.axil_master)
 	);
 
 	
 	always_comb begin : interface_linking
-		awaddr					= axil_bus.m_axil_awaddr;
-		awprot					= axil_bus.m_axil_awprot;
-		awvalid					= axil_bus.m_axil_awvalid;
-		axil_bus.s_axil_awready	= awready;
-		wdata					= axil_bus.m_axil_wdata;
-		wstrb					= axil_bus.m_axil_wstrb;
-		wvalid					= axil_bus.m_axil_wvalid;
-		axil_bus.s_axil_wready	= wready;
-		axil_bus.s_axil_bresp	= bresp;
-		axil_bus.s_axil_bvalid	= bvalid;
-		bready					= axil_bus.m_axil_bready;
-		araddr					= axil_bus.m_axil_araddr;
-		arprot					= axil_bus.m_axil_arprot;
-		arvalid					= axil_bus.m_axil_arvalid;
-		axil_bus.s_axil_arready	= arready;
-		axil_bus.s_axil_rdata	= rdata;
-		axil_bus.s_axil_rresp	= rresp;
-		axil_bus.s_axil_rvalid	= rvalid;
-		rready					= axil_bus.m_axil_rready;
+		awaddr					= axil_bus.axil_awaddr;
+		awprot					= axil_bus.axil_awprot;
+		awvalid					= axil_bus.axil_awvalid;
+		axil_bus.axil_awready	= awready;
+		wdata					= axil_bus.axil_wdata;
+		wstrb					= axil_bus.axil_wstrb;
+		wvalid					= axil_bus.axil_wvalid;
+		axil_bus.axil_wready	= wready;
+		axil_bus.axil_bresp		= bresp;
+		axil_bus.axil_bvalid	= bvalid;
+		bready					= axil_bus.axil_bready;
+		araddr					= axil_bus.axil_araddr;
+		arprot					= axil_bus.axil_arprot;
+		arvalid					= axil_bus.axil_arvalid;
+		axil_bus.axil_arready	= arready;
+		axil_bus.axil_rdata		= rdata;
+		axil_bus.axil_rresp		= rresp;
+		axil_bus.axil_rvalid	= rvalid;
+		rready					= axil_bus.axil_rready;
 	end
 
 endmodule : riscy_core_axil_qsys

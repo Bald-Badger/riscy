@@ -94,6 +94,7 @@ sim/*.csv
 sim/*.cfg
 sim/*.bin
 sim/*.elf
+sim/*.s
 
 # test_gen
 sim/test_gen/test

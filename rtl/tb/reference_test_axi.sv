@@ -1,6 +1,8 @@
 `timescale 1 ns / 1 ps
 
 import defines::*;
+import mem_defines::*;
+import axi_defines::*;
 
 `define AXIL	// generate AXIL interface insteaf AXI
 
@@ -30,10 +32,7 @@ module reference_test_axi ();
 	end
 
 `ifdef AXIL
-	axi_lite_interface ram_bus (
-		.clk	(clk),
-		.rst	(~rst_n)
-	);
+	axil_interface ram_bus ();
 
 	proc_axil proc_dut (
 		.clk			(clk),
@@ -111,8 +110,9 @@ module reference_test_axi ();
 		mem_access_done_dut	= proc_dut.processor.mem_access_done;
 		mem_wr_data_in_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor.memory_inst.data_in_final :
 								swap_endian(proc_dut.processor.memory_inst.data_in_final);
-		mem_rd_data_out_dut	= proc_dut.processor.mem_data_out_m;
-		mem_access_addr_dut	= proc_dut.processor.memory_inst.addr;
+		mem_rd_data_out_dut	= (ENDIANESS == BIG_ENDIAN) ? proc_dut.processor.memory_inst.memory_system.m_axil_rdata : 
+								swap_endian(proc_dut.processor.memory_inst.memory_system.m_axil_rdata);
+		mem_access_addr_dut	= proc_dut.processor.memory_inst.addr & word_align_mask;
 	end
 
 	// reg ref wire
@@ -259,13 +259,7 @@ module reference_test_axi ();
 					reg_wr_data_ref, $unsigned(reg_wr_addr_ref), $time, proc_ref.core_ref.pc_q - 32'd4
 				);
 			end
-		end else if ( reg_access_log_ref[reg_access_log_ref.size()-1].pc == (proc_ref.core_ref.pc_q - 32'd4)
-			/*
-			reg_access_log_ref[reg_access_log_ref.size()-1].rw == WRITE &&
-			reg_access_log_ref[reg_access_log_ref.size()-1].rw_addr == reg_wr_addr_ref &&
-			reg_access_log_ref[reg_access_log_ref.size()-1].rw_data == reg_wr_data_ref
-			*/
-		) begin 
+		end else if ( reg_access_log_ref[reg_access_log_ref.size()-1].pc == (proc_ref.core_ref.pc_q - 32'd4)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			reg_access_log_ref.push_back(
@@ -297,7 +291,6 @@ module reference_test_axi ();
 					rw_data:	reg_wr_data_dut,
 					sim_time:	$time,
 					pc:			(proc_dut.processor.pc_w)
-					//instr:		proc_dut.processor.instr_w
 				})
 			);
 			if (REG_DEBUG) begin
@@ -306,13 +299,7 @@ module reference_test_axi ();
 					reg_wr_data_dut, $unsigned(reg_wr_addr_dut), $time, (proc_dut.processor.pc_w)
 				);
 			end
-		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.processor.pc_w)
-			/*
-			reg_access_log_dut[reg_access_log_dut.size()-1].rw == WRITE &&
-			reg_access_log_dut[reg_access_log_dut.size()-1].rw_addr == reg_wr_addr_dut &&
-			reg_access_log_dut[reg_access_log_dut.size()-1].rw_data == reg_wr_data_dut
-			*/
-		) begin 
+		end else if (reg_access_log_dut[reg_access_log_dut.size()-1].pc == (proc_dut.processor.pc_w)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			reg_access_log_dut.push_back(
@@ -371,22 +358,7 @@ module reference_test_axi ();
 				push_mem_ref_helper();
 			end
 			
-		end else if ( mem_access_log_ref[mem_access_log_ref.size()-1].pc == proc_ref.core_ref.pc_q - 32'd4
-		/*
-			(	
-				mem_wr_en_ref &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== WRITE &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_ref &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_wr_data_in_ref
-			)	||
-			(
-				mem_rd_en_ref &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw		== READ &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_addr	== mem_access_addr_ref &&
-				mem_access_log_ref[mem_access_log_ref.size()-1].rw_data	== mem_rd_data_out_ref
-			)
-		*/
-		) begin
+		end else if ( mem_access_log_ref[mem_access_log_ref.size()-1].pc == proc_ref.core_ref.pc_q - 32'd4) begin
 			// do nothing, duplicative entry
 		end else begin
 			if (mem_rd_en_ref) begin
@@ -424,23 +396,7 @@ module reference_test_axi ();
 					);
 				end
 			end
-		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.processor.pc_m)
-		/*
-			(
-				mem_wr_en_dut &&
-				mem_access_log_dut[mem_access_log_dut.size()-1].rw		== WRITE &&
-				mem_access_log_dut[mem_access_log_dut.size()-1].rw_addr	== mem_access_addr_dut &&
-				mem_access_log_dut[mem_access_log_dut.size()-1].rw_data	== mem_wr_data_in_dut
-			) ||
-			(
-				mem_rd_en_dut &&
-				mem_access_log_dut[mem_access_log_dut.size()-1].rw		== READ &&
-				mem_access_log_dut[mem_access_log_dut.size()-1].rw_addr	== mem_access_addr_dut &&
-				mem_access_log_dut[mem_access_log_dut.size()-1].rw_data	== mem_rd_data_out_dut
-			)
-		*/
-		) begin 
-			// $display("duplicate mem entry, last log: %h, new log: %h", mem_access_log_dut[mem_access_log_dut.size()-1].pc, (proc_dut.processor.pc_m));
+		end else if ( mem_access_log_dut[mem_access_log_dut.size()-1].pc == (proc_dut.processor.pc_m)) begin 
 			// do nothing, duplicative entry
 		end else begin
 			mem_access_log_dut.push_back(
@@ -501,43 +457,18 @@ module reference_test_axi ();
 		assert	(reg_access_log_ref[0].rw == reg_access_log_dut[0].rw) 
 		else begin
 			error = 1;
-			/*
-			$display("REG RW mismatch at dut time = %t, dut pc = %h, ref pc = %h, expecting rw mode is %b, dut rw mode is %b", 
-			reg_access_log_dut[0].sim_time,
-			reg_access_log_dut[0].pc,
-			reg_access_log_ref[0].pc, 
-			reg_access_log_ref[0].rw ? "WRITE" : "READ", 
-			reg_access_log_dut[0].rw ? "WRITE" : "READ");
-			*/
 		end
 
 		assert	(reg_access_log_ref[0].rw_addr == reg_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
-			/*
-			$display("REG RW_ADDR mismatch at dut time = %t, dut pc = %h, ref pc = %h, expecting addr is %d, dut addr is %d", 
-			reg_access_log_dut[0].sim_time, 
-			reg_access_log_dut[0].pc,
-			reg_access_log_ref[0].pc, 
-			reg_access_log_ref[0].rw_addr, 
-			reg_access_log_dut[0].rw_addr);
-			*/
 		end
 
 		assert	(reg_access_log_ref[0].rw_data == reg_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
-			/*
-			$display("REG RW_DATA mismatch at dut time = %t, dut pc = %h, ref pc = %h, expecting data is %h, dut data is %h", 
-			reg_access_log_dut[0].sim_time,
-			reg_access_log_dut[0].pc, 
-			reg_access_log_ref[0].pc, 
-			reg_access_log_ref[0].rw_data, 
-			reg_access_log_dut[0].rw_data);
-			*/
 		end
 
-		//$display("poped reg log at pc=%d", reg_access_log_ref[0].pc);
 		reg_access_log_ref.pop_front();
 		reg_access_log_dut.pop_front();
 	endtask
@@ -547,42 +478,16 @@ module reference_test_axi ();
 		assert	(mem_access_log_ref[0].rw == mem_access_log_dut[0].rw) 
 		else begin
 			error = 1;
-			/*
-			$display("MEM RW mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting rw mode is %s, dut rw mode is %s", 
-			mem_access_log_dut[0].sim_time, 
-			mem_access_log_ref[0].sim_time,
-			mem_access_log_ref[0].pc, 
-			mem_access_log_ref[0].rw ? "WRITE" : "READ", 
-			mem_access_log_dut[0].rw ? "WRITE" : "READ");
-			*/
 		end
 
 		assert	(mem_access_log_ref[0].rw_addr == mem_access_log_dut[0].rw_addr) 
 		else begin
 			error = 1;
-			/*
-			$display("MEM %s RW_ADDR mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting addr is %h, dut addr is %h", 
-			mem_access_log_ref[0].rw ? "WRITE" : "READ",
-			mem_access_log_dut[0].sim_time, 
-			mem_access_log_ref[0].sim_time, 
-			mem_access_log_ref[0].pc, 
-			mem_access_log_ref[0].rw_addr, 
-			mem_access_log_dut[0].rw_addr);
-			*/
 		end
 
 		assert	(mem_access_log_ref[0].rw_data == mem_access_log_dut[0].rw_data) 
 		else begin
 			error = 1;
-			/*
-			$display("MEM %s RW_DATA mismatch at dut time = %t, ref time = %t, ref pc = %h, expecting data is %h, dut data is %h", 
-			mem_access_log_ref[0].rw ? "WRITE" : "READ",
-			mem_access_log_dut[0].sim_time, 
-			mem_access_log_ref[0].sim_time, 
-			mem_access_log_ref[0].pc, 
-			mem_access_log_ref[0].rw_data, 
-			mem_access_log_dut[0].rw_data);
-			*/
 		end
 
 		//$display("poped mem log at pc=%d", mem_access_log_ref[0].pc);
@@ -841,6 +746,7 @@ module reference_test_axi ();
 
 		if (error)begin
 			$display("log mismatch, test failed");
+			$display("run analysis_log.py to see details");
 			$fwrite(fd, "fail");
 		end
 

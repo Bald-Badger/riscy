@@ -1,4 +1,4 @@
-interface axi_lite_interface # (
+interface axil_interface # (
 	// Width of address bus in bits
 	parameter ADDR_WIDTH		= 32
 ) ();
@@ -29,7 +29,7 @@ interface axi_lite_interface # (
 	logic						axil_rvalid;
 	logic						axil_rready;
 
-	modport master (
+	modport axil_master (
 		output					axil_awaddr,
 		output					axil_awprot,
 		output					axil_awvalid,
@@ -51,7 +51,7 @@ interface axi_lite_interface # (
 		output					axil_rready
 	);
 
-	modport slave (
+	modport axil_slave (
 		input					axil_awaddr,
 		input					axil_awprot,
 		input					axil_awvalid,
@@ -73,4 +73,4 @@ interface axi_lite_interface # (
 		input					axil_rready
 	);
 
-endinterface : axi_lite_interface
+endinterface : axil_interface
