@@ -19,6 +19,8 @@ int main() {
 const uint32_t seg_base	= SEG_BASE;
 
 void halt_riscy() {
+	__asm__("li a0, 42");
+	__asm__("li a7, 93");
 	__asm__("ecall");
 	return;
 }
@@ -34,6 +36,5 @@ void uart_write_string (char* c, int strlen) {
 	for (i = 0; i < strlen; i++){
 		uint32_t char_int_32 = ((uint32_t)c[i]) & UART_DATA_MASK;
 		*((uint32_t*)UART_BASE) = char_int_32;
-		i++;
 	}
 }
