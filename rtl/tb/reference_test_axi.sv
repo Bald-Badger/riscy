@@ -37,16 +37,17 @@ module reference_test_axi ();
 	axil_interface data_bus();		// S01
 
 	axil_interface ram_bus();		// M00
+	axil_interface seg_bus();		// M01
+	axil_interface uart_bus();		// M02
 
 	// unused placeholder dummy
 	axil_interface s02_bus();
 	axil_interface s03_bus();
 
-	axil_interface seg_bus();
-	axil_interface uart_bus();
 	axil_interface m03_bus();
 	axil_interface m04_bus();
 	axil_interface m05_bus();
+
 
 	proc processor (
 		.clk			(clk),
@@ -108,7 +109,23 @@ module reference_test_axi ();
 		.char		(uart_char)
 	);
 
-	assign riscy_uart_rx = 1'b1;
+
+	logic uart_driver_en;
+	logic uart_driver_done;
+	logic[7:0] uart_driver_data;
+	uart_tx # (
+		.CLK_FREQ	(FREQ),
+		.UART_BPS	(UART_BPS)
+	) my_uart_driver (
+		.clk		(clk),
+		.rst_n		(rst_n),
+
+		.TX			(riscy_uart_rx),
+		.uart_en	(uart_driver_en),
+		.uart_din	(uart_driver_data),
+		.tx_done	(uart_driver_done)
+	);
+	
 	assign riscy_uart_cts = 1'b0;
 
 	axil_dummy_master dummy_master_02 (s02_bus);
@@ -162,6 +179,28 @@ module reference_test_axi ();
 		.rst				(rst),
 		.kill				(kill_ref)
 	);
+
+	// UART initial input
+
+	task uart_write_char(input logic[7:0] c);
+		@(negedge clk);
+		uart_driver_en		= ENABLE;
+		uart_driver_data	= c;
+		repeat(100) @(negedge clk);
+		uart_driver_en		= DISABLE;
+		@(posedge uart_driver_done);
+		uart_driver_data	= 8'b0;
+		@(negedge uart_driver_done);
+		@(negedge clk);
+	endtask
+
+	initial begin
+		uart_driver_en		= DISABLE;
+		uart_driver_data	= 8'b0;
+		@(posedge go);
+		repeat(100) @(negedge clk);
+		uart_write_char(8'h46);	// char 'F'
+	end
 
 	initial begin
 		ref_halt = 1'b0;
@@ -849,7 +888,7 @@ module reference_test_axi ();
 		end else begin
 			$display("golden module failed the test! bad test?");
 			if (processor.decode_inst.registers_inst.reg_bypass_inst.registers[10] == 42) begin
-				$display("WTF this should not happeds");
+				$display("WTF this should not happed");
 			end
 		end
 
@@ -868,7 +907,7 @@ module clkrst #(
 	output logic go
 );
 
-	localparam period = 1e12/FREQ;	// in ps
+	localparam period = 1e9/FREQ;	// in ns
 	localparam half_period = period/2;
 
 	initial begin

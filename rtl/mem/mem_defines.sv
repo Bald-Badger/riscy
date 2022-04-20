@@ -28,8 +28,7 @@ import defines::*;
 			tag(19)            index(9)    word_off(2)   byte_off(2)
 */
 
-// using RARS default, text at 0x0 memory layout
-localparam	MAX_PHY_ADDR		= 32'h03ff_ffff;	// 64MB, for TB use only
+localparam	MAX_PHY_ADDR		= 32'h07ff_ffff;	// 128MB, for TB use only, noted that sdram is only 64MB
 localparam	SP_BASE				= 32'h01ff_fffc;	// stack base pointer, init SP to here
 localparam	GP_BASE				= 32'h0100_0800;	// global pointer, init GP to here
 

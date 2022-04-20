@@ -49,7 +49,7 @@ module uart_axil #(
 	assign uart_rts = 1'b0;	// disable flow control for now
 
 	// UART module wire
-	logic			uart_send_data, rx_done, tx_done;
+	logic			uart_send_data, rx_done_raw, rx_done, tx_done;
 	logic	[7:0]	tx_data, rx_data;
 
 	// SIMP bus wire
@@ -63,15 +63,26 @@ module uart_axil #(
 	logic	[31:0]	simp_data_out;
 	logic			simp_done;
 
-	logic			simp_done_tx, simp_done_rx;
-	assign			simp_done_rx = 1'b0;
-	assign			simp_done = simp_done_tx || simp_done_rx;
+	// operation define
+	logic			op_write_tx_fifo, op_write_tx_fifo_done;
+	logic			op_read_rx_fifo, op_read_rx_fifo_done;
+	logic			op_read_rx_num, op_read_rx_num_done;
 
+	always_comb begin : op_assign
+		op_write_tx_fifo	= simp_valid && simp_wr && (simp_addr == UART_DATA_ADDR);
+		op_read_rx_fifo		= simp_valid && simp_rd && (simp_addr == UART_DATA_ADDR);
+		op_read_rx_num		= simp_valid && simp_rd && (simp_addr == UART_RX_DATA_NUM_ADDR);
+	end
+
+	assign			simp_done	=	op_write_tx_fifo_done ||
+									op_read_rx_fifo_done ||
+									op_read_rx_num_done;
 
 	// TX side logic
 	logic	[7:0]	fifo_in_tx, fifo_out_tx;
 	logic			fifo_wr_en_tx, fifo_rd_en_tx;
 	logic			fifo_empty_tx;
+
 
 	fifo # (
 		.BUF_WIDTH			(FIFO_WIDTH_TX),
@@ -89,10 +100,10 @@ module uart_axil #(
 		.fifo_counter		()
 	);
 
+
 	typedef enum logic [1:0] {
 		IDLE_FIFO_TX,
-		WRITE_FIFO_TX,
-		READ_FIFO_TX
+		WRITE_FIFO_TX
 	} uart_tx_fifo_state_t;
 	uart_tx_fifo_state_t state_fifo_tx, nxt_state_fifo_tx;
 
@@ -105,41 +116,33 @@ module uart_axil #(
 
 
 	always_comb begin : uart_tx_fifo_state_fsm
-		nxt_state_fifo_tx	= IDLE_FIFO_TX;
-		fifo_in_tx		= 8'b0;
-		fifo_wr_en_tx	= 1'b0;
-		simp_done_tx	= 1'b0;
+		nxt_state_fifo_tx		= IDLE_FIFO_TX;
+		fifo_in_tx				= 8'b0;
+		fifo_wr_en_tx			= 1'b0;
+		op_write_tx_fifo_done	= 1'b0;
 
 		unique case (state_fifo_tx)
 
 			IDLE_FIFO_TX: 	begin
-				if (simp_wr && simp_valid) begin
-					nxt_state_fifo_tx = WRITE_FIFO_TX;
-				end else if (simp_rd && simp_valid) begin
-					nxt_state_fifo_tx = READ_FIFO_TX;
+				if (op_write_tx_fifo) begin
+					nxt_state_fifo_tx	= WRITE_FIFO_TX;
 				end else begin
-					// reserved, do nothing for now
-					nxt_state_fifo_tx = IDLE_FIFO_TX;
+					nxt_state_fifo_tx	= IDLE_FIFO_TX;
 				end
 			end
 
 			WRITE_FIFO_TX:	begin
-				fifo_in_tx = (ENDIANESS == BIG_ENDIAN) ? simp_data_in[7:0] : simp_data_in[31:24];
-				fifo_wr_en_tx = ENABLE;
-				nxt_state_fifo_tx = IDLE_FIFO_TX;
-				simp_done_tx = DONE;
-			end
-
-			READ_FIFO_TX:	begin
-				simp_done_tx = DONE;
-				nxt_state_fifo_tx = IDLE_FIFO_TX;
+				fifo_in_tx				= (ENDIANESS == BIG_ENDIAN) ? simp_data_in[7:0] : simp_data_in[31:24];
+				fifo_wr_en_tx			= ENABLE;
+				nxt_state_fifo_tx		= IDLE_FIFO_TX;
+				op_write_tx_fifo_done	= DONE;
 			end
 
 			default:	begin
-				nxt_state_fifo_tx	= IDLE_FIFO_TX;
-				fifo_in_tx		= 8'b0;
-				fifo_wr_en_tx	= 1'b0;
-				simp_done_tx	= 1'b0;
+				nxt_state_fifo_tx		= IDLE_FIFO_TX;
+				fifo_in_tx				= 8'b0;
+				fifo_wr_en_tx			= 1'b0;
+				op_write_tx_fifo_done	= 1'b0;
 			end
 		endcase
 
@@ -197,6 +200,104 @@ module uart_axil #(
 	end
 
 
+	// RX side logic
+	logic	[7:0]	fifo_in_rx, fifo_out_rx;
+	logic			fifo_wr_en_rx, fifo_rd_en_rx;
+	logic			fifo_counter_rx;
+	logic			rx_done_ff0, rx_done_ff1;
+
+	always_ff @(posedge clk, posedge rst) begin : rx_done_pos_edge_detect
+		if (rst) begin
+			rx_done_ff0 <= 1'b0;
+			rx_done_ff1 <= 1'b1;
+		end else begin
+			rx_done_ff0 <= rx_done_raw;
+			rx_done_ff1 <= rx_done_ff0;
+		end
+	end
+
+	assign rx_done = rx_done_ff1 && ~rx_done_ff0;
+
+	fifo # (
+		.BUF_WIDTH			(FIFO_WIDTH_TX),
+		.DATA_WIDTH			(8)
+	) uart_rx_fifo (
+		.clk				(clk),
+		.rst				(rst),
+		.buf_in				(fifo_in_rx),
+		.buf_out			(fifo_out_rx),
+		.wr_en				(fifo_wr_en_rx),
+		.rd_en				(fifo_rd_en_rx),
+		.buf_empty			(),
+		.buf_full			(),
+		.buf_almost_full	(),
+		.fifo_counter		(fifo_counter_rx)
+	);
+
+
+	typedef enum logic [2:0] {
+		IDLE_RX,
+		LOAD_CHAR_RX,
+		READ_NUM_RX
+	} uart_rx_state_t;
+	uart_rx_state_t state_uart_rx, nxt_state_uart_rx;
+	
+	always_ff @( posedge clk or posedge rst) begin
+		if (rst)
+			state_uart_rx <= IDLE_RX;
+		else
+			state_uart_rx <= nxt_state_uart_rx;
+	end
+
+	always_comb begin : fifo_rx_ctrl
+		fifo_in_rx		= rx_done ? rx_data : 8'b0;
+		fifo_wr_en_rx	= rx_done;
+	end
+
+	always_comb begin : uart_rx_fifo_state_fsm
+
+		nxt_state_uart_rx		= IDLE_RX;
+		fifo_rd_en_rx			= DISABLE;
+		op_read_rx_fifo_done	= DISABLE;
+		simp_data_out			= NULL;
+
+		unique case (state_uart_rx)
+			IDLE_RX: begin
+				if (op_read_rx_fifo) begin
+					nxt_state_uart_rx	= LOAD_CHAR_RX;
+					fifo_rd_en_rx		= ENABLE;
+				end else if (op_read_rx_num) begin
+					nxt_state_uart_rx	= READ_NUM_RX;
+				end else begin
+					nxt_state_uart_rx	= IDLE_RX;
+				end
+			end
+
+			LOAD_CHAR_RX: begin
+				nxt_state_uart_rx		= IDLE_RX;
+				op_read_rx_fifo_done	= DONE;
+				simp_data_out			= (ENDIANESS == BIG_ENDIAN) ?
+					{{24'b0},{fifo_out_rx}} : {{fifo_out_rx},{24'b0}};
+			end
+
+			READ_NUM_RX: begin
+				nxt_state_uart_rx	= IDLE_RX;
+				op_read_rx_num_done	= DONE;
+				simp_data_out		= (ENDIANESS == BIG_ENDIAN) ?
+					({{32'b0}, {fifo_counter_rx}}[31:0]) :
+					swap_endian(({{32'b0}, {fifo_counter_rx}}[31:0]));
+			end
+
+			default: begin
+				nxt_state_uart_rx		= IDLE_RX;
+				fifo_rd_en_rx			= DISABLE;
+				op_read_rx_fifo_done	= DISABLE;
+				simp_data_out			= NULL;
+			end
+		endcase
+	end
+
+
 	uart # (
 		.CLK_FREQ	(CLK_FREQ),
 		.UART_BPS	(UART_BPS)
@@ -210,7 +311,7 @@ module uart_axil #(
 
 		// output
 		.TX			(uart_tx),
-		.rx_done	(rx_done),
+		.rx_done	(rx_done_raw),
 		.tx_done	(tx_done),
 		.rx_data	(rx_data)
 	);
