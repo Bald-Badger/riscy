@@ -254,6 +254,10 @@ module uart_axil #(
 		fifo_wr_en_rx	= rx_done;
 	end
 
+	data_t	simp_data_out_big, simp_data_out_small;
+	assign simp_data_out_big = { {(XLEN-FIFO_WIDTH_TX){1'b0}} {fifo_counter_rx} };
+	assign simp_data_out_small = swap_endian(simp_data_out_big);
+
 	always_comb begin : uart_rx_fifo_state_fsm
 
 		nxt_state_uart_rx		= IDLE_RX;
@@ -283,9 +287,8 @@ module uart_axil #(
 			READ_NUM_RX: begin
 				nxt_state_uart_rx	= IDLE_RX;
 				op_read_rx_num_done	= DONE;
-				simp_data_out		= (ENDIANESS == BIG_ENDIAN) ?
-					({{32'b0}, {fifo_counter_rx}}[31:0]) :
-					swap_endian(({{32'b0}, {fifo_counter_rx}}[31:0]));
+				simp_data_out		= (ENDIANESS == BIG_ENDIAN) ? 
+					simp_data_out_big : simp_data_out_small;
 			end
 
 			default: begin

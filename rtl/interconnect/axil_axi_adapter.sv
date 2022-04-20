@@ -4,8 +4,8 @@ module axil_axi_adapter # (
 	parameter			USER_ID		= 0
 )
 (
-	axi_lite_interface	axil_bus,	// slave axil bus
-	axi_interface		axi_bus		// master axi bus
+	axil_interface.axil_slave	axil_bus,	// slave axil bus
+	axi_interface				axi_bus		// master axi bus
 );
 	
 	// wire linking
