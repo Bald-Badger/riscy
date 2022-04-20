@@ -5,8 +5,8 @@
 
 
 int main() {
-	char hellostr[16] = "0123456789abcdef";
-	uart_write_string(hellostr, 16);
+	char hellostr[20] = "0123456789abcdef\r\n";
+	uart_write_string(hellostr, 20);
 	set_seg_single(0, 0x1);
 	set_seg_single(1, 0x2);
 	set_seg_single(2, 0x3);
@@ -35,6 +35,14 @@ void uart_write_string (char* c, int strlen) {
 	int i = 0;
 	for (i = 0; i < strlen; i++){
 		uint32_t char_int_32 = ((uint32_t)c[i]) & UART_DATA_MASK;
-		*((uint32_t*)UART_BASE) = char_int_32;
+		*((uint32_t*)UART_DATA_ADDR) = char_int_32;
 	}
+}
+
+int uart_read_strlen () {
+	return *((uint32_t*)UART_DLEN_ADDR);
+}
+
+char uart_read_char () {
+	return (char)(*((uint32_t*)UART_DATA_ADDR) >> 24);
 }
