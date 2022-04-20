@@ -200,7 +200,7 @@ module soc_system_top (
 	logic [3:0] key_rise;	// debounced key
 	logic [3:0] key_fall;	// debounced key
 
-	logic	uart_tx, uart_rx;
+	logic	uart_tx, uart_rx, uart_cts, uart_rts;
 
 
 	soc_system soc_system0(
@@ -352,7 +352,7 @@ module soc_system_top (
 	
 
 	always_comb begin : uart_signal_assign
-		GPIO_1[1]	= GND;			// connect to master GND
+		GPIO_1[1]	= 1'b0;			// connect to master GND
 		uart_rx		= GPIO_1[3];	// connect to master tx
 		GPIO_1[5]	= uart_tx;		// connect to master rx
 		uart_cts	= GPIO_1[7];	// connect to master rts

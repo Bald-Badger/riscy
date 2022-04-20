@@ -163,10 +163,12 @@ module uart_axil #(
 	end
 
 	always_comb begin : uart_tx_state_fsm
+
 		nxt_state_uart_tx	= IDLE_TX;
 		tx_data				= fifo_out_tx;
 		fifo_rd_en_tx		= DISABLE;
 		uart_send_data		= DISABLE;
+	
 		unique case (state_uart_tx)
 			IDLE_TX:		begin
 				if (~fifo_empty_tx) begin
@@ -254,15 +256,20 @@ module uart_axil #(
 		fifo_wr_en_rx	= rx_done;
 	end
 
-	data_t	simp_data_out_big, simp_data_out_small;
-	assign simp_data_out_big = { {(XLEN-FIFO_WIDTH_TX){1'b0}} {fifo_counter_rx} };
-	assign simp_data_out_small = swap_endian(simp_data_out_big);
+	data_t	rx_num_big, rx_num_small;
+	assign rx_num_big = { {(XLEN-FIFO_WIDTH_TX){1'b0}} {fifo_counter_rx} };
+	assign rx_num_small = swap_endian(rx_num_big);
+
+	data_t	rx_data_big, rx_data_small;
+	assign rx_data_big = {{24'b0}, {fifo_out_rx}};
+	assign rx_data_small = {{fifo_out_rx}, {24'b0}};
 
 	always_comb begin : uart_rx_fifo_state_fsm
 
 		nxt_state_uart_rx		= IDLE_RX;
 		fifo_rd_en_rx			= DISABLE;
 		op_read_rx_fifo_done	= DISABLE;
+		op_read_rx_num_done		= DISABLE;
 		simp_data_out			= NULL;
 
 		unique case (state_uart_rx)
@@ -280,15 +287,13 @@ module uart_axil #(
 			LOAD_CHAR_RX: begin
 				nxt_state_uart_rx		= IDLE_RX;
 				op_read_rx_fifo_done	= DONE;
-				simp_data_out			= (ENDIANESS == BIG_ENDIAN) ?
-					{{24'b0},{fifo_out_rx}} : {{fifo_out_rx},{24'b0}};
+				simp_data_out			= (ENDIANESS == BIG_ENDIAN) ? rx_data_big : rx_data_small;
 			end
 
 			READ_NUM_RX: begin
 				nxt_state_uart_rx	= IDLE_RX;
 				op_read_rx_num_done	= DONE;
-				simp_data_out		= (ENDIANESS == BIG_ENDIAN) ? 
-					simp_data_out_big : simp_data_out_small;
+				simp_data_out		= (ENDIANESS == BIG_ENDIAN) ? rx_num_big : rx_num_small;
 			end
 
 			default: begin
@@ -297,6 +302,7 @@ module uart_axil #(
 				op_read_rx_fifo_done	= DISABLE;
 				simp_data_out			= NULL;
 			end
+
 		endcase
 	end
 

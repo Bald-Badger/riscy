@@ -254,6 +254,22 @@
          type = "String";
       }
    }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
+   element soc_system
+   {
+      datum _originalDeviceFamily
+      {
+         value = "Cyclone V";
+         type = "String";
+      }
+   }
    element uart_axil_0
    {
       datum _sortIndex
@@ -262,7 +278,7 @@
          type = "int";
       }
    }
-   element uart_axil_0.altera_axi4lite_slave_1
+   element uart_axil_0.axil_uart_interface
    {
       datum baseAddress
       {
@@ -307,7 +323,7 @@
    internal="sdram_controller_axil_0.sdram"
    type="conduit"
    dir="end" />
- <interface name="uart" internal="uart_axil_0.UART" type="conduit" dir="end" />
+ <interface name="uart" internal="uart_axil_0.uart" type="conduit" dir="end" />
  <module
    name="axil_crossbar_2x1_0"
    kind="axil_crossbar_2x1"
@@ -926,7 +942,7 @@
    kind="avalon"
    version="21.1"
    start="axil_crossbar_2x1_0.altera_axi4lite_master"
-   end="uart_axil_0.altera_axi4lite_slave_1">
+   end="uart_axil_0.axil_uart_interface">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04010000" />
   <parameter name="defaultConnection" value="false" />
@@ -945,18 +961,18 @@
    kind="clock"
    version="21.1"
    start="clk_0.clk"
-   end="riscy_core_0.clock" />
- <connection
-   kind="clock"
-   version="21.1"
-   start="clk_0.clk"
    end="axil_crossbar_2x1_0.clock" />
- <connection kind="clock" version="21.1" start="clk_0.clk" end="uart_axil_0.clock" />
  <connection
    kind="clock"
    version="21.1"
    start="clk_0.clk"
    end="sdram_controller_axil_0.clock" />
+ <connection
+   kind="clock"
+   version="21.1"
+   start="clk_0.clk"
+   end="riscy_core_0.clock" />
+ <connection kind="clock" version="21.1" start="clk_0.clk" end="uart_axil_0.clock" />
  <connection
    kind="clock"
    version="21.1"
@@ -981,22 +997,22 @@
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="riscy_core_0.reset_sink" />
- <connection
-   kind="reset"
-   version="21.1"
-   start="clk_0.clk_reset"
    end="axil_crossbar_2x1_0.reset_sink" />
  <connection
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="uart_axil_0.reset_sink" />
+   end="sdram_controller_axil_0.reset_sink" />
  <connection
    kind="reset"
    version="21.1"
    start="clk_0.clk_reset"
-   end="sdram_controller_axil_0.reset_sink" />
+   end="riscy_core_0.reset_sink" />
+ <connection
+   kind="reset"
+   version="21.1"
+   start="clk_0.clk_reset"
+   end="uart_axil_0.reset_sink" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="AUTO" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
