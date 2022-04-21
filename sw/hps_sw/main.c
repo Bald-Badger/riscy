@@ -264,7 +264,7 @@ void sanity_test_seg() {
 
 void sdram_range_test() {
 	void* sdram_vp = init_sdram();
-	touch_sdram(sdram_vp, sdram_addr_mask);
+	touch_sdram(sdram_vp, sdram_size_byte & sdram_addr_mask);
 	clean_sdram(sdram_vp);
 }
 
@@ -289,9 +289,11 @@ void sdram_random_rw_test (int iter) {
 
 
 void sanity_test_sdram() {
-	printf("starting sdram sanity test...\n");
+	printf("starting sdram sanity test: range test...\n");
 	usleep(1000);
 	sdram_range_test();
+	printf("starting sdram sanity test: rw test...\n");
+	usleep(1000);
 	sdram_random_rw_test(100);
 }
 
