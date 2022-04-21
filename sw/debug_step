@@ -1,5 +1,7 @@
 git clone -b De1-Migrate https://github.com/Bald-Badger/riscy.git
 ssh -C -L 5910:localhost:5901 sz3034@micro23.ee.columbia.edu
+export LM_LICENSE_FILE=27000@arthur.cs.columbia.edu
+/tools/intel/intelFPGA/19.1/quartus/bin/quartus ./soc_system.qpf &
 verilator --lint-only vga_ball.sv
 qsys-edit soc_system.qsys
 make quartus
