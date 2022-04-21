@@ -264,7 +264,7 @@ void sanity_test_seg() {
 
 void sdram_range_test() {
 	void* sdram_vp = init_sdram();
-	touch_sdram(sdram_vp, 0x3FFFFF);
+	touch_sdram(sdram_vp, sdram_addr_mask);
 	clean_sdram(sdram_vp);
 }
 
