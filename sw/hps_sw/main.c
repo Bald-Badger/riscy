@@ -17,11 +17,20 @@ const uint32_t h2f_base			= (unsigned int) 0xC0000000;
 const uint32_t elf_load_offset	= 0x00004000;	// in words (4 byte)	
 
 // sdram define
+
+#ifdef SDRAM
 const uint32_t sdram_range		= 0x03FFFFFF;	// 0x0 - 0x3ffffff
 const uint32_t sdram_addr_mask	= 0x03FFFFFC;	// word-aligned access
 const uint32_t sdram_offset		= 0x00000000;	// offset from bridge
 const uint32_t sdram_size_byte	= 0x04000000;	// 512Mb
 const uint32_t sdram_size_word	= 0x01000000;	// 64MB
+#else
+const uint32_t sdram_range		= 0x0003FFFF;
+const uint32_t sdram_addr_mask	= 0x0003FFFC;
+const uint32_t sdram_offset		= 0x00000000;
+const uint32_t sdram_size_byte	= 0x00040000;
+const uint32_t sdram_size_word	= 0x00010000;
+#endif
 
 
 // 7-seg display define
