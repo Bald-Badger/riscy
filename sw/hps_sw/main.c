@@ -283,7 +283,7 @@ void sanity_test_sdram() {
 	printf("starting sdram sanity test...\n");
 	usleep(1000);
 	sdram_range_test();
-	sdram_random_rw_test(1000);
+	sdram_random_rw_test(100);
 }
 
 void* init_uart() {
