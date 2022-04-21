@@ -329,4 +329,5 @@ int main () {
 	sanity_test_seg();
 	sanity_test_uart();
 	boot_load("./test.elf", 1);
+	return;
 }
