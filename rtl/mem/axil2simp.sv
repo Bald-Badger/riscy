@@ -196,9 +196,11 @@ module axil2simp # (
 				if (simp_handshake) begin
 					rvalid_o	= VALID;
 					rdata_o		= simp_data_out;
+					nxt_state	= IDLE;
 				end else begin
 					rvalid_o	= INVALID;
 					rdata_o		= NULL;
+					nxt_state	= R_RESP;
 				end
 			end
 

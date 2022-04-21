@@ -218,7 +218,7 @@ module uart_axil #(
 		end
 	end
 
-	assign rx_done = rx_done_ff1 && ~rx_done_ff0;
+	assign rx_done = rx_done_ff1 && ~rx_done_ff0;	// posedge
 
 	fifo # (
 		.BUF_WIDTH			(FIFO_WIDTH_TX),

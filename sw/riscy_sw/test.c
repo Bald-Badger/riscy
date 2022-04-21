@@ -13,10 +13,19 @@ int main() {
 	set_seg_single(3, 0x4);
 	set_seg_single(4, 0x5);
 	set_seg_single(5, 0x6);
+	int buf_len = 0;
+	char c;
+	while (1) {
+		buf_len = uart_read_strlen();
+		if (buf_len > 0) {
+			c = uart_read_char();
+			uart_write_string(&c, 1);
+		}
+	}
+
+	
 	halt_riscy();
 }
-
-const uint32_t seg_base	= SEG_BASE;
 
 void halt_riscy() {
 	__asm__("li a0, 42");
