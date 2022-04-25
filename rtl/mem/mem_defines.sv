@@ -31,7 +31,7 @@ import defines::*;
 localparam	MAX_PHY_ADDR		= 32'h07ff_ffff;	// 128MB, for TB use only, noted that sdram is only 64MB
 //localparam	SP_BASE				= 32'h01ff_fffc;	// stack base pointer, init SP to here
 //localparam	GP_BASE				= 32'h0100_0800;	// global pointer, init GP to here
-localparam	SP_BASE				= 32'h0003_efff;	// stack base pointer, init SP to here
+localparam	SP_BASE				= 32'h0003_effc;	// stack base pointer, init SP to here
 localparam	GP_BASE				= 32'h0001_0800;	// global pointer, init GP to here
 
 

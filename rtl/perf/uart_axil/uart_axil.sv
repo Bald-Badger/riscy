@@ -221,7 +221,7 @@ module uart_axil #(
 	assign rx_done = rx_done_ff1 && ~rx_done_ff0;	// posedge
 
 	fifo # (
-		.BUF_WIDTH			(FIFO_WIDTH_TX),
+		.BUF_WIDTH			(FIFO_WIDTH_RX),
 		.DATA_WIDTH			(8)
 	) uart_rx_fifo (
 		.clk				(clk),
@@ -257,7 +257,7 @@ module uart_axil #(
 	end
 
 	data_t	rx_num_big, rx_num_small;
-	assign rx_num_big = { {(XLEN-FIFO_WIDTH_TX){1'b0}} {fifo_counter_rx} };
+	assign rx_num_big = fifo_counter_rx; // should pad upper bits to 0
 	assign rx_num_small = swap_endian(rx_num_big);
 
 	data_t	rx_data_big, rx_data_small;

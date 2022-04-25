@@ -38,8 +38,6 @@ module memory (
 	// debug signals
 	logic			addr_misalign;
 	logic  			misalign_trap;
-	logic			max_phy_access;
-	logic			max_phy_access_trap;
 
 	// atomic contril signals
 	instr_a_t		instr_a;
@@ -437,6 +435,8 @@ module memory (
 
 /*
 	//// assume all access are below max physical memory ////
+	logic			max_phy_access;
+	logic			max_phy_access_trap;
 	always_comb begin
 		max_phy_access = $signed(addr) >= $signed(MAX_PHY_ADDR);
 		max_phy_access_trap = max_phy_access && (rden || wren);
