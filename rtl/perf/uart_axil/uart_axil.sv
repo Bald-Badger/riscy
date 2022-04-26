@@ -74,9 +74,9 @@ module uart_axil #(
 		op_read_rx_num		= simp_valid && simp_rd && (simp_addr == UART_RX_DATA_NUM_ADDR);
 	end
 
-	assign			simp_done	=	op_write_tx_fifo_done ||
-									op_read_rx_fifo_done ||
-									op_read_rx_num_done;
+	assign	simp_done =	op_write_tx_fifo_done ||
+						op_read_rx_fifo_done ||
+						op_read_rx_num_done;
 
 	// TX side logic
 	logic	[7:0]	fifo_in_tx, fifo_out_tx;
@@ -218,7 +218,7 @@ module uart_axil #(
 		end
 	end
 
-	assign rx_done = rx_done_ff1 && ~rx_done_ff0;	// posedge
+	assign rx_done = ~rx_done_ff1 && rx_done_ff0;	// posedge
 
 	fifo # (
 		.BUF_WIDTH			(FIFO_WIDTH_RX),
@@ -261,8 +261,9 @@ module uart_axil #(
 	assign rx_num_small = swap_endian(rx_num_big);
 
 	data_t	rx_data_big, rx_data_small;
-	assign rx_data_big = {{24'b0}, {fifo_out_rx}};
-	assign rx_data_small = {{fifo_out_rx}, {24'b0}};
+	assign rx_data_big = fifo_out_rx;	// should pad upper bits to 0
+	assign rx_data_small = swap_endian(fifo_out_rx);
+
 
 	always_comb begin : uart_rx_fifo_state_fsm
 

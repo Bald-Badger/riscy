@@ -13,6 +13,8 @@ int main() {
 	set_seg_single(3, 0x4);
 	set_seg_single(4, 0x5);
 	set_seg_single(5, 0x6);
+	
+	
 	int buf_len = 0;
 	char c;
 	while (1) {
@@ -22,7 +24,7 @@ int main() {
 			uart_write_string(&c, 1);
 		}
 	}
-
+	
 	
 	halt_riscy();
 }
@@ -53,5 +55,5 @@ int uart_read_strlen () {
 }
 
 char uart_read_char () {
-	return (char)(*((uint32_t*)UART_DATA_ADDR) >> 24);
+	return (char)(*((uint32_t*)UART_DATA_ADDR));
 }
