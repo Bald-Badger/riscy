@@ -229,12 +229,10 @@ void boot_load (char* filename, int swap) {
 	for (i = 0; i < instr_size_word; i++) {
 		sanity_check = read_sdram(sdram_vp + i + elf_load_offset);
 		if (sanity_check != instr_arr[i]) {
-			//if (err == 0) {
 				printf("data mismatch at word %d\n",(i));
 				printf("expecting: %x, get: %x\n\n", instr_arr[i], sanity_check);
-				err = 1;
-			//}
-			
+				printf("bootloader sanity check failed, existing... \n");
+				exit(EXIT_FAILURE);
 		}
 	}
 
