@@ -218,7 +218,6 @@ void boot_load (char* filename, int swap) {
 	usleep(100);
 	for (i = 0; i < instr_size_word; i++) {
 		write_sdram(sdram_vp + i + elf_load_offset, instr_arr[i]);
-		usleep(1);
 	}
 
 	// read sdram to check data corruption
