@@ -25,11 +25,11 @@ const uint32_t sdram_offset		= 0x00000000;	// offset from bridge
 const uint32_t sdram_size_byte	= 0x04000000;	// 512Mb
 const uint32_t sdram_size_word	= 0x01000000;	// 64MB
 #else
-const uint32_t sdram_range		= 0x0003FFFF;
-const uint32_t sdram_addr_mask	= 0x0003FFFC;
+const uint32_t sdram_range		= 0x0007FFFF;
+const uint32_t sdram_addr_mask	= 0x0007FFFC;
 const uint32_t sdram_offset		= 0x00000000;
-const uint32_t sdram_size_byte	= 0x00040000;
-const uint32_t sdram_size_word	= 0x00010000;
+const uint32_t sdram_size_byte	= 0x00080000;
+const uint32_t sdram_size_word	= 0x00020000;
 #endif
 
 
