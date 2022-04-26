@@ -17,7 +17,7 @@ const uint32_t h2f_base			= (unsigned int) 0xC0000000;
 const uint32_t elf_load_offset	= 0x00004000;	// in words (4 byte)	
 
 // sdram define
-
+#define SDRAM
 #ifdef SDRAM
 const uint32_t sdram_range		= 0x03FFFFFF;	// 0x0 - 0x3ffffff
 const uint32_t sdram_addr_mask	= 0x03FFFFFC;	// word-aligned access
