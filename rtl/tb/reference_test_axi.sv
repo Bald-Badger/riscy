@@ -7,6 +7,7 @@ import pref_defines::*;
 
 
 module reference_test_axi ();
+
 	localparam REG_DEBUG = DISABLE;
 	localparam MEM_DEBUG = DISABLE;
 	
@@ -87,6 +88,7 @@ module reference_test_axi ();
 	logic riscy_uart_cts;
 	logic riscy_uart_rts;
 	logic [7:0] uart_char;
+
 	uart_axil_wrapper # (
 		.UART_BPS	(UART_BPS)
 	) dummy_uart_slave (
@@ -98,6 +100,7 @@ module reference_test_axi ();
 		.uart_cts	(riscy_uart_cts),
 		.uart_rts	(riscy_uart_rts)
 	);
+
 
 	uart_monitor # (
 		.CLK_FREQ	(FREQ),
