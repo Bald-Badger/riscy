@@ -11,11 +11,12 @@
 # -lstdc++: enable c++ compile
 # -mbranch-cost=1: low branch cost, so hopefully disable instruction reorder
 # -mexplicit-relocs: use assembler relocation operators when dealing with symbolic addresses, hopefully reduce pseudo instruction
+# -mno-relax: no linker relaxations, make less use of GP which i have no idea how to handle
 # -D: defines a macro to be used by the preprocessor
 
-GCC = riscv64-unknown-elf-gcc
-CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
-
+GPP = riscv64-unknown-elf-g++
+# CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
+CFLAGS = -Wall -O3 -mno-relax -static-libstdc++ -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -D TB
 GCC_X86 = gcc
 CFLAGS_X86 = -Wall
 
@@ -25,7 +26,7 @@ COPYFLAGS = -O binary
 # --only-section=.text
 TARGET = ./test
 TBTARGET = instr
-SRC = $(TARGET).c
+SRC = *.cpp
 SDEST = $(TBTARGET).s
 JAVA = java
 RARSADDR = 0x00000000-0x00008000
@@ -38,12 +39,11 @@ all: clean offset
 
 # build the .S assembly file
 asm:
-	$(GCC) $(CFLAGS) -S $(SRC) -o $(SDEST)
+	$(GPP) $(SRC) $(CFLAGS) -o $(TARGET)
 
 # build the compiled and linked elf file	
 elf: asm
-	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET)
-	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET).elf
+	$(GPP) $(SRC) $(CFLAGS) -o $(TARGET).elf
 
 # extract the executable binary from elf
 bin: elf

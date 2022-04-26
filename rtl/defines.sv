@@ -321,14 +321,14 @@ endfunction
 function data_t get_imm;		// extract immidiate value from instruction
 	input instr_t instr;
 	unique case (instr.opcode)
-		LUI:		return data_t'({instr[31:12], 12'b0});
-		AUIPC:		return data_t'({instr[31:12], 12'b0});
-		JAL:		return data_t'({32'd4});	// pc + 4 for ALU
-		JALR:		return data_t'({32'd4});	// pc + 4 for ALU
-		B:			return data_t'({ {20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0});
-		LOAD:		return data_t'({ {20{instr[31]}} , instr[31:20]});
-		STORE:		return data_t'({ {20{instr[31]}} , instr[31:25], instr[11:7]});
-		I:			return data_t'({ {20{instr[31]}} , instr[31:20]});
+		LUI:		return data_t'( { instr[31:12], 12'b0 } );
+		AUIPC:		return data_t'( { instr[31:12], 12'b0 } );
+		JAL:		return data_t'( { 32'd4 } );	// pc + 4 for ALU
+		JALR:		return data_t'( { 32'd4 } );	// pc + 4 for ALU
+		B:			return data_t'( { { 20{ instr[31] } } , instr[7], instr[30:25], instr[11:8], 1'b0 } );
+		LOAD:		return data_t'( { { 20{ instr[31] } } , instr[31:20] } );
+		STORE:		return data_t'( { { 20{ instr[31] } } , instr[31:25], instr[11:7] } );
+		I:			return data_t'( { { 20{ instr[31] } } , instr[31:20] } );
 		default:	return NULL;
 	endcase
 endfunction

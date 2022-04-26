@@ -52,7 +52,14 @@
 *.txt
 *~
 *example*
+*sopc*
 *sopc_*
+*.dtb
+*.dts
+soc_system/
+hps_isw_handoff/
+.qsys_edit/
+hps_sdram_p0_summary.csv
 
 # ignore Quartus II generated folders
 db/
@@ -87,16 +94,16 @@ instr.ver
 instr.mif
 *.vstf
 *.mpf_new
-sim/*.log
-sim/*.csv
 *.component.xml
 *.cnx
+
+# test_gen
 sim/*.cfg
 sim/*.bin
 sim/*.elf
 sim/*.s
-
-# test_gen
+sim/*.log
+sim/*.csv
 sim/test_gen/test
 sim/test_gen/*.bin
 sim/test_gen/*.mif

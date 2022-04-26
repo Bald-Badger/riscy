@@ -26,6 +26,7 @@
 			"ratio": "c",
 			"chrono": "c",
 			"variant": "c"
-		}
+		},
+		"makefile.extensionOutputFolder": "./.vscode"
 	}
 }

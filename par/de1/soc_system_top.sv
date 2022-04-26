@@ -292,7 +292,6 @@ module soc_system_top (
 		.hex_hex4						( HEX4 ),
 		.hex_hex5						( HEX5 ),
 
-/*
 		// 64MB SDRAM
 		.sdram_addr						( DRAM_ADDR ),
 		.sdram_ba						( DRAM_BA ),
@@ -304,7 +303,6 @@ module soc_system_top (
 		.sdram_dqm						( {DRAM_UDQM, DRAM_LDQM} ),
 		.sdram_ras_n					( DRAM_RAS_N ),
 		.sdram_we_n						( DRAM_WE_N ),
-*/
 
 		// UART, connected to GPIO
 		.uart_rx						(uart_rx),

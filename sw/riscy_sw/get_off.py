@@ -79,13 +79,23 @@ def get_main_offset_old():
 
 # offset from start of ELF file in
 def get_main_offset():
-	main_addr = get_main_addr()
-	print(f"main_addr: {main_addr}")
 	base_addr = 0x10000
-	print(f"base addr: {base_addr}")
+	print(f"base addr: 0x{hex(base_addr)}")
+
+	main_addr = get_main_addr()
+	print(f"main_addr: 0x{hex(main_addr)}")
+
+	entry_addr = get_entry_addr()
+	print(f"entry addr: {hex(entry_addr)}")
+	
+	entry_offset = entry_addr - base_addr
+	print("entry_offset: {0:b}".format(entry_offset >> 2))
+
 	boot_offset = main_addr - base_addr
-	print(f"boot offset: {int(boot_offset/4)} words")
+
+	print(f"boot offset: {int(boot_offset >> 2)} words")
 	print("boot_offset: {0:b} words".format(boot_offset >> 2))
+
 	fp = open("boot.cfg", 'w')
 	fp.write(format(boot_offset >> 2, "x"))
 	fp.close()
