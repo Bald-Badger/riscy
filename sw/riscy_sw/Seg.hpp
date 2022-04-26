@@ -8,7 +8,7 @@
 
 		private:
 			uint32_t digit[6];
-			void set_seg_single (int, int);
+			static void set_seg_single (int, int);
 
 		public:
 			Seg();

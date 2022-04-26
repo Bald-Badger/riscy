@@ -142,10 +142,10 @@ module reference_test_axi ();
 		.M00_BASE_ADDR		(32'h0),
 		.M00_ADDR_WIDTH		(32'd26),
 
-		.M01_BASE_ADDR		(32'h400_0000),
+		.M01_BASE_ADDR		(SEG_BASE),
 		.M01_ADDR_WIDTH		(32'd5),
 
-		.M02_BASE_ADDR		(32'h0401_0000),
+		.M02_BASE_ADDR		(UART_BASE),
 		.M02_ADDR_WIDTH		(32'd5),
 
 		.M03_BASE_ADDR		(32'h8000_0000),
@@ -237,6 +237,7 @@ module reference_test_axi ();
 								swap_endian(processor.memory_inst.memory_system.m_axil_rdata);
 		mem_access_addr_dut	= processor.memory_inst.addr & word_align_mask;
 	end
+
 
 	// reg ref wire
 	logic 	reg_wr_en_ref;
