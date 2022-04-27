@@ -30,10 +30,12 @@ char Serial::read_char() {
 void Serial::print(const char* str) {
 	int l = strlen(str);
 	write_string(str, l);
+	return;
 }
 
 
 void Serial::println(const char* str) {
 	print(str);
 	print(linefeedstr);
+	return;
 }

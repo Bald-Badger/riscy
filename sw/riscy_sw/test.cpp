@@ -30,8 +30,8 @@ void sanity_test_serial() {
 
 
 void halt_riscy() {
-	__asm__("li a0, 42");
-	__asm__("li a7, 93");
+	__asm__("li a0,42");
+	__asm__("li a7,93");
 	__asm__("ecall");
 	return;
 }

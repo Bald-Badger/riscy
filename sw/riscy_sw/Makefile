@@ -16,7 +16,7 @@
 
 GPP = riscv64-unknown-elf-g++
 # CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
-CFLAGS = -Wall -O3 -mno-relax -static-libstdc++ -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -D TB
+CFLAGS = -Wall -g -O3 -mno-relax -static-libstdc++ -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -D TB
 GCC_X86 = gcc
 CFLAGS_X86 = -Wall
 
@@ -61,14 +61,12 @@ header: elf
 section: elf
 	$(READELF) -S $(TARGET) > $(TARGET).section
 
-# extract the .text segment asm from elf
-text: elf
-	$(OBJDUMP) -dj .text $(TARGET) > instr_full.s 
 # --no-address --no-show-raw-insn
 
 # extract the all segments from elf to .S file
 full: elf
-	$(OBJDUMP) -D $(TARGET) > instr_full.s 
+#$(OBJDUMP) -S -g -dj .text $(TARGET) > instr_full.s 
+	$(OBJDUMP) -S -D $(TARGET) > instr_full.s 
 
 # extract the data segment from elf
 data: elf
