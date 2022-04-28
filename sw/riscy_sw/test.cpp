@@ -14,7 +14,7 @@
 
 int main() {
 	sanity_test_seg();
-	sanity_test_serial();
+	//sanity_test_serial();
 	halt_riscy();
 }
 
