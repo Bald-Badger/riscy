@@ -161,7 +161,7 @@ module reference_test_axi ();
 		.M02_BASE_ADDR		(UART_BASE),
 		.M02_ADDR_WIDTH		(32'd5),
 
-		.M03_BASE_ADDR		(32'h1000_0000),
+		.M03_BASE_ADDR		(32'h0800_0000),
 		.M03_ADDR_WIDTH		(32'd26),
 
 		.M04_BASE_ADDR		(32'h8100_0000),
