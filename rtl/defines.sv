@@ -33,7 +33,7 @@ package defines;
 
 
 // TB config
-	localparam	TB_TIMEOUT		= 233333;			// test timeout in clock cycles
+	localparam	TB_TIMEOUT		= 23333;			// test timeout in clock cycles
 													// testbench will end after this time is reached
 
 //	constant define

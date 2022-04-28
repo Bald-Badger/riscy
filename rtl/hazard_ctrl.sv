@@ -240,24 +240,14 @@ module hazard_ctrl (
 	end
 
 
-	logic ecall_f, ecall_d, ecall_x, ecall_m, ecall_w;
-	always_comb begin : ecall_sig_asign
-		ecall_w	= instr_w.opcode == SYS;
-		ecall_m	= instr_m.opcode == SYS || ecall_w;
-		ecall_x	= instr_x.opcode == SYS || ecall_m;
-		ecall_d	= instr_d.opcode == SYS || ecall_x;
-		ecall_f = instr_f.opcode == SYS || ecall_d;
-	end
-
-
 	// TODO: when seeing a FENSE instruction in decode stage, stall PC and IF untie see
 	// TODO: add fense bit in the pipeline stages to indicate instruction after finse done exe
 	always_comb begin : stall_assign
-		stall_pc		= data_mem_stall || ~sdram_init_done || (load_hazard_1 && ~data_mem_stall) || (load_hazard_2 && ~data_mem_stall) || execute_busy || ecall_d;
-		stall_if_id		= data_mem_stall || ~sdram_init_done || (load_hazard_1 && ~data_mem_stall) || (load_hazard_2 && ~data_mem_stall) || execute_busy || ecall_x;
-		stall_id_ex		= data_mem_stall || ~sdram_init_done || execute_busy || ecall_m;
-		stall_ex_mem	= data_mem_stall || ~sdram_init_done || ecall_w;
-		stall_mem_wb	= data_mem_stall || ~sdram_init_done || ecall_w;	// stall for mem-mem fwd
+		stall_pc		= data_mem_stall || ~sdram_init_done || (load_hazard_1 && ~data_mem_stall) || (load_hazard_2 && ~data_mem_stall) || execute_busy;
+		stall_if_id		= data_mem_stall || ~sdram_init_done || (load_hazard_1 && ~data_mem_stall) || (load_hazard_2 && ~data_mem_stall) || execute_busy;
+		stall_id_ex		= data_mem_stall || ~sdram_init_done || execute_busy;
+		stall_ex_mem	= data_mem_stall || ~sdram_init_done;
+		stall_mem_wb	= data_mem_stall || ~sdram_init_done;	// stall for mem-mem fwd
 	end
 
 
