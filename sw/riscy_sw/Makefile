@@ -13,10 +13,12 @@
 # -mexplicit-relocs: use assembler relocation operators when dealing with symbolic addresses, hopefully reduce pseudo instruction
 # -mno-relax: no linker relaxations, make less use of GP which i have no idea how to handle
 # -D: defines a macro to be used by the preprocessor
+# -nostdlib: don't use standard libiary
+# --entry main: use main function as entry point
 
 GPP = riscv64-unknown-elf-g++
 # CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
-CFLAGS = -Wall -g -O3 -mno-relax -static-libstdc++ -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -D TB
+CFLAGS = -Wall -g -O3 --entry main -mno-relax -static-libstdc++ -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -D TB
 GCC_X86 = gcc
 CFLAGS_X86 = -Wall
 

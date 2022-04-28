@@ -125,6 +125,4 @@ sw/riscy_sw/*.elf
 .visualizer/
 rtl/tb/clkrst/xgui/clkrst_v1_0.tcl
 
-# env-depedent vscode
-.vscode/
 sim/instr_full.s

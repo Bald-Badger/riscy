@@ -1,9 +1,11 @@
+#include <stdarg.h>
+#include <stdio.h>
+#include <string.h>
+
 #include "test.hpp"
 #include "perf.hpp"
 #include "Seg.hpp"
 #include "Serial.hpp"
-#include <stdint.h>
-#include <string.h>
 
 
 int main() {

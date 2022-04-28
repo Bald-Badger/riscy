@@ -28,7 +28,11 @@ char Serial::read_char() {
 
 
 void Serial::print(const char* str) {
-	int l = strlen(str);
+	// int l = strlen(str);
+	int l = 0;
+	while (str[l] != '\0') {
+		l++;
+	}
 	write_string(str, l);
 	return;
 }
