@@ -61,11 +61,21 @@ module reference_test_axi ();
 	);
 
 	axil_ram_sv_wrapper # (
-		.ADDR_WIDTH		(26)
+		.ADDR_WIDTH		(26),
+		.bootload		(ENABLE)
 	) ram (
 		.clk			(clk),
 		.rst			(rst),
 		.axil_bus		(ram_bus)
+	);
+
+	axil_ram_sv_wrapper # (
+		.ADDR_WIDTH		(10),
+		.bootload		(DISABLE)
+	) heap (
+		.clk			(clk),
+		.rst			(rst),
+		.axil_bus		(m03_bus)
 	);
 
 	logic [3:0] s0, s1, s2, s3, s4, s5;
@@ -135,7 +145,7 @@ module reference_test_axi ();
 	axil_dummy_master dummy_master_03 (s03_bus);
 
 
-	axil_dummy_slave dummy_slave_03 (m03_bus);
+	// axil_dummy_slave dummy_slave_03 (m03_bus);
 	axil_dummy_slave dummy_slave_04 (m04_bus);
 	axil_dummy_slave dummy_slave_05 (m05_bus);
 
@@ -151,8 +161,8 @@ module reference_test_axi ();
 		.M02_BASE_ADDR		(UART_BASE),
 		.M02_ADDR_WIDTH		(32'd5),
 
-		.M03_BASE_ADDR		(32'h8000_0000),
-		.M03_ADDR_WIDTH		(32'd0),
+		.M03_BASE_ADDR		(32'h1100_0000),
+		.M03_ADDR_WIDTH		(32'd10),
 
 		.M04_BASE_ADDR		(32'h8100_0000),
 		.M04_ADDR_WIDTH		(32'd0),
@@ -212,7 +222,7 @@ module reference_test_axi ();
 	end
 	
 	always_comb begin
-		ref_halt_wait = (data_t'(proc_ref.mem_i_inst_w) == ECALL);
+		ref_halt_wait = (data_t'(proc_ref.mem_i_inst_w) == EBREAK);
 		kill_ref = ref_halt;
 	end
 
@@ -252,7 +262,7 @@ module reference_test_axi ();
 		reg_wr_data_ref		= data_t'(proc_ref.core_ref.rd_val_w);
 	end
 
-	assign ebreak_start		= processor.instr_w.opcode == SYS;
+	assign ebreak_start		= processor.instr_w == EBREAK;
 
 	// mem ref wire
 	logic	mem_wr_en_ref, mem_rd_en_ref, mem_access_ack_ref;

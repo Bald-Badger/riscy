@@ -126,3 +126,6 @@ sw/riscy_sw/*.elf
 rtl/tb/clkrst/xgui/clkrst_v1_0.tcl
 
 sim/instr_full.s
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/targets.log

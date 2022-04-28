@@ -34,7 +34,7 @@ module fetch_axil # (
 		DEBUG,
 		FETCH,
 		STALL,
-		ECALL_WAIT
+		EBREAK_WAIT
 	} state_t;
 
 	state_t state, nxt_state;
@@ -52,7 +52,7 @@ module fetch_axil # (
 	} instr_queue_entry_t;
 
 	logic [INSTR_QUE_ADDR_WIDTH:0] fifo_counter;
-	logic ecall, ecall_clear;
+	logic ebreak, ebreak_clear;
 	logic done;
 	
 	logic buf_empty, buf_full, buf_almost_full;
@@ -74,7 +74,7 @@ module fetch_axil # (
 			pc_en <= CLEAR;
 		else if (go)
 			pc_en <= SET;
-		else if (state == ECALL_WAIT)
+		else if (state == EBREAK_WAIT)
 			pc_en <= CLEAR;
 		else if (state == DEBUG)
 			pc_en <= CLEAR;
@@ -139,9 +139,9 @@ module fetch_axil # (
 	logic instr_valid_early;
 	assign instr_plain = data_t'(instr_mem_sys);
 	assign instr_fifo_in = instr_queue_entry_t'({instr_mem_sys, pc});
-	// BUG: assert ecall = instr_d == ecall
-	assign ecall = (instr_plain == ECALL);
-	assign ecall_clear = (data_t'(instr_w) == ECALL);
+	// BUG: assert ebreak = instr_d == EBREAK
+	assign ebreak = (instr_plain == EBREAK);
+	assign ebreak_clear = (data_t'(instr_w) == EBREAK);
 	assign instr_valid_early = ((~buf_empty) && (~stall) && (~flush) && (~flush_flag) && (~flush_flag_delay));
 	// end instruction wires
 
@@ -169,7 +169,7 @@ module fetch_axil # (
 		ifu_valid			= INVALID;
 		unique case (state)
 
-			// init state, the CPU stall due to a ecall instruction
+			// init state, the CPU stall due to a EBREAK instruction
 			// hand over the control flow to debugger
 			DEBUG: begin
 				if (go) begin
@@ -184,8 +184,8 @@ module fetch_axil # (
 					ifu_valid = VALID;
 				if (done && buf_almost_full) begin
 					nxt_state	= STALL;
-				end else if (done && ecall) begin
-					nxt_state	= ECALL_WAIT;
+				end else if (done && ebreak) begin
+					nxt_state	= EBREAK_WAIT;
 				end else begin
 					nxt_state	= FETCH;
 				end
@@ -200,11 +200,11 @@ module fetch_axil # (
 				end
 			end
 
-			ECALL_WAIT: begin
-				if (ecall_clear) begin
+			EBREAK_WAIT: begin
+				if (ebreak_clear) begin
 					nxt_state	= DEBUG;
 				end else begin
-					nxt_state	= ECALL_WAIT;
+					nxt_state	= EBREAK_WAIT;
 				end
 			end
 

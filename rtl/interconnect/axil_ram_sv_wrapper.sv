@@ -11,7 +11,9 @@ module axil_ram_sv_wrapper #
     // Width of wstrb (width of data bus in words)
     parameter STRB_WIDTH = (DATA_WIDTH/8),
     // Extra pipeline register on output
-    parameter PIPELINE_OUTPUT = 1
+    parameter PIPELINE_OUTPUT = 1,
+	// load the elf file into the mem on simulation
+	parameter bootload = 0
 ) (
 	input logic clk,
 	input logic rst,
@@ -22,7 +24,8 @@ module axil_ram_sv_wrapper #
 		.DATA_WIDTH			(DATA_WIDTH),
 		.ADDR_WIDTH			(ADDR_WIDTH),
 		.STRB_WIDTH			(DATA_WIDTH/8),
-		.PIPELINE_OUTPUT	(PIPELINE_OUTPUT)
+		.PIPELINE_OUTPUT	(PIPELINE_OUTPUT),
+		.bootload			(bootload)
 	) axil_ram (
 		.clk				(clk),
 		.rst				(rst),
