@@ -61,18 +61,18 @@ module reference_test_axi ();
 	);
 
 	axil_ram_sv_wrapper # (
-		.ADDR_WIDTH		(26),
+		.ADDR_WIDTH		(19),
 		.bootload		(ENABLE)
-	) ram (
+	) text (
 		.clk			(clk),
 		.rst			(rst),
 		.axil_bus		(ram_bus)
 	);
 
 	axil_ram_sv_wrapper # (
-		.ADDR_WIDTH		(10),
+		.ADDR_WIDTH		(26),
 		.bootload		(DISABLE)
-	) heap (
+	) heap_stack (
 		.clk			(clk),
 		.rst			(rst),
 		.axil_bus		(m03_bus)
@@ -153,7 +153,7 @@ module reference_test_axi ();
 		.ADDR_WIDTH			(XLEN),
 
 		.M00_BASE_ADDR		(32'h0),
-		.M00_ADDR_WIDTH		(32'd26),
+		.M00_ADDR_WIDTH		(32'd19),
 
 		.M01_BASE_ADDR		(SEG_BASE),
 		.M01_ADDR_WIDTH		(32'd5),
@@ -161,8 +161,8 @@ module reference_test_axi ();
 		.M02_BASE_ADDR		(UART_BASE),
 		.M02_ADDR_WIDTH		(32'd5),
 
-		.M03_BASE_ADDR		(32'h1100_0000),
-		.M03_ADDR_WIDTH		(32'd10),
+		.M03_BASE_ADDR		(32'h1000_0000),
+		.M03_ADDR_WIDTH		(32'd26),
 
 		.M04_BASE_ADDR		(32'h8100_0000),
 		.M04_ADDR_WIDTH		(32'd0),
