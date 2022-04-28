@@ -1,0 +1,11 @@
+{
+	"files.associations": {
+		"atomic": "cpp",
+		"cstdint": "cpp",
+		"random": "cpp",
+		"*.tcc": "cpp",
+		"cstdio": "cpp",
+		"stdio.h": "c",
+		"reent.h": "c"
+	}
+}

@@ -1,0 +1,17 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/riscv/riscv64-unknown-elf"
+            ],
+            "defines": [],
+            "compilerPath": "/opt/riscv/bin/riscv64-unknown-elf-g++",
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++11",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}
