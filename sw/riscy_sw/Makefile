@@ -15,6 +15,7 @@
 # -D: defines a macro to be used by the preprocessor
 # -nostdlib: don't use standard libiary
 # --entry main: use main function as entry point
+# -fno-builtin-function: ???
 
 GPP = riscv64-unknown-elf-g++
 # CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB

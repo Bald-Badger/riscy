@@ -1,11 +1,15 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <malloc.h>
 
 #include "test.hpp"
 #include "perf.hpp"
 #include "Seg.hpp"
 #include "Serial.hpp"
+
+// #include "syscall.hpp"
 
 
 int main() {
@@ -34,7 +38,7 @@ void sanity_test_serial() {
 void halt_riscy() {
 	__asm__("li a0,42");
 	__asm__("li a7,93");
-	__asm__("ecall");
+	__asm__("ebreak");
 	return;
 }
 
