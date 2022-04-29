@@ -29,16 +29,17 @@ CFLAGS = \
 	-march=rv32i \
 	-mabi=ilp32 \
 
+CFLAGS += -fno-builtin-function
+
 OBJCOPY = riscv64-unknown-elf-objcopy
 OBJDUMP = riscv64-unknown-elf-objdump
 READELF = riscv64-unknown-elf-readelf
-SRC = *.cpp
 TARGET = ./riscy
 PYTHON = python
 
 all: clean assemble deassemble link asm header section offset
 
-assemble: Seg.o Serial.o main.o riscy_startup.o
+assemble: Seg.o Serial.o main.o riscy_startup.o syscall.o
 
 Seg.o:Seg.cpp
 	$(GCC) $^ -c $(CFLAGS) -o $@
@@ -52,8 +53,11 @@ main.o:riscy.cpp
 riscy_startup.o:riscy_startup.cpp
 	$(GCC) $^ -c $(CFLAGS) -o $@
 
+syscall.o:syscall.cpp
+	$(GCC) $^ -c $(CFLAGS) -o $@
 
-deassemble: Seg.s Serial.s main.s riscy_startup.s
+
+deassemble: Seg.s Serial.s main.s riscy_startup.s syscall.s
 
 Seg.s:Seg.o
 	$(OBJDUMP) -D -g $^ > $@
@@ -67,10 +71,11 @@ main.s:main.o
 riscy_startup.s:riscy_startup.o
 	$(OBJDUMP) -D -g $^ > $@
 
-link:assemble
-	$(GCC) -T elf32lriscv.ld -e _riscy_start $(CFLAGS) *.o -o $(TARGET).elf
-#$(GCC) -T riscy.ld $(CFLAGS) *.o -o $(TARGET).elf
+syscall.s:syscall.o
+	$(OBJDUMP) -D -g $^ > $@
 
+link:assemble
+	$(GCC) --specs=nano.specs -T elf32lriscv.ld -e _riscy_start $(CFLAGS) *.o -o $(TARGET).elf
 
 asm:link
 	$(OBJDUMP) -D riscy.elf > $(TARGET).s

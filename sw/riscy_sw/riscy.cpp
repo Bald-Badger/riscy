@@ -1,16 +1,7 @@
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <malloc.h>
-
 #include "riscy.hpp"
 #include "perf.hpp"
 #include "Seg.hpp"
 #include "Serial.hpp"
-
-// #include "syscall.hpp"
-
 
 int main() {
 	sanity_test_seg();
