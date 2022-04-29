@@ -1,10 +1,16 @@
 #ifndef _PERF_HPP_
 #define _PERF_HPP_
 
+	#define WORD_ALIGN_MASK	0xFFFFFFFC
+
 	// SDRAM DEFINE
-	#define SDRAM_BASE		0x00000000
-	#define SDRAM_MAX		0x03FFFFFF
+	#define SDRAM_START		0x00000000U
+	#define SDRAM_SIZE		0x04000000	// 64MB
+	#define SDRAM_END		0x03FFFFFF
 	#define SDRAM_ADDR_MASK	0x03FFFFFF
+
+	// memory space layout
+	#define STACK_START		(SDRAM_END & WORD_ALIGN_MASK)
 
 	// SEG DEFINE
 	#define SEG_BASE		0x04000000

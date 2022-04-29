@@ -17,84 +17,77 @@
 # --entry main: use main function as entry point
 # -fno-builtin-function: ???
 
-GPP = riscv64-unknown-elf-g++
-# CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
-CFLAGS = -Wall -g -O3 --entry main -mno-relax -static-libstdc++ -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -D TB
-GCC_X86 = gcc
-CFLAGS_X86 = -Wall
+GCC = riscv64-unknown-elf-g++
+CFLAGS = \
+	-Wall \
+	-g \
+	-O3 \
+	-static \
+	-mno-fdiv \
+	-mstrict-align \
+	-mlittle-endian \
+	-march=rv32i \
+	-mabi=ilp32 \
 
 OBJCOPY = riscv64-unknown-elf-objcopy
 OBJDUMP = riscv64-unknown-elf-objdump
-COPYFLAGS = -O binary
-# --only-section=.text
-TARGET = ./test
-TBTARGET = instr
-SRC = *.cpp
-SDEST = $(TBTARGET).s
-JAVA = java
-RARSADDR = 0x00000000-0x00008000
-JAVAFLAGS = -jar rars.jar a mc CompactTextAtZero dump $(RARSADDR) HexText
-PYTHON = python
 READELF = riscv64-unknown-elf-readelf
-DASM = ./riscvdasm
+SRC = *.cpp
+TARGET = ./riscy
+PYTHON = python
 
-all: clean offset
+all: clean assemble deassemble link asm header section offset
 
-# build the .S assembly file
-asm:
-	$(GPP) $(SRC) $(CFLAGS) -o $(TARGET)
+assemble: Seg.o Serial.o main.o riscy_startup.o
 
-# build the compiled and linked elf file	
-elf: asm
-	$(GPP) $(SRC) $(CFLAGS) -o $(TARGET).elf
+Seg.o:Seg.cpp
+	$(GCC) $^ -c $(CFLAGS) -o $@
 
-# extract the executable binary from elf
-bin: elf
-	$(OBJCOPY) $(COPYFLAGS) $(TARGET) $(TBTARGET).bin
+Serial.o:Serial.cpp
+	$(GCC) $^ -c $(CFLAGS) -o $@
 
-# build memory init file from binary, only used for Altera memory init
-mif: bin
-	$(PYTHON) ./bin2mif.py $(TBTARGET).bin $(TBTARGET).mif 32
+main.o:riscy.cpp
+	$(GCC) $^ -c $(CFLAGS) -o $@
+
+riscy_startup.o:riscy_startup.cpp
+	$(GCC) $^ -c $(CFLAGS) -o $@
+
+
+deassemble: Seg.s Serial.s main.s riscy_startup.s
+
+Seg.s:Seg.o
+	$(OBJDUMP) -D -g $^ > $@
+
+Serial.s:Serial.o
+	$(OBJDUMP) -D -g $^ > $@
+
+main.s:main.o
+	$(OBJDUMP) -D -g $^ > $@
+
+riscy_startup.s:riscy_startup.o
+	$(OBJDUMP) -D -g $^ > $@
+
+link:assemble
+	$(GCC) -T elf32lriscv.ld -e _riscy_start $(CFLAGS) *.o -o $(TARGET).elf
+#$(GCC) -T riscy.ld $(CFLAGS) *.o -o $(TARGET).elf
+
+
+asm:link
+	$(OBJDUMP) -D riscy.elf > $(TARGET).s
 
 # extract elf header info from elf file
-header: elf
-	$(READELF) -h $(TARGET) > $(TARGET).header
+header:link
+	$(READELF) -h $(TARGET).elf > $(TARGET).header
 
 # extract section information from elf file
-section: elf
-	$(READELF) -S $(TARGET) > $(TARGET).section
+section:link
+	$(READELF) -S $(TARGET).elf > $(TARGET).section
 
-# --no-address --no-show-raw-insn
-
-# extract the all segments from elf to .S file
-full: elf
-#$(OBJDUMP) -S -g -dj .text $(TARGET) > instr_full.s 
-	$(OBJDUMP) -S -D $(TARGET) > instr_full.s 
-
-# extract the data segment from elf
-data: elf
-	$(OBJDUMP) -dj .data $(TARGET) > instr_data.s 
-
-# calculate entry point pc offset
-offset: header section full bin
+offset:asm header section
 	$(PYTHON) ./get_off.py
-
-# 3rd party bin disassembler, deprecated
-dasm: bin
-	$(DASM) < $(TBTARGET).bin > dasm.s
-
-# using RARS to compile .S file into machine code, deprecated
-rars_mc: clean asm 
-	$(JAVA) $(JAVAFLAGS) $(TARGET).mc $(TARGET).s
-
-# using RARS to compule .S file to mif file, deprecated
-rars: rars_mc
-	$(PYTHON) ./mc2mif.py -i $(TARGET).mc -o $(TBTARGET).mif
-
-# compile x86 ELF for debug on x86 system
-x86: clean
-	$(GCC_X86) $(CFLAGS_X86) $(SRC) -o $(TARGET).out
 
 # delete all but .c, .h file
 clean:
-	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg ./*.out
+	rm -f ./*.o ./*.s $(TARGET) \
+	./*.bin ./*.mif ./*.mc ./*.header \
+	./*.section ./*.cfg ./*.out ./*.elf
