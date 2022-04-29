@@ -410,7 +410,7 @@ module memory (
 			LHU:	addr_misalign = addr[0];
 			default:addr_misalign = 1'b0; 
 		endcase
-		misalign_trap = addr_misalign && (rden || wren);
+		misalign_trap = addr_misalign && (rden || wren) && valid;
 	end
 
 	property memory_address_misalign;
