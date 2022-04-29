@@ -39,7 +39,7 @@ PYTHON = python
 
 all: clean assemble deassemble link asm header section offset
 
-assemble: Seg.o Serial.o main.o riscy_startup.o syscall.o
+assemble: Seg.o Serial.o main.o riscy_startup.o printf.o
 
 Seg.o:Seg.cpp
 	$(GCC) $^ -c $(CFLAGS) -o $@
@@ -53,11 +53,11 @@ main.o:riscy.cpp
 riscy_startup.o:riscy_startup.cpp
 	$(GCC) $^ -c $(CFLAGS) -o $@
 
-syscall.o:syscall.cpp
+printf.o:printf.c
 	$(GCC) $^ -c $(CFLAGS) -o $@
 
 
-deassemble: Seg.s Serial.s main.s riscy_startup.s syscall.s
+deassemble: riscy_startup.s Seg.s Serial.s main.s printf.s
 
 Seg.s:Seg.o
 	$(OBJDUMP) -D -g $^ > $@
@@ -71,11 +71,13 @@ main.s:main.o
 riscy_startup.s:riscy_startup.o
 	$(OBJDUMP) -D -g $^ > $@
 
-syscall.s:syscall.o
+printf.s:printf.o
 	$(OBJDUMP) -D -g $^ > $@
 
 link:assemble
-	$(GCC) --specs=nano.specs -T elf32lriscv.ld -e _riscy_start $(CFLAGS) *.o -o $(TARGET).elf
+	$(GCC) --specs=nano.specs -T elf32lriscv.ld -e _riscy_start $(CFLAGS) \
+	riscy_startup.o Seg.o Serial.o main.o printf.o \
+	-o $(TARGET).elf
 
 asm:link
 	$(OBJDUMP) -D riscy.elf > $(TARGET).s
