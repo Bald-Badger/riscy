@@ -28,13 +28,6 @@ import defines::*;
 			tag(19)            index(9)    word_off(2)   byte_off(2)
 */
 
-localparam	MAX_PHY_ADDR		= 32'h07ff_ffff;	// 128MB, for TB use only, noted that sdram is only 64MB
-//localparam	SP_BASE				= 32'h01ff_fffc;	// stack base pointer, init SP to here
-//localparam	GP_BASE				= 32'h0100_0800;	// global pointer, init GP to here
-localparam	SP_BASE				= 32'h0bff_fffc;	// stack base pointer, init SP to here
-localparam	GP_BASE				= 32'h0900_0000;	// global pointer, init GP to here
-
-
 localparam	MEM_ACCESS_TIMEOUT	= 128;			// 128 cycles
 
 localparam	DEBUG_MEM_SYS		= DISABLE;

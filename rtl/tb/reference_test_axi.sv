@@ -69,14 +69,6 @@ module reference_test_axi ();
 		.axil_bus		(ram_bus)
 	);
 
-	axil_ram_sv_wrapper # (
-		.ADDR_WIDTH		(26),
-		.bootload		(DISABLE)
-	) heap_stack (
-		.clk			(clk),
-		.rst			(rst),
-		.axil_bus		(m03_bus)
-	);
 
 	logic [3:0] s0, s1, s2, s3, s4, s5;
 	seg_axil_wrapper dummy_seg_display (
@@ -145,7 +137,7 @@ module reference_test_axi ();
 	axil_dummy_master dummy_master_03 (s03_bus);
 
 
-	// axil_dummy_slave dummy_slave_03 (m03_bus);
+	axil_dummy_slave dummy_slave_03 (m03_bus);
 	axil_dummy_slave dummy_slave_04 (m04_bus);
 	axil_dummy_slave dummy_slave_05 (m05_bus);
 
@@ -153,7 +145,7 @@ module reference_test_axi ();
 		.ADDR_WIDTH			(XLEN),
 
 		.M00_BASE_ADDR		(32'h0),
-		.M00_ADDR_WIDTH		(32'd19),
+		.M00_ADDR_WIDTH		(32'd26),
 
 		.M01_BASE_ADDR		(SEG_BASE),
 		.M01_ADDR_WIDTH		(32'd5),
@@ -162,7 +154,7 @@ module reference_test_axi ();
 		.M02_ADDR_WIDTH		(32'd5),
 
 		.M03_BASE_ADDR		(32'h0800_0000),
-		.M03_ADDR_WIDTH		(32'd26),
+		.M03_ADDR_WIDTH		(32'd0),
 
 		.M04_BASE_ADDR		(32'h8100_0000),
 		.M04_ADDR_WIDTH		(32'd0),

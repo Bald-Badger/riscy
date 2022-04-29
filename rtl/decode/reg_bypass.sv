@@ -24,12 +24,7 @@ module reg_bypass (
 	always_ff @(negedge clk or negedge rst_n) begin
 		if (~rst_n) begin
 			for (i = 0; i < 32; i++) begin
-				if (i == SP) 
-					registers[i] <= SP_BASE;
-				else if (i == GP)
-					registers[i] <= GP_BASE;
-				else
-					registers[i] <= NULL;
+				registers[i] <= NULL;
 			end
 		end else begin
 			for (i = 0; i < 32; i++) begin
