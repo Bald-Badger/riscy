@@ -56,10 +56,10 @@ def get_enrty_point_offset():
 	print(f"entry addr: {entry_addr}")
 	text_addr = get_text_addr()
 	print(f"text addr: {text_addr}")
-	boot_offset = entry_addr - text_addr
-	print(f"boot offset: {boot_offset} words")
+	main_offset = entry_addr - text_addr
+	print(f"boot offset: {main_offset} words")
 	fp = open("boot.cfg", 'w')
-	fp.write(format(boot_offset, "x"))
+	fp.write(format(main_offset, "x"))
 	fp.close()
 
 
@@ -67,13 +67,13 @@ def get_enrty_point_offset():
 def get_main_offset_old():
 	main_addr = get_main_addr()
 	print(f"main_addr: {main_addr}")
-	text_addr = get_text_addr()
+	text_addr = get_text_addr(riscy.section)
 	print(f"text addr: {text_addr}")
-	boot_offset = main_addr - text_addr
-	print(f"boot offset: {int(boot_offset/4)} words")
-	print("boot_offset: {0:b} byte".format(boot_offset))
+	main_offset = main_addr - text_addr
+	print(f"boot offset: {int(main_offset/4)} words")
+	print("main_offset: {0:b} byte".format(main_offset))
 	fp = open("boot.cfg", 'w')
-	fp.write(format(boot_offset, "x"))
+	fp.write(format(main_offset, "x"))
 	fp.close()
 
 
@@ -82,22 +82,22 @@ def get_main_offset():
 	base_addr = 0x10000
 	print(f"base addr: 0x{hex(base_addr)}")
 
-	main_addr = get_main_addr()
+	main_addr = get_main_addr("riscy.s")
 	print(f"main_addr: 0x{hex(main_addr)}")
 
-	entry_addr = get_entry_addr()
+	main_offset = main_addr - base_addr
+
+	print(f"main offset: {int(main_offset >> 2)} words")
+	print("main offset: {0:b} words".format(main_offset >> 2))
+
+	entry_addr = get_entry_addr("riscy.header")
 	print(f"entry addr: {hex(entry_addr)}")
 	
 	entry_offset = entry_addr - base_addr
 	print("entry_offset: {0:b}".format(entry_offset >> 2))
 
-	boot_offset = main_addr - base_addr
-
-	print(f"boot offset: {int(boot_offset >> 2)} words")
-	print("boot_offset: {0:b} words".format(boot_offset >> 2))
-
 	fp = open("boot.cfg", 'w')
-	fp.write(format(boot_offset >> 2, "x"))
+	fp.write(format(entry_offset >> 2, "x"))
 	fp.close()
 
 

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-#include "test.hpp"
+#include "riscy.hpp"
 #include "perf.hpp"
 #include "Seg.hpp"
 #include "Serial.hpp"
@@ -14,7 +14,7 @@
 
 int main() {
 	sanity_test_seg();
-	//sanity_test_serial();
+	sanity_test_serial();
 	halt_riscy();
 }
 
