@@ -8,6 +8,14 @@ int main() {
 	printf_("Hello Riscy \r\n");
 	sanity_test_seg();
 	sanity_test_serial();
+	char c;
+	Serial* serial = new Serial();
+	while (1)
+	{
+		c = serial->pull_input();
+		serial->putc(c);
+	}
+
 	halt_riscy();
 }
 
@@ -34,4 +42,3 @@ void halt_riscy() {
 	__asm__("ebreak");
 	return;
 }
-

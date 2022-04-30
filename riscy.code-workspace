@@ -25,7 +25,8 @@
 			"charconv": "c",
 			"ratio": "c",
 			"chrono": "c",
-			"variant": "c"
+			"variant": "c",
+			"iostream": "cpp"
 		},
 		"makefile.extensionOutputFolder": "./.vscode"
 	}
