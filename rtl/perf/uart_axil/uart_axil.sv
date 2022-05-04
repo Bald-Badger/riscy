@@ -205,7 +205,7 @@ module uart_axil #(
 	// RX side logic
 	logic	[7:0]	fifo_in_rx, fifo_out_rx;
 	logic			fifo_wr_en_rx, fifo_rd_en_rx;
-	logic			fifo_counter_rx;
+	logic	[FIFO_WIDTH_RX-1:0]	fifo_counter_rx;
 	logic			rx_done_ff0, rx_done_ff1;
 
 	always_ff @(posedge clk, posedge rst) begin : rx_done_pos_edge_detect

@@ -203,8 +203,9 @@ module reference_test_axi ();
 		uart_driver_en		= DISABLE;
 		uart_driver_data	= 8'b0;
 		@(posedge go);
-		repeat(100) @(negedge clk);
+		repeat(1000) @(negedge clk);
 		uart_write_char(8'h46);	// char 'F'
+		uart_write_char(8'h47);	// char 'F'
 	end
 
 	initial begin
