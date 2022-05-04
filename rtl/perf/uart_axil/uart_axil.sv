@@ -240,7 +240,8 @@ module uart_axil #(
 	typedef enum logic [2:0] {
 		IDLE_RX,
 		LOAD_CHAR_RX,
-		READ_NUM_RX
+		READ_NUM_RX,
+		READ_NUM_RX_2	// delay one cycle
 	} uart_rx_state_t;
 	uart_rx_state_t state_uart_rx, nxt_state_uart_rx;
 	
@@ -292,6 +293,10 @@ module uart_axil #(
 			end
 
 			READ_NUM_RX: begin
+				nxt_state_uart_rx	= READ_NUM_RX_2;
+			end
+
+			READ_NUM_RX_2: begin
 				nxt_state_uart_rx	= IDLE_RX;
 				op_read_rx_num_done	= DONE;
 				simp_data_out		= (ENDIANESS == BIG_ENDIAN) ? rx_num_big : rx_num_small;

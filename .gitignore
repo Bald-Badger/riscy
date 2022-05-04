@@ -119,6 +119,9 @@ sw/riscy_sw/*.header
 sw/riscy_sw/*.section
 sw/riscy_sw/*.out
 sw/riscy_sw/*.elf
+sw/riscy_sw/*.o
+sw/riscy_sw/*.s
+sw/riscy_sw/*.cfg
 
 # formal
 .qverify_ui_local_prefs

@@ -1,11 +1,13 @@
 {
 	"files.associations": {
+		"*.csv": "csv",
 		"atomic": "cpp",
 		"cstdint": "cpp",
 		"random": "cpp",
 		"*.tcc": "cpp",
 		"cstdio": "cpp",
 		"stdio.h": "c",
-		"reent.h": "c"
+		"reent.h": "c",
+		"stat.h": "c"
 	}
 }

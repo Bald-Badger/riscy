@@ -10,10 +10,13 @@ int main() {
 	sanity_test_serial();
 	char c;
 	Serial* serial = new Serial();
+	Seg dgb_seg = Seg();
 	while (1)
 	{
 		c = serial->pull_input();
 		serial->putc(c);
+		dgb_seg.set_seg((int)c);
+		dgb_seg.write_seg();
 	}
 
 	halt_riscy();

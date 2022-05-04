@@ -21,7 +21,7 @@ GCC = riscv64-unknown-elf-g++
 CFLAGS = \
 	-Wall \
 	-g \
-	-O3 \
+	-O0 \
 	-static \
 	-mno-fdiv \
 	-mstrict-align \
