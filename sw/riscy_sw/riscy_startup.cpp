@@ -5,10 +5,10 @@ extern int main();
 
 void _riscy_start(){
 	//init sp
-	__asm__("li sp, 0x00FFFFFC");
+	__asm__("li sp, 0x000493d0");
 
 	//init gp
-	__asm__("li gp, 0x00100000");
+	__asm__("li gp, 0x00020000");
 
 	main();
 }

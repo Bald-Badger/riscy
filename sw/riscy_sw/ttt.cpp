@@ -1,24 +1,12 @@
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-
-// using namespace std;
-
-constexpr int row = 3;
-constexpr int col = 3;
-
-void printBoard(char board[row][col]);
-void setBoard(char board[row][col]);
-void getInput(char board[row][col], int *rowInput, int *colInput, char team);
-int bot(char board[row][col]);
-int game(char board[row][col]);
-int checkAvailable(char board[row][col], int rowInput, int colInput);
-int checkWinner(char board[row][col]);
+#include "ttt.hpp"
 
 
-int main() {
+void ttt() {
 	char board[row][col];
-	game(board);
+	// int rowInput, colInput;
+	setBoard(board);
+	printBoard(board);
+	// game(board);
 }
 
 
@@ -33,7 +21,7 @@ int game(char board[row][col]) {
 		getInput(board, &rowInput, &colInput, 'X');
 		printBoard(board);
 		if (checkWinner(board) == 1) {
-			printf("X Wins!\n");
+			printf_("X Wins!\n");
 			break;
 		}
 
@@ -41,7 +29,7 @@ int game(char board[row][col]) {
 		//bot(board);
 		printBoard(board);
 		if (checkWinner(board) == -1) {
-			printf("O Wins!\n"); 
+			printf_("O Wins!\n"); 
 			break;
 		}
 	}
@@ -51,12 +39,12 @@ int game(char board[row][col]) {
 
 void printBoard(char board[row][col]) {
 	// print board
-	printf("\n");
+	printf_("\n");
 	for (int i = 0; i < row; i++) {
 		for (int j = 0; j < col; j++) {
-			printf("%c",board[i][j]);
+			printf_("%c",board[i][j]);
 		}
-		printf("\n");
+		printf_("\n");
 	}
 }
 
@@ -69,30 +57,14 @@ void setBoard(char board[row][col]) {
 	}
 }
 
-int bot(char board[row][col]) {
-	// bot playing against human
-	int random = rand() % 9;
-
-	int botRow = random/3;
-	int botCol = random - botRow * 3;
-
-	if(checkAvailable(board, botRow, botCol) == 1) {
-		board[botRow][botCol] = 'O';
-		return 0;
-	}
-	else {
-		bot(board);
-		return 0;
-	}
-}
 
 void getInput(char board[row][col], int *rowInput, int *colInput, char team) {
 	// get input from user (row and column)
-	printf("Enter row: ");
-	cin >> *rowInput;
+	printf_("Enter row: ");
+	//cin >> *rowInput;
 	(*rowInput)--;
-	printf("Enter column: ");
-	cin >> *colInput;
+	printf_("Enter column: ");
+	//cin >> *colInput;
 	(*colInput)--;
 
 	if(checkAvailable(board, *rowInput, *colInput) == -1) {

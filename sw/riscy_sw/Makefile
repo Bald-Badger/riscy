@@ -21,7 +21,7 @@ GCC = riscv64-unknown-elf-g++
 CFLAGS = \
 	-Wall \
 	-g \
-	-O0 \
+	-O3 \
 	-static \
 	-mno-fdiv \
 	-mstrict-align \
@@ -39,7 +39,7 @@ PYTHON = python
 
 all: clean assemble deassemble link asm header section offset
 
-assemble: Seg.o Serial.o main.o riscy_startup.o printf.o
+assemble: Seg.o Serial.o main.o riscy_startup.o printf.o ttt.o
 
 Seg.o:Seg.cpp
 	$(GCC) $^ -c $(CFLAGS) -o $@
@@ -56,8 +56,11 @@ riscy_startup.o:riscy_startup.cpp
 printf.o:printf.c
 	$(GCC) $^ -c $(CFLAGS) -o $@
 
+ttt.o:ttt.cpp
+	$(GCC) $^ -c $(CFLAGS) -o $@
 
-deassemble: riscy_startup.s Seg.s Serial.s main.s printf.s
+
+deassemble: riscy_startup.s Seg.s Serial.s main.s printf.s ttt.s
 
 Seg.s:Seg.o
 	$(OBJDUMP) -D -g $^ > $@
@@ -74,9 +77,12 @@ riscy_startup.s:riscy_startup.o
 printf.s:printf.o
 	$(OBJDUMP) -D -g $^ > $@
 
+ttt.s:ttt.o
+	$(OBJDUMP) -D -g $^ > $@
+
 link:assemble
 	$(GCC) --specs=nano.specs -T elf32lriscv.ld -e _riscy_start $(CFLAGS) \
-	riscy_startup.o Seg.o Serial.o main.o printf.o \
+	riscy_startup.o Seg.o Serial.o main.o printf.o ttt.o \
 	-o $(TARGET).elf
 
 asm:link

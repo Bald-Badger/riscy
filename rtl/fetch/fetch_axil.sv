@@ -121,7 +121,7 @@ module fetch_axil # (
 
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n) begin
-			pc <= (boot_pc_extrn * 4 + 32'h0001_0000);
+			pc <= (boot_pc_extrn * 4);
 		end else if (pc_en && update_pc) begin
 			pc <= pc_nxt;
 		end else begin

@@ -1,24 +1,12 @@
 #include "riscy.hpp"
-#include "perf.hpp"
-#include "Seg.hpp"
-#include "Serial.hpp"
-#include "printf.h"
+
+extern void ttt();
 
 int main() {
 	printf_("Hello Riscy \r\n");
 	sanity_test_seg();
 	sanity_test_serial();
-	char c;
-	Serial* serial = new Serial();
-	Seg dgb_seg = Seg();
-	while (1)
-	{
-		c = serial->pull_input();
-		serial->putc(c);
-		dgb_seg.set_seg((int)c);
-		dgb_seg.write_seg();
-	}
-
+	ttt();
 	halt_riscy();
 }
 

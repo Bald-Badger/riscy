@@ -79,7 +79,7 @@ def get_main_offset_old():
 
 # offset from start of ELF file in
 def get_main_offset():
-	base_addr = 0x10000
+	base_addr = 0
 	print(f"base addr: 0x{hex(base_addr)}")
 
 	main_addr = get_main_addr("riscy.s")
