@@ -244,7 +244,7 @@ void boot_load (char* filename, int swap) {
 
 	// free allocated pointers
 	free(instr_arr);
-	free(instr_arr_byte);
+	// free(instr_arr_byte);
 
 	// display message;
 	if (err == 0) {
