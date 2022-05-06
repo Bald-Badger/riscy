@@ -335,10 +335,9 @@ void sanity_test_uart() {
 
 int main () {
 	printf("starting RISCY bootloading process...\n");
-	//usleep(1000);
-	//sanity_test_sdram();
+	sanity_test_sdram();
 	sanity_test_seg();
-	//sanity_test_uart();
+	sanity_test_uart();
 	// boot_load("./riscy.elf", 1);
 	return 0;
 }
