@@ -18,7 +18,7 @@ const uint32_t h2f_base			= (unsigned int) 0xC0000000;
 const uint32_t elf_load_offset	= 0x00000000;	// in words (4 byte)
 
 // sdram define
-// #define SDRAM
+#define SDRAM
 #ifdef SDRAM
 const uint32_t sdram_range		= 0x03FFFFFF;	// 0x0 - 0x3ffffff
 const uint32_t sdram_addr_mask	= 0x03FFFFFC;	// word-aligned access
@@ -243,8 +243,8 @@ void boot_load (char* filename, int swap) {
 	clean_sdram(sdram_vp);
 
 	// free allocated pointers
-	free(instr_arr);
-	// free(instr_arr_byte);
+	// free(instr_arr);
+	free(instr_arr_byte);
 
 	// display message;
 	if (err == 0) {
@@ -336,9 +336,9 @@ void sanity_test_uart() {
 int main () {
 	printf("starting RISCY bootloading process...\n");
 	usleep(1000);
-	// sanity_test_sdram();
+	sanity_test_sdram();
 	sanity_test_seg();
 	sanity_test_uart();
-	boot_load("./riscy.elf", 1);
+	// boot_load("./riscy.elf", 1);
 	return 0;
 }
