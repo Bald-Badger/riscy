@@ -56,19 +56,19 @@ module axil2simp # (
 	output	logic	[ 1:0]				rresp_o,
 
 	// unused AXI signal
-	input 	logic	[ 2:0]	awprot_i,
-	input 	logic	[ 2:0]	arprot_i,
+	input 	logic	[ 2:0]				awprot_i,
+	input 	logic	[ 2:0]				arprot_i,
 
 	// simp master interface
-	output 	logic	[31:0]	simp_addr,
-	output 	logic	[31:0]	simp_data_in,
-	output 	logic			simp_wr,
-	output 	logic			simp_rd,
-	output 	logic			simp_valid,
-	output 	logic	[ 3:0]	simp_be,
+	output 	logic	[31:0]				simp_addr,
+	output 	logic	[31:0]				simp_data_in,
+	output 	logic						simp_wr,
+	output 	logic						simp_rd,
+	output 	logic						simp_valid,
+	output 	logic	[ 3:0]				simp_be,
 
-	input	logic	[31:0]	simp_data_out,
-	input	logic			simp_done
+	input	logic	[31:0]				simp_data_out,
+	input	logic						simp_done
 );
 
 	typedef enum logic[2:0] {
@@ -76,7 +76,8 @@ module axil2simp # (
 		W_DATA,
 		W_RESP,
 		W_SIMP,
-		R_RESP
+		R_RESP,
+		R_DONE
 	} state_t;
 
 	state_t state, nxt_state;
@@ -104,6 +105,7 @@ module axil2simp # (
 	assign simp_handshake = simp_valid && simp_done;
 
 	data_t simp_addr_reg;
+	data_t simp_data_out_reg;
 
 	always_ff @( posedge clk ) begin
 		if (read_addr_handshake)
@@ -119,6 +121,13 @@ module axil2simp # (
 			simp_data_in <= wdata_i;
 		else
 			simp_data_in <= simp_data_in;
+	end
+
+	always_ff @( posedge clk ) begin
+		if (simp_valid && simp_done && simp_rd)
+			simp_data_out_reg <= simp_data_out;
+		else
+			simp_data_out_reg <= simp_data_out_reg;	
 	end
 
 	always_comb begin : fsm
@@ -194,14 +203,19 @@ module axil2simp # (
 				simp_valid		= VALID;
 				simp_be			= 4'b1111;
 				if (simp_handshake) begin
-					rvalid_o	= VALID;
-					rdata_o		= simp_data_out;
-					nxt_state	= IDLE;
+					nxt_state	= R_DONE;
 				end else begin
-					rvalid_o	= INVALID;
-					rdata_o		= NULL;
 					nxt_state	= R_RESP;
 				end
+			end
+
+			R_DONE: begin
+				rvalid_o		= VALID;
+				rdata_o			= simp_data_out_reg;
+				if (rready_i)
+					nxt_state	= IDLE;
+				else
+					nxt_state	= R_DONE;
 			end
 
 			default:begin

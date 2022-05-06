@@ -34,8 +34,8 @@ THE SOFTWARE.
 module axil_interconnect_2x1 #
 (
     parameter DATA_WIDTH = 32,
-    parameter ADDR_WIDTH = 16,
-    parameter STRB_WIDTH = (DATA_WIDTH/8),
+    parameter ADDR_WIDTH = 26,
+    parameter STRB_WIDTH = 4,
     parameter M_REGIONS = 1,
     parameter M00_BASE_ADDR = 0,
     parameter M00_ADDR_WIDTH = {M_REGIONS{32'd24}},

@@ -6,7 +6,24 @@ int main() {
 	printf_("Hello Riscy \r\n");
 	sanity_test_seg();
 	sanity_test_serial();
-	ttt();
+
+	Serial s = Serial();
+	volatile char c;
+
+	Seg dbg_seg = Seg();
+	uint32_t iter = 1;
+	while (1) {
+		dbg_seg.set_seg(iter);
+		dbg_seg.write_seg();
+		c = s.pull_input();
+		iter ++;
+
+		dbg_seg.set_seg(iter);
+		dbg_seg.write_seg();
+		s.putc(c);
+		iter ++;
+	}
+
 	halt_riscy();
 }
 
