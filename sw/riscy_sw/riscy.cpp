@@ -1,28 +1,26 @@
 #include "riscy.hpp"
 
-extern void ttt();
+// extern void ttt();
 
 int main() {
 	printf_("Hello Riscy \r\n");
 	sanity_test_seg();
 	sanity_test_serial();
 
-	Serial s = Serial();
-	volatile char c;
+	Seg* dbg_seg = new Seg;
+	Serial* s = new Serial;
+	int buflen = 0;
+	char c;
 
-	Seg dbg_seg = Seg();
-	uint32_t iter = 1;
-	while (1) {
-		dbg_seg.set_seg(iter);
-		dbg_seg.write_seg();
-		c = s.pull_input();
-		iter ++;
-
-		dbg_seg.set_seg(iter);
-		dbg_seg.write_seg();
-		s.putc(c);
-		iter ++;
+	for(;;) {
+		buflen = s->read_strlen();
+		if (buflen > 0) {
+			c = s->read_char();
+			s->putc(c);
+		}
 	}
+
+	
 
 	halt_riscy();
 }

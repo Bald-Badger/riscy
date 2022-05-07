@@ -150,19 +150,19 @@ module axil2simp # (
 		unique case (state)
 
 			IDLE:	begin
+				arready_o			= 1'b1;
 				if (arvalid_i) begin
-					arready_o = 1'b1;
-					nxt_state = R_RESP;
+					nxt_state		= R_RESP;
 				end else if (awvalid_i) begin
-					awready_o = 1'b1;
+					awready_o		= 1'b1;
 					if (wvalid_i) begin
-						wready_o = 1'b1;
-						nxt_state = W_SIMP;
+						wready_o	= 1'b1;
+						nxt_state	= W_SIMP;
 					end else begin
-						nxt_state = W_DATA;
+						nxt_state	= W_DATA;
 					end
 				end else begin
-					nxt_state	= IDLE;
+					nxt_state		= IDLE;
 				end
 			end
 

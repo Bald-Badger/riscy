@@ -54,10 +54,13 @@ void Serial::println(const char* str) {
 }
 
 char Serial::pull_input() {
-	volatile int available = 0;
-	while (available == 0) {
+	int available = 0;
+	while (1) {
 		available = read_strlen();
+		if (available > 0) {
+			break;
+		}
 	}
-	volatile char c = read_char() & UART_DATA_MASK;
+	char c = read_char() & UART_DATA_MASK;
 	return c;
 }

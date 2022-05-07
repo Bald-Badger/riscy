@@ -8,7 +8,7 @@ void _riscy_start(){
 	__asm__("li sp, 0x03fffffc");
 
 	//init gp
-	__asm__("li gp, 0x01020000");
+	__asm__("li gp, 0x02000000");
 
 	main();
 }

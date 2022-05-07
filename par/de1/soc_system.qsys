@@ -9,14 +9,6 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
-   element axil_crossbar_2x1_0
-   {
-      datum _sortIndex
-      {
-         value = "3";
-         type = "int";
-      }
-   }
    element clk_0
    {
       datum _sortIndex
@@ -38,14 +30,6 @@
          type = "int";
       }
    }
-   element hps_0.f2h_axi_slave
-   {
-      datum baseAddress
-      {
-         value = "0";
-         type = "String";
-      }
-   }
    element riscy_core_0
    {
       datum _sortIndex
@@ -58,7 +42,7 @@
    {
       datum _sortIndex
       {
-         value = "4";
+         value = "3";
          type = "int";
       }
    }
@@ -66,7 +50,7 @@
    {
       datum _sortIndex
       {
-         value = "5";
+         value = "4";
          type = "int";
       }
    }
@@ -314,7 +298,7 @@
    {
       datum _sortIndex
       {
-         value = "6";
+         value = "5";
          type = "int";
       }
    }
@@ -364,38 +348,6 @@
    type="conduit"
    dir="end" />
  <interface name="uart" internal="uart_axil_0.uart" type="conduit" dir="end" />
- <module
-   name="axil_crossbar_2x1_0"
-   kind="axil_crossbar_2x1"
-   version="1.0"
-   enabled="1">
-  <parameter name="ADDR_WIDTH" value="28" />
-  <parameter name="DATA_WIDTH" value="32" />
-  <parameter name="M00_ADDR_WIDTH" value="40" />
-  <parameter name="M00_AR_REG_TYPE" value="1" />
-  <parameter name="M00_AW_REG_TYPE" value="1" />
-  <parameter name="M00_BASE_ADDR" value="0" />
-  <parameter name="M00_B_REG_TYPE" value="0" />
-  <parameter name="M00_CONNECT_READ" value="3" />
-  <parameter name="M00_CONNECT_WRITE" value="3" />
-  <parameter name="M00_ISSUE" value="16" />
-  <parameter name="M00_R_REG_TYPE" value="0" />
-  <parameter name="M00_SECURE" value="0" />
-  <parameter name="M00_W_REG_TYPE" value="2" />
-  <parameter name="M_REGIONS" value="1" />
-  <parameter name="S00_ACCEPT" value="16" />
-  <parameter name="S00_AR_REG_TYPE" value="0" />
-  <parameter name="S00_AW_REG_TYPE" value="0" />
-  <parameter name="S00_B_REG_TYPE" value="1" />
-  <parameter name="S00_R_REG_TYPE" value="2" />
-  <parameter name="S00_W_REG_TYPE" value="0" />
-  <parameter name="S01_ACCEPT" value="16" />
-  <parameter name="S01_AR_REG_TYPE" value="0" />
-  <parameter name="S01_AW_REG_TYPE" value="0" />
-  <parameter name="S01_B_REG_TYPE" value="1" />
-  <parameter name="S01_R_REG_TYPE" value="2" />
-  <parameter name="S01_W_REG_TYPE" value="0" />
- </module>
  <module name="clk_0" kind="clock_source" version="21.1" enabled="1">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -498,7 +450,7 @@
   <parameter name="ENABLE_USER_ECC" value="false" />
   <parameter name="EXPORT_AFI_HALF_CLK" value="false" />
   <parameter name="EXTRA_SETTINGS" value="" />
-  <parameter name="F2H_AXI_CLOCK_FREQ" value="50000000" />
+  <parameter name="F2H_AXI_CLOCK_FREQ" value="100" />
   <parameter name="F2H_SDRAM0_CLOCK_FREQ" value="100" />
   <parameter name="F2H_SDRAM1_CLOCK_FREQ" value="100" />
   <parameter name="F2H_SDRAM2_CLOCK_FREQ" value="100" />
@@ -515,7 +467,7 @@
   <parameter name="F2SDRAM_Type" value="" />
   <parameter name="F2SDRAM_Width" value="" />
   <parameter name="F2SINTERRUPT_Enable" value="false" />
-  <parameter name="F2S_Width" value="1" />
+  <parameter name="F2S_Width" value="0" />
   <parameter name="FIX_READ_LATENCY" value="8" />
   <parameter name="FORCED_NON_LDC_ADDR_CMD_MEM_CK_INVERT" value="false" />
   <parameter name="FORCED_NUM_WRITE_FR_CYCLE_SHIFTS" value="0" />
@@ -556,7 +508,7 @@
   <parameter name="H2F_AXI_CLOCK_FREQ" value="50000000" />
   <parameter name="H2F_CTI_CLOCK_FREQ" value="100" />
   <parameter name="H2F_DEBUG_APB_CLOCK_FREQ" value="100" />
-  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="50000000" />
+  <parameter name="H2F_LW_AXI_CLOCK_FREQ" value="100" />
   <parameter name="H2F_TPIU_CLOCK_IN_FREQ" value="100" />
   <parameter name="HARD_EMIF" value="true" />
   <parameter name="HCX_COMPAT_MODE" value="false" />
@@ -579,7 +531,7 @@
   <parameter name="LOANIO_Enable">No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No,No</parameter>
   <parameter name="LOCAL_ID_WIDTH" value="8" />
   <parameter name="LRDIMM_EXTENDED_CONFIG">0x000000000000000000</parameter>
-  <parameter name="LWH2F_Enable" value="true" />
+  <parameter name="LWH2F_Enable" value="false" />
   <parameter name="MARGIN_VARIATION_TEST" value="false" />
   <parameter name="MAX_PENDING_RD_CMD" value="32" />
   <parameter name="MAX_PENDING_WR_CMD" value="16" />
@@ -954,7 +906,7 @@
  <connection
    kind="avalon"
    version="21.1"
-   start="axil_crossbar_2x1_0.altera_axi4lite_master"
+   start="riscy_core_0.altera_axi4lite_master"
    end="sdram_controller_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
@@ -963,7 +915,7 @@
  <connection
    kind="avalon"
    version="21.1"
-   start="axil_crossbar_2x1_0.altera_axi4lite_master"
+   start="riscy_core_0.altera_axi4lite_master"
    end="seg_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04000000" />
@@ -973,15 +925,6 @@
    kind="avalon"
    version="21.1"
    start="riscy_core_0.altera_axi4lite_master"
-   end="axil_crossbar_2x1_0.altera_axi4lite_slave_1">
-  <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x0000" />
-  <parameter name="defaultConnection" value="false" />
- </connection>
- <connection
-   kind="avalon"
-   version="21.1"
-   start="axil_crossbar_2x1_0.altera_axi4lite_master"
    end="uart_axil_0.axil_uart_interface">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x04010000" />
@@ -991,7 +934,7 @@
    kind="avalon"
    version="21.1"
    start="hps_0.h2f_axi_master"
-   end="axil_crossbar_2x1_0.altera_axi4lite_slave_0">
+   end="sdram_controller_axil_0.altera_axi4lite_slave">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x0000" />
   <parameter name="defaultConnection" value="false" />
@@ -1012,22 +955,7 @@
    kind="clock"
    version="21.1"
    start="clk_0.clk"
-   end="axil_crossbar_2x1_0.clock" />
- <connection
-   kind="clock"
-   version="21.1"
-   start="clk_0.clk"
-   end="hps_0.f2h_axi_clock" />
- <connection
-   kind="clock"
-   version="21.1"
-   start="clk_0.clk"
    end="hps_0.h2f_axi_clock" />
- <connection
-   kind="clock"
-   version="21.1"
-   start="clk_0.clk"
-   end="hps_0.h2f_lw_axi_clock" />
  <connection
    kind="reset"
    version="21.1"
@@ -1048,11 +976,6 @@
    version="21.1"
    start="clk_0.clk_reset"
    end="sdram_controller_axil_0.reset_sink" />
- <connection
-   kind="reset"
-   version="21.1"
-   start="clk_0.clk_reset"
-   end="axil_crossbar_2x1_0.reset_sink" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="AUTO" />
  <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
  <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />

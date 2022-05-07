@@ -20,7 +20,7 @@ module proc_axil (
 
 	axil_interface instr_bus_lite ();
 	
-	axil_crossbar_2x1_wrapper cross_bar (
+	axil_interconnect_2x1_wrapper interconnect_2x1 (
 		.clk	(clk),
 		.rst	(~rst_n),
 		.s00	(data_bus_lite),

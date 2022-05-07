@@ -205,7 +205,7 @@ module soc_system_top (
 
 	soc_system soc_system0(
 		.clk_clk						( clk ),
-		.reset_reset					( ~rst_n ),
+		.reset_reset_n					( rst_n ),
 		.go_go							( go ),
 		.boot_pc_boot_pc				( SW ),
 				
@@ -297,7 +297,7 @@ module soc_system_top (
 		.sdram_ba						( DRAM_BA ),
 		.sdram_cas_n					( DRAM_CAS_N ),
 		.sdram_cke						( DRAM_CKE ),
-		.sdram_clk_clk					( DRAM_CLK ),
+		.sdram_clk_clk					(  ),
 		.sdram_cs_n						( DRAM_CS_N ),
 		.sdram_dq						( DRAM_DQ ),
 		.sdram_dqm						( {DRAM_UDQM, DRAM_LDQM} ),
@@ -317,7 +317,7 @@ module soc_system_top (
 		.refclk							( osc_clk ),
 		.rst							( ~but_rst_n ),
 		.outclk_0						( clk ),
-		.outclk_1						(),
+		.outclk_1						( DRAM_CLK ),
 		.locked							( locked )
 	);
 
