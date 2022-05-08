@@ -63,15 +63,16 @@ void setBoard(char board[row][col]) {
 
 void getInput(char board[row][col], int *rowInput, int *colInput, char team) {
 	// get input from user (row and column)
-	printf_("Enter row: ");
 
+	printf_("Team %c's turn\r\n", team);
+
+	printf_("Enter row: ");
 	char c = myserial->pull_input();
 	int n = myserial->char2int(c);
 	*rowInput = n;
 	printf_("\r\n");
 
 	printf_("Enter column: ");
-
 	c = myserial->pull_input();
 	n = myserial->char2int(c);
 	*colInput = n;
