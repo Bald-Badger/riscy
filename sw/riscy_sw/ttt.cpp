@@ -2,22 +2,19 @@
 #include "Serial.hpp"
 
 
-int rowInput;
-int colInput;
-
 Serial* myserial;
 
 
 void ttt() {
 	myserial = new Serial();
 	char board[row][col];
-	setBoard(board);
-	printBoard(board);
-	// game(board);
+	game(board);
 }
 
 
 int game(char board[row][col]) {
+	int rowInput;
+	int colInput;
 	setBoard(board);
 	printBoard(board);
 
@@ -67,12 +64,19 @@ void setBoard(char board[row][col]) {
 void getInput(char board[row][col], int *rowInput, int *colInput, char team) {
 	// get input from user (row and column)
 	printf_("Enter row: ");
-	//cin >> *rowInput;
-	(*rowInput)--;
-	printf_("Enter column: ");
-	//cin >> *colInput;
-	(*colInput)--;
 
+	char c = myserial->pull_input();
+	int n = myserial->char2int(c);
+	*rowInput = n;
+	printf_("\r\n");
+
+	printf_("Enter column: ");
+
+	c = myserial->pull_input();
+	n = myserial->char2int(c);
+	*colInput = n;
+	printf_("\r\n");
+	
 	if(checkAvailable(board, *rowInput, *colInput) == -1) {
 		getInput(board, rowInput, colInput, team);
 	}

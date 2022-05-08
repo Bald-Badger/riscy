@@ -11,9 +11,12 @@ int main() {
 	sanity_test_seg();
 	sanity_test_serial();
 
-	// Seg* dbg_seg = new Seg;
+	Seg* dbg_seg = new Seg;
 
 	ttt();
+
+	dbg_seg->set_seg(0xabcdef);
+	dbg_seg->write_seg();
 
 
 	Serial* s = new Serial;

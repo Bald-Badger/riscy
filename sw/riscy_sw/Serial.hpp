@@ -22,6 +22,7 @@
 			static uint32_t read_strlen();
 			static char read_char();
 			static char pull_input();
+			static int char2int(char);
 	};
 
 #endif
