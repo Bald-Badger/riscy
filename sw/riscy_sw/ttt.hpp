@@ -1,14 +1,12 @@
-#ifndef _PERF_HPP_
-#define _PERF_HPP_
+#ifndef _TTT_HPP_
+#define _TTT_HPP_
 
-	#include <iostream>
-	#include <stdlib.h>
-	#include <stdio.h>
 	#include "printf.h"
 
 	constexpr int row = 3;
 	constexpr int col = 3;
 
+	void ttt();
 	void printBoard(char board[row][col]);
 	void setBoard(char board[row][col]);
 	void getInput(char board[row][col], int *rowInput, int *colInput, char team);

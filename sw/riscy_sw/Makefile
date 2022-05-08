@@ -39,7 +39,7 @@ PYTHON = python
 
 all: clean assemble deassemble link asm header section offset
 
-assemble: Seg.o Serial.o main.o riscy_startup.o printf.o
+assemble: Seg.o Serial.o main.o printf.o
 
 Seg.o:Seg.cpp
 	$(GCC) $^ -c $(CFLAGS) -o $@
@@ -50,14 +50,12 @@ Serial.o:Serial.cpp
 main.o:riscy.cpp
 	$(GCC) $^ -c $(CFLAGS) -o $@
 
-riscy_startup.o:riscy_startup.cpp
-	$(GCC) $^ -c $(CFLAGS) -o $@
-
 printf.o:printf.c
 	$(GCC) $^ -c $(CFLAGS) -o $@
 
 
-deassemble: riscy_startup.s Seg.s Serial.s main.s printf.s
+deassemble: Seg.s Serial.s main.s printf.s
+
 
 Seg.s:Seg.o
 	$(OBJDUMP) -D -g $^ > $@
@@ -68,20 +66,19 @@ Serial.s:Serial.o
 main.s:main.o
 	$(OBJDUMP) -D -g $^ > $@
 
-riscy_startup.s:riscy_startup.o
-	$(OBJDUMP) -D -g $^ > $@
-
 printf.s:printf.o
 	$(OBJDUMP) -D -g $^ > $@
 
 
 link:assemble
-	$(GCC) --specs=nano.specs -T elf32lriscv.ld -e _riscy_start $(CFLAGS) \
-	riscy_startup.o Seg.o Serial.o main.o printf.o \
+	$(GCC) --specs=nano.specs -T elf32lriscv.ld -e _start $(CFLAGS) \
+	Seg.o Serial.o main.o printf.o \
 	-o $(TARGET).elf
+
 
 asm:link
 	$(OBJDUMP) -D riscy.elf > $(TARGET).s
+
 
 # extract elf header info from elf file
 header:link

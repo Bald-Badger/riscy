@@ -1,17 +1,24 @@
 #include "riscy.hpp"
+#include "ttt.hpp"
 
-// extern void ttt();
+int main() asm ("main");
 
 int main() {
+	_riscy_start();
+
 	printf_("Hello Riscy \r\n");
+
 	sanity_test_seg();
 	sanity_test_serial();
 
 	Seg* dbg_seg = new Seg;
+
+	// ttt();
+
+
 	Serial* s = new Serial;
 	int buflen = 0;
 	char c;
-
 	for(;;) {
 		buflen = s->read_strlen();
 		if (buflen > 0) {
@@ -20,9 +27,14 @@ int main() {
 		}
 	}
 
-	
 
 	halt_riscy();
+}
+
+
+void _riscy_start() {
+	//init sp
+	__asm__("li sp, 0x03fffffc");
 }
 
 
@@ -48,3 +60,4 @@ void halt_riscy() {
 	__asm__("ebreak");
 	return;
 }
+

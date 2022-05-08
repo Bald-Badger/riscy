@@ -7,7 +7,7 @@
 OUTPUT_FORMAT("elf32-littleriscv", "elf32-littleriscv",
 		  "elf32-littleriscv")
 OUTPUT_ARCH(riscv)
-ENTRY(_start)
+ENTRY(main)
 SEARCH_DIR("/opt/riscv/riscv64-unknown-elf/lib");
 SECTIONS
 {

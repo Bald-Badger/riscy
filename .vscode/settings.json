@@ -8,6 +8,7 @@
 		"cstdio": "cpp",
 		"stdio.h": "c",
 		"reent.h": "c",
-		"stat.h": "c"
+		"stat.h": "c",
+		"iostream": "cpp"
 	}
 }

@@ -56,6 +56,7 @@
 *sopc_*
 *.dtb
 *.dts
+*.stp
 soc_system/
 hps_isw_handoff/
 .qsys_edit/
