@@ -139,9 +139,14 @@ module fetch_axil # (
 	logic instr_valid_early;
 	assign instr_plain = data_t'(instr_mem_sys);
 	assign instr_fifo_in = instr_queue_entry_t'({instr_mem_sys, pc});
+
 	// BUG: assert ebreak = instr_d == EBREAK
-	assign ebreak = (instr_plain == EBREAK);
-	assign ebreak_clear = (data_t'(instr_w) == EBREAK);
+	assign ebreak =	(ENDIANESS == BIG_ENDIAN) ? 
+					(instr_plain == EBREAK) : 
+					(swap_endian(instr_plain) == EBREAK);
+	assign ebreak_clear =	(ENDIANESS == LITTLE_ENDIAN) ? 
+							(data_t'(instr_w) == EBREAK) :
+							(swap_endian(data_t'(instr_w)) == EBREAK);
 	assign instr_valid_early = ((~buf_empty) && (~stall) && (~flush) && (~flush_flag) && (~flush_flag_delay));
 	// end instruction wires
 
