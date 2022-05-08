@@ -11,9 +11,9 @@ int main() {
 	sanity_test_seg();
 	sanity_test_serial();
 
-	Seg* dbg_seg = new Seg;
+	// Seg* dbg_seg = new Seg;
 
-	// ttt();
+	ttt();
 
 
 	Serial* s = new Serial;

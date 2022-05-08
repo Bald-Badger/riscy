@@ -5,7 +5,6 @@
 	#include "Seg.hpp"
 	#include "Serial.hpp"
 	#include "printf.h"
-	#include "ttt.hpp"
 	
 	void _riscy_start() asm ("_riscy_start");
 	void halt_riscy();

@@ -1,9 +1,16 @@
 #include "ttt.hpp"
+#include "Serial.hpp"
+
+
+int rowInput;
+int colInput;
+
+Serial* myserial;
 
 
 void ttt() {
+	myserial = new Serial();
 	char board[row][col];
-	// int rowInput, colInput;
 	setBoard(board);
 	printBoard(board);
 	// game(board);
@@ -11,7 +18,6 @@ void ttt() {
 
 
 int game(char board[row][col]) {
-	int rowInput, colInput;
 	setBoard(board);
 	printBoard(board);
 
@@ -21,7 +27,7 @@ int game(char board[row][col]) {
 		getInput(board, &rowInput, &colInput, 'X');
 		printBoard(board);
 		if (checkWinner(board) == 1) {
-			printf_("X Wins!\n");
+			printf_("X Wins!\r\n");
 			break;
 		}
 
@@ -29,7 +35,7 @@ int game(char board[row][col]) {
 		//bot(board);
 		printBoard(board);
 		if (checkWinner(board) == -1) {
-			printf_("O Wins!\n"); 
+			printf_("O Wins!\r\n"); 
 			break;
 		}
 	}
@@ -39,12 +45,12 @@ int game(char board[row][col]) {
 
 void printBoard(char board[row][col]) {
 	// print board
-	printf_("\n");
+	printf_("\r\n");
 	for (int i = 0; i < row; i++) {
 		for (int j = 0; j < col; j++) {
 			printf_("%c",board[i][j]);
 		}
-		printf_("\n");
+		printf_("\r\n");
 	}
 }
 

@@ -2,6 +2,7 @@
 #define _TTT_HPP_
 
 	#include "printf.h"
+	#include "Serial.hpp"
 
 	constexpr int row = 3;
 	constexpr int col = 3;
