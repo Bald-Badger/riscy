@@ -4,5 +4,30 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"alt_gpio.h": "c",
+			"hwlib.h": "c",
+			"mman.h": "c",
+			"socal.h": "c",
+			"hps.h": "c",
+			"fcntl.h": "c",
+			"stdlib.h": "c",
+			"array": "c",
+			"bitset": "c",
+			"string_view": "c",
+			"initializer_list": "c",
+			"ranges": "c",
+			"span": "c",
+			"regex": "c",
+			"utility": "c",
+			"valarray": "c",
+			"charconv": "c",
+			"ratio": "c",
+			"chrono": "c",
+			"variant": "c",
+			"iostream": "cpp"
+		},
+		"makefile.extensionOutputFolder": "./.vscode"
+	}
 }

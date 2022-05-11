@@ -14,7 +14,7 @@
 # -D: defines a macro to be used by the preprocessor
 
 GCC = riscv64-unknown-elf-gcc
-CFLAGS = -Wall -O0 -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
+CFLAGS = -Wall -O0 -static -mno-fdiv -no-pie -mstrict-align -mlittle-endian -march=rv32i -mabi=ilp32 -lstdc++ -mbranch-cost=1 -mexplicit-relocs -D TB
 
 GCC_X86 = gcc
 CFLAGS_X86 = -Wall
@@ -43,6 +43,7 @@ asm:
 # build the compiled and linked elf file	
 elf: asm
 	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET)
+	$(GCC) $(CFLAGS) $(SRC) -o $(TARGET).elf
 
 # extract the executable binary from elf
 bin: elf
@@ -95,4 +96,4 @@ x86: clean
 
 # delete all but .c, .h file
 clean:
-	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg ./*.out
+	rm -f ./*.s $(TARGET) ./*.bin ./*.mif ./*.mc ./*.header ./*.section ./*.cfg ./*.out ./*.elf

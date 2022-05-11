@@ -11,8 +11,8 @@ wire [ 15:0]		sdram_data_out_w;
 wire				sdram_data_out_en_w;
 
 sdram_axi u_sdram (
-	 .clk_i(clk_i)
-	,.rst_i(rst_i)
+	 .clk_i					(clk_i)
+	,.rst_i					(rst_i)
 
 	// AXI port
 	,.inport_awvalid_i		(axi_bus.s_axi_awvalid)
@@ -44,30 +44,27 @@ sdram_axi u_sdram (
 	,.inport_rlast_o		(axi_bus.s_axi_rlast)
 
 	// SDRAM Interface
-	,.sdram_clk_o			(sdram_bus.sdram_clk_o)
-	,.sdram_cke_o			(sdram_bus.sdram_cke_o)
-	,.sdram_cs_o			(sdram_bus.sdram_cs_o)
-	,.sdram_ras_o			(sdram_bus.sdram_ras_o)
-	,.sdram_cas_o			(sdram_bus.sdram_cas_o)
-	,.sdram_we_o			(sdram_bus.sdram_we_o)
-	,.sdram_dqm_o			(sdram_bus.sdram_dqm_o)
-	,.sdram_addr_o			(sdram_bus.sdram_addr_o)
-	,.sdram_ba_o			(sdram_bus.sdram_ba_o)
+	,.sdram_clk_o			(sdram_bus.sdram_clk)
+	,.sdram_cke_o			(sdram_bus.sdram_cke)
+	,.sdram_cs_o			(sdram_bus.sdram_cs_n)	// yep
+	,.sdram_ras_o			(sdram_bus.sdram_ras_n)	// yep
+	,.sdram_cas_o			(sdram_bus.sdram_cas_n)	// yep
+	,.sdram_we_o			(sdram_bus.sdram_we_n)	// yep
+	,.sdram_dqm_o			(sdram_bus.sdram_dqm)
+	,.sdram_addr_o			(sdram_bus.sdram_addr)
+	,.sdram_ba_o			(sdram_bus.sdram_ba)
 	,.sdram_data_input_i	(sdram_data_in_w)
 	,.sdram_data_output_o	(sdram_data_out_w)
 	,.sdram_data_out_en_o	(sdram_data_out_en_w)
 );
 
-genvar i;
-generate
-	for (i=0; i < 16; i = i + 1) begin : iobuf_gen
-		iobuf databuf (
-			.o(sdram_data_in_w[i]),
-			.io(sdram_bus.sdram_data_io[i]),
-			.i(sdram_data_out_w[i]),
-			.en(~sdram_data_out_en_w)
-		);
-	end
-endgenerate
+	iobuf # (
+		.WIDTH					(16)
+	) databuf (
+		.o						(sdram_data_in_w),
+		.io						(sdram_bus.sdram_dq),
+		.i						(sdram_data_out_w),
+		.en						(~sdram_data_out_en_w)
+	);
 
 endmodule : sdram_axi_wrapper

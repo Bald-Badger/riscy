@@ -52,7 +52,15 @@
 *.txt
 *~
 *example*
+*sopc*
 *sopc_*
+*.dtb
+*.dts
+*.stp
+soc_system/
+hps_isw_handoff/
+.qsys_edit/
+hps_sdram_p0_summary.csv
 
 # ignore Quartus II generated folders
 db/
@@ -66,15 +74,15 @@ work/
 smoke/
 modelsim/
 .idea/
-par/
 PLLJ_PLLSPE_INFO.txt
+
+# ignore simulation files
 transcript
 vsim.wlf
 *.mpf
 *.mti
-
+*.xml
 vsim_stacktrace.vstf
-
 transcript.txt
 *.qpg
 *.qtl
@@ -87,23 +95,41 @@ instr.ver
 instr.mif
 *.vstf
 *.mpf_new
-*.log
 *.component.xml
 *.cnx
 
 # test_gen
+sim/*.cfg
+sim/*.bin
+sim/*.elf
+sim/*.s
+sim/*.log
+sim/*.csv
 sim/test_gen/test
 sim/test_gen/*.bin
-sim/*.bin
 sim/test_gen/*.mif
 sim/test_gen/*.mc
 sim/test_gen/*.header
 sim/test_gen/*.section
 sim/test_gen/*.cfg
-sim/*.cfg
-test_gen/*.out
+sim/test_gen/*.out
+sim/test_gen/*.elf
+
+# fpga test program
+sw/riscy_sw/*.header
+sw/riscy_sw/*.section
+sw/riscy_sw/*.out
+sw/riscy_sw/*.elf
+sw/riscy_sw/*.o
+sw/riscy_sw/*.s
+sw/riscy_sw/*.cfg
 
 # formal
 .qverify_ui_local_prefs
 .visualizer/
 rtl/tb/clkrst/xgui/clkrst_v1_0.tcl
+
+sim/instr_full.s
+.vscode/configurationCache.log
+.vscode/dryrun.log
+.vscode/targets.log

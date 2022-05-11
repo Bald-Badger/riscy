@@ -28,9 +28,6 @@ import defines::*;
 			tag(19)            index(9)    word_off(2)   byte_off(2)
 */
 
-// using RARS default, text at 0x0 memory layout
-localparam	MAX_PHY_ADDR		= 32'h01ff_ffff;	// 32MB
-
 localparam	MEM_ACCESS_TIMEOUT	= 128;			// 128 cycles
 
 localparam	DEBUG_MEM_SYS		= DISABLE;
@@ -50,9 +47,14 @@ localparam  sdram_access_len	= 10'd8;	// 8 16-bit word each access
 localparam	DIRTY				= 1'b1;
 localparam	CLEAN				= 1'b0;
 
+localparam	word_align_mask		= 32'hffff_fffc;
+
 // atomic operation defines
 localparam	SC_FAIL_ECODE		= 32'b1;	// if sc fail, write this value to rd 
 localparam	SC_SUCCESS_CODE		= NULL;
+
+localparam	MAX_NEST_LOCK	= 8;				// max nested lock aquire length, 
+												// cases that over 2 is very rare
 
 typedef logic [tag_len - 1 : 0]		tag_t;
 typedef logic [index_len - 1 : 0]	index_t;

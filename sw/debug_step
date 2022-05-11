@@ -1,0 +1,43 @@
+git clone -b De1-Migrate https://github.com/Bald-Badger/riscy.git
+ssh -C -L 5910:localhost:5903 sz3034@micro23.ee.columbia.edu
+sudo stty -F /dev/ttyUSB0 115200
+export LM_LICENSE_FILE=27000@arthur.cs.columbia.edu
+/tools/intel/intelFPGA/19.1/quartus/bin/quartus ./soc_system.qpf &
+verilator --lint-only vga_ball.sv
+qsys-edit soc_system.qsys
+make quartus
+	check for warning!
+
+embedded_command_shell.sh
+make rbf && make dtb
+
+git add . && git commit -a
+git push
+
+
+copy files:
+mount /dev/mmcblk0p1 /mnt
+rm -f /mnt/soc_system.rbf && rm -f /mnt/soc_system.dtb && sync
+
+scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
+scp sz3034@micro23.ee.columbia.edu:~/riscy/par/de1/soc_system.dtb /mnt && sync
+
+scp shuai@128.59.65.22:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
+scp shuai@128.59.65.22:~/riscy/par/de1/soc_system.dtb /mnt && sync
+
+scp shuai@192.168.50.45:~/riscy/par/de1/output_files/soc_system.rbf /mnt && sync
+scp shuai@192.168.50.45:~/riscy/par/de1/soc_system.dtb /mnt && sync
+
+reboot -h now
+
+sw:
+make clean && make && make clean && git add ./. && git commit -m "vibe check" && git push
+
+fpga:
+cd ~/riscy && git pull && cp ~/riscy/sw/hps_sw/* ~/sw/hps_sw/ && cd ~/sw/hps_sw && make clean && make && sync
+
+scp shuai@192.168.50.45:~/riscy/sw/riscy_sw/riscy.elf ~/sw/hps_sw/ && sync
+
+check:
+ls "/proc/device-tree/sopc@0/bridge@0xc0000000/"
+cat "/proc/device-tree/sopc@0/bridge@0xc0000000/vga@0x100000000/compatible"

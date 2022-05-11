@@ -3,28 +3,37 @@ package defines;
 `ifndef _defines_sv_
 `define _defines_sv_
 
-//	generate synthesizable code if set
-	`define		SYNTHESIZE
+// hardware target
+	typedef enum logic [1:0] {
+		INDEPNDENT,
+		ALTERA,
+		XILINX
+	} target_t;
 
-//	generate Altera-compatable code
-	`define		ALTERA
+	localparam [1:0]	TARGET	= ALTERA;
+
+	// boot options
+	typedef enum logic[1:0] {
+		BINARY_BOOT,	// boot from a bin file generated from gcc
+		RARS_BOOT,		// boot from a rars compiled mif file
+		FPGA_BOOT		// boot on FPGA, no jokes here
+	} boot_type_t;
+	localparam	[1:0] BOOT_TYPE = BINARY_BOOT;
+
+	// byte-varient endianess
+	localparam LITTLE_ENDIAN	= 1'b0;
+	localparam BIG_ENDIAN		= 1'b1;
+	localparam ENDIANESS		= LITTLE_ENDIAN;
 
 //	ISA define
 	localparam 	XLEN 			= 32;				// RV32
 	localparam	N 				= XLEN;	 			// in case I forget should be XLEN instead of N
 	localparam 	OSC_FREQ 		= 5e7;				// 50Mhz crystal oscillator on FPGA board
-	localparam 	FREQ 			= 1e9;				// targeted core clock from PLL
-
-
-//	core config
-	localparam	MAX_NEST_LOCK	= 8;				// max nested lock aquire length, 
-													// cases that over 2 is very rare
-	localparam	SP_BASE			= 32'h0000_3ffc;	// stack base pointer, init SP to here
-	localparam	GP_BASE			= 32'h0000_1800;	// global pointer, init GP to here
+	localparam 	FREQ 			= OSC_FREQ;			// targeted core clock from PLL
 
 
 // TB config
-	localparam	TB_TIMEOUT		= 2333333;			// test timeout in clock cycles
+	localparam	TB_TIMEOUT		= 23333;			// test timeout in clock cycles
 													// testbench will end after this time is reached
 
 //	constant define
@@ -40,15 +49,11 @@ package defines;
 	localparam	DONE			= 1'b1;
 	localparam	SET				= 1'b1;
 	localparam	CLEAR			= 1'b0;
+	localparam	GND				= 1'b0;
 
 
 //	debug log option
 	localparam	TOP_DEBUG		= ENABLE;
-
-	// byte-varient endianess
-	localparam LITTLE_ENDIAN	= 1'b0;
-	localparam BIG_ENDIAN		= 1'b1;
-	localparam ENDIANESS		= LITTLE_ENDIAN;	// as commonly used in modern computer system
 
 
 	// sopported extension
@@ -62,14 +67,6 @@ package defines;
 	localparam	Q_SUPPORT		= FALSE;	// Quad-Precision FP, should not implement
 	localparam	C_SUPPORT		= FALSE;	// Compressed Instructions, should not implement
 	localparam	CSR_SUPPORT		= FALSE;	// Control and status register, required for xv6
-
-
-	// boot options
-	typedef enum logic[1:0] {
-		BINARY_BOOT,	// boot from a bin file generated from gcc
-		RARS_BOOT		// boot from a rars compiled mif file
-	} boot_type_t;
-	localparam	[1:0] BOOT_TYPE = BINARY_BOOT;
 
 
 	// branch predictor
@@ -101,12 +98,12 @@ package defines;
 
 
 // basic data type define
-	typedef logic [XLEN-1:0]	data_t;
-	typedef logic [7:0]			byte_t;
-	typedef logic [15:0]		half_word_t;
-	typedef logic [2:0] 		funct3_t;
-	typedef logic [6:0] 		funct7_t;
-	typedef logic [11:0]		imm_t;		// only for I type instruction
+	typedef logic [XLEN-1:0]		data_t;
+	typedef logic [7:0]				byte_t;
+	typedef logic [(XLEN/2-1):0]	half_word_t;
+	typedef logic [2:0] 			funct3_t;
+	typedef logic [6:0] 			funct7_t;
+	typedef logic [11:0]			imm_t;		// only for I type instruction
 
 
 	typedef struct packed {
@@ -173,7 +170,7 @@ package defines;
 
 	// U type have no funct3 
 	//localparam	[2:0]	LUI		=	3'b000;	// rd <= {imm, 12'b0}
-	//localparam	[2:0]	AUIPC	=	3'b000;	// pc, rd <= (pc_of_auipc + {imm, 12'b0})
+	//localparam	[2:0]	AUIPC	=	3'b000;	// rd <= (pc_of_auipc + {imm, 12'b0})
 
 	// J type have no funct3
 	//localparam	[2:0]	JAL		=	3'b000;	// jump and link, rd <= pc_of_jal + 4, pc <= (pc_of_jal + imm << 1)
@@ -324,14 +321,14 @@ endfunction
 function data_t get_imm;		// extract immidiate value from instruction
 	input instr_t instr;
 	unique case (instr.opcode)
-		LUI:		return data_t'({instr[31:12], 12'b0});
-		AUIPC:		return data_t'({instr[31:12], 12'b0});
-		JAL:		return data_t'({32'd4});	// pc + 4 for ALU
-		JALR:		return data_t'({32'd4});	// pc + 4 for ALU
-		B:			return data_t'({ {20{instr[31]}} , instr[7], instr[30:25], instr[11:8], 1'b0});
-		LOAD:		return data_t'({ {20{instr[31]}} , instr[31:20]});
-		STORE:		return data_t'({ {20{instr[31]}} , instr[31:25], instr[11:7]});
-		I:			return data_t'({ {20{instr[31]}} , instr[31:20]});
+		LUI:		return data_t'( { instr[31:12], 12'b0 } );
+		AUIPC:		return data_t'( { instr[31:12], 12'b0 } );
+		JAL:		return data_t'( { 32'd4 } );	// pc + 4 for ALU
+		JALR:		return data_t'( { 32'd4 } );	// pc + 4 for ALU
+		B:			return data_t'( { { 20{ instr[31] } } , instr[7], instr[30:25], instr[11:8], 1'b0 } );
+		LOAD:		return data_t'( { { 20{ instr[31] } } , instr[31:20] } );
+		STORE:		return data_t'( { { 20{ instr[31] } } , instr[31:25], instr[11:7] } );
+		I:			return data_t'( { { 20{ instr[31] } } , instr[31:20] } );
 		default:	return NULL;
 	endcase
 endfunction
