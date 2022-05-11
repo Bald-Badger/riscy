@@ -369,7 +369,7 @@ int main (int argc, char *argv[]) {
 		if (strcmp(cmd, "peek") == 0) {
 			uint32_t addr = (uint32_t)strtol(addr_str, NULL, 16);
 			uint32_t value = peek(addr);
-			printf("addr: %X, value: %X\n", addr, value);
+			printf("addr: %X, value_se: %X\n, value_be: %X", addr, value, swap_endian(value));
 		} else {
 			printf("Invalid argument\n");
 		}
