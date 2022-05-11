@@ -367,7 +367,7 @@ int main (int argc, char *argv[]) {
 		char* addr_str = argv[2];
 
 		if (strcmp(cmd, "peek") == 0) {
-			uint32_t addr = atoi(addr_str);
+			uint32_t addr = (uint32_t)strtol(addr_str, NULL, 16);
 			uint32_t value = peek(addr);
 			printf("addr: %X, value: %X\n", addr, value);
 		} else {
