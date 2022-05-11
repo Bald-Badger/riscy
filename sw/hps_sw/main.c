@@ -324,6 +324,7 @@ void uart_put_str (char* str, int len) {
 	clean_uart(uart_vp);
 }
 
+
 void sanity_test_uart() {
 	char greeting[15] = "Hello RISCY\r\n";
 	printf("performing uart serial test...\n");
@@ -333,11 +334,47 @@ void sanity_test_uart() {
 }
 
 
-int main () {
+void boot () {
 	printf("starting RISCY bootloading process...\n");
 	sanity_test_sdram();
 	sanity_test_seg();
 	sanity_test_uart();
 	boot_load("./riscy.elf", 1);
+}
+
+
+uint32_t peek (uint32_t addr) {
+	void* sdram_vp = init_sdram();
+	uint32_t value =  read_sdram(sdram_vp + addr);
+	clean_sdram(sdram_vp);
+	return value;
+}
+
+
+int main (int argc, char *argv[]) {
+	if( argc == 2 ) {
+		printf("The argument supplied is %s\n", argv[1]);
+		char* cmd = argv[1];
+
+		if (strcmp(cmd, "boot") == 0) {
+			boot();
+		} else {
+			printf("Invalid argument\n");
+		}
+
+	} else if( argc == 3 ) {
+		char* cmd = argv[1];
+		char* addr_str = argv[2];
+
+		if (strcmp(cmd, "peek") == 0) {
+			uint32_t addr = atoi(addr_str);
+			uint32_t value = peek(addr);
+			printf("addr: %X, value: %X\n", addr, value);
+		} else {
+			printf("Invalid argument\n");
+		}
+	} else {
+		printf("Invalid argument.\n");
+	}
 	return 0;
 }

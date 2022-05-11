@@ -1,5 +1,5 @@
 #
-TARGET = riscy_bootloader
+TARGET = riscy
 
 #
 ALT_DEVICE_FAMILY = soc_cv_av
