@@ -9,8 +9,7 @@ import mem_defines::*;
 module riscy_core_axil_qsys  (
 	input	logic 				clk,
 	input	logic				rst,
-	input	logic				go,
-	input	logic	[9:0]		boot_pc,
+	input	logic				go
 
 	/*
 	* AXI lite master interface
@@ -42,7 +41,6 @@ module riscy_core_axil_qsys  (
 		.clk					(clk),
 		.rst_n					(~rst),
 		.go						(go),
-		.boot_pc				(boot_pc),
 		.axil_bus_master		(axil_bus.axil_master)
 	);
 

@@ -17,7 +17,6 @@ module fetch_axil # (
 	input 	logic					stall,
 	input	logic					flush,
 	input	logic					go,
-	input	logic [9:0]				boot_pc_extrn,
 	input	instr_t					instr_w,
 
 	// output
@@ -121,7 +120,7 @@ module fetch_axil # (
 
 	always_ff @(posedge clk or negedge rst_n) begin
 		if (~rst_n) begin
-			pc <= (boot_pc_extrn * 4);
+			pc <= NULL;
 		end else if (pc_en && update_pc) begin
 			pc <= pc_nxt;
 		end else begin
