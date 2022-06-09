@@ -1,6 +1,8 @@
 import defines::*;
 
-module id_ex_reg (
+module id_ex_reg # (
+	TARGET = GEN_TARGET
+) (
 	// common
 	input clk,
 	input rst_n,
@@ -26,7 +28,7 @@ module id_ex_reg (
 	output logic	instr_valid_out
 );
 
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) instr_reg (
+	dffe_wrap #(.WIDTH(XLEN), .TARGET(TARGET)) instr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -34,7 +36,7 @@ module id_ex_reg (
 		.q		(instr_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) rs1_reg (
+	dffe_wrap #(.WIDTH(XLEN), .TARGET(TARGET)) rs1_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -42,7 +44,7 @@ module id_ex_reg (
 		.q		(rs1_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_reg (
+	dffe_wrap #(.WIDTH(XLEN), .TARGET(TARGET)) pc_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -50,7 +52,7 @@ module id_ex_reg (
 		.q		(pc_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) rs2_reg (
+	dffe_wrap #(.WIDTH(XLEN), .TARGET(TARGET)) rs2_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -58,7 +60,7 @@ module id_ex_reg (
 		.q		(rs2_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) imm_reg (
+	dffe_wrap #(.WIDTH(XLEN), .TARGET(TARGET)) imm_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -66,7 +68,7 @@ module id_ex_reg (
 		.q		(imm_out)
 	);
 
-	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) branch_taken_reg (
+	dffe_wrap #(.WIDTH(1), .TARGET(TARGET)) branch_taken_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -74,7 +76,7 @@ module id_ex_reg (
 		.q		(branch_taken_out)
 	);
 
-	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) instr_valid_reg (
+	dffe_wrap #(.WIDTH(1), .TARGET(TARGET)) instr_valid_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),

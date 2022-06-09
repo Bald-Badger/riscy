@@ -6,7 +6,7 @@ import defines::*;
 
 module dffe_wrap #(
 	parameter WIDTH = XLEN,
-	parameter GEN_TARGET = INDEPNDENT
+	parameter TARGET = GEN_TARGET
 ) (
 	input clk,
 	input en,
@@ -18,7 +18,7 @@ module dffe_wrap #(
 
 	genvar i;	// number of dffe
 	generate
-		if (GEN_TARGET == ALTERA) begin
+		if (TARGET == ALTERA) begin
 			for (i = 0; i < WIDTH;i++) begin : dffe_generate_loop_altera
 				dffe dffe_gen(
 					.d		(d[i]),
@@ -29,7 +29,7 @@ module dffe_wrap #(
 					.q		(q[i])
 				);
 			end
-		end  else if (GEN_TARGET == XILINX) begin
+		end else if (TARGET == XILINX) begin
 			for (i = 0; i < WIDTH;i++) begin : dffe_generate_loop_xilinx
 				FDRE dffe_gen(
 					.D		(d[i]),

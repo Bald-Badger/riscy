@@ -1,6 +1,8 @@
 import defines::*;
 
-module if_id_reg (
+module if_id_reg # (
+	TARGET = GEN_TARGET
+) (
 	// common
 	input clk,
 	input rst_n,
@@ -18,7 +20,7 @@ module if_id_reg (
 	output logic	instr_valid_out
 );
 
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) pc_reg (
+	dffe_wrap #(.WIDTH(XLEN), .TARGET(TARGET)) pc_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -26,7 +28,7 @@ module if_id_reg (
 		.q		(pc_out)
 	);
 
-	dffe_wrap #(.WIDTH(XLEN), .GEN_TARGET(TARGET)) instr_reg (
+	dffe_wrap #(.WIDTH(XLEN), .TARGET(TARGET)) instr_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
@@ -34,7 +36,7 @@ module if_id_reg (
 		.q		(instr_out)
 	);
 
-	dffe_wrap #(.WIDTH(1), .GEN_TARGET(TARGET)) instr_valid_reg (
+	dffe_wrap #(.WIDTH(1), .TARGET(TARGET)) instr_valid_reg (
 		.clk	(clk),
 		.en		(en),
 		.rst_n	(rst_n),
