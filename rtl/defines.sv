@@ -10,7 +10,7 @@ package defines;
 		XILINX
 	} target_t;
 
-	localparam [1:0]	TARGET	= ALTERA;
+	localparam [1:0]	GEN_TARGET	= ALTERA;
 
 	// boot options
 	typedef enum logic[1:0] {

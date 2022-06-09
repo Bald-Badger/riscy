@@ -19,7 +19,7 @@ module dffe_wrap #(
 	genvar i;	// number of dffe
 	generate
 		if (GEN_TARGET == ALTERA) begin
-			for (i = 0; i < WIDTH;i++) begin : dffe_generate_loop
+			for (i = 0; i < WIDTH;i++) begin : dffe_generate_loop_altera
 				dffe dffe_gen(
 					.d		(d[i]),
 					.clk	(clk),
@@ -29,7 +29,17 @@ module dffe_wrap #(
 					.q		(q[i])
 				);
 			end
-		end else if (GEN_TARGET == INDEPNDENT) begin
+		end  else if (GEN_TARGET == XILINX) begin
+			for (i = 0; i < WIDTH;i++) begin : dffe_generate_loop_xilinx
+				FDRE dffe_gen(
+					.D		(d[i]),
+					.C		(clk),
+					.R		(rst_n),
+					.CE		(en),
+					.Q		(q[i])
+				);
+			end
+		end else begin
 			dffe_wrap_unsyn # (
 				.WIDTH	(WIDTH)
 			) dffe (

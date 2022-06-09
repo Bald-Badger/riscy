@@ -133,3 +133,6 @@ sim/instr_full.s
 .vscode/configurationCache.log
 .vscode/dryrun.log
 .vscode/targets.log
+
+/par/atrix
+/eda
