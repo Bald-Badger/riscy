@@ -1,12 +1,13 @@
 interface axil_interface # (
 	// Width of address bus in bits
-	parameter ADDR_WIDTH		= 32
-) ();
-
+	parameter ADDR_WIDTH		= 32,
 	// Width of AXI interface data bus in bits
-	localparam DATA_WIDTH		= 32;
+	parameter DATA_WIDTH		= 32,
 	// Width of data bus in words
-	localparam STRB_WIDTH		= (DATA_WIDTH/8);
+	parameter STRB_WIDTH		= 4
+) (
+
+);
 
 	// bus signals
 	logic	[ADDR_WIDTH-1:0]	axil_awaddr;
